@@ -1,0 +1,49 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- TODO: Write file appender for the webservice -->
+
+    <!-- Console appender -->
+    <appender name="console"
+                class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- This pattern also includes the service name -->
+            <param name="ConversionPattern"
+                        value="[%d{yyyy-MM-dd HH.mm:ss}] %-5p %C{1} %M: %m %n" />
+        </layout>
+    </appender>
+
+    <!-- File appender -->
+    <appender name="file" class="org.apache.log4j.RollingFileAppender" >
+        <param name="MaxFileSize" value="100MB"/>
+        <param name="File" value="/var/log/clarin/tools.log" />
+        <param name="MaxBackupIndex" value="4"/>
+        <param name="Append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <!-- This pattern also includes the service name -->
+            <param name="ConversionPattern"
+                        value="[%d{yyyy-MM-dd HH.mm:ss}] %-5p %C{1} %M: %m %n" />
+        </layout>
+    </appender>
+
+    <!-- This classes local logger -->
+    <logger name="dk.clarin.tools">
+        <level value="debug"/>
+        <appender-ref ref="file" />
+    </logger>
+
+    <!-- This classes local logger -->
+    <logger name="dk.clarin.tools.rest">
+        <level value="debug"/>
+        <appender-ref ref="console" />
+    </logger>
+
+    <!-- Catch all logger. Set to debug, if external jars fails -->
+    <root>
+        <priority value="warn"/>
+        <appender-ref ref="console" />
+    </root>
+
+</log4j:configuration>
+

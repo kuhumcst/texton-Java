@@ -1,0 +1,174 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+                         "http://java.sun.com/dtd/web-app_2_3.dtd">
+<!--
+  Author: Jacob Larsen (jac@kb.dk)
+
+  very basic web.xml
+
+-->
+<web-app>
+    <description>web.xml file for the COP loadcontroller</description>
+    <session-config>
+        <session-timeout>35</session-timeout>
+    </session-config>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>txt</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xml</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>js</extension>
+        <mime-type>application/javascript</mime-type>
+    </mime-mapping>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.jspx</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.xml</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <servlet-name>bracmatevaluator</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.bracmatevaluator</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bracmatevaluator</servlet-name>
+        <url-pattern>/bracmatevaluator/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cleanup</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.cleanup</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cleanup</servlet-name>
+        <url-pattern>/cleanup/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>createByGoalChoice</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.createByGoalChoice</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createByGoalChoice</servlet-name>
+        <url-pattern>/createByGoalChoice/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>createByToolChoice</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.createByToolChoice</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createByToolChoice</servlet-name>
+        <url-pattern>/createByToolChoice/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>data</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.data</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>data</servlet-name>
+        <url-pattern>/data/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deposit</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.deposit</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deposit</servlet-name>
+        <url-pattern>/deposit/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>depositXML</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.depositXML</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>depositXML</servlet-name>
+        <url-pattern>/depositXML/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>poll</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.poll</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>poll</servlet-name>
+        <url-pattern>/poll/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>register</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.register</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>register</servlet-name>
+        <url-pattern>/register/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>reloadScript</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.reloadScript</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reloadScript</servlet-name>
+        <url-pattern>/reloadScript/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+      <servlet-name>results</servlet-name>
+      <servlet-class>dk.clarin.tools.rest.results</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>results</servlet-name>
+      <url-pattern>/results/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>stresstest</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.stresstest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>stresstest</servlet-name>
+        <url-pattern>/stresstest/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>update</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.update</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>update</servlet-name>
+        <url-pattern>/update/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>upload</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.upload</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>upload</servlet-name>
+        <url-pattern>/upload/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>setLanguage</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.setLanguage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>setLanguage</servlet-name>
+        <url-pattern>/setLanguage/*</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
