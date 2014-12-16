@@ -85,7 +85,7 @@
         <echo message="This is warning message." />
         <copy overwrite="true" file="properties_local.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="\${CATALINA_BASE}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+        <copy overwrite="true" file="\${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
@@ -93,7 +93,7 @@
         <echo message="This is warning message." />
         <copy overwrite="true" file="properties_local-D.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="\${CATALINA_BASE}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+        <copy overwrite="true" file="\${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
