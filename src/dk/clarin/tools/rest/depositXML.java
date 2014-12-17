@@ -54,7 +54,7 @@ public class depositXML extends HttpServlet
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);		
         BracMat = new bracmat(ToolsProperties.bootBracmat);
-        destinationDir = new File(ToolsProperties.documentRoot + ToolsProperties.stagingArea);
+        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory())
             {
             try
@@ -63,12 +63,12 @@ public class depositXML extends HttpServlet
                 }
             catch(Exception e)
                 {
-                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot + ToolsProperties.stagingArea + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
+                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea */+ "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
                 }
             }
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + ToolsProperties.stagingArea + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea */+ "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
 
         super.init(config);
@@ -142,7 +142,7 @@ public class depositXML extends HttpServlet
         logger.info("zipname:" + zipname);
         zipname = zipname + "zip";
         logger.info("zipname:" + zipname);
-        String fullPath = ToolsProperties.documentRoot + ToolsProperties.stagingArea  + zipname;
+        String fullPath = ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea */+ zipname;
         logger.debug("Zipping to file " + fullPath);
 
         try 
@@ -529,7 +529,7 @@ public class depositXML extends HttpServlet
                         logger.info("Name = "+item.getName());
                         logger.info("ContentType = "+item.getContentType());
                         logger.info("Size = "+item.getSize());
-                        logger.info("DestinationDir = "+ToolsProperties.documentRoot + ToolsProperties.stagingArea);
+                        logger.info("DestinationDir = "+ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
                         }
                     }
                 }

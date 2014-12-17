@@ -174,7 +174,7 @@ public class userhandle
                         logger.debug("Name = "+item.getName());
                         logger.debug("ContentType = "+item.getContentType());
                         logger.debug("Size = "+item.getSize());
-                        logger.debug("DestinationDir = "+ToolsProperties.documentRoot + ToolsProperties.stagingArea);
+                        logger.debug("DestinationDir = "+ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
                         }
                     }
                 }

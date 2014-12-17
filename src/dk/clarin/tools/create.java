@@ -456,7 +456,7 @@ public class create extends HttpServlet
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot + ToolsProperties.stagingArea);
+        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory())
             {
             try
@@ -465,12 +465,12 @@ public class create extends HttpServlet
                 }
             catch(Exception e)
                 {
-                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot + ToolsProperties.stagingArea + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
+                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
                 }
             }
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + ToolsProperties.stagingArea + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
         // Ready the Document builder
         try 
@@ -1184,7 +1184,7 @@ også inkluderes som en parameter i url'en
                                   + ".Name,"            + workflow.quote("text")
                                   + ".ContentType,"     + workflow.quote("text/plain")
                                   + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot + ToolsProperties.stagingArea/*DESTINATION_DIR_PATH*/)
+                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
                                   + ".LocalFileName,"   + workflow.quote(LocalFileName)
                                   + ")";
                         }
@@ -1309,7 +1309,7 @@ også inkluderes som en parameter i url'en
                                   + ".Name,"            + workflow.quote("text")
                                   + ".ContentType,"     + workflow.quote("text/plain")
                                   + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot + ToolsProperties.stagingArea/*DESTINATION_DIR_PATH*/)
+                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
                                   + ".LocalFileName,"   + workflow.quote(LocalFileName)
                                   + ")";
                         }
@@ -1343,7 +1343,7 @@ også inkluderes som en parameter i url'en
                               + ".Name,"            + workflow.quote(item.getName())
                               + ".ContentType,"     + workflow.quote(item.getContentType()) + (hasNoPDFfonts ? " true" : "")
                               + ".Size,"            + Long.toString(item.getSize())
-                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot + ToolsProperties.stagingArea/*DESTINATION_DIR_PATH*/)
+                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
                               + ".LocalFileName,"   + workflow.quote(LocalFileName)
                               + ")";
                     }

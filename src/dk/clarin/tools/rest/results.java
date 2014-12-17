@@ -135,7 +135,7 @@ public class results extends HttpServlet
                     job = request.getParameterValues(parmName)[0];
                     String filelist = BracMat.Eval("doneAllJob$(" + job + ")");
                     logger.debug("filelist:" + filelist);
-    		        String localFilePath = ToolsProperties.documentRoot + ToolsProperties.stagingArea;
+    		        String localFilePath = ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/;
                     String toolsdataURL = BracMat.Eval("toolsdataURL$");
                     String body = "<h1>Resultater</h1>";
                     String Body = null;

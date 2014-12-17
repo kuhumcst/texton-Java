@@ -162,7 +162,9 @@ toolsProg=
  *
  * Called from workflow.java
  */"
-      (toolsdata=.str$(!documentRoot !stagingArea !arg))
+      ( toolsdata
+      = .str$(!documentRoot (|!stagingArea) !arg)
+      )
       "
 /**
  * Return the full URL to Tool's staging area.
@@ -203,43 +205,45 @@ toolsProg=
       )
       ( readTable
       =   tabs tab Tables v folder
-        .     !arg:
-            & where:?tabs
-            & (   !where
-                :   ?
-                    ( ?Tables
-                    .   ?folder
-                      &   whl
-                        ' ( !Tables
-                          :   ( %@?tab
-                              & readTable$(!folder.!tab)
-                              & !tab+!tabs:?tabs
-                              )
-                              ?Tables
-                          )
-                      & ~
-                    )
-                    ?
-              |   lst$(!tabs,path$!AAA,NEW)
-                & "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
-              )
-          |   !arg:(?folder.?file)
-            & ( get$(path$(!folder !file))
-              | get$(path$(!folder !file ".table"))
-              )
-            & !!file
-          |   !where:? (? !arg ?.?folder) ?
-            & ( get$(path$(!folder !arg))
-              | get$(path$(!folder !arg ".table"))
-              )
-            & !!arg
-          |   @(!arg:alltables ?)
-            & get$(path$!arg)
-            & saveTable$
-            & readTable$
-          |   !arg:(AAA|where)
-            & get$(path$!arg)
-          | str$("Cannot read " !arg)
+        .   log$(readTable !arg)
+          & (   !arg:
+              & where:?tabs
+              & (   !where
+                  :   ?
+                      ( ?Tables
+                      .   ?folder
+                        &   whl
+                          ' ( !Tables
+                            :   ( %@?tab
+                                & readTable$(!folder.!tab)
+                                & !tab+!tabs:?tabs
+                                )
+                                ?Tables
+                            )
+                        & ~
+                      )
+                      ?
+                |   lst$(!tabs,path$!AAA,NEW)
+                  & "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
+                )
+            |   !arg:(?folder.?file)
+              & ( get$(path$(!folder !file))
+                | get$(path$(!folder !file ".table"))
+                )
+              & !!file
+            |   !where:? (? !arg ?.?folder) ?
+              & ( get$(path$(!folder !arg))
+                | get$(path$(!folder !arg ".table"))
+                )
+              & !!arg
+            |   @(!arg:alltables ?)
+              & get$(path$!arg)
+              & saveTable$
+              & readTable$
+            |   !arg:(AAA|where)
+              & get$(path$!arg)
+            | str$("Cannot read " !arg)
+            )
       )
       ( saveTable
       =   tabs tab saved

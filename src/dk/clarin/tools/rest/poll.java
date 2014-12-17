@@ -63,10 +63,10 @@ public class poll extends HttpServlet
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot + ToolsProperties.stagingArea);
+        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + ToolsProperties.stagingArea + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea */+ "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
         }
 
