@@ -97,8 +97,16 @@
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
-    <!-- Set the appropriate environment -->
-    <target name="env" depends="is-prod, is-dev, is-tomcat, is-tomcatD"/>
+  <target name="is-tomcatU" if="tomcatU">
+    <echo message="This is warning message." />
+    <copy overwrite="true" file="properties_local_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
+    <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
+    <copy overwrite="true" file="\${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+    <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
+  </target>
+
+  <!-- Set the appropriate environment -->
+    <target name="env" depends="is-prod, is-dev, is-tomcat, is-tomcatD, is-tomcatU"/>
 
     <!--Compile the module, clean first  -->
     <target name="compile" depends="clean, resolve, env" description="Compiles the whole bundle">
