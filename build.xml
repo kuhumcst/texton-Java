@@ -7,7 +7,7 @@
       Author: Bart Jongejan
 
   -->
-    <property environment="envi"/>
+    <property environment="env"/>
     <!-- Define Ivy stuff -->
     <property name="ivy.install.version" value="2.0.0" />
     <property name="ivy.jar.dir" value="${basedir}/lib" />
@@ -86,7 +86,7 @@
         <echo message="This is warning message." />
         <copy overwrite="true" file="properties_local.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="${envi.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+        <copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
@@ -94,23 +94,24 @@
         <echo message="This is warning message." />
         <copy overwrite="true" file="properties_local-D.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="${envi.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+        <copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
   <target name="is-tomcatU" if="tomcatU">
     <echo message="This is warning message." />
+    <echo message="${env.CATALINA_HOME}" />
     <copy overwrite="true" file="properties_local_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
     <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-    <copy overwrite="true" file="${envi.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+    <copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
     <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
   </target>
 
   <!-- Set the appropriate environment -->
-    <target name="env" depends="is-prod, is-dev, is-tomcat, is-tomcatD, is-tomcatU"/>
+    <target name="envir" depends="is-prod, is-dev, is-tomcat, is-tomcatD, is-tomcatU"/>
 
     <!--Compile the module, clean first  -->
-    <target name="compile" depends="clean, resolve, env" description="Compiles the whole bundle">
+    <target name="compile" depends="clean, resolve, envir" description="Compiles the whole bundle">
         <mkdir dir="${class.dir}"/>
         <javac srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath" encoding="utf-8" debuglevel="lines,vars,source" debug="true" >
             <!-- compilerarg value="-Xlint:unchecked"/  -->
@@ -128,7 +129,7 @@
     </target>
 
     <!-- Pack as war file -->
-    <target name="war" depends="env, jar" description="Pack to servlet war">
+    <target name="war" depends="envir, jar" description="Pack to servlet war">
         <mkdir dir="${war.dir}"/>
         <war destfile="${war.dir}/${ant.project.name}.war" webxml="web.xml">
             <fileset dir="${web.dir}"/>
