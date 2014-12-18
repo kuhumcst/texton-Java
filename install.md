@@ -11,32 +11,35 @@ Logging
 You have to configure Tomcat to use slf4j and logback. How to do this is explained at http://adfinmunich.blogspot.de/2012/03/how-to-configure-tomcat-to-use-slf4j.html:
 1. Download tomcat-juli.jar and tomcat-juli-adapters.jar that are available as an "extras" component for Tomcat. See Additional Components documentation for details.
 2. Put the following jars into $CATALINA_HOME/lib.
-    > log4j-over-slf4j-1.6.4.jar
-    > logback-classic-1.0.0.jar
-    > logback-core-1.0.0.jar
-    > slf4j-api-1.6.4.jar
-    > tomcat-juli-adapters.jar
+
+        log4j-over-slf4j-1.6.4.jar
+        logback-classic-1.0.0.jar
+        logback-core-1.0.0.jar
+        slf4j-api-1.6.4.jar
+        tomcat-juli-adapters.jar
+
 3. Replace $CATALINA_HOME/bin/tomcat-juli.jar with tomcat-juli.jar from "extras"
 4. Delete $CATALINA_BASE/conf/logging.properties to prevent java.util.logging generating zero length log files.
 5. Add logback.xml into $CATALINA_HOME/lib.
-Example:
 
-    <configuration>
-     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-       <!-- encoders are assigned the type
-            ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-       <encoder>
-       <!--
-         <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-       -->
-         <pattern>%d{HH:mm:ss.SSS} %-5level %logger{50} - %msg%n</pattern>
-       </encoder>
-     </appender>
+    Example:
+
+        <configuration>
+         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+           <!-- encoders are assigned the type
+                ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+           <encoder>
+           <!--
+             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+           -->
+             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{50} - %msg%n</pattern>
+           </encoder>
+         </appender>
      
-     <root level="INFO">
-       <appender-ref ref="STDOUT" />
-     </root>
-    </configuration>
+         <root level="INFO">
+           <appender-ref ref="STDOUT" />
+         </root>
+        </configuration>
 
 Sending mail
 ------------
@@ -52,53 +55,53 @@ How?
 6. If you use Windows, install Visual Studio. E.g. a community edition. Linux users can use the GNU C/C++ compiler.
 7. You can either download the module from SVN or from GitHub. The latter option offers a somewhat smaller package, without files that are very clarin.dk specific.
 
-   svn checkout http://devtools.clarin.dk/svn/clarin/trunk/dkclarin-services/tools 
+    svn checkout http://devtools.clarin.dk/svn/clarin/trunk/dkclarin-services/tools 
    
-   For GitHub, follow these steps:
+    For GitHub, follow these steps:
 
-    git clone https://github.com/kuhumcst/DK-ClarinTools.git
-    cd DK-ClarinTools/
-    git clone https://github.com/BartJongejan/Bracmat.git
+        git clone https://github.com/kuhumcst/DK-ClarinTools.git
+        cd DK-ClarinTools/
+        git clone https://github.com/BartJongejan/Bracmat.git
 
 8. If you plan to let the tools webservice use the 'work' folder (a folder in the DK-ClarinTools) as work folder, then make sure that Tomcat has read and write persmissions in 'work' and its sub-folders.
 9. Compile and link the bracmat JNI (Java Native Interface). Linux users are adviced to follow the steps in compileAndTestJNI.sh. The easiest way for Windows users is to run makeJNI.bat. You may have to edit this script to correct the path to vcvarsall.bat. If you don't want the tools' log file to become /var/log/clarin/tools.log, you must define an environment variable TOOLSLOG with a value that is the full path (including the file name) of the log file. If instead of using the batch file you want to use the Visual Studio IDE, you will build the dll and the jar component of the JNI in separate steps.
 
-   Build bracmat.dll: you need to add these source files to the DLL project: bracmatdll.cpp bracmatso.c dk_cst_bracmat.c json.c xml.c. The file bracmat.c is included by bracmatso.c after a number of #DEFINEs that turn off 'dangerous' functionality, such as the ability to run system commands or to open a file and not close it. Make sure to define BRACMATDLL_EXPORTS in the C/C++ Preprocessor settings. The name of the library should be bracmat.dll. Linux users are advised to follow the steps in compileAndTestJNI.txt.
+    Build bracmat.dll: you need to add these source files to the DLL project: bracmatdll.cpp bracmatso.c dk_cst_bracmat.c json.c xml.c. The file bracmat.c is included by bracmatso.c after a number of #DEFINEs that turn off 'dangerous' functionality, such as the ability to run system commands or to open a file and not close it. Make sure to define BRACMATDLL_EXPORTS in the C/C++ Preprocessor settings. The name of the library should be bracmat.dll. Linux users are advised to follow the steps in compileAndTestJNI.txt.
    
-   Build bracmat.jar. In Windows, you can use the batchfile compileme.bat in the tools/bracmat/java directory. If the path TOOLSLOG is invalid, the batch file will probably fail. The batch file creates a JNI and then runs a simple test to see that bracmat expressions can be evaluated from a java file.
+    Build bracmat.jar. In Windows, you can use the batchfile compileme.bat in the tools/bracmat/java directory. If the path TOOLSLOG is invalid, the batch file will probably fail. The batch file creates a JNI and then runs a simple test to see that bracmat expressions can be evaluated from a java file.
    
-   Put the shared bracmat library (bracmat.dll in Windows) in Tomcat's bin directory. This is the last step in makeJNI.bat, but requires that you run this script as administrator. In Linux, you can put libbracmatso in /usr/lib. Again, you need to have administrator rights.
+    Put the shared bracmat library (bracmat.dll in Windows) in Tomcat's bin directory. This is the last step in makeJNI.bat, but requires that you run this script as administrator. In Linux, you can put libbracmatso in /usr/lib. Again, you need to have administrator rights.
    
 10. Edit the file properties_local.xml. Look at whether all paths suit you.
 11. Create the tools module. This module consists of a number of java webservices. Almost each of them links to the bracmat JNI. You can run one of the batch files (Windows users), such as compileTomcat.bat. These batch files automate everything in the following steps. 
 
-   In ivy.xml, comment out the line 
+    In ivy.xml, comment out the line 
    
     <dependency org="javax.servlet" name="servlet-api" rev="2.4"/>
     
-   Also in ivy.xml, change the version of two jar files to make them consistent with the actions described under "Logging" above.
+    Also in ivy.xml, change the version of two jar files to make them consistent with the actions described under "Logging" above.
    
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
-    <!--dependency org="org.slf4j" name="slf4j-api" rev="1.5.11"/-->
-    <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4"/>
-    <!--dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.11"/-->
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
+        <!--dependency org="org.slf4j" name="slf4j-api" rev="1.5.11"/-->
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4"/>
+        <!--dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.11"/-->
 
-   Copy servlet-api.jar from tomcat's lib folder to the tool project's lib folder.
+    Copy servlet-api.jar from tomcat's lib folder to the tool project's lib folder.
    
-   Delete servlet-api-2.4.jar from the tool project's lib folder
+    Delete servlet-api-2.4.jar from the tool project's lib folder
    
-   To create the module, run
+    To create the module, run
    
-    ant -Divy=true -Dlocal=true war
+        ant -Divy=true -Dlocal=true war
     
 12. Deploy the new war file.
 13. Follow the link http://localhost/tools
 14. If all goes well, you see a page called CLARIN-DK tools (provisory UI, idea testing). This is an unofficial interface to the tools module. As some tables are either in English or in Danish, you first have to set the language.
 
-   Go to the 'Set language' form some way down the window. Choose Danish or English and press the 'set language' button. Go back to the screen were you came from with the browser's 'back' button.
+    Go to the 'Set language' form some way down the window. Choose Danish or English and press the 'set language' button. Go back to the screen were you came from with the browser's 'back' button.
    
-   Go to the 'Evaluate program code' form near the bottom of the window. Now we need to create working copies of metadata for tools. These metadata can be read from file alltables.bra. In the text area, write the following text and press the 'Bracmat' button.
+    Go to the 'Evaluate program code' form near the bottom of the window. Now we need to create working copies of metadata for tools. These metadata can be read from file alltables.bra. In the text area, write the following text and press the 'Bracmat' button.
 
-    readTable$"alltables.bra"
+        readTable$"alltables.bra"
 
 15. Now you can try to create a workflow for a file that you upload or for a text that you write. You do this in one of the two forms close to the top of the window. ('Apply workflow to uploaded file(s)' and 'Apply workflow to typed-in text only.')
