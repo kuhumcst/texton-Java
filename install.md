@@ -55,7 +55,7 @@ How?
 6. If you use Windows, install Visual Studio. E.g. a community edition. Linux users can use the GNU C/C++ compiler.
 7. You can either download the module from SVN or from GitHub. The latter option offers a somewhat smaller package, without files that are very clarin.dk specific.
 
-    svn checkout http://devtools.clarin.dk/svn/clarin/trunk/dkclarin-services/tools 
+        svn checkout http://devtools.clarin.dk/svn/clarin/trunk/dkclarin-services/tools 
    
     For GitHub, follow these steps:
 
@@ -77,7 +77,7 @@ How?
 
     In ivy.xml, comment out the line 
    
-    <dependency org="javax.servlet" name="servlet-api" rev="2.4"/>
+        <dependency org="javax.servlet" name="servlet-api" rev="2.4"/>
     
     Also in ivy.xml, change the version of two jar files to make them consistent with the actions described under "Logging" above.
    
