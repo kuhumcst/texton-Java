@@ -74,7 +74,7 @@ public class poll extends HttpServlet
         throws ServletException, IOException 
         {
         PrintWriter out = response.getWriter();
-        logger.info("Calling tools/poll");
+//        logger.info("Calling tools/poll");
         response.setStatus(200);
         if(!BracMat.loaded())
             {
@@ -85,19 +85,22 @@ public class poll extends HttpServlet
         /*Test:*/
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        logger.debug("show parms");
         String job = null;
-        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
+        for (Enumeration<String> e = parmNames ;  job == null && e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
-            logger.debug("parmName:"+parmName);
             String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
+            for(int j = 0;j < vals.length && job == null;++j)
                 {
-                logger.debug("val:"+vals[j]);
                 if(parmName.equals("job"))
                     {
                     job = vals[j];
+                    if(job == null || job.equals("null"))
+                        {
+                        response.setStatus(418);
+                        out.println("poll: no job number found");
+                        return;
+                        }
                     }
                 }
             }
@@ -115,7 +118,7 @@ public class poll extends HttpServlet
             response.setContentType("text/html; charset=UTF-8");
 
             String svar = BracMat.Eval("poll$("+workflow.quote(job) + ")");
-            logger.info("svar: " + svar);
+            logger.info("poll$("+workflow.quote(job) + ") svar: " + svar);
             out.println(svar);            
             }
         }

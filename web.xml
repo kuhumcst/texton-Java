@@ -104,7 +104,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>poll</servlet-name>
-        <url-pattern>/poll/*</url-pattern>
+        <url-pattern>/mypoll/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
