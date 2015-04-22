@@ -211,7 +211,8 @@ public class create extends HttpServlet
         String methodString = ToolsProperties.repoServiceUrl + id;
         logger.debug("methodString:{}",methodString);
         org.apache.commons.httpclient.methods.GetMethod method = new org.apache.commons.httpclient.methods.GetMethod(methodString);
-        method.setFollowRedirects(false); // We don't want WAYF involved here
+        //method.setFollowRedirects(false); // We don't want WAYF involved here
+        method.setFollowRedirects(true); // 20150331
 
         // simuler du er en bruger med en handle, ved at sætte en cookie
 

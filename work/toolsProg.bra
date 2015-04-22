@@ -3890,7 +3890,9 @@ toolsProg=
                                 & (       checkParms
                                         $ ( !urlparms
                                           . !featinoutSpec
-                                          . !!specificationTable
+                                          .   !!specificationTable
+                                            |   readTable$!specificationTable
+                                              & !!specificationTable
                                           )
                                       : ?!featinoutSpec
                                     & NEWSPEC
@@ -7575,9 +7577,21 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                              : ?R
                            )
                          )
-                    |   ( application/msword
-                        | application/octet-stream
-                        )
+                    |   application/msword
+                      & @( get$(str$(!DestinationDir !LocalFileName),STR)
+                         : (   ? rtf [<10 ?
+                             & (facet.txt) (format.rtf):?R
+                           |   ? xml [<10 ?
+                             & (facet.txt) (format.xml):?R
+                           |   PK ?
+                             &   (facet.txt) (format.docx)
+                               : ?R
+                           |   ? [<9
+                             & (facet.txt) (format.doc):?R
+                           | ?&(facet.txt):?R
+                           )
+                         )
+                    |   application/octet-stream
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : (   ? rtf [<10 ?
                              & (facet.txt) (format.rtf):?R
@@ -7586,6 +7600,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                            | ?&(facet.txt):?R
                            )
                          )
+                    |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      & (facet.txt) (format.docx):?R
                     |   text/html
                       & (facet.txt) (format.html):?R
                     |   text/rtf
@@ -7859,6 +7875,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                               ?
                                                           )
                                                         + ?
+                                                    & readTable$!Types
                                                     &   makeOptionList
                                                       $ ( !!Types
                                                         . !spec
@@ -8027,6 +8044,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                               ?
                                                           )
                                                         + ?
+                                                    & readTable$!Types
                                                     &   makeOptionList
                                                       $ ( !!Types
                                                         . !spec
@@ -9161,7 +9179,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , voidfunc i tooladm features basistextStyles facets
           , fileFormats flatFileTypes imageStyles linguae
           , presentations sndStyles tagSets textStyles
-          , annotationStyles
+          , annotationStyles getFeatValues
           , tokenisationStyles toolid output TUPTUO reverselist
         .     !arg
             : ( (?arg.?toolid)
@@ -9324,6 +9342,13 @@ catch (SystemExit $e)
                       )
                     + ?
                 & !table
+            )
+          & ( getFeatValues
+            =   featname value fval fvalAlt
+              .   !arg:(?featname.?value)
+                &   !(getFeatTable$!featname)
+                  : ? (%?fval ? @?fvalAlt.!value) ?
+                & !fval (!fvalAlt:|" (" !fvalAlt ")")
             )
           & ( getFeatSpecTable
             =   table val
@@ -9736,10 +9761,7 @@ try {
                                   |   " with "
                                       low$(getFeatName$!featname)
                                       " "
-                                      (   !(getFeatTable$!featname)
-                                        : ? (?fval.!value) ?
-                                      & !fval
-                                      )
+                                      getFeatValues$(!featname.!value)
                                   )
                                 )
                                 " */\n"
@@ -9767,10 +9789,7 @@ try {
                                 |   "with "
                                     low$(getFeatName$!featname)
                                     " '"
-                                    (   !(getFeatTable$!featname)
-                                      : ? (?fval.!value) ?
-                                    & !fval
-                                    )
+                                    getFeatValues$(!featname.!value)
                                     "' "
                                 )
                                 "not found ("
@@ -9837,10 +9856,7 @@ try {
                                   | output
                                   )
                                   " is "
-                                  (   !(getFeatTable$!data)
-                                    : ? (?fval.!value) ?
-                                  & !fval
-                                  )
+                                  getFeatValues$(!data.!value)
                                 )
                                 " if true */
 "
@@ -9926,10 +9942,7 @@ try {
                                 "/* Style of "
                                 low$(getFeatName$!featname)
                                 " "
-                                (   !(getFeatTable$!featname)
-                                  : ? (?fval.!data) ?
-                                & !fval
-                                )
+                                getFeatValues$(!featname.!data)
                                 " in "
                                 ( !IO:I&input
                                 | output
