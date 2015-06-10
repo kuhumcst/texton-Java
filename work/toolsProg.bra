@@ -157,6 +157,8 @@ toolsProg=
       (path=.str$(!toolshome !arg))
       "
 /**
+ * toolsdata
+ *
  * Return the full file system path to Tool's staging area.
  * The input can be a file name: this name is appended to the returned value.
  *
@@ -167,6 +169,8 @@ toolsProg=
       )
       "
 /**
+ * toolsdataURL
+ *
  * Return the full URL to Tool's staging area.
  * The input can be a file name: this name is appended to the returned value.
  *
@@ -298,6 +302,8 @@ toolsProg=
       )
       "
 /**
+ * clean
+ * 
  * Free all variables that shouldn't exist.
  * Such variables are normally undeclared 'local' variables.
  * (In proper coding, all such variables should be declared).
@@ -310,17 +316,20 @@ toolsProg=
           & :?sgn
           &   whl
             ' ( !c:%?w ?c
-              & (     arg
+              & (     MLencoding
+                      arg
                       c
                       cat
                       cos
                       fct
                       flt
                       jsn
+                      nestML
                       out
                       sgn
                       sin
                       tay
+                      toML
                       w
                       Functions
                       !Functions
@@ -341,33 +350,6 @@ toolsProg=
           &   whl
             ' @(!arg:?arg (" "|\n|\t))
           & !arg
-      )
-      ( nest
-      =   a L B s e x
-        .   :?L
-          & whl'(!arg:%?a ?arg&!a !L:?L)
-          & !L:?arg
-          & :?L:?B:?s
-          &   whl
-            ' ( !arg:%?a ?arg
-              & (   !a:(.?e.)
-                  & (!L.) !B:?B
-                  & :?L
-                  & !e !s:?s
-                |     ( !a:(?e.?,?)&!a
-                      |   !a:(?e.?x)
-                        & (   !s:!e ?s
-                            &   (!e.!x,!L)
-                                (!B:(%?L.) ?B&)
-                          | !a
-                          )
-                      | !a
-                      )
-                      !L
-                  : ?L
-                )
-              )
-          & !L
       )
       ( encoding
       =   enc tst meta head h m
@@ -416,164 +398,17 @@ toolsProg=
             | 
             )
       )
-      ( convert
-      =   xml O enc
-        .   !arg:?xml
-          & :?O
-          & chr$127:?big
-          & ( add
-            =   a
-              . whl'(!arg:%?a ?arg&!a !O:?O)
-            )
-          &     
-              ' ( a c n
-                .     @(!arg:?a (>%@($big) ?:?arg))
-                    & ( @( !arg
-                         : (%?c&utf$!c:?n) ?arg
-                         )
-                      | @( !arg
-                         : (%?c&asc$!c:?n) ?arg
-                         )
-                      )
-                    & !a "&#" !n ";" ASC$!arg
-                  | !arg
-                )
-            : (=?ASC)
-          &     
-              ' ( a c n
-                .     @(!arg:?a (>%@($big) ?:?arg))
-                    & (   @( !arg
-                           : (%?c&utf$!c:?n) ?arg
-                           )
-                        & (   !n:>255
-                            & !a "&#" !n ";" ISO$!arg
-                          | !a chr$!n ISO$!arg
-                          )
-                      | !a !arg
-                      )
-                  | !arg
-                )
-            : (=?ISO)
-          &     
-              ' ( a c n
-                .     @(!arg:?a (>%@($big) ?:?arg))
-                    & (   @( !arg
-                           : (%?c&utf$!c:?n) ?
-                           )
-                        & !a !arg
-                      |   @( !arg
-                           : (%?c&asc$!c:?n) ?arg
-                           )
-                        & !a chu$!n UTF$!arg
-                      )
-                  | !arg
-                )
-            : (=?UTF)
-          &   (its.encoding)$!arg
-            : ( ~<>utf-8&UTF:?FUN
-              | ~<>iso-8859-1&ISO:?FUN
-              | ?&ASC:?FUN
-              )
-          & chr$127:?DEL
-          & '($FUN)$!a:(=?AA)
-          & '($FUN)$!arg:(=?ARG)
-          &     
-              ' ( a b
-                .     @(!arg:?a "&" ?arg)
-                    & $AA "&amp;" "&"$!arg
-                  | $ARG
-                )
-            : (=?"&")
-          &     
-              ' ( a b
-                .     @(!arg:?a ()$DEL ?arg)
-                    &   "&"$!a
-                        (@(!arg:%?b ?arg)&!b)
-                        ESC$!arg
-                  | "&"$!arg
-                )
-            : (=?ESC)
-          &     
-              ' ( a
-                .     @(!arg:?a "<" ?arg)
-                    & ESC$!a "&lt;" lt$!arg
-                  | ESC$!arg
-                )
-            : (=?lt)
-          & ( gt
-            =   a
-              .     @(!arg:?a ">" ?arg)
-                  & lt$!a "&gt;" gt$!arg
-                | lt$!arg
-            )
-          & ( \"
-            =   a
-              .     @(!arg:?a \" ?arg)
-                  & gt$!a "&quot;" \"$!arg
-                | gt$!arg
-            )
-          & ( "'"
-            =   a
-              .     @(!arg:?a "'" ?arg)
-                  & \"$!a "&apos;" "'"$!arg
-                | \"$!arg
-            )
-          & ( atts
-            =   a v
-              .     !arg:(?a.?v) ?arg
-                  & " " gt$!a "=\"" "'"$!v \" atts$!arg
-                | 
-            )
-          & ( write
-            =   xml car A B C att
-              .   !arg:?xml
-                &   whl
-                  ' ( !xml:%?car ?xml
-                    & (   !car:(?A.?B)
-                        & (   !B:(?att,?C)
-                            & (   !C:
-                                & add$("<" !A atts$!att " />")
-                              |   add$("<" !A atts$!att ">")
-                                & (     !A
-                                      : (~<>script|~<>style)
-                                    & add$!C
-                                  | write$!C
-                                  )
-                                & add$("</" !A ">")
-                              )
-                          |   !A
-                            : (   
-                                & !B:(?B.)
-                                & add$("</" gt$!B ">")
-                              | "!"&add$("<!" !FUN$!B ">")
-                              |   "!--"
-                                & add$("<!--" !FUN$!B "-->")
-                              | "?"&add$("<?" !FUN$!B "?>")
-                              |   "![CDATA["
-                                & add$("<![CDATA[" !FUN$!B "]]>")
-                              |   "!DOCTYPE"
-                                & add$("<!DOCTYPE" !FUN$!B ">")
-                              | ?&add$("<" !A atts$!B ">")
-                              )
-                          )
-                      | add$(gt$!car)
-                      )
-                    )
-            )
-          & write$!xml
-          &   str
-            $ ( ( 
-                =   a L
-                  .   :?L
-                    &   whl
-                      ' (!arg:%?a ?arg&!a !L:?L)
-                    & !L
-                )
-              $ !O
-              )
+      ( hasTree
+      =   2a 3a 1a 5a
+        .     !arg:(?2a.?5a:(=?3a))
+            & !2a:!3a
+          |   !2a
+            : ? (?.?,?1a&hasTree$(!1a.!5a)) ?
       )
       "
 /**
+ * getComponentRef
+ *
  * Parse a resource's metadata.
  * (This function is very clarin.dk specific.)
  * Finds the item id, the value of the visibility property and the value of
@@ -585,7 +420,7 @@ toolsProg=
  * No reference is made to any of the tables, so this function could just as
  * well have been implemented in Java+XPath. Here, we use Bracmat pattern 
  * matching in the XML-data.
- * Called from create.java when input is obtained from the clarin.d
+ * Called from create.java when input is obtained from the clarin.dk
  * repository.
  */"
       ( getComponentRef
@@ -594,7 +429,7 @@ toolsProg=
                Returns something like dkclarin:111010/components/component/dkclarin:111009/content
                To get the thing itself, prepend https://infra.clarin.dk/ir/item/ to the ref."
             & put$(!arg,path$"item.xml",NEW)
-            &   nest$(get$(!arg,X,ML,TRM,MEM))
+            &   nestML$(get$(!arg,X,ML,TRM,MEM))
               :   ?
                   ( "escidocItem:item"
                   .   ?
@@ -610,36 +445,39 @@ toolsProg=
                                       & rev$!ref:?ref
                                     )
                                     ?
-                                ,   ?
-                                    ( "escidocComponents:properties"
-                                    .   ?
-                                      ,     ?
-                                            ( "prop:mime-type"
-                                            .   ?
-                                              ,   ( text/xml
-                                                  | application/xml
-                                                  | text/plain
-                                                  )
-                                                : ?mimetype
+                                ,     ?
+                                      ( "escidocComponents:properties"
+                                      .   ?
+                                        ,     ?
+                                              ( "prop:mime-type"
+                                              .   ?
+                                                ,   ( text/xml
+                                                    | application/xml
+                                                    | text/plain
+                                                    )
+                                                  : ?mimetype
+                                              )
+                                              ?
+                                          : (   ?
+                                                ( "prop:visibility"
+                                                . ,?visibility
+                                                )
+                                                ?
+                                            |   ?
+                                              & :?visibility
+                                            )
+                                      )
+                                      ?
+                                  :   ?
+                                      ( "escidocComponents:content"
+                                      .     ?
+                                            ( "xlink:href"
+                                            . @(?:"/ir/item/" ?id)
                                             )
                                             ?
-                                        : (   ?
-                                              ("prop:visibility".,?visibility)
-                                              ?
-                                          |   ?
-                                            & :?visibility
-                                          )
-                                    )
-                                    ?
-                                    ( "escidocComponents:content"
-                                    .     ?
-                                          ( "xlink:href"
-                                          . @(?:"/ir/item/" ?id)
-                                          )
-                                          ?
-                                      , 
-                                    )
-                                    ?
+                                        , 
+                                      )
+                                      ?
                               )
                               ?
                         )
@@ -651,44 +489,98 @@ toolsProg=
       )
       ( theResourceItself
       =   stagingName meta feats visibility
-        .   @(!arg:? "xlink:href=\"/ir/item/" ?arg \" ?)
+        .     !arg
+            :   ?
+                (?.? ("xlink:href".@(?:"/ir/item/" ?arg)) ?)
+                ?
           & readTable$Uploads
           &   !Uploads
             :   ?
                 (?.!arg.?.?stagingName.?meta.?feats.?visibility)
                 ?
-          & get$(toolsdata$!stagingName,STR)
+          & nestML$(get$(toolsdata$!stagingName,X,ML,TRM))
       )
       ( xmlidstyle
-      =   
-        .     @(theResourceItself$!arg:? "<w xml:id=\"" ?arg \" ?)
-            & ( @(!arg:i # "." #)&cst
-              | @(!arg:? # "-" #)&dsl
-              | @(!arg:? #)&nor
+      =   xmlid
+        .       hasTree
+              $ ( theResourceItself$!arg
+                . ( 
+                  = ? (w.? ("xml:id".?xmlid) ?,?) ?
+                  )
+                )
+            & ( @(!xmlid:i # "." #)&cst
+              | @(!xmlid:? # "-" #)&dsl
+              | @(!xmlid:? #)&nor
               | 1
               )
           | raw
       )
       ( getFacet
-      =   spec facets type2facet
+      =     spec facets type2facet type subType
+          , teiHeader teiHeaderAtts
         .   "<application ident=\"CstClarinDaTokeniser\" subtype=\"tokenizer\" type=\"automatic_annotation\" version=\"1.0\" xml:id=\"CstClarinDaTokeniser\">
                       <desc xml:lang=\"da\">Samler de atomare cbf-segmenter i tokens</desc>
         </application>"
           & NEWSPEC
           & 1:?spec
-          & (   @(!arg:? "<teiHeader xmlns=" ? "type=\"text\">" ?)
+          &   !arg
+            :   ?
+                ( "escidocItem:item"
+                .   ?
+                  ,   ?
+                      ( "escidocMetadataRecords:md-records"
+                      .   ?
+                        ,   ?
+                            ( "escidocMetadataRecords:md-record"
+                            .   ?
+                              ,   ?
+                                  (teiHeader.?teiHeaderAtts,?teiHeader)
+                                  ?
+                            )
+                            ?
+                      )
+                      ?
+                )
+                ?
+          & (     !teiHeaderAtts
+                : ? (xmlns.?) ?
+                : ? (type.text) ?
               & text:?arg
-            |   @(!arg:? "<teiHeader xmlns=" ? "type=\"dictionary\">" ?)
+            |     !teiHeaderAtts
+                : ? (xmlns.?) ?
+                : ? (type.dictionary) ?
               & dictionary:?arg
-            |   @(!arg:? "<teiHeader xmlns=" ? "type=\"annotation\"" ?)
-              & @(!arg:? "<application" ? "subtype=\"" ?arg \" ?)
-            |   @(!arg:? "<teiHeader xmlns=" ?)
+            |     !teiHeaderAtts
+                : ? (xmlns.?) ?
+                : ? (type.annotation) ?
+              &   !teiHeader
+                :   ?
+                    ( encodingDesc
+                    .   
+                      ,   ?
+                          ( appInfo
+                          .   
+                            ,   ?
+                                ( application
+                                . ? (subtype.?arg) ?,?
+                                )
+                                ?
+                          )
+                          ?
+                    )
+                    ?
+            |   !teiHeaderAtts:? (xmlns.?) ?
               & "Example: <teiHeader xmlns=\"http://www.tei-c.org/ns/1.0\"> 
                 Assume its TEIP5, just text"
               & text:?arg
             |   "HACK if appInfo is empty, read content"
-              & @(theResourceItself$!arg:? "type=\"" ?arg \" ?)
-              &   !arg
+              &   hasTree
+                $ ( theResourceItself$!arg
+                  . ( 
+                    = ? (?.? (type.?type) ?,?) ?
+                    )
+                  )
+              &   !type
                 : ( Sseg&s-splitter:?arg
                   | Pseg&p-splitter:?arg
                   )
@@ -719,72 +611,85 @@ toolsProg=
             & !arg
           | 
       )
-      ( getLanguage
-      =   
-        .   @(!arg:? "<language>" ?arg "</language>" ?)
-          & !arg
+      (getLanguage=.)
+      ( getOlacLanguage
+      =   language
+        .   !arg:? (language.?,?language) ?
+          & !language
       )
       ( getOlacTitle
-      =   
-        .   @(!arg:? "<olac>" ?arg "</olac>" ?)
-          & @(!arg:? "<title" ? ">" ?arg "</title>" ?)
-          & str$!arg
+      =   olacTitle
+        .   !arg:? (title.?,?olacTitle) ?
+          & str$!olacTitle
       )
       ( getBaseItem
-      =   base
+      =   base href
         .   "xlink:href=\"/ir/item/dkclarin:152004\""
-          & @(!arg:? "xml:base=\"" ?base \" ?)
-          & (@(!arg:? isAnnotationOf ?arg "/>" ?)|)
-          & @(!arg:? "xlink:href=\"" ?arg \" ?)
-          & str$(!base !arg)
+          &   !arg
+            :   ?
+                ( "escidocItem:item"
+                .   ? ("xml:base".?base) ?
+                  ,   ?
+                      ( "relations:relations"
+                      .   ?
+                        ,   ?
+                            ( "relations:relation"
+                            .       ?
+                                    (predicate.@(?:? "#isAnnotationOf"))
+                                    ?
+                                : ? ("xlink:href".?arg) ?
+                              , 
+                            )
+                            ?
+                      )
+                      ?
+                )
+                ?
+          & str$(!base !href)
       )
       ( getFormat
+      =   fmt
+        .     hasTree
+            $ ( !arg
+              . ( 
+                =   ?
+                    ( publicationStmt
+                    .   ?
+                      ,   ?
+                          (idno.? (type.format) ?,?fmt)
+                          ?
+                    )
+                    ?
+                )
+              )
+          & (@(!fmt:? "/" ?fmt)|)
+          & ( !fmt:"rdf+xml"&rdf
+            | !fmt:csv&csv
+            )
+      )
+      ( getOlacFormat
       =   fmt conforms2 format spec
         .   "<format>application/xml</format>"
-          & (   @(!arg:? "<format>" ?fmt "</format>" ?)
-              & (@(!fmt:? "/" ?fmt)|)
-              & !fmt:xml
-              & (   @( !arg
-                     :   ?
-                         "<olac>"
-                         ?
-                         "<conformsTo>"
-                         ?conforms2
-                         "</conformsTo>"
-                         ?
-                         "</olac>"
-                         ?
-                     )
-                  & 1:?spec
-                  & NEWSPEC
-                  &   !conforms2
-                    : (   TEIP5DKCLARIN
-                        & txtbasis:?format
-                        & xmlidstyle$!arg:?spec
-                      |   (TEIP5PLAIN|TEIP5)
-                        & teip5:?format
-                      |   "TEIP5DKCLARIN_ANNOTATION"
-                        & txtann:?format
-                      )
-                  & NEWSPEC
-                  & !format^!spec
-                | xm
-                )
-            |   @( !arg
-                 :   ?
-                     "<publicationStmt>"
-                     ?
-                     "<idno type=\"format\">"
-                     ?fmt
-                     "</idno>"
-                     ?
-                     "</publicationStmt>"
-                     ?
-                 )
-              & (@(!fmt:? "/" ?fmt)|)
-              & ( !fmt:"application/rdf+xml"&rdf
-                | !fmt:csv&csv
-                )
+          &   !arg
+            :   ?
+                (format.?,@(?:? "/" ?fmt)|?fmt)
+                ?
+          & !fmt:xml
+          & (   !arg:? (conformsTo.?,?conforms2) ?
+              & 1:?spec
+              & NEWSPEC
+              &   !conforms2
+                : (   TEIP5DKCLARIN
+                    & txtbasis:?format
+                    & xmlidstyle$!arg:?spec
+                  |   (TEIP5PLAIN|TEIP5)
+                    & teip5:?format
+                  |   "TEIP5DKCLARIN_ANNOTATION"
+                    & txtann:?format
+                  )
+              & NEWSPEC
+              & !format^!spec
+            | xm
             )
       )
       "
@@ -820,6 +725,8 @@ toolsProg=
       )
       "
 /**
+ * setFeatures
+ *
  * Parse metadata (XML) to find information about the resource's
  *      facet       (like tok)
  *      format      (like txtann for TEIP5DKCLARIN_ANNOTATION)
@@ -851,20 +758,53 @@ toolsProg=
  *  Called from create.java
  */"
       ( setFeatures
-      =     K F A Z nr item frmt
+      =     K F A Z nr item frmt xml
           , date Path file meta feats visibility
         .   !arg:(?arg.?item.?date)
-          &     (facet.getFacet$!arg|)
-                (format.getFormat$!arg:%@?frmt^?|)
+          & nestML$(get$(!arg,X,ML,TRM,MEM)):?xml
+          &   !xml
+            :   ?
+                ( "escidocItem:item"
+                .   ?
+                  ,   ?
+                      ( "escidocMetadataRecords:md-records"
+                      .   ?
+                        ,   ?
+                            ( "escidocMetadataRecords:md-record"
+                            .   ?
+                              ,   ?
+                                  ( CMD
+                                  .   ?
+                                    ,   ?
+                                        ( Components
+                                        . ,? (olac.,?olac) ?
+                                        )
+                                        ?
+                                  )
+                                  ?
+                            )
+                            ?
+                      )
+                      ?
+                )
+                ?
+          &     (facet.getFacet$!xml|)
+                ( format
+                .     (getOlacFormat$!olac|getFormat$!xml)
+                    : %@?frmt^?
+                  | :?frmt
+                )
                 ( pres
                 .     !frmt:(txtbasis|txtann)
                     & nml
                   | 
                 )
-                (lang.getLanguage$!arg|)
+                ( lang
+                . getOlacLanguage$!olac|getLanguage$!xml
+                )
             : ?K
-          &     (TITLE.getOlacTitle$!arg|)
-                (BASEITEM.getBaseItem$!arg|)
+          &     (TITLE.getOlacTitle$!olac|)
+                (BASEITEM.getBaseItem$!xml|)
                 (DATE.!date)
             : ?meta
           & :?feats
@@ -978,21 +918,18 @@ toolsProg=
       ( heading
       =   n
         .   !arg:(?n.?arg)
-          & str$("<h" !n ">" !arg "</h" !n ">" \r\n)
+          & (str$(h !n).,!arg) \r\n
       )
-      (paragraph=.str$("<p>" !arg "</p>" \r\n))
+      (paragraph=.(p.,!arg) \r\n)
       ( fieldset
       =   legend content
         .   !arg:(?legend.?content)
-          &   str
-            $ ( "<fieldset>"
-                ( !legend:
-                | "<legend>" !legend "</legend>"
-                )
-                !content
-                "</fieldset>"
-                \r\n
+          &   ( fieldset
+              .   
+                ,   (!legend:|(legend.,!legend))
+                    !content
               )
+              \r\n
       )
       ( form
       =   action method
@@ -1008,40 +945,18 @@ toolsProg=
                 )
             | GET:?method
             )
-          &   "<form "
-              ( ~&"20121024 Why wasn't there an enctype?"
-              |   !method:(POST|post)
-                & "enctype=\"multipart/form-data\" accept-charset=\"UTF-8\" "
-              | "20121024 GET no enctype?"&
-              | "enctype=\"application/x-www-form-urlencoded\" "
-              )
-              "method=\""
-              low$!method
-              "\" action=\""
-              !action
-              \"><div>
-              !arg
-              "</div></form>"
-      )
-      ( XMLattval
-      =   ents Z
-        .       ("&".amp)
-                ("'".apos)
-                (\".quot)
-                ("<".lt)
-            : ?ents
-          & ( Z
-            =   a z ents pat rep Ents
-              .   !arg:(?Ents.?arg)
-                & (   !Ents:(?pat.?rep) ?ents
-                    & (   @(!arg:?a !pat ?z)
-                        & Z$(!ents.!a) "&" !rep ";" Z$(!Ents.!z)
-                      | Z$(!ents.!arg)
-                      )
-                  | !arg
+          & ( form
+            .     ( ~&"20121024 Why wasn't there an enctype?"
+                  |   !method:(POST|post)
+                    &   (enctype.multipart/form-data)
+                        (accept-charset.UTF-8)
+                  | "20121024 GET no enctype?"&
+                  | (enctype.application/x-www-form-urlencoded)
                   )
+                  (method.low$!method)
+                  (action.!action)
+              , (div.,!arg)
             )
-          & str$(Z$(!ents.!arg))
       )
       ( makeCheckboxFormField
       =   text parm desc state disabled
@@ -1058,23 +973,17 @@ toolsProg=
                   | ?&:?desc
                   )
               )
-          &   str
-            $ ( "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<input type=\"checkbox\" tabindex=\""
-                (1+!tabind:?tabind)
-                "\" name=\""
-                XMLattval$!parm
-                \"
-                (!state:|" checked=\"" !state \")
-                (!disabled:|" disabled=\"" !disabled \")
-                ( !desc:
-                | " title=\"" XMLattval$!desc \"
-                )
-                " />\r\n"
+          &   (span.,!text)
+              \r\n
+              ( input
+              .   (type.checkbox)
+                  (tabindex.1+!tabind:?tabind)
+                  (name.!parm)
+                  (!state:|(checked.!state))
+                  (!disabled:|(disabled.!disabled))
+                  (!desc:|(title.!desc))
               )
+              \r\n
       )
       ( makeTextFormField
       =   text parm val desc readonly size required
@@ -1095,31 +1004,24 @@ toolsProg=
                   | ?&:?required
                   )
               )
-          &   str
-            $ ( ( !required:
-                | "<span class=\"required\">" !required "</span>"
-                )
-                "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<input tabindex=\""
-                (1+!tabind:?tabind)
-                "\" type=\"text\" name=\""
-                XMLattval$!parm
-                \"
-                ( !val:
-                | " value=\"" trim$(XMLattval$!val) \"
-                )
-                ( !desc:
-                | " title=\"" XMLattval$!desc \"
-                )
-                ( !readonly:(|no)
-                | " disabled=\"disabled\" "
-                )
-                (!size:|" size=\"" !size "\" ")
-                "/>\r\n"
+          &   ( !required:
+              | (span.(class.required),!required)
               )
+              (span.,!text)
+              \r\n
+              ( input
+              .     (tabindex.1+!tabind:?tabind)
+                    (type.text)
+                    (name.!parm)
+                    (!val:|(value.trim$!val))
+                    (!desc:|(title.!desc))
+                    ( !readonly:(|no)
+                    | (disabled.disabled)
+                    )
+                    (!size:|(size.!size))
+                , 
+              )
+              \r\n
       )
       ( makeTextAreaFormField
       =   text parm val required
@@ -1131,41 +1033,33 @@ toolsProg=
                   | ?&:?required
                   )
               )
-          &   str
-            $ ( ( !required:
-                | "<span class=\"required\">" !required "</span>"
-                )
-                "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<textarea tabindex=\""
-                (1+!tabind:?tabind)
-                "\" style=\"font-size: 9pt;\" name=\""
-                XMLattval$!parm
-                \"
-                " rows=\"2\" cols=\"60\">"
-                trim$(XMLattval$!val)
-                "</textarea>"
-                \r\n
+          &   ( !required:
+              | (span.(class.required),!required)
               )
+              (span.!text)
+              \r\n
+              ( textarea
+              .     (tabindex.1+!tabind:?tabind)
+                    (style."font-size: 9pt;")
+                    (name.!parm)
+                    (rows.2)
+                    (cols.60)
+                , trim$!val
+              )
+              \r\n
       )
       ( makeFileFormField
       =   text parm val
         .   !arg:(?text.?parm.?val)
-          &   str
-            $ ( "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<input type=\"file\" name=\""
-                XMLattval$!parm
-                "\" value=\"\""
-                ( !val:
-                | " accept=\"" trim$(XMLattval$!val) \"
-                )
-                "/>\r\n"
+          &   (span.,!text)
+              \r\n
+              ( input
+              .   (type.file)
+                  (name.!parm)
+                  (value.)
+                  (!val:|(accept.trim$!val))
               )
+              \r\n
       )
       ( enumerateTools
       =   tool o i inp I,a b
@@ -1828,14 +1722,13 @@ toolsProg=
                 .   ( circle
                     =   
                       .   !arg:~#&!arg
-                        |   str
-                          $ ( "<strong>"
-                              ( !arg:<128&":"
-                              | 
-                              )
-                              chu$!arg
-                              "</strong>"
-                            )
+                        | ( strong
+                          .   
+                            ,   ( !arg:<128&":"
+                                | 
+                                )
+                                chu$!arg
+                          )
                     )
                   & ( inoutdesc
                     =     description featname featvals table
@@ -2016,15 +1909,19 @@ toolsProg=
                           (     !goodness
                               : >!currGoodness
                               : ?currGoodness
-                            & "<hr />"
+                            & (hr.,)
                           | 
                           )
                           !nth
-                          "<input type=\"radio\" name=\"nth\" value=\""
-                          !nr
-                          "\" />"
+                          ( input
+                          .     (type.radio)
+                                (name.nth)
+                                (value.!nr)
+                            , 
+                          )
                           translateToHumanLanguage$(!abbr.!struct)
-                          "<br /><br />"
+                          (br.,)
+                          (br.,)
                       : ?buttons
                     & 1+!nth:?nth
                     )
@@ -2033,7 +1930,7 @@ toolsProg=
                       , (?abbr.?struct)
                       )
                     + ?
-                &   translateToHumanLanguage$(!abbr.!struct) "<br />"
+                &   translateToHumanLanguage$(!abbr.!struct) (br.,)
                   : ?buttons
               )
             & log$(translateToHumanLanguage jsn$(clk$+!StartClk))
@@ -2057,26 +1954,20 @@ toolsProg=
                   | ?&:?required
                   )
               )
-          &   str
-            $ ( ( !required:
-                | "<span class=\"required\">" !required "</span>"
-                )
-                "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<input tabindex=\""
-                (1+!tabind:?tabind)
-                "\" type=\"password\" name=\""
-                XMLattval$!parm
-                \"
-                " value=\"\""
-                ( !desc:
-                | " title=\"" XMLattval$!desc \"
-                )
-                (!size:|" size=\"" !size "\" ")
-                "/>\r\n"
+          &   ( !required:
+              | (span.(class.required),!required)
               )
+              (span.,!text)
+              \r\n
+              ( input
+              .   (tabindex.1+!tabind:?tabind)
+                  (type.password)
+                  (name.!parm)
+                  (value.)
+                  (!desc:|(title.!desc))
+                  (!size:|(size.!size))
+              )
+              \r\n
       )
       ( makeSelectFormField
       =   text parm options desc required
@@ -2091,33 +1982,30 @@ toolsProg=
                   | ?&:?required
                   )
               )
-          &   str
-            $ ( ( !required:
-                | "<span class=\"required\">" !required "</span>"
-                )
-                "<span>"
-                !text
-                "</span>"
-                \r\n
-                "<select tabindex=\""
-                (1+!tabind:?tabind)
-                "\" name=\""
-                XMLattval$!parm
-                (!desc:|"\" title=\"" XMLattval$!desc)
-                \">\r\n
-                !options
-                "</select>"
-                \r\n
+          &   ( !required:
+              | (span.(class.required),!required)
               )
+              (span.,!text)
+              \r\n
+              ( select
+              .     (tabindex.1+!tabind:?tabind)
+                    (name.!parm)
+                    (!desc:|(title.!desc))
+                , \r\n !options
+              )
+              \r\n
       )
       ( submit
       =   button
         .   !arg:?button
-          &   "<input type=\"submit\" tabindex=\""
-              (1+!tabind:?tabind)
-              "\" name=\"bsubmit\" value=\""
-              XMLattval$!button
-              "\" />\r\n"
+          &   ( input
+              .     (type.submit)
+                    (tabindex.1+!tabind:?tabind)
+                    (name.bsubmit)
+                    (value.!button)
+                , 
+              )
+              \r\n
       )
       ( ConstructUnionOfInputOutputParmsFromToolProp
       =     f fs i o name short tools pairs
@@ -2170,180 +2058,296 @@ toolsProg=
           & (!i.!o)
       )
       ( style
-      =   "<style type=\"text/css\">"
-          \r\n
-          "legend {display: inline-block; padding: 0.2em 0.5em; border:1px solid green; color:green; font-size:90%; text-align:left; }"
-          \r\n
-          ".required {color:red; font-size:90%;}"
-          "</style>"
+      =   ( style
+          .   (type.text/css)
+            ,   \r\n
+                "legend {display: inline-block; padding: 0.2em 0.5em; border:1px solid green; color:green; font-size:90%; text-align:left; }"
+                \r\n
+                ".required {color:red; font-size:90%;}"
+          )
           \r\n
       )
       (HTMLbodyContainer=XHTMLbodyContainer)
       (HTMLbodyContainer=HTML5bodyContainer)
       ( HTML5bodyContainer
       =   
-        .   str
-          $ ( "<!DOCTYPE html>"
-              \r\n
-              "<html>"
-              \r\n
-              "<head>\r\n"
-              "<meta charset=\"UTF-8\">"
-              ( 
-              | "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
-              )
-              \r\n
-              "<link rel=\"stylesheet\" type=\"text/css\" href=\"/clarindk/css/clarin.css\" />"
-              !style
-              "<link rel=\"stylesheet\" type=\"text/css\" href=\"/clarindk/css/colorbox.css\" media=\"screen\" />"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/jquery.min.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/jquery-plugins/jquery.validate.min.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/jquery-plugins/jquery-ui-custom.min.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/menuToggle.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/basket.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/fulltext.js\"></script>"
-              \r\n
-              "<script type=\"text/javascript\" src=\"/clarindk/js/jquery-plugins/jquery.colorbox.min.js\"></script>"
-              \r\n
-              "        <!--[if lt IE 9]>\r
-            <script src=\"/clarindk/js/html5.js\" type=\"text/javascript\"></script>\r
-            <link rel=\"stylesheet\" type=\"text/css\" href=\"/clarindk/css/clarin-ie.css\" /> \r
-        <![endif]-->\r
-\r
-\r
-        <!--[if IE]>\r
-            <style type=\"text/css\">\r
-                .clearfix {\r
-                    zoom: 1;     /* triggers hasLayout */\r
-                    display: block;     /* resets display for IE/Win */\r
-                    }  \r
-            /* Only IE can see inside the conditional comment\r
-            and read this CSS rule. Don't ever use a normal HTML\r
-            comment inside the CC or it will close prematurely.\r
-            Kilde: http://www.positioniseverything.net/easyclearing.html\r
-            */\r
-            </style>\r
-        <![endif]-->\r
-        <script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/clarin-deposit.js\"></script>\r
-        <script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/clarin-find.js\"></script>\r
-        <script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/clarin-text-img.scroll.js\"></script> \r
-        <script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/clarin-tabs.js\"></script>\r
-        <script type=\"text/javascript\" src=\"/clarindk/js/clarin-scripts/colorbox-license.js\"></script>\r
-"
-              "<title>DK-Clarin: Tools</title>"
-              \r\n
-              "</head>\r\n"
-              "<body>\r\n"
-              "<section class=\"header clearfix\">"
-              \r\n
-              "<header>\r\n"
-              "<h1>\r\n"
-              "<a href=\"/clarindk/forside.jsp\" rel=\"\">Clarin.dk</a>"
-              \r\n
-              "</h1>\r\n"
-              "<!--LOGIN NAV-->\r
-\r
-                <nav>\r
-                    <!-- FindQuick -->\r
-                    <fieldset>\r
-                        <form name=\"myform\" method=\"get\" action=\"/clarindk/item.jsp\">\r
-                            <p>\r
-                                <input type=\"text\" placeholder=\"Ressource ID\" name=\"id\"/>\r
-                                <input type=\"submit\" value=\"Ok\" />\r
-                            </p>\r
-                        </form>\r
-\r
-                    </fieldset>\r
-                    <!-- FindQuick end -->\r
-                </nav>\r
-            </header>\r
-        </section>\r
-\r
-\r
-<!-- USER NAV \r
-**********************************************************************************************************-->\r
-        <section class=\"userNavigation clearfix\">\r
-            <nav class=\"clearfix\">\r
-                <a href=\"/clarindk/find.jsp\">Find</a>\r
-                \r
-                <a href=\"/clarindk/tools.jsp\">"
-              ( da:!LaNg&Værktøjskasse
-              | Tools
-              )
-              "</a>\r
-\r
-                <a href=\"/clarindk/deponer.jsp\">"
-              ( da:!LaNg&Deponer
-              | Deposit
-              )
-              "</a>\r
-                <a href=\"/clarindk/basketList.jsp\" rel=\"\" class=\"basket basketEmpty\">"
-              ( da:!LaNg&"Vis kurv "
-              | "Show basket "
-              )
-              "<strong id=\"basketSize\">0</strong></a>\r
-            </nav>\r
-        </section>"
-              \r\n
-              "<section class=\"content\">"
-              \r\n
-              !arg
-              "</section>"
-              \r\n
-              "</body></html>"
-              \r\n
+        .   ("!DOCTYPE"." html")
+            \r\n
+            ( html
+            .   
+              ,   \r\n
+                  ( head
+                  .   
+                    ,   \r\n
+                        (meta.charset.UTF-8)
+                        \r\n
+                        ( link
+                        .     (rel.stylesheet)
+                              (type.text/css)
+                              (href."/clarindk/css/clarin.css")
+                          , 
+                        )
+                        ( style
+                        .   (type.text/css)
+                          , " legend {display: inline-block; padding: 0.2em 0.5em; border:1px solid green; color:green; font-size:90%; text-align:left; } .required {color:red; font-size:90%;}"
+                        )
+                        \r\n
+                        ( link
+                        .     (rel.stylesheet)
+                              (type.text/css)
+                              (href."/clarindk/css/colorbox.css")
+                              (media.screen)
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/jquery.min.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/jquery-plugins/jquery.validate.min.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/jquery-plugins/jquery-ui-custom.min.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/clarin-scripts/menuToggle.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/clarin-scripts/basket.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/clarin-scripts/fulltext.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/jquery-plugins/jquery.colorbox.min.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        ( "!--"
+                        . "[if lt IE 9]> <script src=\"/clarindk/js/html5.js\" type=\"text/javascript\"></script> <link rel=\"stylesheet\" type=\"text/css\" href=\"/clarindk/css/clarin-ie.css\" /> <![endif]"
+                        )
+                        \r\n
+                        ( "!--"
+                        . "[if IE]> <style type=\"text/css\"> .clearfix { zoom: 1; /* triggers hasLayout */ display: block; /* resets display for IE/Win */ } /* Only IE can see inside the conditional comment and read this CSS rule. Don't ever use a normal HTML comment inside the CC or it will close prematurely. Kilde: http://www.positioniseverything.net/easyclearing.html */ </style> <![endif]"
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/clarin-scripts/clarin-deposit.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/clarin-scripts/clarin-find.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/clarin-scripts/clarin-text-img.scroll.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              (src."/clarindk/js/clarin-scripts/clarin-tabs.js")
+                          , 
+                        )
+                        \r\n
+                        ( script
+                        .     (type.text/javascript)
+                              ( src
+                              . "/clarindk/js/clarin-scripts/colorbox-license.js"
+                              )
+                          , 
+                        )
+                        \r\n
+                        (title.,"DK-Clarin: Tools")
+                        \r\n
+                  )
+                  \r\n
+                  ( body
+                  .   
+                    ,   \r\n
+                        ( section
+                        .   (class."header clearfix")
+                          ,   \r\n
+                              ( header
+                              .   
+                                ,   \r\n
+                                    ( h1
+                                    .   
+                                      ,   \r\n
+                                          ( a
+                                          .     (href."/clarindk/forside.jsp")
+                                                (rel.)
+                                            , "Clarin.dk"
+                                          )
+                                          \r\n
+                                    )
+                                    \r\n
+                                    ("!--"."LOGIN NAV")
+                                    \r\n
+                                    ( nav
+                                    .   
+                                      ,   \r\n
+                                          ("!--"." FindQuick ")
+                                          \r\n
+                                          ( fieldset
+                                          .   
+                                            ,   \r\n
+                                                ( form
+                                                .     (name.myform)
+                                                      (method.get)
+                                                      ( action
+                                                      . "/clarindk/item.jsp"
+                                                      )
+                                                  ,   \r\n
+                                                      ( p
+                                                      .   
+                                                        ,   \r\n
+                                                            ( input
+                                                            .     (type.text)
+                                                                  ( placeholder
+                                                                  . "Ressource ID"
+                                                                  )
+                                                                  (name.id)
+                                                              , 
+                                                            )
+                                                            \r\n
+                                                            ( input
+                                                            .     ( type
+                                                                  . submit
+                                                                  )
+                                                                  (value.Ok)
+                                                              , 
+                                                            )
+                                                            \r\n
+                                                      )
+                                                      \r\n
+                                                )
+                                                \r\n
+                                          )
+                                          \r\n
+                                          ("!--"." FindQuick end ")
+                                          \r\n
+                                    )
+                                    \r\n
+                              )
+                              \r\n
+                        )
+                        \r\n
+                        ( "!--"
+                        . " USER NAV **********************************************************************************************************"
+                        )
+                        \r\n
+                        ( section
+                        .   (class."userNavigation clearfix")
+                          ,   \r\n
+                              ( nav
+                              .   (class.clearfix)
+                                ,   \r\n
+                                    ( a
+                                    .   (href."/clarindk/find.jsp")
+                                      , Find
+                                    )
+                                    \r\n
+                                    ( a
+                                    .   (href."/clarindk/tools.jsp")
+                                      , Tools
+                                    )
+                                    \r\n
+                                    ( a
+                                    .   (href."/clarindk/deponer.jsp")
+                                      , Deposit
+                                    )
+                                    \r\n
+                                    ( a
+                                    .     (href."/clarindk/basketList.jsp")
+                                          (rel.)
+                                          (class."basket basketEmpty")
+                                      ,   "Show basket "
+                                          (strong.(id.basketSize),0)
+                                    )
+                                    \r\n
+                              )
+                              \r\n
+                        )
+                        \r\n
+                        (section.(class.content),!arg)
+                        \r\n
+                  )
             )
+            \r\n
       )
       ( XHTMLbodyContainer
       =   
-        .   str
-          $ ( "<?xml version=\"1.0\"  encoding=\"UTF-8\"?>"
-              \r\n
-              "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-              \r\n
-              "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">"
-              \r\n
-              "<head>\r\n"
-              "<title>DK-Clarin: Tools</title>"
-              \r\n
-              !style
-              "</head>\r\n"
-              "<body>\r\n"
-              !arg
-              "</body></html>"
-              \r\n
+        .   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+            \r\n
+            ( "!DOCTYPE"
+            . " html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\""
             )
+            \r\n
+            ( html
+            .     (xmlns."http://www.w3.org/1999/xhtml")
+                  ("xml:lang".da)
+                  (lang.da)
+              ,   \r\n
+                  ( head
+                  . ,\r\n (title.,"DK-Clarin: Tools") \r\n !style
+                  )
+                  \r\n
+                  (body.,!arg)
+            )
+            \r\n
       )
       ( atts
       =   name value
         .     !arg:(?name,?value) ?arg
-            & " " XMLattval$!name "=\"" XMLattval$!value \" atts$!arg
+            & (!name.!value) atts$!arg
           | 
       )
       ( Table
       =   attributes heading content
         .   !arg:(?attributes.?heading.?content)
-          &   str
-            $ ( "<table"
-                atts$!attributes
-                "><thead>"
-                !heading
-                "</thead>"
-                \r\n
-                <tbody>
-                !content
-                "</tbody></table>"
-                \r\n
+          &   ( table
+              .   atts$!attributes
+                , (thead.,!heading) \r\n (tbody.,!content)
               )
+              \r\n
       )
-      (row=.str$("<tr>" !arg "</tr>" \r\n))
-      (cell=.str$("<td>" !arg "</td>"))
+      (row=.(tr.,!arg) \r\n)
+      (cell=.td.,!arg)
       ( makeOptionList
       =   options pat table abbr full selected prefix
         .     !arg
@@ -2351,36 +2355,42 @@ toolsProg=
               .   (?selected.?prefix)
                 | ?selected&:?prefix
               )
-          &   "<option id=\"b" !tabind "\" value=\"\"></option>" \r\n
+          &     ( option
+                . (id.str$(b !tabind)) (value.),
+                )
+                \r\n
             : ?options
           &   whl
             ' ( !table:(?full.?abbr) ?table
               &     !options
-                    "<option id=\""
-                    ( @( !abbr
-                       : %allowedChar$('$NCNameStartChar) !NCName
-                       )
-                    | X
+                    ( option
+                    .     ( id
+                          .   str
+                            $ ( ( @( !abbr
+                                   :   %allowedChar$('$NCNameStartChar)
+                                       !NCName
+                                   )
+                                | X
+                                )
+                                !tabind
+                              )
+                          )
+                          (value.str$(!prefix !abbr))
+                          (   !selected:!abbr
+                            & (selected.selected)
+                          | 
+                          )
+                      , localized$!full
                     )
-                    !tabind
-                    "\" value=\""
-                    !prefix
-                    XMLattval$!abbr
-                    \"
-                    (   !selected:!abbr
-                      & " selected=\"selected\""
-                    | 
-                    )
-                    ">"
-                    localized$!full
-                    "</option>"
                     \r\n
                 : ?options
               )
-          & str$!options
+          & !options
       )
       "
 /**
+ * uploadJobNr
+ * 
  * Return the string preceding the hyphen in the input.
  *
  * Input: <jobNr>-<jobID>
@@ -2395,6 +2405,8 @@ toolsProg=
       )
       "
 /**
+ * upload
+ *
  * Make a waiting job non-waiting upon receipt of a result from an 
  * asynchronous tool.
  *
@@ -2488,6 +2500,8 @@ toolsProg=
       )
       "
 /**
+ * parseStatusCode
+ *
  * Find the number greater than 100 immediately following the string 
  * 'HTTP-status-code'
  *
@@ -2500,6 +2514,8 @@ toolsProg=
       )
       "
 /**
+ * parsemessage
+ *
  * Find the text following the number greater than 100 immediately following the string 
  * 'HTTP-status-code'
  *
@@ -2620,14 +2636,15 @@ toolsProg=
             ' ( !arg:(?par.?globval) ?arg
               & @(lst$(globval,MEM,LIN):"globval=" ?val ";\n")
               &     !ret
-                    "<input type=\"hidden\" name=\""
-                    !par
-                    "\" value=\""
-                    XMLattval$!val
-                    "\" />"
+                    ( input
+                    .     (type.hidden)
+                          (name.!par)
+                          (value.!val)
+                      , 
+                    )
                 : ?ret
               )
-          & str$!ret
+          & !ret
       )
       ( makeHiddenFields
       =   ret par val
@@ -2635,17 +2652,20 @@ toolsProg=
           &   whl
             ' ( !arg:(?par.?val) ?arg
               &     !ret
-                    "<input type=\"hidden\" name=\""
-                    !par
-                    "\" value=\""
-                    XMLattval$!val
-                    "\" />"
+                    ( input
+                    .     (type.hidden)
+                          (name.!par)
+                          (value.!val)
+                      , 
+                    )
                 : ?ret
               )
-          & str$!ret
+          & !ret
       )
       "
 /**
+ * update
+ *
  * Create an HTML form that allows a user to choose a tool from a pick list.
  * The user must also fill out a password.
  *
@@ -2687,48 +2707,53 @@ toolsProg=
                   & !L (!Title.!ToolID):?L
                   )
                 + 0
-            &   !HTMLbodyContainer
-              $ ( (!msg:|paragraph$!msg)
-                    form
-                  $ ( register
-                    .     paragraph
-                        $ ( makeSelectFormField
-                          $ (     da:!LaNg
-                                & "Vælg et værktøj"
-                              | "Choose a tool"
-                            . name
-                            .   (options.makeOptionList$(!L.!selected))
-                                (required."*")
+            &   toML
+              $ ( !HTMLbodyContainer
+                $ ( (!msg:|paragraph$!msg)
+                      form
+                    $ ( register
+                      .     paragraph
+                          $ ( makeSelectFormField
+                            $ (     da:!LaNg
+                                  & "Vælg et værktøj"
+                                | "Choose a tool"
+                              . name
+                              .   (options.makeOptionList$(!L.!selected))
+                                  (required."*")
+                              )
                             )
-                          )
-                          paragraph
-                        $ ( makePasswordFormField
-                          $ (     da:!LaNg
-                                & "Adgangskode (Hvis du ikke er \"ejer\")"
-                              | "Password (If you are not owner)"
-                            . password
-                            . desc
-                            .     da:!LaNg
-                                & "Brug feltet hvis du ikke er ejer af værktøjet og du har fået adgangskoden fra ejeren. Når du opdaterer værktøjsoplysningerne bliver du automatisk den nye ejer af værktøjet."
-                              | "Use this field if you don't own the tool and the owner has given you the password. When you update the tool info, you become the new owner of the tool."
+                            paragraph
+                          $ ( makePasswordFormField
+                            $ (     da:!LaNg
+                                  & "Adgangskode (Hvis du ikke er \"ejer\")"
+                                | "Password (If you are not owner)"
+                              . password
+                              . desc
+                              .     da:!LaNg
+                                  & "Brug feltet hvis du ikke er ejer af værktøjet og du har fået adgangskoden fra ejeren. Når du opdaterer værktøjsoplysningerne bliver du automatisk den nye ejer af værktøjet."
+                                | "Use this field if you don't own the tool and the owner has given you the password. When you update the tool info, you become the new owner of the tool."
+                              )
                             )
+                          submit$next
+                          ( !passwordAsHandle:(.)&
+                          |   makeHiddenFields
+                            $ (passwordAsHandle.!passwordAsHandle)
                           )
-                        submit$next
-                        ( !passwordAsHandle:(.)&
-                        |   makeHiddenFields
-                          $ (passwordAsHandle.!passwordAsHandle)
-                        )
-                        ( !contactEmail:
-                        | makeHiddenFields$(contactEmail.!contactEmail)
-                        )
-                        ( !handle:
-                        | makeHiddenFields$(handle.!handle)
-                        )
-                    . POST
-                    )
+                          ( !contactEmail:
+                          | makeHiddenFields$(contactEmail.!contactEmail)
+                          )
+                          ( !handle:
+                          | makeHiddenFields$(handle.!handle)
+                          )
+                      . POST
+                      )
+                  )
                 )
           |   str
-            $ (404 !HTMLbodyContainer$(paragraph$(str$"update failed")))
+            $ ( 404
+                  toML
+                $ (!HTMLbodyContainer$(paragraph$(str$"update failed")))
+              )
       )
       ( createMetaDataForDeposition
       =     ToolName ToolVersion FullToolName
@@ -2785,7 +2810,7 @@ toolsProg=
           & :?languages
           &   whl
             ' ( !values:#*%@?val+?values
-              & !languages "<language>" !val "</language>":?languages
+              & !languages (language.,!val):?languages
               )
           & 0:?values
           & (   !toolprop
@@ -2856,93 +2881,135 @@ toolsProg=
                     !val
                 : ?outformats
               )
-          &   str
-            $ ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r
-<CMD xmlns=\"http://www.clarin.eu/cmd/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.clarin.eu/cmd http://infra.clarin.dk/schemas/cmd/DKCLARIN-tool-profile.xsd\" CMDVersion=\"1.1\"> \r
- <Header>\r
-  <MdCreator>DK-CLARIN</MdCreator>\r
-  <MdProfile>\r
-   https://infra.clarin.dk/cmd/dkclarin-tool-profile-instance.xml\r
-  </MdProfile>\r
- </Header>\r
- <Resources>\r
-  <ResourceProxyList/>\r
-  <JournalFileProxyList/>\r
-  <ResourceRelationList/>\r
- </Resources>\r
- <Components>\r
-  <DKCLARIN-tool-profile>\r
-   <olac>\r
-    <conformsTo>DKCLARIN_TOOL</conformsTo>\r
-    <contributor olac-role=\"editor\">n/a</contributor>\r
-    <contributor olac-role=\"sponsor\">n/a</contributor>\r
-    <contributor olac-role=\"depositor\">"
-                !ContentProvider
-                "</contributor>\r
-    <created>2011-03-16</created>\r
-    <creator>"
-                !ToolCreator
-                "</creator>\r
-    <description xml:lang=\"da\">"
-                !ToolDescription
-                "</description>\r
-    <format>application</format>\r
-    <issued>2011-03-16</issued>\r
-    "
-                !languages
-                "\r
-    <publisher>"
-                !ToolPublisher
-                "</publisher>\r
-    <source>n/a</source>\r
-    <subject>n/a</subject>\r
-    <title xml:lang=\"da\">"
-                !FullToolName
-                "</title>\r
-    <type>service</type>\r
-   </olac>\r
-   <DKCLARIN-dkclarin>\r
-    <CPsId>n/a</CPsId>\r
-    <creationDateCertainty>n/a</creationDateCertainty>\r
-    <externalUri>"
-                !ToolExternalURI
-                "</externalUri>\r
-    <fileName>n/a</fileName>\r
-    <infoAbout>"
-                !InfoAbout
-                "</infoAbout>\r
-   </DKCLARIN-dkclarin>\r
-   <DKCLARIN-tool>\r
-    <toolId>"
-                !ToolName
-                "</toolId>\r
-    <version>"
-                !ToolVersion
-                "</version>\r
-    <serviceUrl>"
-                !ToolURL
-                "</serviceUrl>\r
-    <facetsIn>"
-                !infacets
-                "</facetsIn>\r
-    <facetsOut>"
-                !outfacets
-                "</facetsOut>\r
-    <dataformatsIn>"
-                !informats
-                "</dataformatsIn>\r
-    <dataformatsOut>"
-                !outformats
-                "</dataformatsOut>\r
-   </DKCLARIN-tool>\r
-  </DKCLARIN-tool-profile>\r
- </Components>\r
-</CMD>\r
-"
+          &   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+              \r\n
+              ( CMD
+              .     (xmlns."http://www.clarin.eu/cmd/")
+                    ("xmlns:xsi"."http://www.w3.org/2001/XMLSchema-instance")
+                    ( "xsi:schemaLocation"
+                    . "http://www.clarin.eu/cmd http://infra.clarin.dk/schemas/cmd/DKCLARIN-tool-profile.xsd"
+                    )
+                    (CMDVersion."1.1")
+                ,   \r\n
+                    ( Header
+                    .   
+                      ,   \r\n
+                          (MdCreator.,DK-CLARIN)
+                          \r\n
+                          ( MdProfile
+                          .   
+                            , " https://infra.clarin.dk/cmd/dkclarin-tool-profile-instance.xml "
+                          )
+                          \r\n
+                    )
+                    \r\n
+                    ( Resources
+                    .   
+                      ,   \r\n
+                          (ResourceProxyList.,)
+                          \r\n
+                          (JournalFileProxyList.,)
+                          \r\n
+                          (ResourceRelationList.,)
+                          \r\n
+                    )
+                    \r\n
+                    ( Components
+                    .   
+                      ,   \r\n
+                          ( DKCLARIN-tool-profile
+                          .   
+                            ,   \r\n
+                                ( olac
+                                .   
+                                  ,   \r\n
+                                      (conformsTo.,"DKCLARIN_TOOL")
+                                      \r\n
+                                      ( contributor
+                                      . (olac-role.editor),n/a
+                                      )
+                                      \r\n
+                                      ( contributor
+                                      . (olac-role.sponsor),n/a
+                                      )
+                                      \r\n
+                                      ( contributor
+                                      .   (olac-role.depositor)
+                                        , !ContentProvider
+                                      )
+                                      \r\n
+                                      (created.,2011-03-16)
+                                      \r\n
+                                      (creator.,!ToolCreator)
+                                      \r\n
+                                      ( description
+                                      .   ("xml:lang".da)
+                                        , !ToolDescription
+                                      )
+                                      \r\n
+                                      (format.,application)
+                                      \r\n
+                                      (issued.,2011-03-16)
+                                      " !languages "
+                                      (publisher.,!ToolPublisher)
+                                      \r\n
+                                      (source.,n/a)
+                                      \r\n
+                                      (subject.,n/a)
+                                      \r\n
+                                      ( title
+                                      . ("xml:lang".da),!FullToolName
+                                      )
+                                      \r\n
+                                      (type.,service)
+                                      \r\n
+                                )
+                                \r\n
+                                ( DKCLARIN-dkclarin
+                                .   
+                                  ,   \r\n
+                                      (CPsId.,n/a)
+                                      \r\n
+                                      (creationDateCertainty.,n/a)
+                                      \r\n
+                                      (externalUri.,!ToolExternalURI)
+                                      \r\n
+                                      (fileName.,n/a)
+                                      \r\n
+                                      (infoAbout.,!InfoAbout)
+                                      \r\n
+                                )
+                                \r\n
+                                ( DKCLARIN-tool
+                                .   
+                                  ,   \r\n
+                                      (toolId.,!ToolName)
+                                      \r\n
+                                      (version.,!ToolVersion)
+                                      \r\n
+                                      (serviceUrl.,!ToolURL)
+                                      \r\n
+                                      (facetsIn.,!infacets)
+                                      \r\n
+                                      (facetsOut.,!outfacets)
+                                      \r\n
+                                      (dataformatsIn.,!informats)
+                                      \r\n
+                                      (dataformatsOut.,!outformats)
+                                      \r\n
+                                )
+                                \r\n
+                          )
+                          \r\n
+                    )
+                    \r\n
               )
+              \r\n
       )
       "
 /**
+ * deposit
+ *
  * First step in deposition of a tool. The function generates a simple form
  * where the user chooses a tool from a pick list, optionally adds a file to
  * be stored as data (an installation file, for example), and chooses under
@@ -2977,60 +3044,77 @@ toolsProg=
                 & (handle.!handle) !hiddenData:?hiddenData
               | :?hiddenData
               )
-            &   !HTMLbodyContainer
-              $ ( form
-                $ ( depositXML
-                  .     heading
-                      $ ( 1
-                        .     da:!LaNg
-                            & "Deponering af allerede registreret værktøj"
-                          | "Deposit a tool that is registered already"
-                        )
-                        paragraph
-                      $ (   da:!LaNg
-                          & "Her kan du deponere et værktøj i repositoriet og derved offentligøre oplysninger om værktøjet og eventuelt også en installationsfil. Hvis du ikke kan se dit værktøj i listen, skal du først udfylde <a href=\"/tools/register\">registreringsformularen</a>."
-                        | "Here you can deposit a tool in the repository and thereby publish information about the tool. If you have an installation file for the tool, you can deposit that as well. If you don't see the file in the list, you first have to <a href=\"/tools/register\">register the tool.</a>"
-                        )
-                        paragraph
-                      $ ( makeSelectFormField
-                        $ (     da:!LaNg
-                              & "Vælg et værktøj"
-                            | "Choose a tool"
-                          . name
-                          .   (options.makeOptionList$(!L.))
-                              (required."*")
+            &   toML
+              $ ( !HTMLbodyContainer
+                $ ( form
+                  $ ( depositXML
+                    .     heading
+                        $ ( 1
+                          .     da:!LaNg
+                              & "Deponering af allerede registreret værktøj"
+                            | "Deposit a tool that is registered already"
                           )
-                        )
-                        paragraph
-                      $ ( makeFileFormField
-                        $ (     da:!LaNg
-                              & "Upload en installationsfil (.zip, .tgz, .tar.gz)"
-                            | "Upload an installation file  (.zip, .tgz, .tar.gz)"
-                          . file
-                          .   
-                            | "application/zip, application/x-compressed, application/x-gzip"
+                          paragraph
+                        $ (   da:!LaNg
+                            &   "Her kan du deponere et værktøj i repositoriet og derved offentligøre oplysninger om værktøjet og eventuelt også en installationsfil. Hvis du ikke kan se dit værktøj i listen, skal du først udfylde "
+                                ( a
+                                .   (href."/tools/register")
+                                  , registreringsformularen
+                                )
+                                "."
+                          |   "Here you can deposit a tool in the repository and thereby publish information about the tool. If you have an installation file for the tool, you can deposit that as well. If you don't see the file in the list, you first have to "
+                              ( a
+                              .   (href."/tools/register")
+                                , register the tool
+                              )
+                              "."
                           )
-                        )
-                        paragraph
-                      $ ( makeSelectFormField
-                        $ (     da:!LaNg
-                              & "Licens hvorunder værktøjet bliver distribueret"
-                            | "Licence (distribution)"
-                          . licence
-                          . options
-                          . makeOptionList$(!licences.public)
+                          paragraph
+                        $ ( makeSelectFormField
+                          $ (     da:!LaNg
+                                & "Vælg et værktøj"
+                              | "Choose a tool"
+                            . name
+                            .   (options.makeOptionList$(!L.))
+                                (required."*")
+                            )
                           )
-                        )
-                      makeHiddenFields$!hiddenData
-                      submit$next
-                  . POST
+                          paragraph
+                        $ ( makeFileFormField
+                          $ (     da:!LaNg
+                                & "Upload en installationsfil (.zip, .tgz, .tar.gz)"
+                              | "Upload an installation file  (.zip, .tgz, .tar.gz)"
+                            . file
+                            .   
+                              | "application/zip, application/x-compressed, application/x-gzip"
+                            )
+                          )
+                          paragraph
+                        $ ( makeSelectFormField
+                          $ (     da:!LaNg
+                                & "Licens hvorunder værktøjet bliver distribueret"
+                              | "Licence (distribution)"
+                            . licence
+                            . options
+                            . makeOptionList$(!licences.public)
+                            )
+                          )
+                        makeHiddenFields$!hiddenData
+                        submit$next
+                    . POST
+                    )
                   )
                 )
           |   str
-            $ (404 !HTMLbodyContainer$(paragraph$(str$"deposit failed")))
+            $ ( 404
+                  toML
+                $ (!HTMLbodyContainer$(paragraph$(str$"deposit failed")))
+              )
       )
       "
 /**
+ * depositXML
+ *
  * Create complete and valid metadata for deposition. 
  * All information is collected from the tables tooladm.table and toolprop.table in jboss/server/default/data/tools
  * Called from depositXML.java, which is activated from a dynamically created form (see deposit function), and not explicitly from a jsp-page.
@@ -3050,9 +3134,12 @@ toolsProg=
                   : ? (Title.?Title) ?
                   )
                 + ?
-            & createMetaDataForDeposition$!name
+            & toML$(createMetaDataForDeposition$!name)
           |   str
-            $ (404 !HTMLbodyContainer$(paragraph$(str$"deposit failed")))
+            $ ( 404
+                  toML
+                $ (!HTMLbodyContainer$(paragraph$(str$"deposit failed")))
+              )
       )
       ( denumerizeSum
       =   A M Z
@@ -3064,6 +3151,8 @@ toolsProg=
       )
       "
 /**
+  * register
+  *
   * Register a tool - integrated or not.
   * Produces an initially empty html form that dynamically adapts to user's
   * need to register multiple values for the same feature.
@@ -4190,16 +4279,13 @@ toolsProg=
                 & log$argOK
                 & ( mayNotBeEmpty
                   =   
-                    .   str
-                      $ ( "'"
-                          !arg
-                          "' "
-                          (   da:!LaNg
-                            & "må ikke være tom"
-                          | "may not be empty"
-                          )
-                          "<br />"
+                    .   "'"
+                        !arg
+                        "' "
+                        ( da:!LaNg&"må ikke være tom"
+                        | "may not be empty"
                         )
+                        (br.,)
                   )
                 & log$tests
                 & ( (   !ToolName:
@@ -4222,10 +4308,11 @@ toolsProg=
                     & mayNotBeEmpty$Title
                   |   !ToolURL:
                     & !ToolInactive:
-                    & (   da:!LaNg
-                        & "'Service URL' må ikke være tom hvis værktøjet er et aktivt integreret værktøj. Hvis værktøjet ikke skal være integreret i infrastrukturen, skal du markere feltet 'Inactive'.<br />"
-                      | "'Service URL' may not be empty if the tool is integrated and active. If the tool must be integrated in the infrastructure, but not just now, you must check the field 'Inactive'.<br />"
-                      )
+                    &   (   da:!LaNg
+                          & "'Service URL' må ikke være tom hvis værktøjet er et aktivt integreret værktøj. Hvis værktøjet ikke skal være integreret i infrastrukturen, skal du markere feltet 'Inactive'."
+                        | "'Service URL' may not be empty if the tool is integrated and active. If the tool must be integrated in the infrastructure, but not just now, you must check the field 'Inactive'."
+                        )
+                        (br.,)
                   |     !tooladm
                       :   ?
                         + ( ? (ToolID.!ToolName) ?
@@ -4234,15 +4321,16 @@ toolsProg=
                           )
                         + ?
                     & !Submit:!storeToolButton
-                    &   str
-                      $ (   da:!LaNg
-                          &   "Der findes et integreret værktøj med navn '"
+                    &     str
+                        $ (   da:!LaNg
+                            &   "Der findes et integreret værktøj med navn '"
+                                !ToolName
+                                "' med en anden Service URL end den indtastede. Hvis du er sikker på at det er samme værktøj, kan du ændre Service URL ved først midlertigt at deaktivere værktøjet. (Klik 'Inactive'-feltet, gem, ændr Service URL og klik 'Inactive'-feltet igen, gem.)"
+                          |   "There is already an integrated tool with the name '"
                               !ToolName
-                              "' med en anden Service URL end den indtastede. Hvis du er sikker på at det er samme værktøj, kan du ændre Service URL ved først midlertigt at deaktivere værktøjet. (Klik 'Inactive'-feltet, gem, ændr Service URL og klik 'Inactive'-feltet igen, gem.)<br />"
-                        |   "There is already an integrated tool with the name '"
-                            !ToolName
-                            "' with another Service URL. If you are sure it is the same tool, you can change the Service URL by temporarily deactivating the tool. (Check the 'Inactive'-field, save, change the Service URL, uncheck 'Inactive', and save.)<br />"
-                        )
+                              "' with another Service URL. If you are sure it is the same tool, you can change the Service URL by temporarily deactivating the tool. (Check the 'Inactive'-field, save, change the Service URL, uncheck 'Inactive', and save.)"
+                          )
+                        (br.,)
                   |   !ToolURL:~
                     &   !tooladm
                       :   ?
@@ -4252,23 +4340,24 @@ toolsProg=
                               ?
                           )
                         + ?
-                    &   str
-                      $ (   da:!LaNg
-                          &   "Kan ikke gemme '"
+                    &     str
+                        $ (   da:!LaNg
+                            &   "Kan ikke gemme '"
+                                !ToolName
+                                "' på Service URL \""
+                                !ToolURL
+                                "\" (allerede i brug af værktøjet '"
+                                !otherName
+                                "')."
+                          |   "Cannot save '"
                               !ToolName
-                              "' på Service URL \""
+                              "' on Service URL \""
                               !ToolURL
-                              "\" (allerede i brug af værktøjet '"
+                              "\" (already taken by the tool '"
                               !otherName
-                              "').<br />"
-                        |   "Cannot save '"
-                            !ToolName
-                            "' on Service URL \""
-                            !ToolURL
-                            "\" (already taken by the tool '"
-                            !otherName
-                            "').<br />"
-                        )
+                              "')."
+                          )
+                        (br.,)
                   |   ( Nazn
                       =   #
                           ( 
@@ -4299,22 +4388,24 @@ toolsProg=
                   |   !ToolCreator:
                     & mayNotBeEmpty$Creator
                   |   !InfoAbout:
-                    & (   da:!LaNg
-                        & "'InfoAbout' (værktøjets dokumentation): URL må ikke være tom<br />"
-                      | "'InfoAbout' (tool documentation): URL may not be empty<br />"
-                      )
+                    &   (   da:!LaNg
+                          & "'InfoAbout' (værktøjets dokumentation): URL må ikke være tom"
+                        | "'InfoAbout' (tool documentation): URL may not be empty"
+                        )
+                        (br.,)
                   |   !ToolDescription:
                     & mayNotBeEmpty$Description
                   |   !ToolPostData:
                     & !ToolXMLparms:on
-                    & (   da:!LaNg
-                        &   "XMLparms ("
+                    &   (   da:!LaNg
+                          &   "XMLparms ("
+                              !ToolXMLparms
+                              ") skal være umarkeret hvis 'POST' er umarkeret"
+                        |   "XMLparms ("
                             !ToolXMLparms
-                            ") skal være umarkeret hvis 'POST' er umarkeret<br />"
-                      |   "XMLparms ("
-                          !ToolXMLparms
-                          ") must not be checked if 'POST' is not checked<br />"
-                      )
+                            ") must not be checked if 'POST' is not checked"
+                        )
+                        (br.,)
                   )
             )
           & ( storeTool
@@ -4489,17 +4580,17 @@ toolsProg=
                 : (?ToolName.?password.?contactEmail.?arg)
               & log$(arg2 !arg)
               & staticFields$!arg:?formFields
-              &     "<h1>"
-                    (   !ToolName:
-                      & (   da:!LaNg
-                          & "Registrer et nyt værktøj"
-                        | "Register a new tool"
-                        )
-                    |   da:!LaNg
-                      & "Opdater værktøjsoplysninger"
-                    | "Update tool info"
+              &     ( h1
+                    .   
+                      ,     !ToolName:
+                          & (   da:!LaNg
+                              & "Registrer et nyt værktøj"
+                            | "Register a new tool"
+                            )
+                        |   da:!LaNg
+                          & "Opdater værktøjsoplysninger"
+                        | "Update tool info"
                     )
-                    "</h1>"
                     !formFields
                 : ?formFields
               & "
@@ -4664,40 +4755,36 @@ toolsProg=
                   | "Enter data in all fields"
                   )
                 : ?error
-              &   !HTMLbodyContainer
-                $ ( ( !formFields:
-                    |   form
-                      $ ( register
-                        .   ( !handle:
-                            | makeHiddenFields$(handle.!handle)
-                            )
-                            !formFields
-                            submit$!storeToolButton
-                            ( !nth:<0&
-                            |   submit$!replaceToolButton
-                                makeHiddenFields$(nth.!nth)
-                            )
-                            makeHiddenFields$(password.!password)
-                            (   !passwordAsHandle:(.)
-                              & 
-                            |   makeHiddenFields
-                              $ (passwordAsHandle.!passwordAsHandle)
-                            )
-                            ( !mail2:
-                            | makeHiddenFields$(mail2.!mail2)
-                            )
-                            makeHiddenFields$(contactEmail.!contactEmail)
-                            submit$!deleteToolButton
-                            submit$!UpdateButton
-                        . POST
-                        )
-                    )
-                    "<p>"
-                    !error
-                    "<br /></p><hr />
-"
-                    ( 
-                    | Metadata XMLattval$(put$(!Metadata,MEM))
+              &   toML
+                $ ( !HTMLbodyContainer
+                  $ ( ( !formFields:
+                      |   form
+                        $ ( register
+                          .   ( !handle:
+                              | makeHiddenFields$(handle.!handle)
+                              )
+                              !formFields
+                              submit$!storeToolButton
+                              ( !nth:<0&
+                              |   submit$!replaceToolButton
+                                  makeHiddenFields$(nth.!nth)
+                              )
+                              makeHiddenFields$(password.!password)
+                              (   !passwordAsHandle:(.)
+                                & 
+                              |   makeHiddenFields
+                                $ (passwordAsHandle.!passwordAsHandle)
+                              )
+                              ( !mail2:
+                              | makeHiddenFields$(mail2.!mail2)
+                              )
+                              makeHiddenFields$(contactEmail.!contactEmail)
+                              submit$!deleteToolButton
+                              submit$!UpdateButton
+                          . POST
+                          )
+                      )
+                      (p.,!error (br.,) (hr.,))
                     )
                   )
             |   !arg:? (name.?ToolName) ?
@@ -4708,7 +4795,7 @@ toolsProg=
                     (contactEmail.!contactEmail)
                     (handle.!handle)
                   )
-            |   str
+            |   toML
               $ ( !HTMLbodyContainer
                 $ ( paragraph
                   $ ( str
@@ -4725,6 +4812,8 @@ toolsProg=
       )
       "
 /*
+ * storeUpload
+ *
  * Administrate the storage of a copy of a file from repositorium in a place 
  * where a webservice can fetch it - the staging area of the Tools service.
  *
@@ -4757,7 +4846,7 @@ toolsProg=
  * Input: 
  *      item id (like dkclarin:59004/components/component/dkclarin:59003/content)
  *      date
- *      visibility (optional)
+ *      fk (optional)
  *
  * Affected tables:
  *      Uploads.table
@@ -4795,42 +4884,30 @@ toolsProg=
       ( element
       =   name attr content
         .   !arg:(?name.?attr.?content)
-          &   str
-            $ ( \r\n<
-                XMLattval$!name
-                atts$!attr
-                ">"
-                \r\n
-                !content
-                \r\n
-                "</"
-                XMLattval$!name
-                ">"
-                \r\n
-              )
+          & \r\n (!name.atts$!attr,\r\n !content \r\n) \r\n
       )
       ( Field
       =   name content col
         .   !arg:(?name.?.?content)
-          & (   @( str$!content
-                 : ( ? "<input" ?
-                   | ? "<fieldset" ?
-                   | ? "<span" ?
-                   )
-                 )
+          & (     !content
+                : ( ? (input.?) ?
+                  | ? (fieldset.?) ?
+                  | ? (span.?) ?
+                  )
               & 255+-10*!indent:?col
-              &   "<fieldset style='background-color:rgb("
-                  255+-30*!indent
-                  ","
-                  255+-10*!indent
-                  ","
-                  255
-                  ")'><legend>"
-                  XMLattval$!name
-                  "</legend>"
-                  !content
-                  "</fieldset>"
-            | "<span>\r\n" !content "</span>" \r\n
+              & ( fieldset
+                .   ( style
+                    .   "background-color:rgb("
+                        255+-30*!indent
+                        ","
+                        255+-10*!indent
+                        ","
+                        255
+                        ")"
+                    )
+                  , (legend.,!name) !content
+                )
+            | (span.,\r\n !content) \r\n
             )
       )
       ( select
@@ -4853,9 +4930,11 @@ toolsProg=
             & NEWSPEC
             & " " select$!car " " element$(spec..select$!cdr)
           | !arg:(0|1)&
-          | XMLattval$!arg
+          | !arg
       )
-      (XMLdeclaration="<?xml version=\"1.0\" encoding=\"UTF-8\"?>" \r\n)
+      ( XMLdeclaration
+      = ("?"."xml version=\"1.0\" encoding=\"UTF-8\"") \r\n
+      )
       ( shared
       =   gspc isp ispc ispcs
         .   !arg:(?gspc.?ispcs)
@@ -5565,8 +5644,6 @@ toolsProg=
                                   )
                               | !term+!memoizedSteps:?memoizedSteps
                               )
-                            &   lst
-                              $ (memoizedSteps,path$memoizedSteps,NEW)
                             & (sentence$!source.sentence$!goal.!pipe)
                         )
                       & !arg:(?source.?goalterm.?tools)
@@ -5815,7 +5892,6 @@ toolsProg=
                     )
                 & !L
             )
-          & lst$(memoizedSteps,path$memoizedSteps,NEW)
           & fulfil$(activeTools$!toolprop.!source.!goal.0)
       )
       ( Pipelines
@@ -6384,6 +6460,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * getNextJobID
+ *
  * Given the jobNr of a workflow, return the next job that is not pending 
  * (=waiting for an another job to produce some of its inputs).
  * Argument: jobNr
@@ -6404,6 +6482,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * getJobArg
+ *
  * Consults tables jobs.table and tooladm.table to answer several requests
  * Arguments: jobNr, jobID and one of the following requests:
  *      endpoint        the URL where the integrated tool lives
@@ -6452,13 +6532,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             ' ( !arg:%?X+?arg
                               &     !res
                                     (   !X:(?el.?sub)
-                                      &   "<"
-                                          !el
-                                          ">"
-                                          makeList$!sub
-                                          "</"
-                                          !el
-                                          ">"
+                                      & (!el.,makeList$!sub)
                                     | !X
                                     )
                                 : ?res
@@ -6516,6 +6590,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+  * waitingJob
+  *
   * Make a job 'waiting'.
   * 
   * Input: JobNr and jobID
@@ -6569,97 +6645,176 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             : ?Version
             : ?ToolID
             : ?Description
-          & (   @(!SPANGRP:? "<spanGrp" ? "ana=\"#" ?XMLID \"> ?)
+          & (     !SPANGRP
+                :   ?
+                    (spanGrp.? (ana.@(?:"#" ?XMLID)) ?)
+                    ?
               & :?BODYCONTENT
             | !SPANGRP:?BODYCONTENT&:?SPANGRP
             )
-          &     str
-              $ ( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                  \n
-                  "<TEI xmlns=\"http://www.tei-c.org/ns/1.0\" xmlns:schemaLocation=\"http://www.tei-c.org/ns/1.0 http://dkclarin.dk/schemas/tei/TEIDKCLARIN_ANNO/xml.xsd\">"
-                  \n
-                  "<teiHeader type=\"annotation\"><fileDesc><titleStmt><title>"
-                  XMLattval$!OLACTITLE
-                  ","
-                  (   readTable$tooladm
-                    &   !tooladm
-                      :   ?
-                        + ( ? (ServiceURL.!TOOLURIS) ?
-                          : ? (ToolID.?ToolID) ?
-                          : ? (Title.?Title) ?
-                          :   ?
-                              (ContentProvider.?ToolContentProvider)
-                              ?
-                          : ? (Version.?Version) ?
-                          : ? (Description.?Description) ?
-                          )
-                        + ?
-                    & XMLattval$!Title
-                  | !toolURL
-                  )
-                  "</title><sponsor>DK-CLARIN</sponsor><respStmt><resp>a_annotation</resp><name>cst.ku.dk<note type=\"method\">"
-                  XMLattval$!ToolID
-                  "</note><date when=\""
-                  XMLattval$!DATE
-                  \"/></name></respStmt></titleStmt><publicationStmt><distributor>
-                  XMLattval$!EMAIL
-                  "</distributor><idno type=\"ctb\">"
-                  XMLattval$!CTB
-                  "</idno><availability status=\"free\"><ab type=\"all\">"
-                  XMLattval$!AVAILABILITY
-                  "</ab></availability></publicationStmt><notesStmt><note>"
-                  XMLattval$!OUTPUTFACET
-                  "</note></notesStmt><sourceDesc><biblStruct><monogr><imprint><publisher n=\"n/a\">"
-                  XMLattval$!ToolContentProvider
-                  "</publisher></imprint></monogr></biblStruct></sourceDesc></fileDesc><encodingDesc><projectDesc><ab>"
-                  XMLattval$!TBA
-                  "</ab></projectDesc><appInfo><application ident=\""
-                  XMLattval$!ToolID
-                  (!Version:|"_" XMLattval$!Version)
-                  "\" subtype=\"a_annotation\" type=\""
-                  XMLattval$!OUTPUTFACET
-                  "\" version=\""
-                  XMLattval$!Version
-                  "\" xml:id=\""
-                  XMLattval$!XMLID
-                  \"><desc>
-                  XMLattval$!Description
-                  "</desc><ptr target=\""
-                  XMLattval$!ITEMS
-                  "\" /><ref target=\""
-                  XMLattval$!TOOLURIS
-                  \"/></application></appInfo></encodingDesc>
-                  ( !LANGUAGE:
-                  |   "<profileDesc><langUsage><language ident=\""
-                      !LANGUAGE
-                      \">
-                      (   readTable$linguae
-                        & !linguae:? (?full.!LANGUAGE) ?
-                        & localized$!full
-                      | 
+          &     ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+                \n
+                ( TEI
+                .     (xmlns."http://www.tei-c.org/ns/1.0")
+                      ( "xmlns:schemaLocation"
+                      . "http://www.tei-c.org/ns/1.0 http://dkclarin.dk/schemas/tei/TEIDKCLARIN_ANNO/xml.xsd"
                       )
-                      "</language></langUsage></profileDesc>"
-                  )
-                  "</teiHeader>"
-                  \n
-                  "<text><body>"
-                  ( !BODYCONTENT:~
-                  |   "<ab>"
-                      ( !SPANGRP:&"empty body/no text"
-                      | 
+                  ,   \n
+                      ( teiHeader
+                      .   (type.annotation)
+                        ,   ( fileDesc
+                            .   
+                              ,   ( titleStmt
+                                  .   
+                                    ,   ( title
+                                        .   
+                                          ,   !OLACTITLE
+                                              ","
+                                              (   readTable$tooladm
+                                                &   !tooladm
+                                                  :   ?
+                                                    + (   ?
+                                                          ( ServiceURL
+                                                          . !TOOLURIS
+                                                          )
+                                                          ?
+                                                      :   ?
+                                                          (ToolID.?ToolID)
+                                                          ?
+                                                      :   ?
+                                                          (Title.?Title)
+                                                          ?
+                                                      :   ?
+                                                          ( ContentProvider
+                                                          . ?ToolContentProvider
+                                                          )
+                                                          ?
+                                                      :   ?
+                                                          (Version.?Version)
+                                                          ?
+                                                      :   ?
+                                                          ( Description
+                                                          . ?Description
+                                                          )
+                                                          ?
+                                                      )
+                                                    + ?
+                                                & !Title
+                                              | !toolURL
+                                              )
+                                        )
+                                        (sponsor.,DK-CLARIN)
+                                        ( respStmt
+                                        .   
+                                          ,   (resp.,"a_annotation")
+                                              ( name
+                                              .   
+                                                ,   "cst.ku.dk"
+                                                    ( note
+                                                    .   (type.method)
+                                                      , !ToolID
+                                                    )
+                                                    ( date
+                                                    . (when.!DATE),
+                                                    )
+                                              )
+                                        )
+                                  )
+                                  ( publicationStmt
+                                  .   
+                                    ,   (distributor.,!EMAIL)
+                                        (idno.(type.ctb),!CTB)
+                                        ( availability
+                                        .   (status.free)
+                                          , ( ab
+                                            .   (type.all)
+                                              , !AVAILABILITY
+                                            )
+                                        )
+                                  )
+                                  (notesStmt.,(note.,!OUTPUTFACET))
+                                  ( sourceDesc
+                                  .   
+                                    , ( biblStruct
+                                      .   
+                                        , ( monogr
+                                          .   
+                                            , ( imprint
+                                              .   
+                                                , ( publisher
+                                                  .   (n.n/a)
+                                                    , !ToolContentProvider
+                                                  )
+                                              )
+                                          )
+                                      )
+                                  )
+                            )
+                            ( encodingDesc
+                            .   
+                              ,   (projectDesc.,(ab.,!TBA))
+                                  ( appInfo
+                                  .   
+                                    , ( application
+                                      .     ( ident
+                                            .   !ToolID
+                                                ( !Version:
+                                                | "_" !Version
+                                                )
+                                            )
+                                            (subtype."a_annotation")
+                                            (type.!OUTPUTFACET)
+                                            (version.!Version)
+                                            ("xml:id".!XMLID)
+                                        ,   (desc.,!Description)
+                                            (ptr.(target.!ITEMS),)
+                                            ( ref
+                                            . (target.!TOOLURIS),
+                                            )
+                                      )
+                                  )
+                            )
+                            ( !LANGUAGE:
+                            | ( profileDesc
+                              .   
+                                , ( langUsage
+                                  .   
+                                    , ( language
+                                      .   (ident.!LANGUAGE)
+                                        ,     readTable$linguae
+                                            &   !linguae
+                                              : ? (?full.!LANGUAGE) ?
+                                            & localized$!full
+                                          | 
+                                      )
+                                  )
+                              )
+                            )
                       )
-                      "</ab>"
-                  )
-                  "</body>"
-                  \n
-                  !SPANGRP
-                  "</text></TEI>"
+                      \n
+                      ( text
+                      .   
+                        ,   ( body
+                            .   
+                              ,   !BODYCONTENT:~
+                                | ( ab
+                                  .   
+                                    ,     !SPANGRP:
+                                        & "empty body/no text"
+                                      | 
+                                  )
+                            )
+                            \n
+                            !SPANGRP
+                      )
                 )
             : ?ret
           & !ret
       )
       "
 /**
+ * relationFile
+ *
  * Create a relation file ready for deposition together with an annotation.
  *
  * Input: JobNr and jobID
@@ -6704,6 +6859,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * doneJob
+ *
  * Marks a job as 'done' in jobs.table
  * Constructs a CTBID from date, JobNr and jobID
  * Makes sure there is a row in table CTBs connecting
@@ -6762,6 +6919,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             & (mail2$!JobNr:?EMAIL|)
             & log$(JobNr !JobNr jobID !jobID)
             & log$(SPANGRP trimmed$(!SPANGRP.140))
+            & get$(!SPANGRP,MEM,X,ML):?SPANGRP
             & readTable$Uploads
             & readTable$facets
             & (readTable$relations|:?relations)
@@ -6956,21 +7114,23 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             & saveTable$CTBs
             & saveTable$jobs
             & saveTable$relations
-            &   tekstXML
-              $ ( !OLACTITLE|
-                . !DATE|
-                . !EMAIL
-                . !CTBID
-                . TBA
-                . AVAILABILITY
-                . !OUTPUTFACET
-                . !BASEITEM|
-                . XMLID
-                . str$!ITEMS
-                . !toolURL
-                . !SPANGRP|
-                . !toolURL
-                . !LANGUAGE
+            &   toML
+              $ ( tekstXML
+                $ ( !OLACTITLE|
+                  . !DATE|
+                  . !EMAIL
+                  . !CTBID
+                  . TBA
+                  . AVAILABILITY
+                  . !OUTPUTFACET
+                  . !BASEITEM|
+                  . XMLID
+                  . str$!ITEMS
+                  . !toolURL
+                  . !SPANGRP|
+                  . !toolURL
+                  . !LANGUAGE
+                  )
                 )
           | 
       )
@@ -6994,11 +7154,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                         ?
                   &     !items
-                        "<item><id>"
-                        !item
-                        "</id><title>"
-                        !TITLE
-                        "</title></item>"
+                        (item.,(id.,!item) (title.,!TITLE))
                     : ?items
                   )
                   ?arg
@@ -7018,6 +7174,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * abortJob
+ *
  * Aborts, given a JobNr and a jobID, the specified job and all
  * pending jobs that depend on the output from the (now aborted) job.
  * Rather than removing the aborted jobs from the jobs.table list, they are
@@ -7081,24 +7239,20 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     .       !arg
                           :   (?JobNr.@(?:? #?JobId).?items.?tool)
                               ?arg
-                        &   ( "<step><JobNr>"
-                              !JobNr
-                              "</JobNr><JobId>"
-                              !JobId
-                              "</JobId><tool>"
-                              !tool
-                              "</tool><items>"
-                              !items
-                              "</items></step>"
+                        &   ( step
+                            .   
+                              ,   (JobNr.,!JobNr)
+                                  (JobId.,!JobId)
+                                  (tool.,!tool)
+                                  (items.,!items)
                             )
                             Steps$!arg
                       | 
                   )
-                &   "<?xml version=\"1.0\" encoding=\"UTF-8\"?><steps>"
-                    Steps$!arg
-                    "</steps>"
+                &   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+                    (steps.,Steps$!arg)
             )
-          & str$(makeXML$!list)
+          & toML$(makeXML$!list)
       )
       ( deleteDepending
       =   jobNr jobID a z
@@ -7118,6 +7272,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * doneAllJob
+ *
  * Do the administration when a workflow has completed.
  * Affected tables:
  *      jobs.table
@@ -7231,8 +7387,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               : ?desc
                             )
                           )
-                      & XMLattval$(str$!desc):?desc
-                      & !desc
+                      & str$!desc
                   )
                 & ( Steps
                   =   x items tool JobNr JobId
@@ -7246,32 +7401,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               . ?O
                               )
                               ?arg
-                        &   ( "<step><JobNr>"
-                              !JobNr
-                              "</JobNr><JobId>"
-                              !JobId
-                              "</JobId><name>"
-                              !x
-                              "</name><tool>"
-                              !tool
-                              "</tool><items>"
-                              !items
-                              "</items><input>"
-                              menneskesprog$!I
-                              "</input><output>"
-                              menneskesprog$!O
-                              "</output></step>"
+                        &   ( step
+                            .   
+                              ,   (JobNr.,!JobNr)
+                                  (JobId.,!JobId)
+                                  (name.,!x)
+                                  (tool.,!tool)
+                                  (items.,!items)
+                                  (input.,menneskesprog$!I)
+                                  (output.,menneskesprog$!O)
                             )
                             Steps$!arg
                       | 
                   )
-                &   "<?xml version=\"1.0\" encoding=\"UTF-8\"?><body><workflow>"
-                    XMLattval$!workflow
-                    "</workflow><steps>"
-                    Steps$!arg
-                    "</steps></body>"
+                &   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+                    ( body
+                    .   
+                      ,   (workflow.,!workflow)
+                          (steps.,Steps$!arg)
+                    )
             )
-          & str$(makeXML$!filelist)
+          & toML$(makeXML$!filelist)
       )
       ( pipeSegmentFields
       =     XML tool output input xml spec A
@@ -7510,6 +7660,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       (pipeAsXML=.str$(!XMLdeclaration pipeSegmentXML$!arg))
       "
 /**
+ * create
+ *
  * Prepare and run a workflow.
  * Functions as a wizard, taking input from various stages.
  * The function handles two scenarios:
@@ -7774,9 +7926,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             |   !errors:
                               &     str
                                   $ ( 404
-                                        !HTMLbodyContainer
-                                      $ ( paragraph
-                                        $ (str$("Item " !item " not found"))
+                                        toML
+                                      $ ( !HTMLbodyContainer
+                                        $ ( paragraph
+                                          $ (str$("Item " !item " not found"))
+                                          )
                                         )
                                     )
                                 : ?errors
@@ -8305,11 +8459,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   ( 
                         |     str
                             $ ( 400
-                                  !HTMLbodyContainer
-                                $ ( paragraph
-                                  $ (   da:!LaNg
-                                      & "Der mangler en email-adresse."
-                                    | "E-mail address missing."
+                                  toML
+                                $ ( !HTMLbodyContainer
+                                  $ ( paragraph
+                                    $ (   da:!LaNg
+                                        & "Der mangler en email-adresse."
+                                      | "E-mail address missing."
+                                      )
                                     )
                                   )
                               )
@@ -8368,11 +8524,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 |   !errors:
                   &     str
                       $ ( 400
-                            !HTMLbodyContainer
-                          $ ( paragraph
-                            $ (   da:!LaNg
-                                & "Du har ikke valgt et værktøj. Brug knappen \"Forrige\" og vælg et værktøj fra listen."
-                              | "You have not chosen a tool. Use the back button and choose a tool from the list."
+                            toML
+                          $ ( !HTMLbodyContainer
+                            $ ( paragraph
+                              $ (   da:!LaNg
+                                  & "Du har ikke valgt et værktøj. Brug knappen \"Forrige\" og vælg et værktøj fra listen."
+                                | "You have not chosen a tool. Use the back button and choose a tool from the list."
+                                )
                               )
                             )
                         )
@@ -8394,16 +8552,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & ( ShowAllPipes
             =   directedBy hiddenData pipes
               .   !arg:(?directedBy.?hiddenData.?pipes)
-                &   !HTMLbodyContainer
-                  $ ( form
-                    $ (   create
-                          (!directedBy:|By)
-                          !directedBy
-                      .   submit$"View details"
-                          submit$Submit
-                          "<br />"
-                          makeHiddenFields$!hiddenData
-                          makeWorkflowRadioButtons$!pipes
+                &   toML
+                  $ ( !HTMLbodyContainer
+                    $ ( form
+                      $ (   create
+                            (!directedBy:|By)
+                            !directedBy
+                        .   submit$"View details"
+                            submit$Submit
+                            (br.,)
+                            makeHiddenFields$!hiddenData
+                            makeWorkflowRadioButtons$!pipes
+                        )
                       )
                     )
             )
@@ -8420,26 +8580,28 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       | !arg
                   )
                 & !formFields nicify$!pipe:?formFields
-                &   XHTMLbodyContainer
-                  $ ( ( !nth:<1
-                      |   "<br />" submit$Submit !formFields
-                        : ?formFields
-                      )
-                    & ( !formFields:
-                      |   "Workflow: Input → "
-                          enumerateTools$!pipe
-                          " → Output"
-                          "<br />"
-                            form
-                          $ (   create
-                                (!directedBy:|By)
-                                !directedBy
-                            .   !formFields
-                                ( !nth:<1&
-                                |   makeHiddenFields$(nth.!nth)
-                                    makeHiddenFields$!hiddenData
-                                )
-                            )
+                &   toML
+                  $ ( XHTMLbodyContainer
+                    $ ( ( !nth:<1
+                        |   (br.,) submit$Submit !formFields
+                          : ?formFields
+                        )
+                      & ( !formFields:
+                        |   "Workflow: Input → "
+                            enumerateTools$!pipe
+                            " → Output"
+                            (br.,)
+                              form
+                            $ (   create
+                                  (!directedBy:|By)
+                                  !directedBy
+                              .   !formFields
+                                  ( !nth:<1&
+                                  |   makeHiddenFields$(nth.!nth)
+                                      makeHiddenFields$!hiddenData
+                                  )
+                              )
+                        )
                       )
                     )
             )
@@ -8631,11 +8793,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =   
               .   str
                 $ ( 404
-                      !HTMLbodyContainer
-                    $ ( paragraph
-                      $ (   da:!LaNg
-                          & "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
-                        | "Your goal cannot be fulfilled with the currently integrated tools."
+                      toML
+                    $ ( !HTMLbodyContainer
+                      $ ( paragraph
+                        $ (   da:!LaNg
+                            & "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
+                          | "Your goal cannot be fulfilled with the currently integrated tools."
+                          )
                         )
                       )
                   )
@@ -8653,19 +8817,24 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           & 
                         )
                   : ?formFields
-                &   !HTMLbodyContainer
-                  $ ( !formFields:
-                    |   form
-                      $ ( create By !directedBy
-                        .   makeHiddenFields$!hiddenData
-                            (     !directedBy
-                                : (GoalChoice|)
-                              & !formFields submit$nextStep
-                            |   Sources$!presels
-                                  paragraph
-                                $ (pickTool$(txt.!Items) submit$nextStep)
-                            )
-                        )
+                & log$NowtoML
+                &   toML
+                  $ ( !HTMLbodyContainer
+                    $ ( !formFields:
+                      |   form
+                        $ ( str$(create By !directedBy)
+                          .   makeHiddenFields$!hiddenData
+                              (     !directedBy
+                                  : (GoalChoice|)
+                                & !formFields submit$nextStep
+                              |   Sources$!presels
+                                    paragraph
+                                  $ ( pickTool$(txt.!Items)
+                                      submit$nextStep
+                                    )
+                              )
+                          )
+                      )
                     )
             )
           & ( "We are past the first stage: the user has pressed a button"
@@ -8745,13 +8914,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   |   !directedBy:GoalChoice
                     & :?TOOL
                   |     str
-                      $ (400 !HTMLbodyContainer$(paragraph$"goal or tool?"))
+                      $ ( 400
+                            toML
+                          $ (!HTMLbodyContainer$(paragraph$"goal or tool?"))
+                        )
                     : ?errors
                   )
                 & !errors:
                 &   log
                   $ (TOOL !TOOL parms !parms hiddenData !hiddenData)
-                & put$(feats\n,path$feats,NEW)
                 & !hiddenData !Items !hid:?hiddenData
                 & unpackIOparms$!parms:?parms
                 & checkIOparms$!parms
@@ -8832,7 +9003,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         $ (!wf.off.!Items.!mail2)
                     | !computeWorkflow
                     )
-                | str$(400 !HTMLbodyContainer$(paragraph$!errmsg))
+                |   str
+                  $ (400 toML$(!HTMLbodyContainer$(paragraph$!errmsg)))
                 )
             | !computeWorkflow
             )
@@ -8841,6 +9013,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       (createToolChoice=.create$(!arg.ToolChoice))
       "
 /**
+ * getStatusCode
+ *
  *  Given a HTTP status code and an informatory text, return an HTML-file
  * with a heading containing the status code and the official short description
  * of the status code, a paragraph containing the informatory text and a 
@@ -8856,36 +9030,47 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   readTable$HTTP-status-codes
           & !arg:(?code.?tekst)
           & !HTTP-status-codes:? (!code.?arg.?explanation) ?
-          &   !HTMLbodyContainer
-            $ ( heading$(1.!code " " !arg)
-                paragraph$!tekst
-                paragraph$!explanation
+          &   toML
+            $ ( !HTMLbodyContainer
+              $ ( heading$(1.!code " " !arg)
+                  paragraph$!tekst
+                  paragraph$!explanation
+                )
               )
       )
       ( poll
       =   jobs n step
         .   @(!arg:? #?arg)
           & readTable$jobs
-          &   !HTMLbodyContainer
-            $ ( paragraph
-              $ (     !jobs
-                    :   ?
-                        (!arg.@?step.~(? (?,pending) ?).?)
-                        ?
-                  & 0:?n
-                  &   whl
-                    ' ( !jobs:? (!arg.?) ?jobs
-                      & 1+!n:?n
+          &   toML
+            $ ( !HTMLbodyContainer
+              $ ( paragraph
+                $ (     !jobs
+                      :   ?
+                          (!arg.@?step.~(? (?,pending) ?).?)
+                          ?
+                    & 0:?n
+                    &   whl
+                      ' ( !jobs:? (!arg.?) ?jobs
+                        & 1+!n:?n
+                        )
+                    & "pending " !step " of " !n
+                  |   "Done! "
+                      ( a
+                      .   ( href
+                          . "https://infra.clarin.dk/tools/results?JobNr=" !arg
+                          )
+                        , "Download result"
                       )
-                  & "pending " !step " of " !n
-                |   "Done! <a href=\"https://infra.clarin.dk/tools/results?JobNr="
-                    !arg
-                    "\">Download result</a>. Alternatively, follow the link from the new message in your e-mail box."
+                      ". Alternatively, follow the link from the new message in your e-mail box."
+                  )
                 )
               )
       )
       "
 /**
+ * keep
+ *
  * Check whether a result from a tool in the staging area can be deleted.
  *
  * Results that for some reason are needed by other tasks must be kept.
@@ -9004,6 +9189,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /**
+ * cleanup
+ *
  * Delete all references to files that no longer exist.
  * Argument: a list of the files that still exist in the Staging area.
  * Affected tables:
@@ -9096,6 +9283,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       "
 /*
+ * stresstest
+ *
  * Do a computation that occupies Bracmat for several seconds.
  * Usage: activate the stresstest from several browsers at
  * about the same time, so they have to queue up and wait for
@@ -9147,22 +9336,29 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             & pi$!arg:?PI
             & !pies (!arg.!PI !err):?pies
             & saveTable$pies
-            &   !HTMLbodyContainer
-              $ ( paragraph
-                $ ( str
-                  $ ( "Your number:"
-                      !arg
-                      " Your approximation of pi:"
-                      flt$(!PI,!arg)
-                      " error "
-                      !err
+            &   toML
+              $ ( !HTMLbodyContainer
+                $ ( paragraph
+                  $ ( str
+                    $ ( "Your number:"
+                        !arg
+                        " Your approximation of pi:"
+                        flt$(!PI,!arg)
+                        " error "
+                        !err
+                      )
                     )
                   )
                 )
-          | !HTMLbodyContainer$(paragraph$(str$("Not understood:" !arg)))
+          |   toML
+            $ ( !HTMLbodyContainer
+              $ (paragraph$(str$("Not understood:" !arg)))
+              )
       )
       "
 /*
+ * wrapper
+ *
  * Generate a web service wrapper from tool metadata.
  * Usage: wrapper$(PHP.<toolID>)
  * (Other languages may be supported in the future.)
@@ -10096,17 +10292,26 @@ try {
                     & !arg !A !Z:?UIlanguage
                     & saveTable$UIlanguage
                     & setLang$!arg:?arg
-                    &   !HTMLbodyContainer
-                      $ (paragraph$(str$("Sprog er nu sat til " !arg)))
-                  |   !HTMLbodyContainer
-                    $ (paragraph$(str$("Det forstod jeg ikke:" !arg)))
+                    &   toML
+                      $ ( !HTMLbodyContainer
+                        $ (paragraph$(str$("Sprog er nu sat til " !arg)))
+                        )
+                  |   toML
+                    $ ( !HTMLbodyContainer
+                      $ (paragraph$(str$("Det forstod jeg ikke:" !arg)))
+                      )
                   )
-              |   !HTMLbodyContainer
-                $ ( paragraph
-                  $ "Table UIlanguage listing ISO codes of supported UI languages could not be read."
+              |   toML
+                $ ( !HTMLbodyContainer
+                  $ ( paragraph
+                    $ "Table UIlanguage listing ISO codes of supported UI languages could not be read."
+                    )
                   )
               )
-          | !HTMLbodyContainer$(paragraph$"Expected parameter 'UIlanguage'")
+          |   toML
+            $ ( !HTMLbodyContainer
+              $ (paragraph$"Expected parameter 'UIlanguage'")
+              )
       )
       ( countGraphNodes
       =   count tools feats feat i o cnt tcnt fcnt tool
