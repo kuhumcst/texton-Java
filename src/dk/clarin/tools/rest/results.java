@@ -55,7 +55,7 @@ public class results extends HttpServlet
     public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
         }
@@ -123,8 +123,6 @@ public class results extends HttpServlet
             @SuppressWarnings("unchecked")
             Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-            //String arg;
-            //arg = "";
             String job;
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
@@ -133,9 +131,10 @@ public class results extends HttpServlet
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
+                    String metadata = BracMat.Eval("jobMetaDataAsHTML$(" + job + ")");
                     String filelist = BracMat.Eval("doneAllJob$(" + job + ")");
                     logger.debug("filelist:" + filelist);
-    		        String localFilePath = ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/;
+                    String localFilePath = ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/;
                     String toolsdataURL = BracMat.Eval("toolsdataURL$");
                     String body = "<h1>Resultater</h1>";
                     String Body = null;
@@ -225,77 +224,76 @@ public class results extends HttpServlet
 
                             logger.debug("files[" + i + "]=" + filename);
                             if(filename.startsWith("fejl"))
-						        {
-						        body += "<h2>Følgende trin fejlede:</h2>\n<dl><dt>";
-						        body += "Trin " + JobID + "</dt><dd>" + tool + "</dd></dl>\n";
-						        Body += "<h2>Følgende trin fejlede:</h2>\n<dl><dt>";
-						        Body += "Trin " + JobID + "</dt><dd>" + tool + "</dd></dl>\n";
-						        }
-					        else
-						        {
-						        //String href2 = toolsdataURL + workflow.Filename(filename);
-						        //String href2nometa = toolsdataURL + workflow.FilenameNoMetadata(filename);
-						        //String href2relations = toolsdataURL + workflow.FilenameRelations(filename);
-						        String Href2 = workflow.Filename(filename);
-						        String Href2nometa = workflow.FilenameNoMetadata(filename);
-						        String Href2relations = workflow.FilenameRelations(filename);
+                                {
+                                body += "<h2>Følgende trin fejlede:</h2>\n<dl><dt>";
+                                body += "Trin " + JobID + "</dt><dd>" + tool + "</dd></dl>\n";
+                                Body += "<h2>Følgende trin fejlede:</h2>\n<dl><dt>";
+                                Body += "Trin " + JobID + "</dt><dd>" + tool + "</dd></dl>\n";
+                                }
+                            else
+                                {
+                                String Href2 = workflow.Filename(filename);
+                                String Href2nometa = workflow.FilenameNoMetadata(filename);
+                                String Href2relations = workflow.FilenameRelations(filename);
 
                                 zip(localFilePath,workflow.Filename(filename),zipout);
                                 zip(localFilePath,workflow.FilenameNoMetadata(filename),zipout);
                                 zip(localFilePath,workflow.FilenameRelations(filename),zipout);
 
 
-						        NodeList itemslist = element.getElementsByTagName("item");
-						        if(itemslist.getLength() > 0)
-							        {
-							        for (int j = 0; j < itemslist.getLength(); ++j) 
-								        {
-								        Element item = (Element) itemslist.item(j);
+                                NodeList itemslist = element.getElementsByTagName("item");
+                                if(itemslist.getLength() > 0)
+                                    {
+                                    for (int j = 0; j < itemslist.getLength(); ++j) 
+                                        {
+                                        Element item = (Element) itemslist.item(j);
 
-								        NodeList idlist = item.getElementsByTagName("id");
-								        Element idelement = (Element) idlist.item(0);
-								        String id = workflow.getCharacterDataFromElement(idelement);
+                                        NodeList idlist = item.getElementsByTagName("id");
+                                        Element idelement = (Element) idlist.item(0);
+                                        String id = workflow.getCharacterDataFromElement(idelement);
 
-								        NodeList titlelist = item.getElementsByTagName("title");
-								        Element titleelement = (Element) titlelist.item(0);
-								        String title = workflow.getCharacterDataFromElement(titleelement);
-								        resources += id + " \'" + title + "\'<br />\n";
-								        }
-							        }
-							    if(O.indexOf("TEI") >= 0)
-							        {
-						            body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": ";
-						            Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
-							             +  ": <a href=\"" + Href2          + "\">inklusiv metadata</a>, "
-							             +  "<a href=\"" + Href2relations + "\">relationsfil</a>, "
-							             +  "<a href=\"" + Href2nometa    + "\">uden metadata</a>";
-							        }
-							    else
-							        {
-						            body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": "; 
-						            Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
-							             +  "<a href=\"" + Href2nometa    + "\">data</a>, "
-							             +  "<a href=\"" + Href2relations + "\">relationsfil</a>";
-							        }
-						        if(!(I.equals("")))
-						            {
-						            body += "<dl><dt>Input</dt><dd>" + I + "</dd></dl>";
-						            Body += "<dl><dt>Input</dt><dd>" + I + "</dd></dl>";
-						            }
-						        if(!(O.equals("")))
-						            {
-						            body += "<dl><dt>Output</dt><dd>" + O + "</dd></dl>";
-						            Body += "<dl><dt>Output</dt><dd>" + O + "</dd></dl>";
-						            }
-    				            body +=  "</dd></dl>\n";
-    				            Body +=  "</dd></dl>\n";
-						        }
+                                        NodeList titlelist = item.getElementsByTagName("title");
+                                        Element titleelement = (Element) titlelist.item(0);
+                                        String title = workflow.getCharacterDataFromElement(titleelement);
+                                        resources += id + " \'" + title + "\'<br />\n";
+                                        }
+                                    }
+                                if(O.indexOf("TEI") >= 0)
+                                    {
+                                    body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": ";
+                                    Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
+                                         +  ": <a href=\"" + Href2          + "\">inklusiv metadata</a>, "
+                                         +  "<a href=\"" + Href2relations + "\">relationsfil</a>, "
+                                         +  "<a href=\"" + Href2nometa    + "\">uden metadata</a>";
+                                    }
+                                else
+                                    {
+                                    body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": "; 
+                                    Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
+                                         +  "<a href=\"" + Href2nometa    + "\">data</a>, "
+                                         +  "<a href=\"" + Href2relations + "\">relationsfil</a>";
+                                    }
+                                if(!(I.equals("")))
+                                    {
+                                    body += "<dl><dt>Input</dt><dd>" + I + "</dd></dl>";
+                                    Body += "<dl><dt>Input</dt><dd>" + I + "</dd></dl>";
+                                    }
+                                if(!(O.equals("")))
+                                    {
+                                    body += "<dl><dt>Output</dt><dd>" + O + "</dd></dl>";
+                                    Body += "<dl><dt>Output</dt><dd>" + O + "</dd></dl>";
+                                    }
+                                body +=  "</dd></dl>\n";
+                                Body +=  "</dd></dl>\n";
+                                }
                             }
                         if(!resources.equals(""))
                             {
-				            body += "<h2>Workflowets input:</h2><p>" + resources + "</p>";
-				            Body += "<h2>Workflowets input:</h2><p>" + resources + "</p>";
+                            body += "<h2>Workflowets input:</h2><p>" + resources + "</p>";
+                            Body += "<h2>Workflowets input:</h2><p>" + resources + "</p>";
                             }
+                        body += metadata;
+                        Body += metadata;
                         body += "<p>Hvis ovenstående oplysninger ikke er rigtige, eller du har spørgsmål, "
                              +  "kan du henvende dig på mail-adressen admin@clarin.dk</p>\n";
                         out.println("<html><head><meta charset=\"UTF-8\"><title>Resultater fra Tools</title></head><body>");

@@ -58,7 +58,7 @@ public class cleanup extends HttpServlet
         {
         logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         //Calendar cal = Calendar.getInstance();
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         //date = sdf.format(cal.getTime());

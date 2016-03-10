@@ -34,7 +34,6 @@ import org.apache.commons.fileupload.FileUploadException;
 @SuppressWarnings("serial")
 public class depositXML extends HttpServlet 
     {
-    //private static final String TMP_DIR_PATH = "/tmp";
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(depositXML.class);
 
@@ -52,7 +51,7 @@ public class depositXML extends HttpServlet
     public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory())
@@ -191,7 +190,6 @@ public class depositXML extends HttpServlet
         {        
         logger.info("sendPostRequest(" + endpoint + ", " + requestString + ")");
         int code = 0;
-        //String message = "";
         if(  endpoint.startsWith("http://") 
             || endpoint.startsWith("https://")
             )
@@ -208,7 +206,6 @@ public class depositXML extends HttpServlet
                 StringReader input = new StringReader(requestString);
                 StringWriter output = new StringWriter();
                 URL endp = new URL(endpoint);
-                //code = postData(input, endp, output);
 
                 HttpURLConnection urlc = null;
                 try
@@ -274,7 +271,6 @@ public class depositXML extends HttpServlet
                         {
                         code = urlc.getResponseCode();
                         logger.info("urlc.getResponseCode() == {}",code);
-                        //message = urlc.getResponseMessage();
                         urlc.disconnect();
                         }
                     }
@@ -295,13 +291,11 @@ public class depositXML extends HttpServlet
                 } 
             catch (Exception e)
                 {
-                //jobs = 0; // No more jobs to process now, probably the tool is not reachable
                 logger.warn("Deposit tool aborted. Reason:" + e.getMessage());
                 }
             }
         else
             {
-            //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
             logger.warn("Deposit tool aborted. Endpoint must start with 'http://' or 'https://'. (" + endpoint + ")");
             }
         return code;
@@ -318,7 +312,6 @@ public class depositXML extends HttpServlet
         if(userEmail == null && userId != null)
             userEmail = userhandle.getEmailAddress(request,null,userHandle,userId);
         response.setContentType("text/xml");
-        //response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
@@ -429,32 +422,11 @@ public class depositXML extends HttpServlet
             userEmail = userhandle.getEmailAddress(request,items,userHandle,userId);
         logger.info("doPost");
         response.setContentType("text/xml");
-        //response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
             logger.info("BracMat.loaded");
-/*
-            DiskFileItemFactory  fileItemFactory = new DiskFileItemFactory ();
-            / *
-            *Set the size threshold, above which content will be stored on disk.
-            * /
-            fileItemFactory.setSizeThreshold(1*1024*1024); //1 MB
-            / *
-            * Set the temporary directory to store the uploaded files of size above threshold.
-            * /
-            logger.info("making tmpDir in " + ToolsProperties.tempdir);
-            File tmpDir = new File(ToolsProperties.tempdir);
-            if(!tmpDir.isDirectory()) 
-                {
-                logger.info("!tmpDir.isDirectory()");
-                throw new ServletException("Trying to set \"" + ToolsProperties.tempdir + "\" as temporary directory, but this is not a valid directory.");
-                }
-            fileItemFactory.setRepository(tmpDir);
-
-            ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
-*/
             String arg = "";
             String name = null;
             String data = null;
@@ -484,7 +456,6 @@ public class depositXML extends HttpServlet
                     }
 
                 logger.debug("Now uploadHandler.parseRequest");
-  //              List items = uploadHandler.parseRequest(request);
                 logger.info("items:"+items);
                 Iterator<FileItem> itr = items.iterator();
                 logger.info("itr:"+itr);
@@ -600,7 +571,6 @@ public class depositXML extends HttpServlet
                         html.append("<p>Du skal være logget ind for at kunne deponere Tools-metadata i repositoriet. <a href=\"" + 
                             ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
                             "/clarindk/login?target=" + "/tools/deposit" + "\">Klik her for at logge ind</a>.</p>");
-                            //"/tools/deposit" + "\">Klik her for at logge ind</a>.</p>");
                         html.append("</body>");
                         html.append("</html>");
 
@@ -645,7 +615,6 @@ public class depositXML extends HttpServlet
                         html.append("<p>Du skal være logget ind for at kunne deponere Tools-metadata i repositoriet. <a href=\"" + 
                             ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
                             "/clarindk/login?target=" + "/tools/deposit" + "\">Klik her for at logge ind</a>.</p>");
-                            //"/tools/deposit" + "\">Klik her for at logge ind</a>.</p>");
                         html.append("</body>");
                         html.append("</html>");
 

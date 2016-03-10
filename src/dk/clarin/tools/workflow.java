@@ -102,7 +102,7 @@ public class workflow implements Runnable
             {
             String extension = name.substring(lastdot);
             filenameWithoutXMLextension = filenameWithoutXMLextension.substring(0,filenameWithoutXMLextension.lastIndexOf(extension));
-            return filenameWithoutXMLextension + ".withmetadata" + extension + ".xml";
+            return filenameWithoutXMLextension + ".withmetadata.xml";
             }
         return filenameWithoutXMLextension + ".withmetadata.xml";
         }
@@ -493,42 +493,79 @@ public class workflow implements Runnable
         //String toolsdataURL = BracMat.Eval("toolsdataURL$");
         try
             {
+            String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
+            
             byte[] buffer = new byte[4096];
             int n = - 1;
             int N = 0;
             //int Nbuf = 0;
-            OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename) );
+            boolean isBasisText = TEIformat.equals("txtbasis");
             StringWriter outputM = new StringWriter();
-
-            boolean isTextual = false;        
-            String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
-            if(textable.equals("y"))
-                isTextual = true;
-            logger.debug("textable:" + (isTextual ? "ja" : "nej"));
-                
-            while((n = input.read(buffer)) != -1)
+            
+            if(false && isBasisText)
                 {
-                if (n > 0)
+
+                boolean isTextual = false;        
+                String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
+                if(textable.equals("y"))
+                    isTextual = true;
+                logger.debug("textable:" + (isTextual ? "ja" : "nej"));
+                    
+                if(isTextual)
                     {
-                    N = N + n;
-                    //++Nbuf;
-                    outputF.write(buffer, 0, n);
-                    if(isTextual)
+                    while((n = input.read(buffer)) != -1)
                         {
-                        String toWrite = new String(buffer,0,n);
-                        try {
-                            outputM.write(toWrite);
-                            }
-                        catch (Exception e)
+                        if (n > 0)
                             {
-                            logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
+                            N = N + n;
+                            //++Nbuf;
+                            String toWrite = new String(buffer,0,n);
+                            try {
+                                outputM.write(toWrite);
+                                }
+                            catch (Exception e)
+                                {
+                                logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
+                                }
                             }
                         }
                     }
                 }
-            outputF.close();   
+            else
+                {
+                OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename) );
+
+                boolean isTextual = false;        
+                String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
+                if(textable.equals("y"))
+                    isTextual = true;
+                logger.debug("textable:" + (isTextual ? "ja" : "nej"));
+                    
+                while((n = input.read(buffer)) != -1)
+                    {
+                    if (n > 0)
+                        {
+                        N = N + n;
+                        //++Nbuf;
+                        outputF.write(buffer, 0, n);
+                        if(isTextual)
+                            {
+                            String toWrite = new String(buffer,0,n);
+                            try {
+                                outputM.write(toWrite);
+                                }
+                            catch (Exception e)
+                                {
+                                logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
+                                }
+                            }
+                        }
+                    }
+                outputF.close();   
+                }
+                
             String requestResult = outputM.toString();
-                 
+                
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String date = sdf.format(cal.getTime());
@@ -551,12 +588,15 @@ public class workflow implements Runnable
              * TEIDKCLARIN_ANNO
              */
             String newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
-            // Create file plus metadata
-            logger.debug("Going to write {}",destdir+Filename(filename));
-            FileWriter fstream = new FileWriter(destdir+Filename(filename));
-            BufferedWriter Out = new BufferedWriter(fstream);
-            Out.write(newResource);
-            Out.close();
+            if(!TEIformat.equals(""))
+                {
+                // Create file plus metadata
+                logger.debug("Going to write {}",destdir+Filename(filename));
+                FileWriter fstream = new FileWriter(destdir+Filename(filename));
+                BufferedWriter Out = new BufferedWriter(fstream);
+                Out.write(newResource);
+                Out.close();
+                }
             /**
              * relationFile$
              *
@@ -570,8 +610,8 @@ public class workflow implements Runnable
              */
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-            fstream = new FileWriter(destdir+FilenameRelations(filename));
-            Out = new BufferedWriter(fstream);
+            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename));
+            BufferedWriter Out = new BufferedWriter(fstream);
             Out.write(relations);
             Out.close();
             }

@@ -59,7 +59,7 @@ public class poll extends HttpServlet
         {
         logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);

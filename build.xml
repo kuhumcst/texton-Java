@@ -113,8 +113,8 @@
     <!--Compile the module, clean first  -->
     <target name="compile" depends="clean, resolve, envir" description="Compiles the whole bundle">
         <mkdir dir="${class.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath" encoding="utf-8" debuglevel="lines,vars,source" debug="true" >
-            <!-- compilerarg value="-Xlint:unchecked"/  -->
+        <javac  srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath" encoding="utf-8" debuglevel="lines,vars,source" debug="true" >
+            <compilerarg value="-Xlint:unchecked" />
         </javac>
     </target>
 

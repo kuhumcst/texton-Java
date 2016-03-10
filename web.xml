@@ -99,12 +99,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>poll</servlet-name>
+        <servlet-name>mypoll</servlet-name>
         <servlet-class>dk.clarin.tools.rest.poll</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>poll</servlet-name>
-        <url-pattern>/poll/*</url-pattern>
+        <servlet-name>mypoll</servlet-name>
+        <url-pattern>/mypoll/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
