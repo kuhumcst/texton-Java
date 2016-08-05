@@ -68,8 +68,6 @@ How?
 
     Build bracmat.dll: you need to add these source files to the DLL project: bracmatdll.cpp bracmatso.c dk_cst_bracmat.c json.c xml.c. The file bracmat.c is included by bracmatso.c after a number of #DEFINEs that turn off 'dangerous' functionality, such as the ability to run system commands or to open a file and not close it. Make sure to define BRACMATDLL_EXPORTS in the C/C++ Preprocessor settings. The name of the library should be bracmat.dll. Linux users are advised to follow the steps in compileAndTestJNI.txt.
    
-    Build bracmat.jar. In Windows, you can use the batchfile compileme.bat in the tools/bracmat/java directory. If the path TOOLSLOG is invalid, the batch file will probably fail. The batch file creates a JNI and then runs a simple test to see that bracmat expressions can be evaluated from a java file.
-   
     Put the shared bracmat library (bracmat.dll in Windows) in Tomcat's bin directory. This is the last step in makeJNI.bat, but requires that you run this script as administrator. In Linux, you can put libbracmatso in /usr/lib. Again, you need to have administrator rights.
    
 10. Edit the file properties_local.xml. Look at whether all paths suit you.
