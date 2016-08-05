@@ -30,6 +30,8 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -95,8 +97,10 @@ public class create extends HttpServlet
     private String userHandle = null;
     /// The eSciDoc id of the user
     private String userId = null;
-    /// The users email
+    /// The user's email
     private String userEmail = null;
+    /// The user's preferred interface language
+    private String UIlanguage = null;
 
     public static final int ACCEPT=1;       //We have accepted your request for applying tools to resources.
     public static final int CONFIRMATION=2; //The results from the tool-workflow are ready to inspect
@@ -104,8 +108,21 @@ public class create extends HttpServlet
     private String date;
     //private String toolsdataURL;
 
-	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	private DocumentBuilder builder = null;
+    private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    private DocumentBuilder builder = null;
+
+
+    public String assureArgHasUIlanguage(HttpServletRequest request,List<FileItem> items, String arg)
+        {
+        if(!arg.contains("UIlanguage"))
+            {
+            UIlanguage = userhandle.getPreferredLocale(request,items);
+            if(UIlanguage != null && !UIlanguage.equals(""))
+                arg = "(UIlanguage." + UIlanguage + ") " + arg;
+            }
+        
+        return arg;
+        }        
 
     public static void sendMail(int status, String name, String href,String mail2)
         throws org.apache.commons.mail.EmailException 
@@ -122,7 +139,6 @@ public class create extends HttpServlet
             String subject = "some subject";
             switch(status){
             case ACCEPT: 
-                //body = "<html><body><p>Til " + name + ".<br><br>\n" 
                 body = "<html><body><p>" 
                     + "Vi har modtaget dit &oslash;nske om at oprette ny data ved hjælp af integrerede v&aelig;rkt&oslash;jer.<br><br>\n\n"
                     + "N&aring;r oprettelsen er f&aelig;rdig, vil du modtage en email igen, der bekr&aelig;fter at "
@@ -133,7 +149,6 @@ public class create extends HttpServlet
                 break;
             case CONFIRMATION: 
                 subject = "[clarin.dk] Oprettelse af ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer - success";
-                //body = "<html><body><p>Til " + name + ".<br><br>\n" 
                 body = "<html><body><p>"
                     + "Vi har modtaget dit &oslash;nske om at oprette ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer.<br>\n\n"
                     + "Oprettelsen er g&aring;et godt, og du kan nu hente resultatet p&aring; denne adresse:<br><br>\n\n"
@@ -144,7 +159,6 @@ public class create extends HttpServlet
                 break;
             default: //ERROR
                 subject = "[clarin.dk] Oprettelse af ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer - FEJL";
-                //body = "<html><body><p>Til " + name + ".<br><br>\n"
                 body = "<html><body><p>"
                     + "Der skete en fejl under oprettelsen af data.<br><br>\n\n"
                     + "DU SKAL IKKE FORETAGE DIG NOGET<br><br>\n\n" 
@@ -186,13 +200,6 @@ public class create extends HttpServlet
             }
         }
 
-    /*private static String unquote(String str)
-        {
-        while(str.startsWith("\"") && str.endsWith("\""))
-            str = str.substring(1,str.length() - 1);
-        return str;
-        }*/
-
 
     /*
     Get the metadata of a resource itself - straight from the repository.
@@ -209,38 +216,31 @@ public class create extends HttpServlet
         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(600000);
         // Definer om det skal være POST, GET, PUT eller DELETE
         String methodString = ToolsProperties.repoServiceUrl + id;
-        logger.debug("methodString:{}",methodString);
         org.apache.commons.httpclient.methods.GetMethod method = new org.apache.commons.httpclient.methods.GetMethod(methodString);
-        method.setFollowRedirects(false); // We don't want WAYF involved here
+        //method.setFollowRedirects(false); // We don't want WAYF involved here
+        method.setFollowRedirects(true); // 20150331
 
         // simuler du er en bruger med en handle, ved at sætte en cookie
 
         if((handle != null) && !handle.equals(""))
-			{
-	        logger.debug("We have a handle: {}",handle);
+            {
             method.setRequestHeader("Cookie", "escidocCookie=" + handle);
             }
 
         try 
             {
-	        logger.debug("Execute request");
             httpClient.executeMethod(method);
-	        logger.debug("request executed");
             int responseCode = method.getStatusCode();
-	        logger.debug("method.getStatusCode() done");
             if(responseCode == 200)
                 {
                 // request went OK
-		        logger.debug("request went OK");
                 try
                     {
                     //out.println("request went OK\n");
                     retval = method.getResponseBodyAsString();
-			        logger.debug("getResponseBodyAsString went OK");
                     }
                 catch (IOException e)
                     {
-			        logger.debug("IOException {}",e.getMessage());            
                     response.setStatus(500);
                     String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"I/O error while reading response stream after succesfully attempting method " + workflow.escapedquote(methodString) + " \")");
                     out.println(messagetext);
@@ -248,7 +248,6 @@ public class create extends HttpServlet
                 }
             else 
                 {
-		        logger.debug("Something bad happened");
                 response.setStatus(responseCode);
                 String messagetext = BracMat.Eval("getStatusCode$("+workflow.quote(Integer.toString(responseCode))+".\"In getResourceAsString: When attempting method " + workflow.escapedquote(methodString) + " \")");
                 out.println(messagetext);
@@ -256,7 +255,6 @@ public class create extends HttpServlet
             }
         catch (IOException io)
             {
-	        logger.debug("IOException {}",io.getMessage());            
             response.setStatus(400);
             /**
              * getStatusCode$
@@ -269,6 +267,18 @@ public class create extends HttpServlet
              * This function could just as well have been written in Java.
              */
             String messagetext = BracMat.Eval("getStatusCode$(\"400\".\"I/O error when attempting method " + workflow.escapedquote(methodString) + " \")");
+            // request went wrong
+            try
+                {
+                retval = method.getResponseBodyAsString();
+                if(retval != null)
+                    out.println("method.getResponseBodyAsString returns [" + retval + "]");
+                }
+            catch (IOException e)
+                {
+                out.println("method.getResponseBodyAsString generates exception");
+                }
+            
             out.println(messagetext);
             }
         finally 
@@ -285,40 +295,30 @@ public class create extends HttpServlet
         {
         boolean retval = true;
 
-        logger.debug("getResourceAsStream:component= {}",component);
-
         String[] idvisref = component.split("\\.");
         String id = idvisref[0];
-        logger.debug("getResourceAsStream:id= {}",id);
         String visibility = idvisref[1];
-        logger.debug("getResourceAsStream:visibility= {}",visibility);
 
         // Nyt HttpClient object
         org.apache.commons.httpclient.HttpClient httpClient = new org.apache.commons.httpclient.HttpClient();
-       // org.apache.http.client.HttpClient        httpClient = new org.apache.http.client.HttpClient();
 
         // Sæt timeoutværdi i millisekunder
         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(600000);
         // Definer om det skal være POST, GET, PUT eller DELETE
         String methodString = ToolsProperties.repoServiceUrl + id;
-        logger.debug("methodString:{}",methodString);
         org.apache.commons.httpclient.methods.GetMethod method = new org.apache.commons.httpclient.methods.GetMethod(methodString);
         //method.setFollowRedirects(false); // We don't want WAYF involved here
         // simuler du er en bruger med en handle, ved at sætte en cookie
         if((handle != null) && !handle.equals(""))
             {
-            logger.debug("handle= {}",handle);
             method.setRequestHeader("Cookie", "escidocCookie=" + handle);
             }
         try 
             {
-	        logger.debug("Execute request");
             httpClient.executeMethod(method);
-	        logger.debug("request executed");
             int responseCode = method.getStatusCode();
             if(responseCode == 200)
                 {
-		        logger.debug("request went OK");
                 // request went OK
                 try
                     {
@@ -372,23 +372,17 @@ public class create extends HttpServlet
                         *      The local file name of the resource (= fourth field)
                         */
                         String LocalFileName = BracMat.Eval("storeUpload$(" + workflow.quote(id) + "." + workflow.quote(date) + "." + workflow.quote(visibility) + ")");
-				        logger.debug("LocalFileName: {} destinationDir: {}",LocalFileName,destinationDir);
                         File f = new File(destinationDir,LocalFileName);
                         OutputStream fout=new FileOutputStream(f);
-				        logger.debug("fout created");
                         byte buf[]=new byte[1024];
                         int len;
                         while((len=stroem.read(buf))>0)
                             fout.write(buf,0,len);
-				        logger.debug("while loop done");
                         fout.close();
-				        logger.debug("fout closed");
                         stroem.close();
-				        logger.debug("stroem closed");
                         }
                     catch (IOException e)
                         {
-				        logger.debug("IOException {}",e.getMessage());            
                         response.setStatus(500);
                         String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"I/O error while reading response stream after succesfully attempting method " + workflow.escapedquote(methodString) + " \")");
                         out.println(messagetext);
@@ -414,7 +408,6 @@ public class create extends HttpServlet
         catch (IOException io)
             {
             // håndter at der er sket en IO fejl
-	        logger.debug("IOException {}",io.getMessage());            
             response.setStatus(400);
             String messagetext = BracMat.Eval("getStatusCode$(\"400\".\"I/O error when attempting method " + workflow.escapedquote(methodString) + " \")");
             out.println(messagetext);
@@ -427,29 +420,11 @@ public class create extends HttpServlet
 
         return retval;// null;
         }
-/* JSP code
-    String cookieName = "escidocCookie";
-    String handle = "";
-    Cookie cookies [] = request.getCookies();
-    Cookie myCookie = null;
-    if ( cookies != null )
-        {
-        for ( int i = 0 ; i < cookies.length ; i++ )
-            {
-            if ( cookies[ i ].getName().equals( cookieName ) )
-                {
-                handle = cookies[ i ].getValue():
-                }
-            }
-        }
-*/
-
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
-        logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         date = sdf.format(cal.getTime());
@@ -486,6 +461,11 @@ public class create extends HttpServlet
     public String gemLocalCopyOfResource(HttpServletRequest request,String id,PrintWriter out,HttpServletResponse response) // "59003"
         {
         String item = getResourceAsString(userHandle,id,out,response);
+        if(item == null)
+            {
+            logger.debug("getResourceAsString({}) returns null",id);
+            return null;
+            }
         if(item != null)
             {
             /**
@@ -502,37 +482,60 @@ public class create extends HttpServlet
              * well have been implemented in Java.
              */
             String component = BracMat.Eval("getComponentRef$(" + workflow.quote(item) + ")");
-            logger.debug("getComponentRef:component= {}",component);
+            //logger.debug("BracMat.Eval({}) returns [{}]",workflow.quote(item),component);
 
             if(!component.equals("") && getResourceAsStream(userHandle,component,out,response))
+                {
                 return item;
+                }
             else
+                {
+                logger.debug("getResourceAsStream({}) returns null",component);
                 return null;
+                }
             }
         return null;
         }
 
     public boolean RightToLocalCopyOfResource(HttpServletRequest request,String id,PrintWriter out,HttpServletResponse response) // "59003"
         {
-        logger.debug("RightToLocalCopyOfResource= {}",id);
         String item = getResourceAsString(userHandle,id,out,response);
         if(item != null)
             {
             String component = BracMat.Eval("getComponentRef$(" + workflow.quote(item) + ")");
-            logger.debug("getComponentRef:component= {}",component);
             return checkAccessRights(component);
             }
         else
             logger.debug("getResourceAsString( {}, {}, ...) has returned null",userHandle,id);
         return false;
         }
+ 
+	private String webPage(String url){
+		try{
+			URL address = new URL(url);
+			URLConnection conn = address.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			StringBuilder contents = new StringBuilder();
+			char[] buffer = new char[4096];
+			int read = 0;
+			do  {
+			    contents.append(buffer,0,read);
+			    read = in.read(buffer);
+			    }
+			while(read >= 0);
+			return contents.toString();
+		}catch(IOException e){
+			return "error connecting to server.";
+		}
+	}
 
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String workflowRequest)
         {
         String result;
+        String examplePage = webPage("https://clarin.dk/clarindk/tools-upload.jsp");
+        arg = arg + " (examplePage." + workflow.quote(examplePage) + ")";
         if(workflowRequest.equals(""))
-			{
-			logger.debug("workflowRequest.equals(\"\")");
+            {
             /**
              * create$
              *
@@ -563,36 +566,71 @@ public class create extends HttpServlet
             result = BracMat.Eval("create$(" + arg + ".)");
             }
         else
-			{
-			logger.debug("!workflowRequest.equals(\"\")");
+            {
             /*
             workflowRequest = GoalChoice | ToolChoice
             */
             result = BracMat.Eval("create" + workflowRequest + "$(" + arg + ")");
-			}
+            }
         if(result == null || result.equals(""))
             {
             response.setStatus(404);
-			logger.info("Did not create any workflow. (404)");
+            logger.info("Did not create any workflow. (404)");
             return;
             }
-        int start = result.indexOf("<?");
+
+        String StatusJobNrJobIdResponse[] = result.split("~", 4);
+        if(StatusJobNrJobIdResponse.length == 4)
+            {
+            String Status = StatusJobNrJobIdResponse[0];
+            String JobNr  = StatusJobNrJobIdResponse[1];
+            String JobId  = StatusJobNrJobIdResponse[2];
+            String output = StatusJobNrJobIdResponse[3];
+            response.setStatus(Integer.parseInt(Status));
+            if(!JobId.equals(""))
+                {
+                // Asynkron håndtering:
+                Runnable runnable = new workflow(JobNr, destinationDir);
+                Thread thread = new Thread(runnable);
+                thread.start();
+                }
+            out.println(output);
+            return;
+            }
+           
+            
+        logger.debug("Result from BracMat create$: ["+result+"]");
+        int start = result.indexOf("<?"); // XML-output (XHTML)
         if(start < 0)
-			start = result.indexOf("<!");
+            start = result.indexOf("<!"); // HTML5-output
         if(start > 0)
             {
+            logger.debug("Funny?");
+            /* Something went wrong, e.g.:
+            
+            400<!DOCTYPE html>
+            <html>
+            <head>
+             ... PDF-files that only consist of image data cannot be handled by this work flow. ...
+                
+                
+            404<!DOCTYPE html>
+            <html>
+            <head>
+             ... Your goal cannot be fulfilled with the currently integrated tools. ...
+                
+            */
             //response.setContentType("text/plain; charset=UTF-8");
             out.println(result.substring(start));
             try
                 {
                 int status = Integer.parseInt(result.substring(0,start));
                 response.setStatus(status);
-				logger.debug("status {}",status);
                 }
             catch(NumberFormatException e)
                 {
                 response.setStatus(404);
-				logger.info("NumberFormatException. Could not parse initial integer in {}",result);
+                logger.info("NumberFormatException. Could not parse initial integer in {}",result);
                 }
             return;
             }
@@ -607,12 +645,9 @@ public class create extends HttpServlet
              * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
              *          empty string (if job not found in jobs.table)
              */
-			logger.debug("Result starts with \"Submitted\"");
             String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
-			logger.debug("jobID == {}",jobID);
             if(jobID.equals(""))
                 {
-				logger.debug("Nothing to do");
                 out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
                 out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
                 out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
@@ -621,15 +656,16 @@ public class create extends HttpServlet
             else
                 {
                 // Asynkron håndtering:
-				logger.debug("starting workflow");
                 Runnable runnable = new workflow(result, destinationDir);
                 Thread thread = new Thread(runnable);
                 thread.start();
-				logger.debug("started workflow");
                 out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
                 out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
                 out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
-                out.println("<body><p>Du vil få mail når der er resultater. <a href=\"https://www.clarin.dk/tools/mypoll?job=" + result + "\">Følg jobstatus af job [" + result + "].</a></p></body></html>");
+                if(UIlanguage != null && UIlanguage.equals("da"))
+                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"https://www.clarin.dk/tools/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
+                else
+                    out.println("<body><p>You will receive email when there are results. <a href=\"https://www.clarin.dk/tools/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
                 }
             response.setStatus(202);
 
@@ -637,69 +673,11 @@ public class create extends HttpServlet
             //processPipeLine(response,result,out);
             }
         else
-			{
-//			logger.debug("Something funny. result from Bracmat == {}",result);
+            {
             out.println(result);
             }
         }
 
-/* // Synkron håndtering:
-
-    private void processPipeLine(HttpServletResponse response,String result,PrintWriter out)
-        {
-        out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-        out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
-        out.println("<head>");
-        out.println("<title>DK-Clarin: Tools</title>");
-        out.println("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
-        out.println("</head>");
-        out.println("<body>");
-
-        out.println("result:" + result + "<br />\n");
-        int jobs = 10; // Brake after 10 iterations. Then something is possibly wrong
-        while(jobs > 0)
-            {
-            --jobs;
-            // Jobs are hierarchically structured:
-            //    All jobs with the same job number belong together. They constitute a pipeline.
-            //    All jobs with the same job number must be performed sequentially, in increasing order of their job id.
-
-            // getNextJobID looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
-            // Each job number represents one pipeline. A pipeline consists of one or more jobs, each with a jobID that is unique within the job.
-            String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
-            out.println("jobID:[" + jobID + "]<br />\n");
-            // Now we have a job that must be launched
-
-            if(jobID.equals(""))
-                jobs = 0; // No more jobs on job list, quit from loop
-            else
-                {
-                // getJobArg looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
-
-                // dependencies is a list of files created by earlier jobs in the pipeline that the current job depends on.
-                // The first job in the pipeline has no dependencies.
-                String dependencies  = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".dep)");
-
-                // endpoint = entry point for tool webservice
-                String endpoint      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".endpoint)");
-
-                // requestString = arguments sent to the tool webservice
-                String requestString = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".requestString)");
-
-                // filename = name of the file where the tool output will be stored when the GET gets back.
-                String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
-
-                out.println("dependencies:" + dependencies + "<br />\n");
-                out.println("endpoint:" + endpoint + "<br />\n");
-                out.println("requestString:" + requestString.replace("&", "&amp;") + "<br />\n");
-                out.println("filename:" + filename + "<br />\n");
-                sendGetRequest(result, endpoint, requestString, out, BracMat, filename, jobID, response);
-                }
-            }
-        BracMat.Eval("doneAllJob$(" + result + ")"); 
-        out.println("<br /></body></html>\n");
-        }
-*/
 
     /**
     * Contructs an XACML document with request for each item we whish to access
@@ -708,7 +686,6 @@ public class create extends HttpServlet
         {
         String[] idvisref = component.split("\\.");
         String textUrl = idvisref[2];
-        logger.debug("checkAccessRights of {}",textUrl);
         // Build a xacml document to send to eSciDocs PDP
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
             + "<requests:requests xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
@@ -744,15 +721,11 @@ public class create extends HttpServlet
         xacmlRequests.append(textUrl);
         xacmlRequests.append(requestStaticFooter);
 
-        logger.debug("putToPDP( {} )",header + xacmlRequests + footer);
-
-
         // send the request to eSciDocs Policy Decision Point
         Document xacmlResponce = putToPDP(header + xacmlRequests + footer);
         if (xacmlResponce == null) 
             {
             // Some error happened, so we return null
-            logger.debug("checkAccessRights got xacmlResponce == null");
             return false;
             }
 
@@ -760,13 +733,11 @@ public class create extends HttpServlet
         NodeList results = xacmlResponce.getElementsByTagName("result");
         Element result = (Element) results.item(0);
         String decision = result.getAttribute("decision");
-        logger.debug("decision == {}",decision);
         return decision.equals("permit");
         }
 
     private Document putToPDP(String request) 
         {
-        //logger.debug("PDP request: " + request);
         // for downloading...
         org.apache.commons.httpclient.HttpClient httpClient = new org.apache.commons.httpclient.HttpClient();
         org.apache.commons.httpclient.methods.PutMethod method;
@@ -794,7 +765,6 @@ public class create extends HttpServlet
                     return null;
                     }
                 }
-            //logger.debug("PDP responce: " + method.getResponseBodyAsString() );
 
             InputStream in = method.getResponseBodyAsStream();
             Document ret = streamToXml(in);
@@ -839,11 +809,7 @@ public class create extends HttpServlet
 
     private String addInput(String val,HttpServletRequest request,PrintWriter out,HttpServletResponse response,String parmName)
         {
-        logger.debug("addInput({},..)",val);
-        logger.debug("hasCopy {} . {}",val,date);
-
         String seen = "hasCopy$(" + workflow.quote(val) + "." + workflow.quote(date) + ")";
-        logger.debug("seen = [{}]",seen);
         /**
          * hasCopy$
          *
@@ -856,7 +822,6 @@ public class create extends HttpServlet
          * Side effect: the table Uploads.table is updated if the resource is found.
          */
         seen = BracMat.Eval("hasCopy$(" + workflow.quote(val) + "." + workflow.quote(date) + ")");
-        logger.debug("hasCopy responds {}",seen);
         if(seen.equals("no"))
             {
             String item = gemLocalCopyOfResource(request,val,out,response);
@@ -871,7 +836,6 @@ public class create extends HttpServlet
                 }
             else
                 {
-                logger.debug("Created local copy of {}",val);
                 String qitem = workflow.quote(item);
                 String qitemid = workflow.quote(val);
                 /**
@@ -922,56 +886,6 @@ public class create extends HttpServlet
         return " (" + workflow.quote(parmName) + ". (" + workflow.quote("\"" + val + "\"") + "))";
         }
 
-    /* Same as addInput, apart from asking whether existing copy may be used.
-       If a cleanup has wiped out the copy in the middle of the wizard-process,
-       a copy is re-created silently
-    */
-    /*
-    private String checkInput(String val,HttpServletRequest request,PrintWriter out,HttpServletResponse response,String parmName)
-        {
-        logger.debug("checkInput({},..)",val);
-        logger.debug("hasCopy {} . {}",val,date);
-
-        String seen = "hasCopy$(" + workflow.quote(val) + "." + workflow.quote(date) + ")";
-        logger.debug("seen = [{}]",seen);
-        seen = BracMat.Eval("hasCopy$(" + workflow.quote(val) + "." + workflow.quote(date) + ")");
-        logger.debug("hasCopy responds {}",seen);
-        if(seen.equals("no"))
-            {
-            String item = gemLocalCopyOfResource(request,val,out,response);
-
-            if(item == null)
-                {
-                logger.info("No access allowed to {}",val);
-                //out.println("Ikke autoriseret til at hente resurse " + val);
-                response.setStatus(403);
-                String messagetext = BracMat.Eval("getStatusCode$(\"403\".\"Not authorized to use resource " + workflow.escapedquote(val) + " \")");
-                out.println(messagetext);
-                return null;
-                }
-            else
-                {
-                logger.debug("Created local copy of {}",val);
-                String qitem = workflow.quote(item);
-                String qitemid = workflow.quote(val);
-                BracMat.Eval("setFeatures$(" + qitem + "." + qitemid + "." + workflow.quote(date) + ")");
-                }
-            }
-        / *
-        else if(!seen.equals("public"))
-            { // check that user has the rights to use the cached copy of the resource.
-            if(!RightToLocalCopyOfResource(request,val,out,response))
-                {
-                out.println("Ikke autoriseret til at benytte resurse " + val);
-                return null;
-                }
-            }
-        * /
-        return " (" + workflow.quote(parmName) + ". (" + workflow.quote("\"" + val + "\"") + "))";
-        }
-*/
-
-
     /*
     Method doGet is called if Tools is used to process resources copied from 
     the repository.
@@ -984,84 +898,25 @@ public class create extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        //userHandle = null;
-        //userId = null;
-        //userEmail = null;
-        //logger.debug("doGet, calling Workflow, userHandle = {}",userHandle);
         Workflow(request,response,"");
-        //logger.debug("doGet, called Workflow, userHandle = {}",userHandle);
         }
-/*
-    public boolean goodPassword(HttpServletRequest request,HttpServletResponse response,List<FileItem> items,PrintWriter out)
-        {
-        String password = request.getParameter("password");
-        if(password == null && items != null)
-            {
-            password = userhandle.getParmFromMultipartFormData(request,items,"password");
-            }
-        logger.debug("password = {}",password);
-        if(password == null || !password.equals("teeqzif55"))
-            {
-            response.setStatus(401);
-            out.println( "<?xml version=\"1.0\"?>\n"
-                        +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
-                        +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
-                        +"<head>\n" 
-                        +"<title>DK-Clarin: Tools</title>\n" 
-                        +"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n" 
-                        +"</head>\n" 
-                        +"<body>\n" 
-                        +"<h1>401 Unauthorized</h1>\n" 
-                        +"</body></html>\n"
-                       );
-            return false;
-            }
-        return true;
-        }
-*/
 
     public void Workflow(HttpServletRequest request,HttpServletResponse response,String workflowRequest)
         throws ServletException, IOException 
         {
-        //userHandle = null;
-        //userId = null;
-        //userEmail = null;
-
         // Check if it is the allowed server that tries to start a workflow
         if(userHandle == null)
-            userHandle = userhandle.getUserHandle(request,null/*items*/);
+            userHandle = userhandle.getUserHandle(request,null);
         if(userId == null && userHandle != null)
-            userId = userhandle.getUserId(request,null/*items*/,userHandle);
+            userId = userhandle.getUserId(request,null,userHandle);
         if(userEmail == null && userId != null)
-            userEmail = userhandle.getEmailAddress(request,null/*items*/,userHandle,userId);
+            userEmail = userhandle.getEmailAddress(request,null,userHandle,userId);
+        if(UIlanguage == null)
+            UIlanguage = userhandle.getPreferredLocale(request,null);
         
-        logger.debug("RemoteAddr == {}",request.getRemoteAddr());
-        logger.debug("Referer == {}",request.getHeader("referer"));
-        logger.debug("ToolsProperties.wwwServer == {}",ToolsProperties.wwwServer);
-        /* 20140918, to see whether AJAX calls come through.
-        if(  request.getHeader("referer") == null 
-          || (  !request.getHeader("referer").startsWith(ToolsProperties.wwwServer) 
-             && !request.getHeader("referer").startsWith(ToolsProperties.wwwServer.replaceFirst("^(https|http)://", "$1://www."))
-             )
-          )
-        //if(  !request.getRemoteAddr().equals(ToolsProperties.acceptedWorkflowStarter) 
-        //  && !request.getRemoteAddr().equals("127.0.0.1")
-         // )
-            {
-            logger.info("GET: Request sent from Unauthorized Client!");
-            response.setStatus(403);
-            throw new ServletException("Unauthorized");
-            }
-        */
-        
-        logger.debug("Calling tools, userHandle == {}",userHandle);
         response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
-        /* 20130423
-        if(userHandle == null && !goodPassword(request,response,null,out))
-            return;
-        */    
         if(!BracMat.loaded())
             {
             response.setStatus(500);
@@ -1126,32 +981,6 @@ også inkluderes som en parameter i url'en
                         }
                     }
                 }
-            /*
-            else if(parmName.equals("Item"))
-                {
-                for(int j = 0;j < vals.length;++j)
-                    {
-                    String Val = unquote(vals[j]);
-                    logger.debug("Item {} -> {}",vals[j],Val);
-                    if(Val.equals(""))
-                        {
-                        String resource = checkInput(Val,request,out,response,parmName);
-                        // should be a bit more quicker than addInput. Here we
-                        // are already past the first post, but a cleanup
-                        // theoretically could have wiped out the item, e.g.
-                        // if the user is slowly progressing through the
-                        // wizardry.
-                        if(resource == null)
-                            {
-                            OK = false;
-                            break;
-                            }
-                        else
-                            arg = arg + resource;
-                        }
-                    }
-                }
-                */
             else if(parmName.equals("mail2"))
                 {
                 for(int j = 0;j < vals.length;++j)
@@ -1207,11 +1036,12 @@ også inkluderes som en parameter i url'en
             arg += ")";
             }
 
+        arg = assureArgHasUIlanguage(request,null,arg);
+
         if(OK)
             {
             createAndProcessPipeLine(response,arg,out,workflowRequest);
             }
-        logger.debug("Calling tools DONE, userHandle == {}",userHandle);
         }
 
     public boolean PDFhasNoFonts(File pdfFile)
@@ -1253,7 +1083,6 @@ også inkluderes som en parameter i url'en
             {
             logger.error("cannot analyse: " + pdfFile.getName() + ", error is: " + e.getMessage());
             }
-        logger.debug("lasterrline [" + lasterrline + "] lastline [" + lastline + "]");
         return lasterrline.equals("") && (lastline.endsWith("---------"));
         }
             
@@ -1290,14 +1119,12 @@ også inkluderes som en parameter i url'en
             Iterator<FileItem> itr = items.iterator();
             while(itr.hasNext()) 
                 {
-                logger.debug("in loop");
                 FileItem item = itr.next();
                 /*
                 * Handle Form Fields.
                 */
                 if(item.isFormField()) 
                     {
-                    logger.debug("Field Name = "+item.getFieldName()+", String = "+item.getString());
                     if(item.getFieldName().equals("text"))
                         {
                         String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
@@ -1327,17 +1154,13 @@ også inkluderes som en parameter i url'en
                     item.write(file);
 
                     String ContentType = item.getContentType();
-                    logger.debug("hasNoPDFfonts ?");
-                    logger.debug("ContentType :" + ContentType);
                     boolean hasNoPDFfonts = false;
                     if(  ContentType.equals("application/pdf") 
                       || ContentType.equals("application/x-download") 
                       || ContentType.equals("application/octet-stream") 
                       )
                         {
-                        logger.debug("calling PDFhasNoFonts");
                         hasNoPDFfonts = PDFhasNoFonts(file);
-                        logger.debug("hasNoPDFfonts " + (hasNoPDFfonts?"true":"false"));
                         }
                     arg = arg + " (FieldName,"      + workflow.quote(item.getFieldName())
                               + ".Name,"            + workflow.quote(item.getName())
@@ -1354,7 +1177,6 @@ også inkluderes som en parameter i url'en
             log("Error encountered while uploading file",ex);
             out.close();
             }
-        logger.debug("arg " + arg);
         return arg;
         }
 
@@ -1372,16 +1194,9 @@ også inkluderes som en parameter i url'en
 
 
         response.setContentType("text/html; charset=UTF-8");
-        /*20130423
-        if(userHandle == null && !goodPassword(request,response,items,out))
-            return;
-        */
 
         response.setStatus(200);
-        logger.debug("doPost, RemoteAddr == {}",request.getRemoteAddr());
         String referer = request.getHeader("referer");
-        logger.debug("Referer == {}",request.getHeader("referer"));
-        logger.debug("ToolsProperties.wwwServer == {}",ToolsProperties.wwwServer);
         /* TODO Add DASISH server
         if(  referer == null
           || (  !referer.startsWith(ToolsProperties.wwwServer) 
@@ -1396,6 +1211,7 @@ også inkluderes som en parameter i url'en
         */
         
         String arg  = getParmsAndFiles(items,response,out);
+        arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out,workflowRequest);
         }
 
@@ -1412,17 +1228,13 @@ også inkluderes som en parameter i url'en
             userId = userhandle.getUserId(request,items,userHandle);
         if(userEmail == null && userId != null)
             userEmail = userhandle.getEmailAddress(request,items,userHandle,userId);
+        if(UIlanguage == null)
+            UIlanguage = userhandle.getPreferredLocale(request,items);
         PrintWriter out = response.getWriter();
         response.setContentType("text/xml");
 
-        /*20130423
-        if(userHandle == null && !goodPassword(request,response,items,out))
-            return;
-        */
-
         response.setStatus(200);
         // Check if it is the allowed server that tries to start a workflow
-        logger.debug("doPost, RemoteAddr == {}",request.getRemoteAddr());
         
         if(  !request.getRemoteAddr().equals(ToolsProperties.acceptedWorkflowStarter) 
           && !request.getRemoteAddr().equals("127.0.0.1")
@@ -1433,6 +1245,7 @@ også inkluderes som en parameter i url'en
             throw new ServletException("Unauthorized");
             }
         String arg  = getParmsAndFiles(items,response,out);
+        arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out,"");
         }
     }

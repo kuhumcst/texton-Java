@@ -46,33 +46,18 @@ public class data extends HttpServlet
 
     private File destinationDir;
     private bracmat BracMat;
-    /// The eSciDoc userHandle
-    //private String userHandle = null;
-    /// The eSciDoc id of the user
-    //private String userId;
-    /// The users email
-    //private String userEmail;
-
-    //private String date;
-    //private String toolsdataURL;
-
-
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
         logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
-        //Calendar cal = Calendar.getInstance();
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        //date = sdf.format(cal.getTime());
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
-        //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
+        destinationDir = new File(ToolsProperties.documentRoot);
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
         }
 
@@ -88,9 +73,6 @@ public class data extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        //userHandle = null;
-        //userId = null;
-        //userEmail = null;
         logger.info("Calling tools/data");
         response.setStatus(200);
         if(!BracMat.loaded())
@@ -98,7 +80,7 @@ public class data extends HttpServlet
             response.setStatus(500);
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
-        /*Test:*/
+        /*Test:
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         logger.debug("show parms");
@@ -112,16 +94,14 @@ public class data extends HttpServlet
                 logger.debug("val:"+vals[j]);
                 }
             }
-        /*:Test*/
+        :Test*/
         logger.info("getPathInfo() returns {}",request.getPathInfo());              // /blablah/de/blah
         if(request.getPathInfo() == null || request.getPathInfo().equals("/"))
             {
             response.setContentType("text/html; charset=UTF-8");
-            //response.sendError(404,"Sorry, no directory listing.");
             response.setStatus(404);
             PrintWriter out = response.getWriter();
             out.println("Sorry, no directory listing.");
-            //throw new ServletException("Sorry, no directory listing.");
             }
         else
             {
@@ -138,9 +118,7 @@ public class data extends HttpServlet
     
                 String fileName = destinationDir + request.getPathInfo();
                 File f = new File(fileName);
-                //BufferedReader bufR = new BufferedReader(new FileReader(f));
                 int nLen = 0;
-                //String str = "";
                 OutputStream out;
                 FileInputStream in;
                 in = new FileInputStream(f);
@@ -188,21 +166,17 @@ public class data extends HttpServlet
                         logger.info(fileName + ": deletion failed");
                         }
                     }
-                //f.delete();
                 logger.info("doGet:deleted {}{}",destinationDir,request.getPathInfo());              // /blablah/de/blah
                 }
             catch (FileNotFoundException e)
                 {
-                //
                 response.setContentType("text/html; charset=UTF-8");
-                //response.sendError(404,"File " + request.getPathInfo() + " does not exist.");
                 response.setStatus(404);
                 PrintWriter out = response.getWriter();
                 String name = request.getPathInfo();
                 if(name.startsWith("/"))
                     name = name.substring(1);
                 out.println("File " + name + " is no longer accessible.");
-                //throw new ServletException("File " + request.getPathInfo() + " does not exist.");
                 }
             }
         }

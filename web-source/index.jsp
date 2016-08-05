@@ -25,7 +25,11 @@
 			(Notifications will be sent to this address.)</td>
 			
 		  </tr>
-  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td></tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
@@ -49,7 +53,11 @@
 			(Notifications will be sent to this address.)</td>
 			
 		  </tr>
-  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td></tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
@@ -60,7 +68,7 @@
 		<table>
 		  <tr>
 		    <td><span id="item1b" style="font-weight: bold;" >Choose a file:</span></td>
-			<td><input type="file" name="input" value="" size="50" alt="choose a file" /></td>
+			<td><input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" /></td>
 		  </tr><tr>
 			<td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
 			<td><input type="radio" name="action" value="dataset" />Compound input</td>

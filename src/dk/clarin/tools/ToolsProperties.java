@@ -53,7 +53,7 @@ public class ToolsProperties
 
     // Host names
     public static String coreServer                 = "";
-    public static String wwwServer					= "";
+    public static String wwwServer                    = "";
     
     // names used by Tools
     public static String baseUrlTools               = "";
@@ -76,7 +76,7 @@ public class ToolsProperties
         catch (IOException io)
             {
             logger.warn("could not read , using default values" + " message is " + io.getMessage()); 
-            }	
+            }    
         }
 
     public static void readProperties(InputStream fis)
@@ -130,7 +130,7 @@ public class ToolsProperties
             deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");
             acceptedWorkflowStarter= prop.getProperty("accepted-workflow-starter");
             tempdir                = prop.getProperty("tempdir");
-			password               = prop.getProperty("password");
+            password               = prop.getProperty("password");
             fis.close();
             } 
         catch (IOException io)

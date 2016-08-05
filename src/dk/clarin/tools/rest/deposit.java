@@ -29,7 +29,7 @@ public class deposit extends HttpServlet
     public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
         }

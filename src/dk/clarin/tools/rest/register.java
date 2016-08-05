@@ -45,7 +45,7 @@ public class register extends HttpServlet
     public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);		
+        ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
         }
@@ -109,8 +109,8 @@ public class register extends HttpServlet
         @SuppressWarnings("unchecked")
         boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-		logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-		
+        logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
+        
         if(is_multipart_formData)
             {
             try 
@@ -132,6 +132,7 @@ public class register extends HttpServlet
                 }
             }
         
+        @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
@@ -139,11 +140,11 @@ public class register extends HttpServlet
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-				if(name.equals(parmName))
-					{
-		            logger.debug("parmName:"+parmName+" equals:"+name+" , return "+vals[j]);
-					return vals[j];
-					}
+                if(name.equals(parmName))
+                    {
+                    logger.debug("parmName:"+parmName+" equals:"+name+" , return "+vals[j]);
+                    return vals[j];
+                    }
                 }
             }
         return null;
@@ -160,8 +161,8 @@ public class register extends HttpServlet
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-		logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-		
+        logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
+        
         if(is_multipart_formData)
             {
             try 
@@ -222,57 +223,55 @@ public class register extends HttpServlet
             String arg = "";
             if(userHandle == null)
                 {
-	            passwordAsHandle = getarg(request,items,"passwordAsHandle");
-	            logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
-				//passwordAsHandle = request.getParameter("passwordAsHandle");
-				/* 20140514 It is allowed to register a tool without being logged in or using a password, 
-				            but the tool can only be made non-"Inactive" by if you are logged-in.
-				if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
-				*/
-					{
-					//userEmail = request.getParameter("mail2");
-		            userEmail = getarg(request,items,"mail2");
-		            logger.debug("getarg(request,items,\"mail2\") returns:" + (userEmail == null ? "not found" : userEmail));
-					}
+                passwordAsHandle = getarg(request,items,"passwordAsHandle");
+                logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+                //passwordAsHandle = request.getParameter("passwordAsHandle");
+                /* 20140514 It is allowed to register a tool without being logged in or using a password, 
+                            but the tool can only be made non-"Inactive" if you are logged-in.
+                if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
+                */
+                    {
+                    //userEmail = request.getParameter("mail2");
+                    userEmail = getarg(request,items,"mail2");
+                    logger.debug("getarg(request,items,\"mail2\") returns:" + (userEmail == null ? "not found" : userEmail));
+                    }
                 if(userEmail == null && getarg(request,items,"contactEmail") == null)
-					{
-					response.setStatus(401);
-					response.setContentType("text/html; charset=UTF-8");
-					StringBuilder html = new StringBuilder();
-					html.append("<html>");
-					html.append("<head>");
-					html.append("<title>Registrering af oplysninger for et værktøj</title>");
-					html.append("</head>");
-					html.append("<body>");
-					html.append("<h1>Login krævet</h1>");
-					html.append("<p>Du skal være logget ind for at kunne registrere oplysninger for et værktøj.<a href=\"" + 
-						ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
-						"/clarindk/login?target=" + "/tools/register" + "\">Klik her for at logge ind</a>.</p>");
-						//"/tools/register" + "\">Klik her for at logge ind</a>.</p>");
-					html.append("</body>");
-					html.append("</html>");
+                    {
+                    response.setStatus(401);
+                    response.setContentType("text/html; charset=UTF-8");
+                    StringBuilder html = new StringBuilder();
+                    html.append("<html>");
+                    html.append("<head>");
+                    html.append("<title>Registrering af oplysninger for et værktøj</title>");
+                    html.append("</head>");
+                    html.append("<body>");
+                    html.append("<h1>Login krævet</h1>");
+                    html.append("<p>Du skal være logget ind for at kunne registrere oplysninger for et værktøj.<a href=\"" + 
+                        ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
+                        "/clarindk/login?target=" + "/tools/register" + "\">Klik her for at logge ind</a>.</p>");
+                        //"/tools/register" + "\">Klik her for at logge ind</a>.</p>");
+                    html.append("</body>");
+                    html.append("</html>");
 
-					out.println(html.toString());
-					return;
-					}
+                    out.println(html.toString());
+                    return;
+                    }
                 }
             else
-				{
-				logger.debug("userHandle = {}",userHandle);
+                {
+                logger.debug("userHandle = {}",userHandle);
 
-				String userId = userhandle.getUserId(request,items,userHandle);
-				userEmail = userhandle.getEmailAddress(request,items,userHandle,userId);
-				if(getarg(request,items,"handle") == null)
-				    arg += " (handle." + workflow.quote(userHandle) + ")";
-				logger.debug("arg = {}",arg);
-				}
-				
+                String userId = userhandle.getUserId(request,items,userHandle);
+                userEmail = userhandle.getEmailAddress(request,items,userHandle,userId);
+                if(getarg(request,items,"handle") == null)
+                    arg += " (handle." + workflow.quote(userHandle) + ")";
+                logger.debug("arg = {}",arg);
+                }
+                
             logger.debug("userEmail = {}",userEmail);
 
             if(userEmail != null && getarg(request,items,"contactEmail") == null)
-				arg += " (contactEmail." + workflow.quote(userEmail) + ")";
-            //if(passwordAsHandle != null)
-			//	arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
+                arg += " (contactEmail." + workflow.quote(userEmail) + ")";
             arg += getargs(request,items);
             /**
               * register$

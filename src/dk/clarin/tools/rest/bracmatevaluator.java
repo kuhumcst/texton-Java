@@ -43,7 +43,7 @@ public class bracmatevaluator extends HttpServlet
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
-        ToolsProperties.readProperties(fis);	
+        ToolsProperties.readProperties(fis);    
         super.init(config);
         }
 
