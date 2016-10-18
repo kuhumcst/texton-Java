@@ -1,0 +1,32 @@
+where=
+  (AAA where./)
+  (CTBs jobAbout jobNr jobs relations Uploads.job/)
+  (   features
+      HTTP-status-codes
+      ISO639
+      licences
+      subtype2facet
+      tooladm
+      toolprop
+      type2facet
+      Workflows
+      UIlanguage
+      TEImetadata
+      CMDImetadata
+      dcmi-type-vocabulary
+  . meta/
+  )
+  ( facets fileFormats linguae periods presentations vulticuli
+  . meta/feature/
+  )
+  (   annotationStyles
+      basistextStyles
+      flatFileTypes
+      imageStyles
+      sndStyles
+      tagSets
+      textStyles
+      tokenisationStyles
+      vidStyles
+  . meta/style/
+  );

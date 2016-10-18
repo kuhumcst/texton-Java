@@ -208,6 +208,1004 @@ HTTP-status-codes=
   . "This status code, while used by many servers, is not specified in any RFCs."
   )
   (510."Not Extended (RFC 2774)".);
+ISO639=
+  aar
+  aa
+  abk
+  ab
+  ace
+  ach
+  ada
+  ady
+  afa
+  afh
+  afr
+  af
+  ain
+  aka
+  ak
+  akk
+  alb
+  sqi
+  sq
+  ale
+  alg
+  alt
+  amh
+  am
+  ang
+  anp
+  apa
+  ara
+  ar
+  arc
+  arg
+  an
+  arm
+  hye
+  hy
+  arn
+  arp
+  art
+  arw
+  asm
+  as
+  ast
+  ath
+  aus
+  ava
+  av
+  ave
+  ae
+  awa
+  aym
+  ay
+  aze
+  az
+  bad
+  bai
+  bak
+  ba
+  bal
+  bam
+  bm
+  ban
+  baq
+  eus
+  eu
+  bas
+  bat
+  bej
+  bel
+  be
+  bem
+  ben
+  bn
+  ber
+  bho
+  bih
+  bh
+  bik
+  bin
+  bis
+  bi
+  bla
+  bnt
+  tib
+  bod
+  bo
+  bos
+  bs
+  bra
+  bre
+  br
+  btk
+  bua
+  bug
+  bul
+  bg
+  bur
+  mya
+  my
+  byn
+  cad
+  cai
+  car
+  cat
+  ca
+  cau
+  ceb
+  cel
+  cze
+  ces
+  cs
+  cha
+  ch
+  chb
+  che
+  ce
+  chg
+  chi
+  zho
+  zh
+  chk
+  chm
+  chn
+  cho
+  chp
+  chr
+  chu
+  cu
+  chv
+  cv
+  chy
+  cmc
+  cop
+  cor
+  kw
+  cos
+  co
+  cpe
+  cpf
+  cpp
+  cre
+  cr
+  crh
+  crp
+  csb
+  cus
+  wel
+  cym
+  cy
+  cze
+  ces
+  cs
+  dak
+  dan
+  da
+  dar
+  day
+  del
+  den
+  ger
+  deu
+  de
+  dgr
+  din
+  div
+  dv
+  doi
+  dra
+  dsb
+  dua
+  dum
+  dut
+  nld
+  nl
+  dyu
+  dzo
+  dz
+  efi
+  egy
+  eka
+  gre
+  ell
+  el
+  elx
+  eng
+  en
+  enm
+  epo
+  eo
+  est
+  et
+  baq
+  eus
+  eu
+  ewe
+  ee
+  ewo
+  fan
+  fao
+  fo
+  per
+  fas
+  fa
+  fat
+  fij
+  fj
+  fil
+  fin
+  fi
+  fiu
+  fon
+  fre
+  fra
+  fr
+  fre
+  fra
+  fr
+  frm
+  fro
+  frr
+  frs
+  fry
+  fy
+  ful
+  ff
+  fur
+  gaa
+  gay
+  gba
+  gem
+  geo
+  kat
+  ka
+  ger
+  deu
+  de
+  gez
+  gil
+  gla
+  gd
+  gle
+  ga
+  glg
+  gl
+  glv
+  gv
+  gmh
+  goh
+  gon
+  gor
+  got
+  grb
+  grc
+  gre
+  ell
+  el
+  grn
+  gn
+  gsw
+  guj
+  gu
+  gwi
+  hai
+  hat
+  ht
+  hau
+  ha
+  haw
+  heb
+  he
+  her
+  hz
+  hil
+  him
+  hin
+  hi
+  hit
+  hmn
+  hmo
+  ho
+  hrv
+  hr
+  hsb
+  hun
+  hu
+  hup
+  arm
+  hye
+  hy
+  iba
+  ibo
+  ig
+  ice
+  isl
+  is
+  ido
+  io
+  iii
+  ii
+  ijo
+  iku
+  iu
+  ile
+  ie
+  ilo
+  ina
+  ia
+  inc
+  ind
+  id
+  ine
+  inh
+  ipk
+  ik
+  ira
+  iro
+  ice
+  isl
+  is
+  ita
+  it
+  jav
+  jv
+  jbo
+  jpn
+  ja
+  jpr
+  jrb
+  kaa
+  kab
+  kac
+  kal
+  kl
+  kam
+  kan
+  kn
+  kar
+  kas
+  ks
+  geo
+  kat
+  ka
+  kau
+  kr
+  kaw
+  kaz
+  kk
+  kbd
+  kha
+  khi
+  khm
+  km
+  kho
+  kik
+  ki
+  kin
+  rw
+  kir
+  ky
+  kmb
+  kok
+  kom
+  kv
+  kon
+  kg
+  kor
+  ko
+  kos
+  kpe
+  krc
+  krl
+  kro
+  kru
+  kua
+  kj
+  kum
+  kur
+  ku
+  kut
+  lad
+  lah
+  lam
+  lao
+  lo
+  lat
+  la
+  lav
+  lv
+  lez
+  lim
+  li
+  lin
+  ln
+  lit
+  lt
+  lol
+  loz
+  ltz
+  lb
+  lua
+  lub
+  lu
+  lug
+  lg
+  lui
+  lun
+  luo
+  lus
+  mac
+  mkd
+  mk
+  mad
+  mag
+  mah
+  mh
+  mai
+  mak
+  mal
+  ml
+  man
+  mao
+  mri
+  mi
+  map
+  mar
+  mr
+  mas
+  may
+  msa
+  ms
+  mdf
+  mdr
+  men
+  mga
+  mic
+  min
+  mis
+  mac
+  mkd
+  mk
+  mkh
+  mlg
+  mg
+  mlt
+  mt
+  mnc
+  mni
+  mno
+  moh
+  mon
+  mn
+  mos
+  mao
+  mri
+  mi
+  may
+  msa
+  ms
+  mul
+  mun
+  mus
+  mwl
+  mwr
+  bur
+  mya
+  my
+  myn
+  myv
+  nah
+  nai
+  nap
+  nau
+  na
+  nav
+  nv
+  nbl
+  nr
+  nde
+  nd
+  ndo
+  ng
+  nds
+  nep
+  ne
+  new
+  nia
+  nic
+  niu
+  dut
+  nld
+  nl
+  nno
+  nn
+  nob
+  nb
+  nog
+  non
+  nor
+  no
+  nqo
+  nso
+  nub
+  nwc
+  nya
+  ny
+  nym
+  nyn
+  nyo
+  nzi
+  oci
+  oc
+  oji
+  oj
+  ori
+  or
+  orm
+  om
+  osa
+  oss
+  os
+  ota
+  oto
+  paa
+  pag
+  pal
+  pam
+  pan
+  pa
+  pap
+  pau
+  peo
+  per
+  fas
+  fa
+  phi
+  phn
+  pli
+  pi
+  pol
+  pl
+  pon
+  por
+  pt
+  pra
+  pro
+  pus
+  ps
+  qaa-qtz
+  que
+  qu
+  raj
+  rap
+  rar
+  roa
+  roh
+  rm
+  rom
+  rum
+  ron
+  ro
+  rum
+  ron
+  ro
+  run
+  rn
+  rup
+  rus
+  ru
+  sad
+  sag
+  sg
+  sah
+  sai
+  sal
+  sam
+  san
+  sa
+  sas
+  sat
+  scn
+  sco
+  sel
+  sem
+  sga
+  sgn
+  shn
+  sid
+  sin
+  si
+  sio
+  sit
+  sla
+  slo
+  slk
+  sk
+  slo
+  slk
+  sk
+  slv
+  sl
+  sma
+  sme
+  se
+  smi
+  smj
+  smn
+  smo
+  sm
+  sms
+  sna
+  sn
+  snd
+  sd
+  snk
+  sog
+  som
+  so
+  son
+  sot
+  st
+  spa
+  es
+  alb
+  sqi
+  sq
+  srd
+  sc
+  srn
+  srp
+  sr
+  srr
+  ssa
+  ssw
+  ss
+  suk
+  sun
+  su
+  sus
+  sux
+  swa
+  sw
+  swe
+  sv
+  syc
+  syr
+  tah
+  ty
+  tai
+  tam
+  ta
+  tat
+  tt
+  tel
+  te
+  tem
+  ter
+  tet
+  tgk
+  tg
+  tgl
+  tl
+  tha
+  th
+  tib
+  bod
+  bo
+  tig
+  tir
+  ti
+  tiv
+  tkl
+  tlh
+  tli
+  tmh
+  tog
+  ton
+  to
+  tpi
+  tsi
+  tsn
+  tn
+  tso
+  ts
+  tuk
+  tk
+  tum
+  tup
+  tur
+  tr
+  tut
+  tvl
+  twi
+  tw
+  tyv
+  udm
+  uga
+  uig
+  ug
+  ukr
+  uk
+  umb
+  und
+  urd
+  ur
+  uzb
+  uz
+  vai
+  ven
+  ve
+  vie
+  vi
+  vol
+  vo
+  vot
+  wak
+  wal
+  war
+  was
+  wel
+  cym
+  cy
+  wen
+  wln
+  wa
+  wol
+  wo
+  xal
+  xho
+  xh
+  yao
+  yap
+  yid
+  yi
+  yor
+  yo
+  ypk
+  zap
+  zbl
+  zen
+  zgh
+  zha
+  za
+  chi
+  zho
+  zh
+  znd
+  zul
+  zu
+  zun
+  zxx
+  zza;
+TEImetadata=
+  ( id
+  . "Text in UI" "Tekst i grænsefladen"
+  . "Required r / optional o / automatic a / zeroOrMore / oneOrMore"
+  . "line / lines / box / empty"
+  . "Placering i header"
+  . Noter
+  . "Help text" Hjælpetekst
+  . pattern
+  . URL
+  )
+  ( "Source text:" "Kildetekst:"
+  ,   ( fsbat
+      . "Work title" Værktitel
+      . r
+      . line
+      .   TEI
+          teiHeader
+          fileDesc
+          sourceDesc
+          biblStruct
+          analytic
+          title
+      . 
+      .   "Title of the physical work. If the work exists only in a digital version, the title of the digital work must be stated here"
+          "Værkets titel. Hvis værket kun findes i en digital version, skal værkets digitale titel skrives her"
+      . 
+      . 
+      )
+      ( fsbmt
+      .   "Title of larger work (if work to be stored is part of this larger work)"
+          "Titel på større værk (hvis værk er en del af dette større værk)"
+      . r
+      . line
+      . TEI teiHeader fileDesc sourceDesc biblStruct monogr title
+      . 
+      .   "If the work described in this record is part of a larger work then the title of the larger work is given here. Otherwise just state the Work title here."
+          "Hvis værket er en del af et større værk, angives titlen på det større værk her, ellers angives blot Værktitel"
+      . 
+      . 
+      )
+      ( fsbaan
+      . Author Forfatter
+      . oneOrMore
+      . lines
+      .   TEI
+          teiHeader
+          fileDesc
+          sourceDesc
+          biblStruct
+          analytic
+          author
+          name
+      . 
+      .   "Author name(s), personal or corporate, of a work; can be in bibliographic format"
+          "forfatternavn(e) (personnavn eller institutionssnavn), kan være i bibliografisk format"
+      . 
+      . 
+      )
+      ( fsbmip
+      . Publisher Udgiver
+      . o
+      . line
+      .   TEI
+          teiHeader
+          fileDesc
+          sourceDesc
+          biblStruct
+          monogr
+          imprint
+          publisher
+      . 
+      .   "Name of the organization responsible for the publication or distribution of a bibliographic item"
+          "Navn på institution ansvarlig for publicering eller distribution af en bibliografisk enhed"
+      . 
+      . 
+      )
+      ( fsbmidw
+      . "Publishing date" Udgivelsesdato
+      . o
+      . line
+      .   TEI
+          teiHeader
+          fileDesc
+          sourceDesc
+          biblStruct
+          monogr
+          imprint
+          (date.when)
+      . 
+      .   "Publication date in format yyyy-mm-dd or yyyy"
+          "Udgivelsesdato i formatet yyyy-mm-dd eller yyyy"
+      . DATE
+      . 
+      )
+      ( pcdw
+      . "Date of work creation" "Dato for værkets tilblivelse"
+      . o
+      . line
+      . TEI teiHeader profileDesc creation (date.when)
+      . "If the date of text creation is not known, it can be set to the same value as \"Udgivelsesdato\", or left empty"
+      .   "Work creation date in format yyyy-mm-dd or yyyy"
+          "Dato for værkets tilblivelse i formatet yyyy-mm-dd eller yyyy"
+      . DATE
+      . 
+      )
+      ( pll
+      . Language Sprog
+      . r
+      . line
+      . TEI teiHeader profileDesc langUsage language
+      . 
+      .   "A single language or sublanguage used within the work e.g., da, en, de, la, no (ISO 639-1 2-character codes)"
+          "Et enkelt sprog eller subsprog anvendt i værket; fx da, en, de, la, no (ISO 639-1 2-bogstavskoder)"
+      . ISO639
+      . 
+      )
+      ( ptd
+      . Subject Domæne
+      . o
+      . line
+      . TEI teiHeader profileDesc textDesc domain
+      . "subject, eksempler gives i hjælpetekst"
+      .   "Topic of the ressource. Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a classification system, e.g.  \"kommunikation (DK5-19.5)\", \"kristendom (DK5-20)\""
+          "Resursens emne. Domænet bør repræsenteres af et nøgleord eller en klassifikationskode. Best practice er at anvende et etableret klassifikationssystem fx: kommunikation (DK5-19.5), kristendom (DK5-20)"
+      . 
+      . "info.clarin.dk/kom-godt-i-gang/emner/"
+      )
+  )
+  ( "Digital version of the resource" "Elektroniske version:"
+  ,   ( ftt
+      . "Digital work title" "Titel på digitalt værk"
+      . r
+      . line
+      . TEI teiHeader fileDesc titleStmt title
+      . 
+      .   "Title of the digital work can be equal to \"Title for this work\" if the work is created as a digital resource"
+          "Titel på det digitale værk evt. = værktitel hvis resursen er skabt elektronisk"
+      . 
+      . 
+      )
+      ( ftrnn
+      .   "The responsible party for creation of the digital version"
+          "Den ansvarlige for skabelsen af den digitale version"
+      . oneOrMore
+      . lines
+      . TEI teiHeader fileDesc titleStmt respStmt name name
+      . "teiHeader.fileDesc.titleStmt.respStmt.name skal kunne gentages (dvs både inderste <name> (fra indtastning) og <note> (genereret))"
+      .   "The responsible person or organisation is the author if the resource is originally created as an electronic work or the person who created the electronic version or the person who created the conversion"
+          "Den ansvarlige person eller organisation er forfatteren hvis resursen er skabt elektronisk, eller den person der har skabt den elektroniske version, eller den der foretager denne konvertering"
+      . 
+      . 
+      )
+      ( fpd
+      .   "The responsible party  for distribution of the digital version"
+          "Den ansvarlige for distribution af den digitale version"
+      . oneOrMore
+      . lines
+      . TEI teiHeader fileDesc publicationStmt distributor
+      . 
+      .   "The name of the person or the organization responsible for the distribution of the digital work"
+          "Navn på person eller organisation ansvarlig for distribution af digitalt værk"
+      . 
+      . 
+      )
+      ( fts
+      . Sponsor Sponsor
+      . zeroOrMore
+      . lines
+      . TEI teiHeader fileDesc titleStmt sponsor
+      . "Skal kunne indeholde flere navne"
+      .   "Name(s) of sponsoring organization(s)/institution(s), project or grant"
+          "Navn(e) på sponsorerende organisation(er)/institution(er), projekt eller bevilling"
+      . 
+      . 
+      )
+      ( ftrndw
+      . "Conversion date" Konverteringsdato
+      . a
+      . 
+      .   TEI
+          teiHeader
+          fileDesc
+          titleStmt
+          respStmt
+          name
+          (date.when)
+      . 
+      .   "Date when digital version of work is created in format yyyy-mm-dd or yyyy"
+          "Dato for digital version af værket  i formatet yyyy-mm-dd eller yyyy"
+      . DATE
+      . 
+      )
+      ( fnn
+      . Description Beskrivelse
+      . r
+      . box
+      . TEI teiHeader fileDesc notesStmt note
+      . "Feltet skal lægge op til en lidt længere beskrivelse"
+      .   "An account of the resource -.contents of this field may include but are not limited to: an abstract, a table of contents, or a free-text account of the resource"
+          "En beskrivelse af resursen som kan inkludere et sammendrag, en indholdsfortegnelse eller en tekstbeskrivelse af resursen"
+      . 
+      . 
+      )
+      ( fen
+      . Size Størrelse
+      . a
+      . line
+      . TEI teiHeader fileDesc extent num
+      . "Automatisk optælling, vi skal nok tale om den"
+      .   "Size of a work specified in any convenient units."
+          "værkets størrelse; størrelsen angives i passende enheder"
+      . 
+      . 
+      )
+      ( fpi
+      . Identifier Id
+      . a o
+      . line
+      . TEI teiHeader fileDesc publicationStmt idno
+      . "Genereres automatisk hvis bruger ikke skriver noget"
+      .   "An identifier the object already has, such as a bibliographic id"
+          "Objektets id; kan fx være et bibliografisk id"
+      . 
+      . 
+      )
+      ( eaa
+      . 
+      . a
+      . 
+      . TEI teiHeader encodingDesc appInfo application
+      . 
+      . 
+      . 
+      . 
+      )
+      ( pcdc
+      . 
+      . a
+      . 
+      . TEI teiHeader profileDesc creation (date.cert)
+      . "default til værdi=\"high\""
+      . 
+      . 
+      . 
+      )
+  );
 UIlanguage=
 en da;
 Uploads=
@@ -281,40 +1279,41 @@ Workflows=
   . "DASISH cleaning workflow, flat text input, TEIP5DKCLARIN output"
   );
 annotationStyles=
-("id: not disclosed".one) ("id: i#.# (sentence.token)".two);
+("id: not disclosed".one.) ("id: i#.# (sentence.token)".two.);
 basistextStyles=
-  ("xml:id=\"i#.#\"".ANI)
-  ("xml:id=\"...#-#\"".dsl)
-  ("xml:id=\"...#\"".nor)
-  ("no xml:id".raw);
+  ("xml:id=\"i#.#\"".ANI.)
+  ("xml:id=\"...#-#\"".dsl.)
+  ("xml:id=\"...#\"".nor.)
+  ("no xml:id".raw.);
 facets=
-  (text "Ingen annotation".txt)
-  (tokens Tokens.tok)
-  (sentences "Sætninger, før tokenisering".sent)
-  (segments Sætningssegmenter.seg)
-  (paragraphs Paragrafsegmenter.par)
-  ("PoS tags" POS-tags.pos)
-  (lemmas Lemma.lem)
-  ("word class" ordklasse.cls)
-  (syntax "Syntaks (dependensstrukturer)".stx)
-  ("tokens,PoS-tags".tp)
-  ("tokens,PoS-tags,Dependency relations".tpd)
-  ("tokens,lemmas,PoS-tags" "tokens,lemmaer,PoS-tags".tpl)
+  (text "Ingen annotation".txt.)
+  (tokens Tokens.tok.)
+  (sentences "Sætninger, før tokenisering".sent.)
+  (segments Sætningssegmenter.seg.)
+  (paragraphs Paragrafsegmenter.par.)
+  ("PoS tags" POS-tags.pos.)
+  (lemmas Lemma.lem.)
+  ("word class" ordklasse.cls.)
+  (syntax "Syntaks (dependensstrukturer)".stx.)
+  ("tokens,PoS-tags".tp.)
+  ("tokens,PoS-tags,Dependency relations".tpd.)
+  ("tokens,lemmas,PoS-tags" "tokens,lemmaer,PoS-tags".tpl.)
   ( "tokens,lemmas,PoS-tags,word class" "tokens,lemmaer,PoS-tags,ordklasse"
   . tplo
+  . 
   )
-  ("tokens,lemmaer".tl)
-  ("tagged terms" termer.trm)
-  ("anonymized named entities".ano)
-  ("name entities" Navne.ner)
-  (morphemes morfemer.wrdsplt)
-  ("noun phrases" "navnefraser (NP)".npr)
-  ("repeated phrases" gentagelser.rep)
-  ("N-gram frequencies" "N-gram frekvenser".Ngram)
-  (keywords.key)
-  ("multiple word terms" flerordstermer.mwu)
-  (lexicon leksikon.lex)
-  ("head movements" hovedbevægelser.headmov);
+  ("tokens,lemmaer".tl.)
+  ("tagged terms" termer.trm.)
+  ("anonymized named entities".ano.)
+  ("name entities" Navne.ner.)
+  (morphemes morfemer.wrdsplt.)
+  ("noun phrases" "navnefraser (NP)".npr.)
+  ("repeated phrases" gentagelser.rep.)
+  ("N-gram frequencies" "N-gram frekvenser".Ngram.)
+  (keywords.key.)
+  ("multiple word terms" flerordstermer.mwu.)
+  (lexicon leksikon.lex.)
+  ("head movements" hovedbevægelser.headmov.);
 features=
   ( (inDex.A)
     (name."Type of content" Annotationstyper)
@@ -359,39 +1358,73 @@ features=
 + ( (inDex.D)
     (name.Language Sprog)
     (short.lang)
-    ( description
-    . "Language of a (text-) resource" "Sproget af teksten i en resource."
-    )
+    (description."Language of the text" "Sproget i teksten.")
     (table.linguae)
+  )
++ ( (inDex.E)
+    (name.Spelling Stavning)
+    (short.period)
+    ( description
+    .   "Time period of the spelling in the text resource."
+        "Tidsperiode hvori stavningen eller ortografien anvendt i teksten blev anvendt."
+    )
+    (table.periods)
+  )
++ ( (inDex.F)
+    (name.Appearance Udseende)
+    (short.app)
+    (description."Decorative tradition, for example typeface class.")
+    (table.vulticuli)
   );
 fileFormats=
-  (flat flad.flat)
-  (RTF.rtf)
-  (PDF.pdf)
-  (HTML.html)
-  (XML.xm)
-  (CSV.csv)
-  (TEIP5.teip5)
-  (TEIP5DKCLARIN.txtbasis)
-  ("TEIP5DKCLARIN_ANNOTATION".txtann)
-  (RDF.rdf)
-  (Anvil.anvil)
-  (image billede.img)
-  (audio.snd)
-  (video.vid)
-  (CoNLL2009.conll)
-  ("Penn Treebank".pt);
+  ( flat flad
+  . flat
+  .   "Can be edited with a simple text editor like 'vi'."
+      "Kan redigeres med en teksteditor som f.eks. 'vi'."
+  )
+  (RTF.rtf.)
+  (PDF.pdf.)
+  (HTML.html.)
+  (XML.xm.)
+  (CSV.csv.)
+  (DOC.doc.)
+  (DOCX.docx.)
+  (ODF.odt.)
+  (ODP.odp.)
+  (ODS.ods.)
+  (PPT.ppt.)
+  (PPTX.pptx.)
+  (XLS.xls.)
+  (XLSX.xlsx.)
+  (TEIP5.teip5.)
+  ( TEIP5DKCLARIN
+  . txtbasis
+  .   "Can be viewed in a browser and edited with a text editor like 'vi' or with a XML editor like 'Oxygen' or Microsoft's 'Visual Studio'"
+      "Du kan se indholdet i en browser og du kan redigere filen med en tekst editor som f.eks. 'vi' eller med en XML editor som f.eks. 'Oxygen' eller Microsofts 'Visual Studio'."
+  )
+  ( "TEIP5DKCLARIN_ANNOTATION"
+  . txtann
+  .   "Can be viewed in a browser and edited with a text editor like 'vi' or with a XML editor like 'Oxygen' or Microsoft's 'Visual Studio'"
+      "Du kan se indholdet i en browser og du kan redigere filen med en tekst editor som f.eks. 'vi' eller med en XML editor som f.eks. 'Oxygen' eller Microsofts 'Visual Studio'."
+  )
+  (RDF.rdf.)
+  (Anvil.anvil.)
+  (image billede.img.)
+  (audio.snd.)
+  (video.vid.)
+  (CoNLL2009.conll.)
+  ("Penn Treebank".pt.);
 flatFileTypes=
-(Latin-1.latin1) (UTF-8.utf8);
+(Latin-1.latin1.) (UTF-8.utf8.);
 imageStyles=
-  (GIF.gif)
-  ("JPEG JFIF".jpeg)
-  ("Progressive JPEG JFIF".pjpeg)
-  ("Portable Network Graphics".png)
-  (SVG."svg+xml")
-  ("Tag Image File Format".tiff)
-  (ICO."vnd.microsoft.icon")
-  ("Image as PDF".pdf);
+  (GIF.gif.)
+  ("JPEG JFIF".jpeg.)
+  ("Progressive JPEG JFIF".pjpeg.)
+  ("Portable Network Graphics".png.)
+  (SVG."svg+xml".)
+  ("Tag Image File Format".tiff.)
+  (ICO."vnd.microsoft.icon".)
+  ("Image as PDF".pdf.);
 jobAbout=
 ;
 jobNr=
@@ -403,75 +1436,221 @@ licences=
   (academic.academic)
   (restricted.restricted);
 linguae=
-  (Afrikaans afrikaans.af)
-  (Albanian albansk albaans.sq)
-  (Armenian armensk.hy)
-  (Asturian asturiansk.ast)
-  (Bosnian bosnisk.bs)
-  (Bulgarian bulgarsk.bg)
-  (Catalan catalansk.ca)
-  (Chinese kinesisk.zh)
-  (Croatian kroatisk.hr)
-  (Czech tjekkisk.cs)
-  (Danish dansk.da)
-  (Dutch nederlandsk.nl)
-  (English engelsk.en)
-  (Esperanto esperanto.eo)
-  (Estonian estisk.et)
-  (Finnish finsk.fi)
-  (French fransk.fr)
-  (Galician galicisk.gl)
-  (G.fooian g.fooisk.ka)
-  (German tysk.de)
-  (Greek græsk.el)
-  (Hindi hindi.hi)
-  (Hungarian ungarsk.hu)
-  (Icelandic islandsk.is)
-  (Indonesian indonesisk.id)
-  (Italian italiansk.it)
-  (Kannada kannada.kn)
-  (Kurdish kurdisk.ku)
-  (Latin latin.la)
-  (Latvian lettisk.lv)
-  (Lithuanian litauisk.lt)
-  (Macedonian makedonsk.mk)
-  (Malayalam malayalam.ml)
-  (Norwegian norsk.no)
-  ("Norwegian Bokmål" "norsk bokmål".nb)
-  ("Norwegian Nynorsk" nynorsk.nn)
-  (Polish polsk.pl)
-  (Portuguese portugisisk.pt)
-  (Romanian rumansk.ro)
-  (Russian russisk.ru)
-  (Serbian serbisk.sr)
-  (Slovak slovakisk.sk)
-  (Slovene slovensk.sl)
-  (Spanish spansk.es)
-  (Swahili swahili.sw)
-  (Swedish svensk.sv)
-  (Tamil tamil.ta)
-  (Turkish tyrkisk.tr)
-  (Ukrainian ukrainsk.uk)
-  (Vietnamese vietnamesisk.vi)
-  (Welsh walisisk.cy)
-  (Xhosa xhosa.xh);
+  (Abkhaz abkhasisk.ab.)
+  (Afar afar.aa.)
+  (Afrikaans afrikaans.af.)
+  (Akan akan.ak.)
+  (Albanian albansk.sq.)
+  (Amharic amharisk.am.)
+  (Arabic arabisk.ar.)
+  (Aragonese aragonisk.an.)
+  (Armenian armensk.hy.)
+  (Assamese assamesisk.as.)
+  (Avaric avarisk.av.)
+  (Avestan avestisk.ae.)
+  (Aymara aymara.ay.)
+  (Azerbaijani aserbajdsjansk.az.)
+  (Balochi balochi.ba.)
+  (Bambara bambara.bm.)
+  (Bashkir basjkirsk.ba.)
+  (Basque baskisk.eu.)
+  (Belarusian hviderussisk.be.)
+  (Bengali bengali.bn.)
+  (Bihari bihari.bh.)
+  (Bislama bislama.bi.)
+  (Bosnian bosnisk.bs.)
+  (Breton bretonsk.br.)
+  (Bulgarian bulgarsk.bg.)
+  (Burmese burmesisk.my.)
+  (Catalan katalansk.ca.)
+  (Chamorro chamorro.ch.)
+  (Chechen tjetjensk.ce.)
+  (Chichewa chichewa.ny.)
+  (Chinese kinesisk.zh.)
+  (Chuvash tsjuvansk.cv.)
+  (Cornish kornisk.kw.)
+  (Corsican korsikansk.co.)
+  (Cree cree.cr.)
+  (Croatian kroatisk.hr.)
+  (Czech tjekkisk.cs.)
+  (Danish dansk.da.)
+  (Divehi dhivehi.dv.)
+  (Dutch nederlandsk.nl.)
+  (Dzongkha dzongkha.dz.)
+  ("Eastern Punjabi" punjabi.pa.)
+  (English engelsk.en.)
+  (Esperanto esperanto.eo.)
+  (Estonian estisk.et.)
+  (Ewe ewe.ee.)
+  (Faroese færøsk.fo.)
+  (Fijian fijisk.fj.)
+  (Finnish finsk.fi.)
+  (French fransk.fr.)
+  (Fula fulfulde.ff.)
+  (Galician galicisk.gl.)
+  (Ganda luganda.lg.)
+  (Georgian georgisk.ka.)
+  (German tysk.de.)
+  (Greek græsk.el.)
+  (Guaraní guaraní.gn.)
+  (Gujarati gujarati.gu.)
+  (Haitian "haitisk kreolsk".ht.)
+  (Hausa hausa.ha.)
+  (Hebrew hebraisk.he.)
+  (Herero herero.hz.)
+  (Hindi hindi.hi.)
+  ("Hiri Motu" "hiri motu".ho.)
+  (Hungarian ungarsk.hu.)
+  (Icelandic islandsk.is.)
+  (Ido ido.io.)
+  (Igbo ibo.ig.)
+  (Indonesian indonesisk.id.)
+  (Interlingua interlingua.ia.)
+  (Interlingue interlingue.ie.)
+  (Inuktitut inuittisk.iu.)
+  (Inupiaq inupiak.ik.)
+  (Irish irsk.ga.)
+  (Italian italiensk.it.)
+  (Japanese japansk.ja.)
+  (Javanese javanesisk.jv.)
+  (Kalaallisut kalaallisut.kl.)
+  (Kannada kannada.kn.)
+  (Kanuri kanuri.kr.)
+  (Kashmiri kashmirisk.ks.)
+  (Kazakh kasakhisk.kk.)
+  (Khmer khmer.km.)
+  (Kikuyu gikuyu.ki.)
+  (Kinyarwanda kinyarwanda.rw.)
+  (Kirundi kirundi.rn.)
+  (Komi komi.kv.)
+  (Kongo congolesisk.kg.)
+  (Korean koreansk.ko.)
+  (Kurdish kurdisk.ku.)
+  (Kwanyama kwanyama.kj.)
+  (Kyrgyz kirgisisk.ky.)
+  (Lao laotisk.lo.)
+  (Latin latin.la.)
+  (Latvian lettisk.lv.)
+  (Lingala lingala.ln.)
+  (Lithuanian litauisk.lt.)
+  (Luba-Katanga luba-katanga.lu.)
+  (Luxembourgish letzeburgsk.lb.)
+  (Macedonian makedonsk.mk.)
+  (Malagasy gassisk.mg.)
+  (Malay malajisk.ms.)
+  (Malayalam malayalam.ml.)
+  (Maltese maltesisk.mt.)
+  (Manx mansk.gv.)
+  ("Marathi (Marāṭhī)" marathi.mr.)
+  (Marshallese marshallesisk.mh.)
+  (Mongolian mongolsk.mn.)
+  (Māori maoriski.mi.)
+  (Nauruan naurisk.na.)
+  (Navajo navajo.nv.)
+  (Ndonga ndonga.ng.)
+  (Nepali nepali.ne.)
+  ("Northern Ndebele" nord-ndebele.nd.)
+  ("Northern Sami" nordsamisk.se.)
+  (Norwegian norsk.no.)
+  ("Norwegian Bokmål" "norsk bokmål".nb.)
+  ("Norwegian Nynorsk" nynorsk.nn.)
+  (Nuosu yi.ii.)
+  (Occitan occitansk.oc.)
+  (Ojibwe ojibwa.oj.)
+  ("Old Church Slavonic" kirkeslavisk.cu.)
+  (Oriya oriya.or.)
+  (Oromo oromo.om.)
+  (Ossetian ossetisk.os.)
+  (Pashto pashto.ps.)
+  (Persian persisk.fa.)
+  (Polish polsk.pl.)
+  (Portuguese portugisisk.pt.)
+  (Pāli pali.pi.)
+  (Quechua quechua.qu.)
+  (Romanian rumænsk.ro.)
+  (Romansh rætoromansk.rm.)
+  (Russian russisk.ru.)
+  (Samoan samoansk.sm.)
+  (Sango sango.sg.)
+  ("Sanskrit (Saṁskṛta)" sanskrit.sa.)
+  (Sardinian sardisk.sc.)
+  ("Scottish Gaelic" "skotsk gælisk".gd.)
+  (Serbian serbisk.sr.)
+  (Shona shona.sn.)
+  (Sindhi sindhi.sd.)
+  (Sinhalese singalesisk.si.)
+  (Slovak slovakisk.sk.)
+  (Slovene slovensk.sl.)
+  (Somali somali.so.)
+  ("Southern Ndebele" syd-ndebele.nr.)
+  ("Southern Sotho" sesotho.st.)
+  (Spanish spansk.es.)
+  (Sundanese sundanesisk.su.)
+  (Swahili swahili.sw.)
+  (Swati swati.ss.)
+  (Swedish svensk.sv.)
+  (Tagalog tagalog.tl.)
+  (Tahitian tahitisk.ty.)
+  (Tajik tadtjikkisk.tg.)
+  (Tamil tamilsk.ta.)
+  (Tatar tatarsk.tt.)
+  (Telugu telugu.te.)
+  (Thai thai.th.)
+  ("Tibetan Standard" tibetansk.bo.)
+  (Tigrinya tigrinya.ti.)
+  (Tonga tonganesisk.to.)
+  (Tsonga tsonga.ts.)
+  (Tswana tswana.tn.)
+  (Turkish tyrkisk.tr.)
+  (Turkmen turkmensk.tk.)
+  (Twi twi.tw.)
+  (Ukrainian ukrainsk.uk.)
+  (Urdu urdu.ur.)
+  (Uyghur uighur.ug.)
+  (Uzbek usbekisk.uz.)
+  (Venda venda.ve.)
+  (Vietnamese vietnamesisk.vi.)
+  (Volapük volapük.vo.)
+  (Walloon vallonsk.wa.)
+  (Welsh walisisk.cy.)
+  ("Western Frisian" frisisk.fy.)
+  (Wolof wolof.wo.)
+  (Xhosa xhosa.xh.)
+  (Yiddish jiddisch.yi.)
+  (Yoruba yoruba.yo.)
+  (Zeneize limburgisk.li.)
+  (Zhuang zhuang.za.)
+  (Zulu zulu.zu.);
+periods=
+  (900-1000.c10.)
+  (1000-1100.c11.)
+  (1100-1200.c12.)
+  (1200-1300.c13.)
+  (1300-1400.c14.)
+  (1400-1500.c15.)
+  (1500-1600.c16.)
+  (1600-1700.c17.)
+  (1700-1800.c18.)
+  (1800-1900.c19.)
+  (1900-1950.c20.)
+  (1950-.c21.);
 presentations=
-  (normal.nml)
-  ("combined w. previous steps" "kombineret m. tidligere trin".comb)
-  ("frequency list" frekvensliste.frq)
-  ("alphabetic list" "alfabetisk liste".alf);
+  (normal.nml.)
+  ("combined w. previous steps" "kombineret m. tidligere trin".comb.)
+  ("frequency list" frekvensliste.frq.)
+  ("alphabetic list" "alfabetisk liste".alf.);
 relations=
 ;
 sndStyles=
-  ("mulaw audio at 8 kHz, 1 channel".basic)
-  ("24bit Linear PCM audio at 8–48 kHz, 1-N channels".L24)
-  ("MP4 audio".mp4)
-  ("MP3 or other MPEG audio".mpeg)
-  ("Ogg Vorbis, Speex, Flac and other audio".ogg)
-  ("Vorbis encoded audio".vorbis)
-  (RealAudio."vnd.rn-realaudio")
-  ("WAV audio"."vnd.wave")
-  ("WebM open media format".webm);
+  ("mulaw audio at 8 kHz, 1 channel".basic.)
+  ("24bit Linear PCM audio at 8–48 kHz, 1-N channels".L24.)
+  ("MP4 audio".mp4.)
+  ("MP3 or other MPEG audio".mpeg.)
+  ("Ogg Vorbis, Speex, Flac and other audio".ogg.)
+  ("Vorbis encoded audio".vorbis.)
+  (RealAudio."vnd.rn-realaudio".)
+  ("WAV audio"."vnd.wave".)
+  ("WebM open media format".webm.);
 subtype2facet=
   (text.txt)
   (p-splitter.par)
@@ -481,20 +1660,20 @@ subtype2facet=
   (lemmatizer.lem)
   (term-tagger.trm);
 tagSets=
-  ("Penn Treebank".PT)
-  (Parole.Par)
-  (Parole-Moses.ParMos)
-  (DSL-tagset.DSL)
-  ("ANI new tag set" "ANI_nyt_tagsæt".ANInyt)
-  ("Universal Part-of-Speech Tagset".Uni);
+  ("Penn Treebank".PT.)
+  (Parole.Par.)
+  (Parole-Moses.ParMos.)
+  (DSL-tagset.DSL.)
+  ("ANI new tag set" "ANI_nyt_tagsæt".ANInyt.)
+  ("Universal Part-of-Speech Tagset".Uni.);
 textStyles=
-(HQ.hq) (OCR.ocr);
+(HQ.hq.) (OCR.ocr.);
 tokenisationStyles=
-  ("Penn Treebank".PT)
-  (DSL-basic.DSLb)
-  ("Abbreviation and Multiple Word Unit-wise".AbbrMWU)
-  (Simple.simple)
-  (Anonymous.anon);
+  ("Penn Treebank".PT.)
+  (DSL-basic.DSLb.)
+  ("Abbreviation and Multiple Word Unit-wise".AbbrMWU.)
+  (Simple.simple.)
+  (Anonymous.anon.);
 tooladm=
   ( (ToolID.Brill-tagger)
     (PassWord.)
@@ -599,6 +1778,24 @@ tooladm=
     (XMLparms.)
     (PostData.)
     (Inactive.on)
+  )
++ ( (ToolID.ANI-Norm)
+    (PassWord.)
+    (ContactEmail."abc123@hum.ku.dk")
+    (Version."5.06.2014.0809")
+    (Title.ANI-Normaliser)
+    (ServiceURL."http://satie.foo/ANI-normaliser/")
+    (Publisher.ANI)
+    (ContentProvider."satie.ani.foo")
+    (Creator."Kré Ator")
+    (InfoAbout.none)
+    ( Description
+    . "Normalises older (1700-1900) Danish text to spelling rules as employed in ODS (Ordbog over det danske Sprog)"
+    )
+    (ExternalURI.)
+    (XMLparms.)
+    (PostData.)
+    (Inactive.)
   )
 + ( (ToolID.ANI-RTFread)
     (PassWord.)
@@ -855,6 +2052,24 @@ History. Originally known as speak and originally written for Acorn/RISC_OS comp
     (PostData.)
     (Inactive.)
   )
++ ( (ToolID.mate-POS)
+    (PassWord.)
+    (ContactEmail."abc123.ku.dk")
+    (Version."3.3")
+    (Title."Bohnet's POS tagger")
+    (ServiceURL."http://satie.foo/mate-POStagger")
+    (Publisher.mate-tools)
+    (ContentProvider.mate-tools)
+    (Creator."Bernd Bohnet")
+    (InfoAbout."https://code.google.com/p/mate-tools/")
+    ( Description
+    . "Bohnets POS-tagger, som bliver distribueret under navnet 'mate-tools'."
+    )
+    (ExternalURI.)
+    (XMLparms.)
+    (PostData.)
+    (Inactive.on)
+  )
 + ( (ToolID.mate-parser)
     (PassWord.)
     (ContactEmail."abc123@hum.ku.dk")
@@ -974,6 +2189,40 @@ SVG background output & Type 3 font conversion"
     (PostData.)
     (Inactive.)
   )
++ ( (ToolID.soffice)
+    (PassWord.)
+    (ContactEmail."abc123@hum.ku.dk")
+    (Version."3.5")
+    (Title.LibreOffice)
+    (ServiceURL."http://satie.foo/soffice/")
+    (Publisher.LibreOffice)
+    (ContentProvider.LibreOffice)
+    (Creator.LibreOffice)
+    (InfoAbout."http://www.libreoffice.org")
+    (Description."LibreOffice is a powerful office suite")
+    (ExternalURI.)
+    (XMLparms.)
+    (PostData.)
+    (Inactive.)
+  )
++ ( (ToolID.tesseract)
+    (PassWord.)
+    (ContactEmail."abc123@hum.ku.dk")
+    (Version."3.02.02")
+    (Title.Tesseract-OCR)
+    (ServiceURL."http://satie.foo/tesseract")
+    (Publisher.Google)
+    (ContentProvider.Google)
+    (Creator."Hewlett Packard")
+    (InfoAbout."https://code.google.com/p/tesseract-ocr/")
+    ( Description
+    . "Tesseract is probably the most accurate open source OCR engine available. Combined with the Leptonica Image Processing Library it can read a wide variety of image formats and convert them to text in over 60 languages. It was one of the top 3 engines in the 1995 UNLV Accuracy test. Between 1995 and 2006 it had little work done on it, but since then it has been improved extensively by Google. It is released under the Apache License 2.0."
+    )
+    (ExternalURI.)
+    (XMLparms.)
+    (PostData.)
+    (Inactive.)
+  )
 + ( (ToolID.toksent)
     (PassWord.)
     (ContactEmail."abc123@hum.ku.dk")
@@ -1008,33 +2257,74 @@ toolprop=
 + ( ANI-Lem
   .   (facet,(tok.lem))
       (format,(flat.flat)+(txtann.txtann)+(xm.xm))
+      (lang,(da.da))
+      (period,(c20.c20))
+  )
++ ( ANI-Lem
+  .   (facet,(tok.lem))
+      (format,(flat.flat)+(txtann.txtann)+(xm.xm))
       ( lang
-      ,   (de.de)
+      ,   (bg.bg)
+        + (cs.cs)
+        + (de.de)
         + (el.el)
+        + (es.es)
+        + (et.et)
+        + (fa.fa)
         + (fr.fr)
+        + (hu.hu)
         + (is.is)
+        + (it.it)
         + (la.la)
+        + (mk.mk)
         + (nl.nl)
         + (pl.pl)
+        + (pt.pt)
+        + (ro.ro)
         + (ru.ru)
+        + (sk.sk)
+        + (sl.sl)
+        + (sr.sr)
+        + (uk.uk)
       )
   )
 + ( ANI-Lem
   .   (facet,(tok.lem))
       (format,(flat+txtann+xm.flat))
       ( lang
-      ,   (de.de)
+      ,   (bg.bg)
+        + (cs.cs)
+        + (de.de)
         + (el.el)
+        + (es.es)
+        + (et.et)
+        + (fa.fa)
         + (fr.fr)
+        + (hu.hu)
         + (is.is)
+        + (it.it)
         + (la.la)
+        + (mk.mk)
         + (nl.nl)
         + (pl.pl)
+        + (pt.pt)
+        + (ro.ro)
         + (ru.ru)
+        + (sk.sk)
+        + (sl.sl)
+        + (sr.sr)
+        + (uk.uk)
       )
       (pres,(nml.alf+frq))
   )
 + ( ANI-Lem
+  .   (facet,(tok.lem))
+      (format,(flat+txtann+xm.flat))
+      (lang,(da.da))
+      (period,(c20.c20))
+      (pres,(nml.alf+frq))
+  )
++ ( ANI-Lem
   .   (facet,(tok pos^PT.lem))
       (format,(flat.flat)+(txtann.txtann)+(xm.xm))
       (lang,(en.en))
@@ -1049,18 +2339,14 @@ toolprop=
   .   (facet,(tok pos^Par.lem))
       (format,(flat.flat)+(txtann.txtann)+(xm.xm))
       (lang,(da.da))
-  )
-+ ( ANI-Lem
-  .   (facet,(tok pos^Par.lem))
-      (format,(flat.flat)+(txtann+xm.flat))
-      (lang,(da.da))
-      (pres,(nml.alf))
+      (period,(c21.c21))
   )
 + ( ANI-Lem
   .   (facet,(tok pos^Par.lem))
       (format,(flat+txtann+xm.flat))
       (lang,(da.da))
-      (pres,(nml.frq))
+      (period,(c21.c21))
+      (pres,(nml.alf+frq))
   )
 + ( ANI-MWU
   .   (facet,(pos^Par.mwu))
@@ -1071,6 +2357,8 @@ toolprop=
   .   (facet,(tok^simple.ner))
       (format,(flat^utf8.flat^utf8))
       (lang,(da.da))
+      (period,(c21.c21))
+      (pres,(nml.nml))
   )
 + ( ANI-NPr
   .   (facet,(pos^Par.npr))
@@ -1080,14 +2368,21 @@ toolprop=
 + ( ANI-Ngram
   . (facet,(tok.Ngram)) (format,(flat^utf8.flat^utf8))
   )
++ ( ANI-Norm
+  .   (facet,(tok.tok))
+      (format,(flat.flat))
+      (lang,(da.da))
+      (period,(c19.c20))
+      (pres,(nml.alf+frq+nml))
+  )
 + ( ANI-RTFread
-  .   (facet,(txt^ocr.tok^(PT+simple)))
+  .   (facet,(txt+txt^ocr.tok^(PT+simple)))
       (format,(flat+rtf.flat))
       (lang,(en.en))
       (pres,(nml.nml))
   )
 + ( ANI-RTFread
-  .   (facet,(txt^ocr.seg+tok^simple))
+  .   (facet,(txt+txt^ocr.seg+tok^simple))
       (format,(flat+rtf.flat))
       (pres,(nml.nml))
   )
@@ -1168,7 +2463,11 @@ toolprop=
   )
 + (PDFBox.format,(pdf.flat^utf8))
 + ( conllout
-  .   (facet,(tok.tok)+(lem*pos*tok.lem)+(pos*tok.pos))
+  .   ( facet
+      ,   (lem*pos*seg*tok.lem)
+        + (pos*seg*tok.pos)
+        + (seg*tok.tok)
+      )
       (format,(txtann.conll))
       (pres,(nml.comb))
   )
@@ -1226,16 +2525,22 @@ toolprop=
       (pres,(nml.nml))
   )
 + (html2text.format,(html.flat))
++ ( mate-POS
+  .   (facet,(seg*tok.pos^Uni))
+      (format,(txtann.txtann))
+      (lang,(en.en)+(es.es)+(fr.fr)+(zh.zh))
+      (pres,(nml.nml))
+  )
 + ( mate-parser
   .   (facet,(pos^Uni*seg*tok.stx))
       (format,(txtann.pt))
-      (lang,(da.da))
+      (lang,(da.da)+(en.en)+(es.es)+(fr.fr)+(zh.zh))
       (pres,(nml.nml))
   )
 + ( mate-parser
   .   (facet,(pos^Uni*seg*tok lem.stx))
       (format,(txtann.conll))
-      (lang,(da.da))
+      (lang,(da.da)+(en.en)+(es.es)+(fr.fr)+(zh.zh))
       (pres,(nml.nml))
   )
 + ( namext
@@ -1245,31 +2550,48 @@ toolprop=
 + ( opennlpPOStagger
   .   (facet,(seg*tok.pos^Uni))
       (format,(txtann.txtann))
-      (lang,(da.da))
+      (lang,(da.da)+(en.en))
       (pres,(nml.nml))
   )
 + (pdf2htmlEX.format,(pdf.html))
 + (pdfminer.format,(pdf.flat^utf8))
 + (seg.(facet,(sent*tok.seg)) (format,(txtann.txtann)))
++ (soffice.format,(doc+docx+odt.rtf)+(odp+ppt+pptx.pdf))
++ ( tesseract
+  .   (app,(got.got))
+      (facet,(txt.txt))
+      (format,(img.flat))
+      (lang,(da.da))
+  )
++ ( tesseract
+  .   (app,(rom.rom))
+      (facet,(txt.txt))
+      (format,(img.flat))
+      (lang,(da.da)+(el.el)+(en.en))
+  )
 + ( toksent
   . (facet,(txt.sent+tok)) (format,(txtbasis.txtann^one))
   );
 type2facet=
 dictionary.lex;
 vidStyles=
-  ("MPEG-1 video with multiplexed audio".mpeg)
-  ("MP4 video".mp4)
-  ("Ogg Theora or other video (with audio)".ogg)
-  ("QuickTime video".quicktime)
-  ("WebM Matroska-based open media format".webm)
-  ("Matroska open media format".x-matroska)
-  ("Windows Media Video".x-ms-wmv)
-  ("Flash video (FLV files)".x-flv);
+  ("MPEG-1 video with multiplexed audio".mpeg.)
+  ("MP4 video".mp4.)
+  ("Ogg Theora or other video (with audio)".ogg.)
+  ("QuickTime video".quicktime.)
+  ("WebM Matroska-based open media format".webm.)
+  ("Matroska open media format".x-matroska.)
+  ("Windows Media Video".x-ms-wmv.)
+  ("Flash video (FLV files)".x-flv.);
+vulticuli=
+  (roman roman.rom.)
+  (blackletter gotisk.got.);
 where=
   (AAA where./)
   (CTBs jobAbout jobNr jobs relations Uploads.job/)
   (   features
       HTTP-status-codes
+      ISO639
       licences
       subtype2facet
       tooladm
@@ -1277,6 +2599,9 @@ where=
       type2facet
       Workflows
       UIlanguage
+      TEImetadata
+      CMDImetadata
+      dcmi-type-vocabulary
   . meta/
   )
   (facets fileFormats linguae presentations.meta/feature/)
