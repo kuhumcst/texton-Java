@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * get escidoc userhandle and e-mail address
+ * get escidoc userhandle and email address
  */      
 
 public class userhandle

@@ -43,13 +43,14 @@ import org.xml.sax.InputSource;
   *
   * Show links to all results, intermediary or not.
   *
+  * (Obsolete method! Replaced by zipresults.)
+  *
   */
 
 @SuppressWarnings("serial")
 public class results extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(results.class);
-    private static final int BUFFER = 2048;
     private bracmat BracMat;
 
     public void init(ServletConfig config) throws ServletException 
@@ -58,58 +59,6 @@ public class results extends HttpServlet
         ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
-        }
-
-
-    private void zip(String path,String name,ZipOutputStream out)
-        {
-        logger.debug("zip({}, {})",path,name);
-        try
-            {
-            BufferedInputStream origin = null;
-            byte data[] = new byte[BUFFER];
-            FileInputStream fi = new FileInputStream(path+name);
-            origin = new BufferedInputStream(fi, BUFFER);
-            ZipEntry entry = new ZipEntry(name);
-            out.putNextEntry(entry);
-            int count;
-            while((count = origin.read(data, 0, BUFFER)) != -1) 
-                {
-                out.write(data, 0, count);
-                }
-            origin.close();
-            }
-        catch(FileNotFoundException e)
-            {
-            logger.error("zip:FileNotFoundException {}",e.getMessage());
-            }            
-        catch(IOException e)
-            {
-            logger.error("zip:IOException {}",e.getMessage());
-            }
-        }
-        
-    private void zipstring(String name,ZipOutputStream out,String str)
-        {
-        logger.debug("zipstring({}, {})",name,str);
-        try
-            {
-            byte data[] = str.getBytes();
-            logger.debug("has data");
-            ZipEntry entry = new ZipEntry(name);
-            logger.debug("has entry");
-            out.putNextEntry(entry);
-            logger.debug("entry put");
-            int count = data.length;
-            logger.debug("count {}",count);
-            out.write(data, 0, count);
-            logger.debug("data written");
-            }
-        catch(IOException e)
-            {
-            logger.error("zipstring:IOException {}",e.getMessage());
-            }
-        logger.debug("zipstring ok");
         }
 
     public void doPost(HttpServletRequest request,HttpServletResponse response)
@@ -127,14 +76,12 @@ public class results extends HttpServlet
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
-                logger.debug("parm {} = {}",parmName,request.getParameterValues(parmName)[0]);
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
                     String metadata = BracMat.Eval("jobMetaDataAsHTML$(" + job + ")");
                     String filelist = BracMat.Eval("doneAllJob$(" + job + ")");
-                    logger.debug("filelist:" + filelist);
-                    String localFilePath = ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/;
+                    String localFilePath = ToolsProperties.documentRoot;
                     String toolsdataURL = BracMat.Eval("toolsdataURL$");
                     String body = "<h1>Resultater</h1>";
                     String Body = null;
@@ -155,23 +102,16 @@ public class results extends HttpServlet
                         NodeList steps = doc.getElementsByTagName("steps");
                         NodeList nodes = ((Element)steps.item(0)).getElementsByTagName("step");
 
-                        logger.debug("nodes.getLength:" + nodes.getLength());
                         if(nodes.getLength() > 0)
                             {
                             NodeList workflowlist = doc.getElementsByTagName("workflow");
-                        logger.debug("workflowlist done");
                             workflowElement = (Element)workflowlist.item(0);
-                        logger.debug("workflowElemet done {}",workflowElement);
                             workflowString = workflow.getCharacterDataFromElement(workflowElement);
-                        logger.debug("workflowString {}", workflowString);
                             Body = "<h1>Resultater</h1><h2>Workflow</h2><p>"+workflowString+"</p>";
-                        logger.debug("Body {}", Body);
                             body += "<h2>Workflow</h2><p>"+workflowString+"</p>";
                             body += "<h2>Produceret data</h2><p><a target=\"_blank\" href=\"" + toolsdataURL + job + ".zip\">Alt i en zip-fil</a></p>";
-                        logger.debug("body {}", body);
                             zipdest = new FileOutputStream(localFilePath + job + ".zip");
                             zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                        logger.debug("zipout {}", zipdest);
                             }
                         else
                             {
@@ -181,9 +121,13 @@ public class results extends HttpServlet
                             else                                
                                 body += "<p>Vi beklager, zip-filen er allerede blevet hentet og er derfor slettet fra serveren.</p>";
                             }
+                        /*
                         body += "<h3>Bemærk!</h3><ul>\n"
                              +  "<li>Zip-filen kan hentes én gang, hvorefter den straks slettes fra serveren.</li>\n"
                              +  "<li>Ikke-hentede resultaterne slettes efter et par dage.</li></ul>\n";
+                        */
+                        body += "<h3>Bemærk!</h3>\n"
+                             +  "<p>Ikke-hentede resultaterne slettes efter et par dage.</p>\n";
                         String resources = "";
                         if(nodes.getLength() > 0)
                             {
@@ -198,17 +142,14 @@ public class results extends HttpServlet
                             NodeList JobNrlist = element.getElementsByTagName("JobNr");
                             Element JobNrelement = (Element) JobNrlist.item(0);
                             String JobNr = workflow.getCharacterDataFromElement(JobNrelement);
-                        logger.debug("JobNr:" + JobNr);
 
                             NodeList JobIDlist = element.getElementsByTagName("JobId");
                             Element JobIDelement = (Element) JobIDlist.item(0);
                             String JobID = workflow.getCharacterDataFromElement(JobIDelement);
-                        logger.debug("JobID:" + JobID);
 
                             NodeList namelist = element.getElementsByTagName("name");
                             Element line = (Element) namelist.item(0);
                             String filename = workflow.getCharacterDataFromElement(line);
-                        logger.debug("filename:" + filename);
 
                             NodeList toollist = element.getElementsByTagName("tool");
                             Element toolelement = (Element) toollist.item(0);
@@ -222,7 +163,10 @@ public class results extends HttpServlet
                             Element Oelement = (Element) Olist.item(0);
                             String O = workflow.getCharacterDataFromElement(Oelement);
 
-                            logger.debug("files[" + i + "]=" + filename);
+                            NodeList formatlist = element.getElementsByTagName("format");
+                            Element formatelement = (Element) formatlist.item(0);
+                            String format = workflow.getCharacterDataFromElement(formatelement);
+
                             if(filename.startsWith("fejl"))
                                 {
                                 body += "<h2>Følgende trin fejlede:</h2>\n<dl><dt>";
@@ -232,14 +176,24 @@ public class results extends HttpServlet
                                 }
                             else
                                 {
-                                String Href2 = workflow.Filename(filename);
-                                String Href2nometa = workflow.FilenameNoMetadata(filename);
-                                String Href2relations = workflow.FilenameRelations(filename);
+                                String Href2 = workflow.Filename(filename,BracMat);
+                                String Href2nometa = workflow.FilenameNoMetadata(filename,BracMat);
+                                String Href2relations = workflow.FilenameRelations(filename,BracMat);
 
-                                zip(localFilePath,workflow.Filename(filename),zipout);
-                                zip(localFilePath,workflow.FilenameNoMetadata(filename),zipout);
-                                zip(localFilePath,workflow.FilenameRelations(filename),zipout);
-
+                                if(format.equals("txtbasis"))
+                                    {
+                                    workflow.zip(localFilePath + Href2,filename,zipout);
+                                    }
+                                else if(format.equals("txtann"))
+                                    {
+                                    workflow.zip(localFilePath + Href2,Href2,zipout);
+                                    workflow.zip(localFilePath + Href2relations,Href2relations,zipout);
+                                    workflow.zip(localFilePath + Href2nometa,Href2nometa,zipout);
+                                    }
+                                else
+                                    {
+                                    workflow.zip(localFilePath + Href2nometa,filename,zipout);
+                                    }
 
                                 NodeList itemslist = element.getElementsByTagName("item");
                                 if(itemslist.getLength() > 0)
@@ -258,20 +212,26 @@ public class results extends HttpServlet
                                         resources += id + " \'" + title + "\'<br />\n";
                                         }
                                     }
+                                body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": "; 
                                 if(O.indexOf("TEI") >= 0)
                                     {
-                                    body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": ";
-                                    Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
-                                         +  ": <a href=\"" + Href2          + "\">inklusiv metadata</a>, "
-                                         +  "<a href=\"" + Href2relations + "\">relationsfil</a>, "
-                                         +  "<a href=\"" + Href2nometa    + "\">uden metadata</a>";
+                                    if(format.equals("txtann"))
+                                        {
+                                        Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
+                                             +  ": <a href=\"" + Href2 + "\">inklusiv metadata</a>, "
+                                             +  "<a href=\"" + Href2relations + "\">relationsfil</a>, "
+                                             +  "<a href=\"" + Href2nometa + "\">uden metadata</a>";
+                                        }
+                                    else         
+                                        {
+                                        Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
+                                             +  ": <a href=\"" + filename + "\">basistekst</a>";
+                                        }
                                     }
                                 else
                                     {
-                                    body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool +  ": "; 
                                     Body += "<dl><dt>Trin " + JobID + "</dt><dd>" + tool 
-                                         +  "<a href=\"" + Href2nometa    + "\">data</a>, "
-                                         +  "<a href=\"" + Href2relations + "\">relationsfil</a>";
+                                         +  ": <a href=\"" + filename + "\">data</a>";
                                     }
                                 if(!(I.equals("")))
                                     {
@@ -305,8 +265,7 @@ public class results extends HttpServlet
                         if(nodes.getLength() > 0)
                             {                        
                             Body = "<html><head><meta charset=\"UTF-8\"><title>Resultater fra Tools</title></head><body>" + Body + "</body></html>";
-                            logger.debug("Body {}",Body);
-                            zipstring("index.html",zipout,Body);
+                            workflow.zipstring("index.html",zipout,Body);
                             zipout.close();
                             }
                         }

@@ -11,11 +11,14 @@
         <dependency org="commons-io" name="commons-io" rev="1.4"/>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
         <dependency org="log4j" name="log4j" rev="1.2.15"/>
+        <!--dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.6.2"/>
+        <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.6.2"/-->
         <dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4"/>
         <!--dependency org="javax.servlet" name="servlet-api" rev="2.4"
         Copy servlet-api.jar from CATALINA_BASE/lib to ./lib. This is done in build.xml.
         /-->
         <dependency org="org.apache.commons" name="commons-email" rev="1.2"/>
+        <dependency org="com.googlecode.juniversalchardet" name="juniversalchardet" rev="1.0.3"/>
     </dependencies>
 </ivy-module>

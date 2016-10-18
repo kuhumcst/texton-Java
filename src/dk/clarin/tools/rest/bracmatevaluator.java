@@ -78,10 +78,14 @@ public class bracmatevaluator extends HttpServlet
             String expression = request.getParameter("expression");
             if(expression != null && !expression.equals(""))
                 {
+                response.setContentType("text/plain");
                 String result = BracMat.Eval(expression);
+                /*
                 out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<dkclarin><expressions>");
                 out.println("<expression>" + result + "</expression>");
                 out.println("</expressions></dkclarin>");
+                */
+                out.println(result);
                 }
             else
                 {

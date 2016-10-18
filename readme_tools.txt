@@ -23,7 +23,7 @@ restart.
 The JNI only needs to be created once from the latest Bracmat source code.
 Bracmat changes little - it is more than 20 years old and pretty mature.
 There is no Makefile for creating the JNI. Instead, the file 
-bracmat/compileAndTestJNI.txt explains step by step how to compile the
+Bracmat/src/compileAndTestJNI.txt explains step by step how to compile the
 C-source code and the accompying Java source code and how to create a shared
 library. It also describes the tests that can be made as the progress is made.
 

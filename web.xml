@@ -72,6 +72,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>createMetadataOnly</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.createMetadataOnly</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createMetadataOnly</servlet-name>
+        <url-pattern>/createMetadataOnly/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>data</servlet-name>
         <servlet-class>dk.clarin.tools.rest.data</servlet-class>
     </servlet>
@@ -132,6 +141,15 @@
     <servlet-mapping>
       <servlet-name>results</servlet-name>
       <url-pattern>/results/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>zipresults</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.zipresults</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>zipresults</servlet-name>
+        <url-pattern>/zipresults/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

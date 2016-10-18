@@ -21,10 +21,12 @@ package dk.clarin.tools;
 import dk.cst.*;
 import dk.clarin.tools.ToolsProperties;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -42,6 +44,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.zip.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,6 +62,8 @@ public class workflow implements Runnable
     //private File destinationDir;
     private bracmat BracMat;
     private String result;
+
+    private static final int BUFFER = 2048;
 
     public static final int ACCEPT       = 1; //We have accepted your request for applying tools to resources.
     public static final int WRAPUP       = 2; //The results from the tool-workflow are ready to inspect
@@ -94,8 +99,56 @@ public class workflow implements Runnable
             return "";
             }
         }
-    static public String Filename(String name)
+        
+    static public void zip(String path,String name,ZipOutputStream out)
         {
+        try
+            {
+            logger.debug("zip("  + path + ", " + name + ")");
+            BufferedInputStream origin = null;
+            byte data[] = new byte[BUFFER];
+            FileInputStream fi = new FileInputStream(path);
+            origin = new BufferedInputStream(fi, BUFFER);
+            ZipEntry entry = new ZipEntry(name);
+            out.putNextEntry(entry);
+            int count;
+            while((count = origin.read(data, 0, BUFFER)) != -1) 
+                {
+                out.write(data, 0, count);
+                }
+            origin.close();
+            }
+        catch(FileNotFoundException e)
+            {
+            logger.error("zip:FileNotFoundException {}",e.getMessage());
+            }            
+        catch(IOException e)
+            {
+            logger.error("zip:IOException {}",e.getMessage());
+            }
+        }
+        
+    static public void zipstring(String name,ZipOutputStream out,String str)
+        {
+        try
+            {
+            logger.debug("zipstring("  + name + ", " + str + ")");
+            byte data[] = str.getBytes();
+            ZipEntry entry = new ZipEntry(name);
+            out.putNextEntry(entry);
+            int count = data.length;
+            out.write(data, 0, count);
+            }
+        catch(IOException e)
+            {
+            logger.error("zipstring:IOException {}",e.getMessage());
+            }
+        }
+        
+    static public String Filename(String name,bracmat BracMat)
+        {
+        return BracMat.Eval("Filename$(" + workflow.quote(name) + ")"); 
+        /*
         String filenameWithoutXMLextension = name;
         int lastdot = name.lastIndexOf('.');
         if(lastdot > 0)
@@ -105,21 +158,18 @@ public class workflow implements Runnable
             return filenameWithoutXMLextension + ".withmetadata.xml";
             }
         return filenameWithoutXMLextension + ".withmetadata.xml";
+        */
         }
 
-    static public String FilenameNoMetadata(String name)
+    static public String FilenameNoMetadata(String name,bracmat BracMat)
         {
-        return name;
-/*
-        String filenameWithoutXMLextension = name;
-        if(filenameWithoutXMLextension.endsWith(".xml"))
-            filenameWithoutXMLextension = filenameWithoutXMLextension.substring(0,filenameWithoutXMLextension.lastIndexOf(".xml"));
-        return filenameWithoutXMLextension + ".xml";
-*/
+        return BracMat.Eval("FilenameNoMetadata$(" + workflow.quote(name) + ")"); 
         }
 
-    static public String FilenameRelations(String name)
+    static public String FilenameRelations(String name,bracmat BracMat)
         {
+        return BracMat.Eval("FilenameRelations$(" + workflow.quote(name) + ")"); 
+        /*
         String filenameWithoutXMLextension = name;
         int lastdot = name.lastIndexOf('.');
         if(lastdot > 0)
@@ -129,6 +179,7 @@ public class workflow implements Runnable
             return filenameWithoutXMLextension + ".relations.csv";
             }
         return filenameWithoutXMLextension + ".relations.csv";
+        */
         }
 
     public static String getCharacterDataFromElement(Element e) 
@@ -205,7 +256,7 @@ public class workflow implements Runnable
         return body;
         }
 
-    public static void sendMail(int status, String name, String string1,String toolErrorMessage,String toolsandfiles,String mail2)
+    public void sendMail(int status, String name, String string1,String toolErrorMessage,String toolsandfiles,String mail2)
         throws org.apache.commons.mail.EmailException 
         {
         try
@@ -234,17 +285,7 @@ public class workflow implements Runnable
             case WRAPUP:
                 logger.debug("sendMail("  + status + ", " + name + ", " + string1 + ", " + toolErrorMessage + ", " + toolsandfiles + ", " + mail2 + ")");
                 subject = "[clarin.dk]  Samlet output fra integrerede værktøjer - success";
-                body = "<html><body><p>" 
-                    + "Vi har modtaget dit ønske om at oprette ny data ved hjælp af integrerede værktøjer.<br />\n\n"
-                    + "Du kan se resultaterne her:<br /><br />\n\n";
-                
-                body += "<a href=\"" + string1 + "?JobNr=" + toolsandfiles + "\">resultater</a>";
-                body += "\n\n<br /><br />Bemærk!<br />\n"
-                     +  "1) Hvert resultat kan hentes én gang, hvorefter resultatet straks slettes fra serveren.<br />\n"
-                     +  "2) Under alle omstændigheder slettes ikke-hentede resultaterne efter et par dage.<br /><br />\n\n"
-                     +  "Du kan ikke svare på denne email. Hvis ovenstående oplysninger ikke er rigtige, "
-                     +  "eller du har spørgsmål, kan du henvende dig på mail-adressen admin@clarin.dk<br /><br />\n\n"
-                     +  "Venlig hilsen \nclarin.dk</p></body></html>";    
+                body = BracMat.Eval("WRAPUPbody$(" + workflow.quote(toolsandfiles) + ")"); 
                 break;
             case ERRORUSER: 
                 subject = "[clarin.dk] Integreret værktøj melder fejl";
@@ -329,14 +370,13 @@ public class workflow implements Runnable
 
     private void processPipeLine(String result)
         {
-        int jobs = 10; // Brake after 10 failed iterations. Then something is possibly wrong
+        int jobs = 10; // Brake (or break) after 10 failed iterations. Then something is possibly wrong
         logger.debug("processPipeLine("  + result + ")");
         int code = 0;
         boolean asynchronous = false;
-        //boolean aborted = false;
         while(jobs > 0)
             {
-            // Jobs are hierarchical structured:
+            // Jobs are hierarchically structured:
             //    All jobs with the same job number belong together. They constitute a pipeline.
             //    (Amendment 20110606: if many similar resources are processed batch-wise, 
             //     they share the same job number, whereas the Job ID is incremented monotonically.
@@ -396,12 +436,10 @@ public class workflow implements Runnable
                 {
                 --jobs;
                 logger.info("processPipeLine aborts");
-                //aborted = true;
-                //break;
                 }
             }
         logger.debug("processPipeLine while loop exited with code {}", code);
-        if(!asynchronous /*|| aborted*/)
+        if(!asynchronous)
             {
             /**
              * mail2$
@@ -424,51 +462,23 @@ public class workflow implements Runnable
              * sendMail, and lists the items that the user can download from
              * the staging area.
              */
-             /*
-            String filelist = BracMat.Eval("doneAllJob$(" + result + ")");
             logger.debug("processPipeLine calls doneAllJob {} DONE", result);
-            logger.debug("filelist:" + filelist);
-            //if(!asynchronous && !aborted)
+            try
                 {
-                try
+                if(!mail2.equals(""))
                     {
-                    if(!mail2.equals(""))
-                        {
-                        sendMail(WRAPUP
-                            ,"dig"
-                            ,BracMat.Eval("toolsdataURL$")
-                            ,""
-                            ,filelist
-                            ,mail2
-                            );
-                        }
-                    }
-                catch (Exception e)
-                    {//Catch exception if any
-                    logger.warn("Could not send mail to " + mail2 + ". Reason: " + e.getMessage());
+                    sendMail(WRAPUP
+                        ,"dig"
+                        ,ToolsProperties.baseUrlTools + "/tools/zipresults"
+                        ,""
+                        ,result
+                        ,mail2
+                        );
                     }
                 }
-                */
-            logger.debug("processPipeLine calls doneAllJob {} DONE", result);
-            //if(!asynchronous && !aborted)
-                {
-                try
-                    {
-                    if(!mail2.equals(""))
-                        {
-                        sendMail(WRAPUP
-                            ,"dig"
-                            ,ToolsProperties.baseUrlTools + "/tools/results"
-                            ,""
-                            ,result
-                            ,mail2
-                            );
-                        }
-                    }
-                catch (Exception e)
-                    {//Catch exception if any
-                    logger.warn("Could not send mail to " + mail2 + ". Reason:" + e.getMessage());
-                    }
+            catch (Exception e)
+                {//Catch exception if any
+                logger.warn("Could not send mail to " + mail2 + ". Reason:" + e.getMessage());
                 }
             }
         logger.debug("processPipeLine exits", code);
@@ -490,79 +500,46 @@ public class workflow implements Runnable
          * Return the full URL to Tool's staging area.
          * The input can be a file name: this name is appended to the returned value.
          */
-        //String toolsdataURL = BracMat.Eval("toolsdataURL$");
         try
             {
+            logger.debug("isTEIoutput$(" + result + "." + jobID + ")");
             String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
+            logger.debug("TEIformat=" + TEIformat);
             
             byte[] buffer = new byte[4096];
             int n = - 1;
             int N = 0;
-            //int Nbuf = 0;
             boolean isBasisText = TEIformat.equals("txtbasis");
             StringWriter outputM = new StringWriter();
             
-            if(false && isBasisText)
-                {
+            OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );
 
-                boolean isTextual = false;        
-                String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
-                if(textable.equals("y"))
-                    isTextual = true;
-                logger.debug("textable:" + (isTextual ? "ja" : "nej"));
+            boolean isTextual = false;        
+            String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
+            if(textable.equals("y"))
+                isTextual = true;
+            logger.debug("textable:" + (isTextual ? "ja" : "nej"));
                     
-                if(isTextual)
+            while((n = input.read(buffer)) != -1)
+                {
+                if (n > 0)
                     {
-                    while((n = input.read(buffer)) != -1)
+                    N = N + n;
+                    outputF.write(buffer, 0, n);
+                    if(isTextual)
                         {
-                        if (n > 0)
+                        String toWrite = new String(buffer,0,n);
+                        try {
+                            outputM.write(toWrite);
+                            }
+                        catch (Exception e)
                             {
-                            N = N + n;
-                            //++Nbuf;
-                            String toWrite = new String(buffer,0,n);
-                            try {
-                                outputM.write(toWrite);
-                                }
-                            catch (Exception e)
-                                {
-                                logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
-                                }
+                            logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
                             }
                         }
                     }
                 }
-            else
-                {
-                OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename) );
-
-                boolean isTextual = false;        
-                String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
-                if(textable.equals("y"))
-                    isTextual = true;
-                logger.debug("textable:" + (isTextual ? "ja" : "nej"));
-                    
-                while((n = input.read(buffer)) != -1)
-                    {
-                    if (n > 0)
-                        {
-                        N = N + n;
-                        //++Nbuf;
-                        outputF.write(buffer, 0, n);
-                        if(isTextual)
-                            {
-                            String toWrite = new String(buffer,0,n);
-                            try {
-                                outputM.write(toWrite);
-                                }
-                            catch (Exception e)
-                                {
-                                logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
-                                }
-                            }
-                        }
-                    }
-                outputF.close();   
-                }
+            outputF.close();   
                 
             String requestResult = outputM.toString();
                 
@@ -591,8 +568,8 @@ public class workflow implements Runnable
             if(!TEIformat.equals(""))
                 {
                 // Create file plus metadata
-                logger.debug("Going to write {}",destdir+Filename(filename));
-                FileWriter fstream = new FileWriter(destdir+Filename(filename));
+                logger.debug("Going to write {}",destdir+Filename(filename,BracMat));
+                FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
                 BufferedWriter Out = new BufferedWriter(fstream);
                 Out.write(newResource);
                 Out.close();
@@ -610,7 +587,7 @@ public class workflow implements Runnable
              */
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename));
+            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename,BracMat));
             BufferedWriter Out = new BufferedWriter(fstream);
             Out.write(relations);
             Out.close();
@@ -631,7 +608,7 @@ public class workflow implements Runnable
             }
         }                    
 
-    public static void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
+    public void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
         {
         String filelist;
         String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
@@ -732,7 +709,7 @@ public class workflow implements Runnable
     * @return - The response from the end point
     */
 
-    public static int sendRequest(String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod)
+    public int sendRequest(String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod)
         {        
         int code = 0;
         String message = "";

@@ -23,11 +23,13 @@ import dk.clarin.tools.userhandle;
 import dk.cst.*;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -55,6 +57,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
+
+//import org.overviewproject.mime_types.MimeTypeDetector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -124,83 +128,6 @@ public class create extends HttpServlet
         return arg;
         }        
 
-    public static void sendMail(int status, String name, String href,String mail2)
-        throws org.apache.commons.mail.EmailException 
-        {
-        try
-            { 
-            SimpleEmail email = new SimpleEmail();
-            email.setHostName(ToolsProperties.mailServer);
-            email.setFrom(ToolsProperties.mailFrom, ToolsProperties.mailFromName);
-            email.setSmtpPort(Integer.parseInt(ToolsProperties.mailPort));
-            email.setCharset("UTF-8");
-
-            String body = "some body";
-            String subject = "some subject";
-            switch(status){
-            case ACCEPT: 
-                body = "<html><body><p>" 
-                    + "Vi har modtaget dit &oslash;nske om at oprette ny data ved hjælp af integrerede v&aelig;rkt&oslash;jer.<br><br>\n\n"
-                    + "N&aring;r oprettelsen er f&aelig;rdig, vil du modtage en email igen, der bekr&aelig;fter at "
-                    + "oprettelsen gik godt, samt en liste over URL'er hvor du vil kunne finde dine data<br><br>\n\n"
-                    + "Du kan ikke svare p&aring; denne email. Hvis ovenst&aring;ende oplysninger ikke er rigtige, "
-                    + "eller du har sp&oslash;rgsm&aring;l, kan du henvende dig p&aring; mail-adressen admin@clarin.dk<br><br>\n\n"
-                    + "Venlig hilsen \nclarin.dk</p></body></html>";    
-                break;
-            case CONFIRMATION: 
-                subject = "[clarin.dk] Oprettelse af ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer - success";
-                body = "<html><body><p>"
-                    + "Vi har modtaget dit &oslash;nske om at oprette ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer.<br>\n\n"
-                    + "Oprettelsen er g&aring;et godt, og du kan nu hente resultatet p&aring; denne adresse:<br><br>\n\n"
-                    + "<a href=\"" + href + "\">" + href + "</a><br><br>"
-                    + "\n\nDu kan ikke svare p&aring; denne email. Hvis ovenst&aring;ende oplysninger ikke er rigtige, "
-                    + "eller du har sp&oslash;rgsm&aring;l, kan du henvende dig p&aring; mail-adressen admin@clarin.dk<br><br>\n\n"
-                    + "Venlig hilsen \nclarin.dk</p></body></html>";    
-                break;
-            default: //ERROR
-                subject = "[clarin.dk] Oprettelse af ny data ved hj&aelig;lp af integrerede v&aelig;rkt&oslash;jer - FEJL";
-                body = "<html><body><p>"
-                    + "Der skete en fejl under oprettelsen af data.<br><br>\n\n"
-                    + "DU SKAL IKKE FORETAGE DIG NOGET<br><br>\n\n" 
-                    + "Du har modtaget en mail der beskriver fejlen."
-                    + "Nogle typer af fejl kan systemet selv h&aring;ndtere, og andre typer skal vi l&oslash;se sammen med dig.<br>\n"
-                    + "Under alle omst&aelig;ndigheder sender vi en mail til dig p&aring; " + mail2 + ".<br><br>\n\nVenlig hilsen\nclarin.dk</p></body></html>";
-                break;
-                }
-            email.setSubject(subject);
-            email.setMsg(body);
-            email.updateContentType("text/html; charset=UTF-8");
-            email.addTo(mail2,name);
-            email.send();
-            } 
-        catch (org.apache.commons.mail.EmailException m)
-            {
-            logger.error
-                ("[Tools generated org.apache.commons.mail.EmailException] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            //m.printStackTrace();
-            logger.error("{} Error sending email. Message is: {}","Tools", m.getMessage());
-            }
-        catch (Exception e)
-            {//Catch exception if any
-            logger.error
-                ("[Tools generated Exception] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            logger.error("{} Exception:{}","Tools",e.getMessage());
-            }
-        }
-
-
     /*
     Get the metadata of a resource itself - straight from the repository.
     Return them in a string.
@@ -216,6 +143,7 @@ public class create extends HttpServlet
         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(600000);
         // Definer om det skal være POST, GET, PUT eller DELETE
         String methodString = ToolsProperties.repoServiceUrl + id;
+        logger.debug("getResourceAsString: methodString [{}]",methodString);
         org.apache.commons.httpclient.methods.GetMethod method = new org.apache.commons.httpclient.methods.GetMethod(methodString);
         //method.setFollowRedirects(false); // We don't want WAYF involved here
         method.setFollowRedirects(true); // 20150331
@@ -231,6 +159,13 @@ public class create extends HttpServlet
             {
             httpClient.executeMethod(method);
             int responseCode = method.getStatusCode();
+            if(responseCode != 200) // 20161011
+                {
+                method.setFollowRedirects(false); // We don't want WAYF involved here
+                httpClient.executeMethod(method);
+                responseCode = method.getStatusCode();
+                }
+
             if(responseCode == 200)
                 {
                 // request went OK
@@ -481,16 +416,25 @@ public class create extends HttpServlet
              * jboss/server/default/data/tools, so this function could just as
              * well have been implemented in Java.
              */
-            String component = BracMat.Eval("getComponentRef$(" + workflow.quote(item) + ")");
-            //logger.debug("BracMat.Eval({}) returns [{}]",workflow.quote(item),component);
+            logger.debug("gemLocalCopyOfResource: getResourceAsString({}) returned non-null item",id);
 
-            if(!component.equals("") && getResourceAsStream(userHandle,component,out,response))
+            String component = BracMat.Eval("getComponentRef$(" + workflow.quote(item) + ")");
+            //logger.debug("BracMat.Eval({}) returns component [{}]",workflow.quote(item),component);
+            if(!component.equals(""))
                 {
-                return item;
+                if(getResourceAsStream(userHandle,component,out,response))
+                    {
+                    return item;
+                    }
+                else
+                    {
+                    logger.debug("getResourceAsStream({}) returns null",component);
+                    return null;
+                    }
                 }
             else
                 {
-                logger.debug("getResourceAsStream({}) returns null",component);
+                logger.debug("component is null",component);
                 return null;
                 }
             }
@@ -509,12 +453,25 @@ public class create extends HttpServlet
             logger.debug("getResourceAsString( {}, {}, ...) has returned null",userHandle,id);
         return false;
         }
- 
-	private String webPage(String url){
+
+	private String theMimeType(String urladdr){
 		try{
-			URL address = new URL(url);
-			URLConnection conn = address.openConnection();
-			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			URL url = new URL(urladdr);
+			URLConnection urlConnection = url.openConnection();
+		    String mimeType = urlConnection.getContentType();
+            logger.debug("mimeType according to getContentType() {} is {}",urladdr,mimeType);
+		    return mimeType;
+		}catch(IOException e){
+			return "error connecting to server.";
+		}
+	}
+
+	private String webPage(String urladdr){
+		try{
+			URL url = new URL(urladdr);
+			URLConnection urlConnection = url.openConnection();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			StringBuilder contents = new StringBuilder();
 			char[] buffer = new char[4096];
 			int read = 0;
@@ -523,17 +480,43 @@ public class create extends HttpServlet
 			    read = in.read(buffer);
 			    }
 			while(read >= 0);
-			return contents.toString();
+			String Return = contents.toString();
+			return Return;
 		}catch(IOException e){
 			return "error connecting to server.";
 		}
 	}
+	
+	private int webPageBinary(String urladdr, File file){
+		try{
+			URL url = new URL(urladdr);
+			URLConnection urlConnection = url.openConnection();
+
+            InputStream input = urlConnection.getInputStream();
+            byte[] buffer = new byte[4096];
+            int n = - 1;
+            int N = 0;
+            OutputStream output = new FileOutputStream( file );
+            while ( (n = input.read(buffer)) != -1) 
+            {
+                output.write(buffer, 0, n);
+                N += 1;
+            }
+            output.close();		
+            return N;
+		}catch(IOException e){
+			return -1;
+		}
+	}
+	
 
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String workflowRequest)
         {
         String result;
-        String examplePage = webPage("https://clarin.dk/clarindk/tools-upload.jsp");
+        /*
+        String examplePage = webPage(ToolsProperties.wwwServer + "/clarindk/tools-" + (workflowRequest.equals("MetadataOnly") ? "metadata" : "upload" ) + ".jsp?lang=" + UIlanguage);
         arg = arg + " (examplePage." + workflow.quote(examplePage) + ")";
+        //*/
         if(workflowRequest.equals(""))
             {
             /**
@@ -568,7 +551,7 @@ public class create extends HttpServlet
         else
             {
             /*
-            workflowRequest = GoalChoice | ToolChoice
+            workflowRequest = GoalChoice | ToolChoice | MetadataOnly
             */
             result = BracMat.Eval("create" + workflowRequest + "$(" + arg + ")");
             }
@@ -663,9 +646,9 @@ public class create extends HttpServlet
                 out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
                 out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
                 if(UIlanguage != null && UIlanguage.equals("da"))
-                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"https://www.clarin.dk/tools/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
+                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"" + ToolsProperties.wwwServer + "/tools/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
                 else
-                    out.println("<body><p>You will receive email when there are results. <a href=\"https://www.clarin.dk/tools/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
+                    out.println("<body><p>You will receive email when there are results. <a href=\"" + ToolsProperties.wwwServer + "/tools/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
                 }
             response.setStatus(202);
 
@@ -901,6 +884,37 @@ public class create extends HttpServlet
         Workflow(request,response,"");
         }
 
+    private String makeLocalCopyOfRemoteFile(String val)
+        {
+        if(!val.equals(""))
+            {
+            logger.debug("val == {}",val);
+
+            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote(val) + "." + workflow.quote(date) + ")");
+
+            logger.debug("LocalFileName == {}",LocalFileName);
+
+            File file = new File(destinationDir,LocalFileName);
+
+            int textLength = webPageBinary(val,file);
+            logger.debug("file size == {}",textLength);
+            String ContentType = theMimeType(val);
+            logger.debug("ContentType == {}",ContentType);
+            if(!ContentType.equals(""))
+                {
+                    boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
+                    return      " (FieldName,"      + workflow.quote("input")
+                              + ".Name,"            + workflow.quote(val)
+                              + ".ContentType,"     + workflow.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                              + ".Size,"            + Long.toString(textLength)
+                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+                              + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                              + ")";                
+                }
+            }
+        return "";
+        }
+        
     public void Workflow(HttpServletRequest request,HttpServletResponse response,String workflowRequest)
         throws ServletException, IOException 
         {
@@ -923,27 +937,18 @@ public class create extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
 
-        //String workflowId = java.util.UUID.randomUUID().toString();
-
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-        String arg = "(method.GET) (DATE." + workflow.quote(date) + ")"; // bj 20120801 "(action.GET)";
+        String arg = "(method.GET) (DATE." + workflow.quote(date) + ")";
         boolean OK = true;
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
             String vals[] = request.getParameterValues(parmName);
-/*
-https://clarin.dk/tools/start-job?workflow=SOMETHING&ids=dkclarin:168004,dkclarin:168028,dkclarin:168332 
-
-I tools servicen vil du kunne udtrække parameteren "ids" som String, og ved at
-bruge String indbyggede "spilt" funktion kan du så få et array af id'er. 
-eSciDoc userhandlen vil så være gemt i http headeren, men kunne i princippet
-også inkluderes som en parameter i url'en
-*/
             if(parmName.equals("ids"))
                 {
+                logger.debug("ids");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
@@ -966,6 +971,7 @@ også inkluderes som en parameter i url'en
                 }
             else if(parmName.equals("item"))
                 {
+                logger.debug("item");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
@@ -983,6 +989,7 @@ også inkluderes som en parameter i url'en
                 }
             else if(parmName.equals("mail2"))
                 {
+                logger.debug("mail2");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
@@ -996,33 +1003,43 @@ også inkluderes som en parameter i url'en
                 }
             else if(parmName.equals("text"))
                 {
+                logger.debug("text");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
                         {
-                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
                         int textLength = vals[j].length();
                         
+                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
                         File file = new File(destinationDir,LocalFileName);
+                        arg = arg + " (FieldName,"      + workflow.quote("text")
+                                  + ".Name,"            + workflow.quote("text")
+                                  + ".ContentType,"     + workflow.quote("text/plain")
+                                  + ".Size,"            + Long.toString(textLength)
+                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+                                  + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                                  + ")";
                         
                         PrintWriter outf = new PrintWriter(file);
                         outf.println(vals[j]); 
                         outf.close();                       
                         
-                        arg = arg + " (FieldName,"      + workflow.quote("text")
-                                  + ".Name,"            + workflow.quote("text")
-                                  + ".ContentType,"     + workflow.quote("text/plain")
-                                  + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
-                                  + ".LocalFileName,"   + workflow.quote(LocalFileName)
-                                  + ")";
                         }
+                    }
+                }
+            else if(parmName.equals("URL"))
+                {
+                logger.debug("parmName.equals {}",parmName);
+                for(int j = 0;j < vals.length;++j)
+                    {
+                    arg = arg + makeLocalCopyOfRemoteFile(vals[j]);
                     }
                 }
             else
                 {
                 for(int j = 0;j < vals.length;++j)
                     {
+                    logger.debug("({})",parmName);
                     arg = arg + " (" + workflow.quote(parmName) + ".";
                     arg += " " + workflow.quote(vals[j]);
                     arg += ")";
@@ -1044,46 +1061,53 @@ også inkluderes som en parameter i url'en
             }
         }
 
-    public boolean PDFhasNoFonts(File pdfFile)
+    public boolean PDFhasNoFonts(File pdfFile,String ContentType)
         {
-        String lastline = "";
-        String lasterrline = "";
-        try 
+        if  (  ContentType.equals("application/pdf") 
+            || ContentType.equals("application/x-download") 
+            || ContentType.equals("application/octet-stream") 
+            )
             {
-            String line;
-            OutputStream stdin = null;
-            InputStream stderr = null;
-            InputStream stdout = null;
-
-            String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
-
-            final Process process = Runtime.getRuntime().exec(command);
-            stdin = process.getOutputStream ();
-            stderr = process.getErrorStream ();
-            stdout = process.getInputStream ();
-            stdin.close();
-
-            // clean up if any output in stdout
-            BufferedReader brCleanUp = new BufferedReader (new InputStreamReader (stdout));
-            while ((line = brCleanUp.readLine ()) != null)
+            String lastline = "";
+            String lasterrline = "";
+            try 
                 {
-                lastline = line;
-                }
-            brCleanUp.close();
+                String line;
+                OutputStream stdin = null;
+                InputStream stderr = null;
+                InputStream stdout = null;
 
-            // clean up if any output in stderr
-            brCleanUp = new BufferedReader (new InputStreamReader (stderr));
-            while ((line = brCleanUp.readLine ()) != null)
+                String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
+
+                final Process process = Runtime.getRuntime().exec(command);
+                stdin = process.getOutputStream ();
+                stderr = process.getErrorStream ();
+                stdout = process.getInputStream ();
+                stdin.close();
+
+                // clean up if any output in stdout
+                BufferedReader brCleanUp = new BufferedReader (new InputStreamReader (stdout));
+                while ((line = brCleanUp.readLine ()) != null)
+                    {
+                    lastline = line;
+                    }
+                brCleanUp.close();
+
+                // clean up if any output in stderr
+                brCleanUp = new BufferedReader (new InputStreamReader (stderr));
+                while ((line = brCleanUp.readLine ()) != null)
+                    {
+                    lasterrline = line;
+                    }
+                brCleanUp.close();
+                } 
+            catch (Exception e) 
                 {
-                lasterrline = line;
+                logger.error("cannot analyse: " + pdfFile.getName() + ", error is: " + e.getMessage());
                 }
-            brCleanUp.close();
-            } 
-        catch (Exception e) 
-            {
-            logger.error("cannot analyse: " + pdfFile.getName() + ", error is: " + e.getMessage());
+            return lasterrline.equals("") && (lastline.endsWith("---------"));
             }
-        return lasterrline.equals("") && (lastline.endsWith("---------"));
+        return false;
         }
             
     /**
@@ -1109,7 +1133,7 @@ også inkluderes som en parameter i url'en
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
 
-        String arg = "(method.POST) (DATE." + workflow.quote(date) + ")"; // bj 20120801 "(action.POST)";
+        String arg = "(method.POST) (DATE." + workflow.quote(date) + ")";
 
         try 
             {
@@ -1127,21 +1151,30 @@ også inkluderes som en parameter i url'en
                     {
                     if(item.getFieldName().equals("text"))
                         {
-                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
                         int textLength = item.getString().length();
                         
+                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
                         File file = new File(destinationDir,LocalFileName);
-                        item.write(file);
                         arg = arg + " (FieldName,"      + workflow.quote("text")
                                   + ".Name,"            + workflow.quote("text")
                                   + ".ContentType,"     + workflow.quote("text/plain")
                                   + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
+                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
                                   + ".LocalFileName,"   + workflow.quote(LocalFileName)
                                   + ")";
+
+
+
+
+                        item.write(file);
+                        }
+                    else if(item.getFieldName().equals("URL"))
+                        {
+                        logger.debug("item.getFieldName().equals {}",item.getFieldName());
+                        arg = arg + makeLocalCopyOfRemoteFile(item.getString());
                         }
                     else
-                        arg = arg + " (" + workflow.quote(item.getFieldName()) + "." + workflow.quote(item.getString()) + ")";
+                        arg = arg + " (" + item.getFieldName() + "." + workflow.quote(item.getString()) + ")";
                     }
                 else if(item.getName() != "")
                     {
@@ -1154,19 +1187,12 @@ også inkluderes som en parameter i url'en
                     item.write(file);
 
                     String ContentType = item.getContentType();
-                    boolean hasNoPDFfonts = false;
-                    if(  ContentType.equals("application/pdf") 
-                      || ContentType.equals("application/x-download") 
-                      || ContentType.equals("application/octet-stream") 
-                      )
-                        {
-                        hasNoPDFfonts = PDFhasNoFonts(file);
-                        }
+                    boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
                     arg = arg + " (FieldName,"      + workflow.quote(item.getFieldName())
                               + ".Name,"            + workflow.quote(item.getName())
-                              + ".ContentType,"     + workflow.quote(item.getContentType()) + (hasNoPDFfonts ? " true" : "")
+                              + ".ContentType,"     + workflow.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
                               + ".Size,"            + Long.toString(item.getSize())
-                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*//*DESTINATION_DIR_PATH*/)
+                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
                               + ".LocalFileName,"   + workflow.quote(LocalFileName)
                               + ")";
                     }

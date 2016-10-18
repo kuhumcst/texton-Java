@@ -17,8 +17,8 @@
 		    <td><span id="item1a" style="font-weight: bold;" >Choose one or more files:</span></td>
 			<td><input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" /></td>
 		  </tr><tr>
-			<td><input type="radio" name="action" value="batch" />Iterate over input</td>
-			<td><input type="radio" name="action" value="dataset" checked="checked" />Compound input</td>
+			<td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
+			<td><input type="radio" name="action" value="dataset" />Compound input</td>
 		  </tr><tr>
 			<td><span id="maila" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2a" style="vertical-align: middle;" />
@@ -60,6 +60,102 @@
   		  </tr>
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
+	</form>
+
+    <h2>Apply workflow to data behind URL(s) (POST method)</h2>
+    <h3>(Choose a goal)</h3>
+	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
+		<table>
+		  <tr>
+			<td> 
+				URLs (max 3)
+			</td>
+			<td>
+				<input name="URL" type="text" id="url1" size="60" />
+				<input name="URL" type="text" id="url2" size="60" />
+				<input name="URL" type="text" id="url3" size="60" />
+			</td>
+		  </tr><tr>
+			<td><input type="hidden" name="action" value="batch" checked="checked" />Iterate over input</td>
+		  </tr><tr>
+			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
+			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
+			(Notifications will be sent to this address.)</td>
+			
+		  </tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
+		</table>
+		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
+	</form>
+
+    <h2>Apply workflow to data behind URL(s) (GET method)</h2>
+    <h3>(Choose a goal)</h3>
+	<form method="get" action="createByGoalChoice">
+		<table>
+		  <tr>
+			<td> 
+				URLs (max 3)
+			</td>
+			<td>
+				<input name="URL" type="text" id="url1" size="60" />
+				<input name="URL" type="text" id="url2" size="60" />
+				<input name="URL" type="text" id="url3" size="60" />
+			</td>
+		  </tr><tr>
+			<td><input type="hidden" name="action" value="batch" checked="checked" />Iterate over input</td>
+		  </tr><tr>
+			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
+			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
+			(Notifications will be sent to this address.)</td>
+			
+		  </tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
+		</table>
+		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
+	</form>
+
+    <h2>Create CMDI metadata only (POST method)</h2>
+    <h3>(No workflow)</h3>
+	<form enctype="multipart/form-data" method="post" action="createMetadataOnly">
+		<table>
+		  <tr>
+			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
+			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
+			(Notifications will be sent to this address.)</td>
+		  </tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
+		</table>
+		<input type="submit" value="create CMDI metadata" alt="create CMDI metadata" />
+	</form>
+
+    <h2>Create CMDI metadata only (GET method)</h2>
+    <h3>(No workflow)</h3>
+	<form method="get" action="createMetadataOnly">
+		<table>
+		  <tr>
+			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
+			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
+			(Notifications will be sent to this address.)</td>
+		  </tr>
+  		  <tr><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
+		  </tr><tr>
+			<td><input type="radio" name="UIlanguage" value="da" checked="checked" />Danish</td>
+			<td><input type="radio" name="UIlanguage" value="en" />English</td>
+  		  </tr>
+		</table>
+		<input type="submit" value="create CMDI metadata" alt="create CMDI metadata" />
 	</form>
 
     <h2>Apply precooked workflow to uploaded file</h2>
@@ -133,8 +229,8 @@
 		    <td><span id="item1c" style="font-weight: bold;" >Choose one or more files:</span></td>
 			<td><input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" /></td>
 		  </tr><tr>
-			<td><input type="radio" name="action" value="batch" />Iterate over input</td>
-			<td><input type="radio" name="action" value="dataset" checked="checked" />Compound input</td>
+			<td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
+			<td><input type="radio" name="action" value="dataset" />Compound input</td>
 		  </tr><tr>
 			<td><span id="mailc" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2c" style="vertical-align: middle;" />

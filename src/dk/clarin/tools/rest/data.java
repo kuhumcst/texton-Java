@@ -109,11 +109,12 @@ public class data extends HttpServlet
             try
                 {
                 // With ContentType("text/xml") the md5 checksum for the sender isn't the same as for the receiver.
-                // IMPORTANT --- Uncomment if checksum is abolished.
                 // (If sent as ContentType("text/plain"), an XML-file doesn't look nice in the receiver's browser.)
-                /*checksum IS abolished*/if(request.getPathInfo().endsWith(".xml"))
+                if(request.getPathInfo().endsWith(".xml"))
                     response.setContentType("text/xml");
-                else/**/
+                else if(request.getPathInfo().endsWith(".zip"))
+                    response.setContentType("application/zip");
+                else
                     response.setContentType("text/plain");
     
                 String fileName = destinationDir + request.getPathInfo();
@@ -152,6 +153,10 @@ public class data extends HttpServlet
                  * jobs.table Uploads.table CTBs.table relations.table
                  * jobAbout.table
                  */
+                /* 2016.06.22 We decided not to delete results from the server 
+                   immediately after they have been fetched by the user.
+                   The cleanup service will delete the data.
+                   
                 String svar = BracMat.Eval("keep$("+workflow.quote(request.getPathInfo()) + ")");
                 logger.info(svar + " " + request.getPathInfo());
                 if(svar.equals("no"))
@@ -167,6 +172,7 @@ public class data extends HttpServlet
                         }
                     }
                 logger.info("doGet:deleted {}{}",destinationDir,request.getPathInfo());              // /blablah/de/blah
+                */
                 }
             catch (FileNotFoundException e)
                 {

@@ -11,15 +11,15 @@
     <entry key="adm-email">bart@cst.dk</entry>
 
     <!-- eSciDoc core properties -->
-    <entry key="repoServiceUrl">http://127.0.0.0/ir/item/</entry>
+    <entry key="repoServiceUrl">http://localhost:8080/ir/item/</entry>
     <entry key="admin-user-handle">secret</entry>
 
     <!-- Host names -->
-    <entry key="core-server">http://127.0.0.0</entry>
+    <entry key="core-server">http://localhost:8080</entry>
     <entry key="www-server">http://localhost:8080</entry>
 
     <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
-    <entry key="baseUrlTools">http://127.0.0.0</entry>
+    <entry key="baseUrlTools">http://localhost:8080</entry>
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
     <!-- Location of staging area 
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
