@@ -11374,7 +11374,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & "pending " !step " of " !n
                   |   localized$("Done! " "Færdig! ")
                       ( a
-                      .   (href.!baseUrlTools "/tools/zipresults?JobNr=" !arg)
+                      .   (href.!wwwServer "/tools/zipresults?JobNr=" !arg)
                         , localized$("Download result" "Download resultat")
                       )
                         localized
