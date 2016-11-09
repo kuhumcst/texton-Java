@@ -16,9 +16,7 @@ where=
       dcmi-type-vocabulary
   . meta/
   )
-  ( facets fileFormats linguae periods presentations vulticuli
-  . meta/feature/
-  )
+  (facets fileFormats linguae presentations.meta/feature/)
   (   annotationStyles
       basistextStyles
       flatFileTypes

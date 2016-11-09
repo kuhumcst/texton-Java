@@ -4,11 +4,11 @@
     <comment>Properties for a local system</comment>
 
     <!-- Email properties -->
-    <entry key="mail-from-name">clarin.dk svar-ikke</entry>
+    <entry key="mail-from-name">No reply</entry>
     <entry key="mail-port">25</entry>
     <entry key="mail-server">mailgate.sc.ku.dk</entry>
     <entry key="mail-from">no-reply@127.0.0.0</entry>
-    <entry key="adm-email">bart@cst.dk</entry>
+    <entry key="adm-email">you@to.me</entry>
 
     <!-- eSciDoc core properties -->
     <entry key="repoServiceUrl">http://localhost:8080/ir/item/</entry>
@@ -40,7 +40,7 @@
     <entry key="deleteAfterMillisec">172800000</entry>
 
     <!-- The only server that is allowed to start workflows (the web-server) -->
-    <entry key="accepted-workflow-starter">192.38.29.153</entry>
+    <entry key="accepted-workflow-starter">192.12.34.56</entry>
 </properties>
 
 

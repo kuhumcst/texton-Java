@@ -1621,19 +1621,6 @@ linguae=
   (Zeneize limburgisk.li.)
   (Zhuang zhuang.za.)
   (Zulu zulu.zu.);
-periods=
-  (900-1000.c10.)
-  (1000-1100.c11.)
-  (1100-1200.c12.)
-  (1200-1300.c13.)
-  (1300-1400.c14.)
-  (1400-1500.c15.)
-  (1500-1600.c16.)
-  (1600-1700.c17.)
-  (1700-1800.c18.)
-  (1800-1900.c19.)
-  (1900-1950.c20.)
-  (1950-.c21.);
 presentations=
   (normal.nml.)
   ("combined w. previous steps" "kombineret m. tidligere trin".comb.)
@@ -2583,9 +2570,6 @@ vidStyles=
   ("Matroska open media format".x-matroska.)
   ("Windows Media Video".x-ms-wmv.)
   ("Flash video (FLV files)".x-flv.);
-vulticuli=
-  (roman roman.rom.)
-  (blackletter gotisk.got.);
 where=
   (AAA where./)
   (CTBs jobAbout jobNr jobs relations Uploads.job/)
