@@ -124,6 +124,8 @@ public class ToolsProperties
                                     + "\":?repoServiceUrl)&(\""
                                     + documentRoot
                                     + "\":?documentRoot)&(\""
+                                    + wwwServer
+                                    + "\":?wwwServer)&(\""
                                     + stagingArea
                                     + "\":?stagingArea)&ok|fail"
                                     ;
