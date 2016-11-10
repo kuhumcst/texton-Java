@@ -11727,7 +11727,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   & flt$(!isgn1*(!err1+4*!err2),2):?err
                   & !s1+-4*!s2
               )
-            & !arg:? (stress.?arg) ?
+            &   !arg
+              : ? (stress.~/#?arg:>0:<1001) ?
             & (readTable$pies|:?pies)
             & pi$!arg:?PI
             & !pies (!arg.!PI !err):?pies
