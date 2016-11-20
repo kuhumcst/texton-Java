@@ -308,7 +308,7 @@ toolsProg=
       = .get$(path$((!arg:~|all) ".bra"))
       )
       ( readTable
-      =   tabs tab Tables v folder gotThis
+      =   tabs tab Tables v folder gotThis error
         .     !arg:(AAA|where)
             & get$(path$!arg)
           |   !arg:(?folder.?file)
@@ -323,6 +323,7 @@ toolsProg=
               )
             & (   !arg:
                 & where:?tabs
+                & :?error
                 & (   !where
                     :   ?
                         ( ?Tables
@@ -330,8 +331,16 @@ toolsProg=
                           &   whl
                             ' ( !Tables
                               :   ( %@?tab
-                                  & readTable$(!folder.!tab)
-                                  & !tab+!tabs:?tabs
+                                  & (   readTable$(!folder.!tab)
+                                      & !tab+!tabs:?tabs
+                                    |   str
+                                      $ ( " Cannot read ["
+                                          !tab
+                                          "] in ["
+                                          !folder
+                                          "]."
+                                        )
+                                    )
                                   )
                                   ?Tables
                               )
@@ -339,7 +348,10 @@ toolsProg=
                         )
                         ?
                   |   lst$(!tabs,path$!AAA,NEW)
-                    & "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
+                    &   str
+                      $ ( "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
+                          (!error:|!error)
+                        )
                   )
               |   !where:? (? !arg ?.?folder) ?
                 &   ( get$(path$(!folder !arg))
@@ -1243,7 +1255,8 @@ toolsProg=
                       . (=?replacementtemplate)
                       )
                   & "questiontemplate is macro '(...$synaps...)"
-                  & (   (?t.(?i.?o).?IO):?synaps
+                  & (     (=?t.(?i.?o).?IO)
+                        : (=?synaps)
                       &   !questiontemplate
                         : (=?questionpattern-tio)
                       & !wf1:!questionpattern-tio
@@ -1350,7 +1363,49 @@ toolsProg=
                           )
                     )
               )
+            & "de/inmul(tiply) are used to replace (commutative) * operators
+			   with (noncommutative) , operators. And back again. Reason:
+			   During simplification factors can swap place, leading to
+			   mismatch with the tool plumbing pattern."
+            & ( demul
+              =   a b
+                .     !arg:%?a*%?b
+                    & (demul$!a,demul$!b)
+                  |   !arg:?a_?b
+                    & (demul$!a)_(demul$!b)
+                  | !arg
+              )
+            & ( demultiply
+              =   wfs wf n
+                .   :?wfs
+                  &   whl
+                    ' ( !arg:(?n,?wf) ?arg
+                      & demul$!wf:?wf
+                      & !wfs (!n,!wf):?wfs
+                      )
+                  & !wfs
+              )
+            & ( inmul
+              =   a b
+                .     !arg:(~@?a,?b)
+                    & inmul$!a*inmul$!b
+                  |   !arg:?a_?b
+                    & (inmul$!a)_(inmul$!b)
+                  | !arg
+              )
+            & ( inmultiply
+              =   wfs wf n
+                .   :?wfs
+                  &   whl
+                    ' ( !arg:(?n,?wf) ?arg
+                      & inmul$!wf:?wf
+                      & !wfs (!n,!wf):?wfs
+                      )
+                  & !wfs
+              )
             & !arg:((=?toolPlumbing).?wfs)
+            & demul$!toolPlumbing:?toolPlumbing
+            & demultiply$!wfs:?wfs
             & !wfs:%?wflw ?
             & :?nextvars
             & 0:?nextn
@@ -1360,6 +1415,7 @@ toolsProg=
                 . (='(!N,$rynaps))
                 )
             & tbl$(!nextvars,0)
+            & inmultiply$!wfs:?wfs
             & !wfs
           | 
       )
@@ -1710,7 +1766,7 @@ toolsProg=
                   & sort$!arg
                   & :?dun
                   & ( replace
-                    =   n r p L R WF
+                    =   n r p L R WF IO I O A Z
                       .     !arg
                           : (?WF.?n.(=?p).(=?r))
                         & (   !WF:(=?.?)
@@ -1788,7 +1844,7 @@ toolsProg=
                                                     ($feat,$val)
                                                     ?Z
                                                 )
-                                              . $IO
+                                              . ?IO
                                               )
                                           . ( 
                                             = (!I.!A ? !Z).!IO
@@ -1805,15 +1861,19 @@ toolsProg=
                       )
                   & !WF
               )
-            & "( toolPattern
+            & ( toolPattern
               =   pat tool lhs rhs lpat rpat Wf feats
                 .   :?pat
                   & !arg:(=?Wf)
                   &   whl
                     ' ( (   '$Wf:(=?Wf (?tool.?feats))
+                          & (   '$feats:(=?feats.?)
+                              & '($feats.?):(=?feats)
+                            | 
+                            )
                           & (   :!pat
                               & '($tool.$feats)
-                            | '(($tool.?) ()$pat)
+                            | '(($tool.$feats) ()$pat)
                             )
                         |   '$Wf:(=?Wf %?lhs*%?rhs)
                           &   toolPattern$('$lhs)
@@ -1828,13 +1888,18 @@ toolsProg=
                       : (=?pat)
                       )
                   & '$pat
-              ) Same code, but a bit faster because of short names. (intensively used code!)"
+              )
+            & "Same code, but a bit faster because of short names. (intensively used code!)"
             & ( "*"
               =   "#" "%" "[" "]" "(" ")" "-" "="
                 .   :?"#"
                   & !arg:(=?"-")
                   &   whl
                     ' ( (   '$"-":(=?"-" (?"%".?"="))
+                          & (   '$"=":(=?"=".?)
+                              & '($"=".?):(=?"=")
+                            | 
+                            )
                           & ( :!"#"&'($"%".$"=")
                             | '(($"%".?) ()$"#")
                             )
@@ -1951,7 +2016,6 @@ toolsProg=
               |   log
                 $ "while enumerateToolsDetail: MAX NUMBER OF WORKFLOW OPERATIONS REACHED (1000000)"
               )
-            & !workflowlist
             & "workflowlist is numbered list of workflows, with equal branches not merged yet."
             & ( saveio
               =   n i o x y
@@ -5965,18 +6029,26 @@ toolsProg=
                       , goal source isfulfilled hasfulfilled
                     .   "Check whether source and goal already have been connected by tool and stored as a step."
                       & ( isfulfilled
-                        =   source goal tool pipe
+                        =   source goal tool pipe pipes
                           .   !arg:(?source.?goal.?tool)
                             & product$!source:?source
                             & product$!goal:?goal
-                            &   !memoizedSteps
-                              :   ?
-                                + ( !source
-                                  . !goal
-                                  . ?+((!tool,?):?pipe)+?
-                                  )
-                                + ?
-                            & (sentence$!source.sentence$!goal.!pipe)
+                            & 0:?pipes
+                            & (   !memoizedSteps
+                                :   ?
+                                  + ( !source
+                                    . !goal
+                                    .   ?
+                                      + ( (!tool,?):?pipe
+                                        & !pipe+!pipes:?pipes
+                                        & ~
+                                        )
+                                      + ?
+                                    )
+                                  + ?
+                              |   !pipes:~0
+                                & (sentence$!source.sentence$!goal.!pipes)
+                              )
                         )
                       & ( hasfulfilled
                         =   source goal term a b m,pipe
@@ -9275,17 +9347,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                         : ?R
                     |   "application/vnd.ms-powerpoint"
-                      & (facet.txt) (format.ppt):?R
+                      & (facet.txt^hq) (format.ppt):?R
                     |   "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                      & (facet.txt) (format.pptx):?R
+                      & (facet.txt^hq) (format.pptx):?R
                     |   "application/vnd.oasis.opendocument.presentation"
-                      & (facet.txt) (format.odp):?R
+                      & (facet.txt^hq) (format.odp):?R
                     |   "application/vnd.ms-excel"
-                      & (facet.txt) (format.xls):?R
+                      & (facet.txt^hq) (format.xls):?R
                     |   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                      & (facet.txt) (format.xlsx):?R
+                      & (facet.txt^hq) (format.xlsx):?R
                     |   "application/vnd.oasis.opendocument.spreadsheet"
-                      & (facet.txt) (format.ods):?R
+                      & (facet.txt^hq) (format.ods):?R
                     |   ( application/x-download
                         | application/octet-stream
                         )
@@ -9333,11 +9405,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       & (facet.txt) (format.docx):?R
                     |   text/html
-                      & (facet.txt) (format.html):?R
+                      & (facet.txt^hq) (format.html):?R
                     |   text/rtf
                       & (facet.txt) (format.rtf):?R
                     |   text/plain
-                      & (facet.txt) (format.flat):?R
+                      & (facet.txt^hq) (format.flat):?R
                     | text/x-conll&(format.flat):?R
                     |   @( ?
                          :   image/
@@ -11058,6 +11130,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           : ?pipes
                       )
                     & "We succeeded in computing one or more pipelines."
+                    & (|log$(pipes !pipes))
                     & (   unfoldTreeN$(1.!pipes):?pipesN
                         & 0:?pipes
                         &   whl
@@ -11771,7 +11844,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , toolParameters toolParmTests toolprop value values var
           , voidfunc i tooladm features basistextStyles facets
           , fileFormats flatFileTypes imageStyles linguae
-          , presentations sndStyles tagSets textStyles
+          , presentations sndStyles tagSets textStyles svalues
           , annotationStyles getFeatValues
           , tokenisationStyles toolid output TUPTUO reverselist
         .     !arg
@@ -11832,10 +11905,10 @@ catch (SystemExit $e)
               & :?boilerPlate:?lastWord
             )
           & ( listAlts
-            =   alt featF opts rsr rsrc stl style
-              .   !arg:(?arg.?IO.?featname)
+            =   alt featF opts rsr rsrc stl style alts
+              .   !arg:(?alts.?IO.?featname)
                 &   whl
-                  ' ( !arg:(%?alt ?opts)+?arg
+                  ' ( !alts:(%?alt ?opts)+?alts
                     & (   !alt:%*%
                         & ( featF
                           = (!IO.!featname.!rsr.F)+!DATA:?DATA
@@ -11904,6 +11977,7 @@ catch (SystemExit $e)
           & readTable$presentations
           & readTable$linguae
           & readTable$features
+          & readTable$periods
           & readTable$tagSets
           & ( getBoilerPlate
             =   id field val
@@ -11959,32 +12033,25 @@ catch (SystemExit $e)
                 & !table
             )
           & ( combineFeats
-            =   A B C a b aname bname
-              .   !arg:(?A.?B)
-                & :?C
-                &   whl
-                  ' ( !A:(?aname,?a) ?A
-                    & !B:(?bname,?b) ?B
-                    & (   !aname:!bname
-                        & !C (!aname,!a+!b):?C
-                      |   !B:? (!aname,?) ?
-                        & !C (!bname,!b):?C
-                        & (!aname,!a) !A:?A
-                      |   !A:? (!bname,?) ?
-                        & !C (!aname,!a):?C
-                        & (!bname,!b) !B:?B
-                      )
-                    )
-                & !C !A !B
-            )
-          & ( combineToolIncarnations
-            =   A Z name featK featL
+            =   A B M Z b c
               .     whl
-                  ' ( !arg:?A+(?name.?featK)+(!name.?featL)+?Z
-                    &   !A+(!name.combineFeats$(!featK.!featL))+!Z
-                      : ?arg
+                  ' ( !arg:?A (?B,?b) ?M (!B,?c) ?Z
+                    & !A (!B,!b+!c) !M !Z:?arg
                     )
                 & !arg
+            )
+          & ( combineToolIncarnations
+            =   A Z name featK featL Tools feats
+              .     whl
+                  ' ( !arg:?A+(?name.?featK)+(!name.?featL)+?Z
+                    & !A+(!name.!featK !featL)+!Z:?arg
+                    )
+                & 0:?Tools
+                &   whl
+                  ' ( !arg:(?name.?feats)+?arg
+                    & !Tools+(!name.combineFeats$!feats):?Tools
+                    )
+                & !Tools
             )
           & combineToolIncarnations$!toolprop:?toolprop
           &   whl
@@ -11996,7 +12063,7 @@ catch (SystemExit $e)
                             ?
                             (?fname2,?+#*(?+(%?*%? ?)+?.?)+?)
                             ?
-                      &   out
+                      &   log
                         $ ( str
                           $ ( "Tool "
                               !name
@@ -12013,7 +12080,7 @@ catch (SystemExit $e)
                             ?
                             (?fname2,?+#*(?.?+(%*% ?)+?)+?)
                             ?
-                      &   out
+                      &   log
                         $ ( str
                           $ ( "Tool "
                               !name
@@ -12415,7 +12482,7 @@ try {
 "
                     : ?FEATURETEXT
                   &   whl
-                    ' ( !FEATURES:#*(?IO.?data)\L?values+?FEATURES
+                    ' ( !FEATURES:#*(?IO.?data)\L?svalues+?FEATURES
                       & ( 
                         |     !declarations
                               "    "
@@ -12435,52 +12502,55 @@ try {
                         : ?FEATURETEXT
                       & :?ech
                       &   whl
-                        ' ( !values:%@?value^?*?values
-                          &     !declarations
-                                "        "
-                                !stringvar
-                                !IO
-                                !data
-                                !value
-                                " = false;"
-                                \t
-                                "/* "
-                                ( getFeatName$!data
-                                  " in "
-                                  ( !IO:I&input
-                                  | output
-                                  )
-                                  " is "
-                                  getFeatValues$(!data.!value)
-                                )
-                                " if true */
+                        ' ( !svalues:%?values+?svalues
+                          &   whl
+                            ' ( !values:%@?value^?*?values
+                              &     !declarations
+                                    "        "
+                                    !stringvar
+                                    !IO
+                                    !data
+                                    !value
+                                    " = false;"
+                                    \t
+                                    "/* "
+                                    ( getFeatName$!data
+                                      " in "
+                                      ( !IO:I&input
+                                      | output
+                                      )
+                                      " is "
+                                      getFeatValues$(!data.!value)
+                                    )
+                                    " if true */
 "
-                            : ?declarations
-                          &     !ech
-                                " . \""
-                                !IO
-                                !data
-                                !value
-                                "="
-                                !var
-                                !IO
-                                !data
-                                !value
-                                " \""
-                            : ?ech
-                          &     !FEATURETEXT
-                                "            "
-                                !var
-                                !IO
-                                !data
-                                !value
-                                " = existsArgumentWithValue(\""
-                                !IO
-                                !data
-                                "\", \""
-                                !value
-                                "\");\n"
-                            : ?FEATURETEXT
+                                : ?declarations
+                              &     !ech
+                                    " . \""
+                                    !IO
+                                    !data
+                                    !value
+                                    "="
+                                    !var
+                                    !IO
+                                    !data
+                                    !value
+                                    " \""
+                                : ?ech
+                              &     !FEATURETEXT
+                                    "            "
+                                    !var
+                                    !IO
+                                    !data
+                                    !value
+                                    " = existsArgumentWithValue(\""
+                                    !IO
+                                    !data
+                                    "\", \""
+                                    !value
+                                    "\");\n"
+                                : ?FEATURETEXT
+                              )
                           )
                       &     !FEATURETEXT
                             "            "
@@ -12502,7 +12572,7 @@ try {
                     : ?STYLETEXT
                   &   whl
                     ' (   !STYLES
-                        : #*(?IO.?featname.?data)\L?values+?STYLES
+                        : #*(?IO.?featname.?data)\L?svalues+?STYLES
                       & ( 
                         |     !declarations
                               "        "
@@ -12524,66 +12594,69 @@ try {
                         : ?STYLETEXT
                       & :?ech
                       &   whl
-                        ' ( !values:%@?value^?*?values
-                          &     !declarations
-                                "        "
-                                !stringvar
-                                !IO
-                                !featname
-                                !data
-                                !value
-                                " = false;"
-                                \t
-                                "/* Style of "
-                                low$(getFeatName$!featname)
-                                " "
-                                getFeatValues$(!featname.!data)
-                                " in "
-                                ( !IO:I&input
-                                | output
-                                )
-                                " is "
-                                (   getFeatSpecTable$(!featname.!data)
-                                  : ?sptable
-                                &   ( !!sptable
-                                    |   readTable$!sptable
-                                      & !!sptable
+                        ' ( !svalues:%?values+?svalues
+                          &   whl
+                            ' ( !values:%@?value^?*?values
+                              &     !declarations
+                                    "        "
+                                    !stringvar
+                                    !IO
+                                    !featname
+                                    !data
+                                    !value
+                                    " = false;"
+                                    \t
+                                    "/* Style of "
+                                    low$(getFeatName$!featname)
+                                    " "
+                                    getFeatValues$(!featname.!data)
+                                    " in "
+                                    ( !IO:I&input
+                                    | output
                                     )
-                                  : ? (?fval.!value) ?
-                                & !fval
-                                )
-                                " if true */
+                                    " is "
+                                    (   getFeatSpecTable$(!featname.!data)
+                                      : ?sptable
+                                    &   ( !!sptable
+                                        |   readTable$!sptable
+                                          & !!sptable
+                                        )
+                                      : ? (?fval.!value) ?
+                                    & !fval
+                                    )
+                                    " if true */
 "
-                            : ?declarations
-                          &     !ech
-                                " . \""
-                                !IO
-                                !featname
-                                !data
-                                !value
-                                "="
-                                !var
-                                !IO
-                                !featname
-                                !data
-                                !value
-                                " \""
-                            : ?ech
-                          &     !STYLETEXT
-                                "            "
-                                !stringvar
-                                !IO
-                                !featname
-                                !data
-                                !value
-                                " = existsArgumentWithValue(\""
-                                !IO
-                                !featname
-                                !data
-                                "\", \""
-                                !value
-                                "\");\n"
-                            : ?STYLETEXT
+                                : ?declarations
+                              &     !ech
+                                    " . \""
+                                    !IO
+                                    !featname
+                                    !data
+                                    !value
+                                    "="
+                                    !var
+                                    !IO
+                                    !featname
+                                    !data
+                                    !value
+                                    " \""
+                                : ?ech
+                              &     !STYLETEXT
+                                    "            "
+                                    !stringvar
+                                    !IO
+                                    !featname
+                                    !data
+                                    !value
+                                    " = existsArgumentWithValue(\""
+                                    !IO
+                                    !featname
+                                    !data
+                                    "\", \""
+                                    !value
+                                    "\");\n"
+                                : ?STYLETEXT
+                              )
                           )
                       &     !STYLETEXT
                             "            "
