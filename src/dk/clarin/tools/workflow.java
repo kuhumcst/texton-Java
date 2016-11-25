@@ -564,9 +564,14 @@ public class workflow implements Runnable
              * Notice that this function currently only can generate output of type 
              * TEIDKCLARIN_ANNO
              */
-            String newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
-            if(!TEIformat.equals(""))
+            String newResource;
+            if(TEIformat.equals(""))
                 {
+                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               ".."               + quote(date) + ")"); 
+                }
+            else
+                {
+                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
                 // Create file plus metadata
                 logger.debug("Going to write {}",destdir+Filename(filename,BracMat));
                 FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
