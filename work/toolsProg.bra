@@ -7870,7 +7870,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       !Z
                   : ?jobs
                 & ( !CTBs:? (!JobNr.!jobID.!EMAIL.!CTBID) ?
-                  | !CTBs (!JobNr.!jobID.!EMAIL.!CTBID):?CTBs
+                  |     (!CTBs|)
+                        (!JobNr.!jobID.!EMAIL.!CTBID)
+                    : ?CTBs
                   )
                 & :?prevTitle
                 &   whl
