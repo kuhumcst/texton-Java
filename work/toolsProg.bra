@@ -133,7 +133,7 @@ or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>
 }
 
 toolsProg=
-  (setLang$dk|)
+  (setLang$da|)
 &     (indent=0)
       (logno=0)
       (tabind=0)
@@ -411,6 +411,11 @@ toolsProg=
             & readTable$linguae
             & !linguae:? (?full.!LaNg.?YYY) ?
             & localized$!full
+            & (   !hiddenData:?A (UIlanguage.?) ?Z
+                & !A !Z:?hiddenData
+              | 
+              )
+            & (UIlanguage.!LaNg) !hiddenData:?hiddenData
           | log$("failed to set language to " !arg)
       )
       "
@@ -2279,8 +2284,11 @@ toolsProg=
           )
           \r\n
       )
-      (HTMLbodyContainer=XHTMLbodyContainer)
-      (HTMLbodyContainer=HTML5bodyContainer)
+      ( HTMLbodyContainer
+      =     @(!wwwServer:? clarin ?)
+          & HTML5bodyContainer
+        | log$noClarin&XHTMLbodyContainer
+      )
       ( HTML5bodyContainer
       =   
         .   ("!DOCTYPE"." html")
@@ -2582,7 +2590,7 @@ toolsProg=
                   . ,\r\n (title.,"DK-Clarin: Tools") \r\n !style
                   )
                   \r\n
-                  (body.,!arg)
+                  (body.(bgcolor."#C6D8D9"),!arg)
             )
             \r\n
       )
@@ -8807,7 +8815,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                           )
                           ( body
-                          .   
+                          .   (bgcolor."#FF66FF")
                             ,   (h1.,localized$(Result Resultat))
                                 (h2.,Workflow)
                                 ( p
@@ -8841,7 +8849,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                           )
                           ( body
-                          .   
+                          .   (bgcolor."#FF66FF")
                             ,   (h1.,localized$(Results Resultater))
                                 (h2.,Workflow)
                                 (p.,!workflow)
@@ -10579,7 +10587,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         toML
                       $ ( !BodyContainer
                         $ ( !formFields:
-                          |   "Add metadata"
+                          |   (h1.,localized$("Add metadata" "Tilføj metadata"))
                               (br.,)
                                 form
                               $ ( methodName$!directedBy
