@@ -49,7 +49,7 @@ import java.util.zip.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.mail.SimpleEmail;
+//import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
@@ -259,6 +259,7 @@ public class workflow implements Runnable
     public void sendMail(int status, String name, String string1,String toolErrorMessage,String toolsandfiles,String mail2)
         throws org.apache.commons.mail.EmailException 
         {
+/*
         try
             { 
             logger.debug("sendMail("  + status + ", " + name + ", ... , ... , " + mail2 + ")");
@@ -338,6 +339,7 @@ public class workflow implements Runnable
                 );
             logger.error("{} Exception:{}","Tools",e.getMessage());
             }
+*/
         }
 
 

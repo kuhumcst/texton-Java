@@ -34,7 +34,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.mail.SimpleEmail;
+//import org.apache.commons.mail.SimpleEmail;
 
 @SuppressWarnings("serial")
 public class register extends HttpServlet 
@@ -52,6 +52,7 @@ public class register extends HttpServlet
 
     public void sendMail(String name, String mail2, String ToolName)
         {
+/*
         try
             { 
             logger.debug("sendMail(" + name + ", " + mail2 + ", " + ToolName + ")");
@@ -97,6 +98,7 @@ public class register extends HttpServlet
                 );
             logger.error("{} Exception:{}","Tools",e.getMessage());
             }
+*/
         }
 
 

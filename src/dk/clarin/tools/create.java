@@ -51,7 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 
-import org.apache.commons.mail.SimpleEmail;
+//import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
