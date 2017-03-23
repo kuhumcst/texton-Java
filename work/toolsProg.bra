@@ -3452,7 +3452,7 @@ toolsProg=
           , createBoilerPlate
           , validationComments
           , storeToolButton replaceToolButton
-          , deleteToolButton UpdateButton
+          , deleteToolButton UpdateButton PHPbutton
         .   clean$
           & localized$("Save info" "Gem oplysninger"):?storeToolButton
           &   localized$("Replace info" "Erstat oplysninger")
@@ -3460,6 +3460,7 @@ toolsProg=
           &   localized$("Delete info" "Slet oplysninger")
             : ?deleteToolButton
           & localized$("Update info" "Opdater skærm"):?UpdateButton
+          & localized$("PHP wrapper" PHP-kode):?PHPbutton
           & ( createBoilerPlate
             =     ToolName ToolVersion FullToolName
                 , URL Publisher ContentProvider
@@ -4847,8 +4848,9 @@ toolsProg=
                       : (?featjursPreexisting.?ZZ.?nth)
                     & (   !arg:? (bsubmit.?) ?
                         & "
-                      User presses one of the 'submit' buttons (!storeToolButton,
-                      !replaceToolButton, !deleteToolButton, !UpdateButton).
+                      User presses one of the 'submit' buttons 
+					  (!storeToolButton, !replaceToolButton,
+					  !deleteToolButton, !UpdateButton, !PHPbutton).
                       The features as shown in the form should overrule the
                       properties as recorded in toolprop.table for this
                       incarnation of the tool, so ignore the preexisting
@@ -4962,6 +4964,8 @@ toolsProg=
                                   !ToolName
                                 )
                           )
+                      |   !Submit:!PHPbutton
+                        & wrapper$(PHP.!ToolName)
                       | Updated
                       )
                   | 
@@ -4995,6 +4999,7 @@ toolsProg=
                                 )
                               submit$!deleteToolButton
                               submit$!UpdateButton
+                              submit$!PHPbutton
                           . POST
                           )
                       )
@@ -10587,7 +10592,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         toML
                       $ ( !BodyContainer
                         $ ( !formFields:
-                          |   (h1.,localized$("Add metadata" "Tilføj metadata"))
+                          |   ( h1
+                              .   
+                                ,   localized
+                                  $ ("Add metadata" "Tilføj metadata")
+                              )
                               (br.,)
                                 form
                               $ ( methodName$!directedBy
