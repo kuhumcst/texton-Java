@@ -4814,8 +4814,10 @@ toolsProg=
           & ( !arg:? (mail2.?mail2) ?
             | :?mail2
             )
+		  & log$(createBoilerPlate !arg)
           & (     createBoilerPlate$!arg
                 : (?ToolName.?password.?contactEmail.?arg)
+			  & log$(staticFields$ !arg)
               & staticFields$!arg:?formFields
               &     ( h1
                     .   
@@ -4891,6 +4893,7 @@ toolsProg=
                     & !arg
                   )
                 : ?featjursURL
+			  & log$(featjursURL !featjursURL)
               & "
             Add 'previous' and 'next' buttons as needed.
             "
@@ -4913,14 +4916,17 @@ toolsProg=
             formFields variable. The Metadata variable collects the same data
             in a format similar to the format in the toolprop.table.
             "
+			  & log$(whl !feats)
               &   whl
                 ' ( !feats:%?feat+?feats
                   &     askFeature
                       $ (!featjursURL.!feat.!formFields.!Metadata)
                     : (?formFields.?Metadata)
                   )
+			  & log$foldInputAndOutput
               & foldInputAndOutput$!Metadata:?Metadata
               & (!ToolName.!Metadata):?Metadata
+			  & log$(Metadata !Metadata)
               &   (   !arg:? (bsubmit.?Submit) ?
                     & (     !Submit
                           : (!storeToolButton|!replaceToolButton)
@@ -4988,6 +4994,7 @@ toolsProg=
                   | "Enter data in all fields"
                   )
                 : ?error
+			  & log$(error !error)
               &   toML
                 $ ( !HTMLbodyContainer
                   $ ( ( !formFields:
