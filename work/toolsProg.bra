@@ -312,7 +312,12 @@ toolsProg=
         .     !arg:(AAA|where)
             & get$(path$!arg)
           |   !arg:(?folder.?file)
-            & get$(path$(!folder !file))
+            &   get$(path$(!folder !file))
+              : ( !file
+                |   ?!file
+                  &   log
+                    $ (str$("No assignment in [" !file "] Result:") !!file)
+                )
             & !!file
           |   @(!arg:alltables ?)
             & get$(path$!arg)
@@ -322,7 +327,7 @@ toolsProg=
               | readTable$where
               )
             & (   !arg:
-                & where:?tabs
+                & 0:?tabs
                 & :?error
                 & (   !where
                     :   ?
@@ -333,12 +338,14 @@ toolsProg=
                               :   ( %@?tab
                                   & (   readTable$(!folder.!tab)
                                       & !tab+!tabs:?tabs
-                                    |   str
-                                      $ ( " Cannot read ["
-                                          !tab
-                                          "] in ["
-                                          !folder
-                                          "]."
+                                    |   log
+                                      $ ( str
+                                        $ ( " Cannot read ["
+                                            !tab
+                                            "] in ["
+                                            !folder
+                                            "]."
+                                          )
                                         )
                                     )
                                   )
@@ -347,11 +354,20 @@ toolsProg=
                           & ~
                         )
                         ?
-                  |   lst$(!tabs,path$!AAA,NEW)
-                    &   str
-                      $ ( "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
-                          (!error:|!error)
-                        )
+                  |   ( !tabs:?+where+?
+                      | where+!tabs:?tabs
+                      )
+                    & (   lst$(!tabs,path$!AAA,NEW)
+                        &   str
+                          $ ( "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
+                              (!error:|!error)
+                            )
+                      |   str
+                        $ ( "Cannot write to ["
+                            path$!AAA
+                            "]. Check file access rights for JBoss/Tomcat."
+                          )
+                      )
                   )
               |   !where:? (? !arg ?.?folder) ?
                 &   ( get$(path$(!folder !arg))
@@ -9471,6 +9487,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                              )
                          )
                       & (format.vid^!spec):?R
+                    |   text/xml
+                      & (       get
+                              $ ( str$(!DestinationDir !LocalFileName)
+                                , X ML
+                                , TRM
+                                )
+                            : ? (TEI.?) ?
+                          & (facet.txt) (format.teip5):?R
+                        | (format.xm):?R
+                        )
                     | :?R
                     )
                 & log$("analyseContentType returns:" !R)
