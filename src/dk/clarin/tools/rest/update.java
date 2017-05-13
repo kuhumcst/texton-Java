@@ -106,15 +106,68 @@ public class update extends HttpServlet
              * displayed above the form and the name of a tool, which will then be 
              * selected when the browser shows the pick list.
              */
+/*            String userHandle = userhandle.getUserHandle(request,null);
+            String userEmail = null;
+            String passwordAsHandle = null;
+            if(userHandle == null)
+                {
+                passwordAsHandle = getarg(request,"passwordAsHandle");
+                logger.debug("getarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+                /* 20140514 It is allowed to register a tool without being logged in or using a password, 
+                            but the tool can only be made non-"Inactive" by you if you are logged-in.
+                if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
+                */
+                    {
+                    //userEmail = request.getParameter("mail2");
+                    userEmail = getarg(request,"mail2");
+                    logger.debug("getarg(request,\"mail2\") returns:" + (userEmail == null ? "not found" : userEmail));
+                    }                
+                if(userEmail == null)
+                    {
+                    response.setStatus(401);
+                    response.setContentType("text/html; charset=UTF-8");
+                    StringBuilder html = new StringBuilder();
+                    html.append("<html>");
+                    html.append("<head>");
+                    html.append("<title>Opdatering af registrerede oplysninger for et værktøj</title>");
+                    html.append("</head>");
+                    html.append("<body>");
+                    html.append("<h1>Login krævet</h1>");
+                    html.append("<p>Du skal være logget ind for at kunne opdatere oplysninger for et værktøj.<a href=\"" + 
+                        ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
+                        "/clarindk/login?target=" + "/tools/update" + "\">Klik her for at logge ind</a>.</p>");
+                        //"/tools/update" + "\">Klik her for at logge ind</a>.</p>");
+                    html.append("</body>");
+                    html.append("</html>");
+
+                    out.println(html.toString());
+                    return;
+                    }
+                }
+            else
+                {
+                logger.debug("userHandle = {}",userHandle);
+
+                String userId = userhandle.getUserId(request,null,userHandle);
+                userEmail = userhandle.getEmailAddress(request,null,userHandle,userId);
+                }
+                
+            logger.info("userHandle = {}",userHandle);
+
+            String arg = "";
+            if(userEmail != null)
+                arg = " (contactEmail." + workflow.quote(userEmail) + ")";
+            arg += getAllArgs(request);
+*/
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            passwordAsHandle = getarg(request,items,"passwordAsHandle");
-            logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+            passwordAsHandle = getarg(request,"passwordAsHandle");
+            logger.debug("getarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
             if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
 	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                userEmail = getarg(request,items,"mail2");
+                userEmail = getarg(request,"mail2");
 	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
 			else
@@ -125,9 +178,9 @@ public class update extends HttpServlet
                 
             logger.debug("userEmail = {}",userEmail);
 
-            if(userEmail != null && getarg(request,items,"contactEmail") == null)
+            if(userEmail != null && getarg(request,"contactEmail") == null)
                 arg += " (contactEmail." + workflow.quote(userEmail) + ")";
-//            arg += getargs(request,items);
+            //arg += getargs(request,items);
             arg += getAllArgs(request);
 
             String result = BracMat.Eval("update$(" + arg + ")");
