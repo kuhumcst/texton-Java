@@ -226,9 +226,15 @@ public class register extends HttpServlet
             logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
             if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
+	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = getarg(request,items,"mail2");
 	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
+			else
+				{
+	            logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
+					passwordAsHandle,ToolsProperties.password);
+				}
                 
             logger.debug("userEmail = {}",userEmail);
 
