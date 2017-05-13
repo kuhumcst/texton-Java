@@ -113,10 +113,6 @@ public class update extends HttpServlet
                 {
                 passwordAsHandle = getarg(request,"passwordAsHandle");
                 logger.debug("getarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
-                /* 20140514 It is allowed to register a tool without being logged in or using a password, 
-                            but the tool can only be made non-"Inactive" by you if you are logged-in.
-                if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
-                */
                     {
                     //userEmail = request.getParameter("mail2");
                     userEmail = getarg(request,"mail2");
