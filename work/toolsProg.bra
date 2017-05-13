@@ -3469,7 +3469,8 @@ toolsProg=
           , validationComments
           , storeToolButton replaceToolButton
           , deleteToolButton UpdateButton PHPbutton
-        .   clean$
+        .   log$(register !arg)
+		  & clean$
           & localized$("Save info" "Gem oplysninger"):?storeToolButton
           &   localized$("Replace info" "Erstat oplysninger")
             : ?replaceToolButton
