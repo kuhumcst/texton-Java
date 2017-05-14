@@ -929,7 +929,7 @@ toolsProg=
                   | :?frmt
                 )
                 ( pres
-                .     !frmt:(txtbasis|txtann)
+                .     !frmt:(txtbasis|txtann|teip5)
                     & nml
                   | 
                 )
@@ -6689,6 +6689,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               : ( xm
                                 | txtbasis
                                 | txtann
+								| teip5
                                 )
                             & xml
                           | !val
@@ -7478,7 +7479,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       + ( O
                         .   ?
                           + ( format
-                            .   (txtann|txtbasis)
+                            .   (txtann|txtbasis|teip5)
                               : ?format
                             . ?
                             )
@@ -11244,7 +11245,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             & (     !parms
                                   : ~( ?
                                        ( Iformat
-                                       . (txtbasis|txtann)^?
+                                       . (txtbasis|txtann|teip5)^?
                                        )
                                        ?
                                      )
@@ -11257,7 +11258,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     &   !parms
                                       :   ?
                                           ( Oformat
-                                          .   (txtbasis|txtann)
+                                          .   (txtbasis|txtann|teip5)
                                             ^ ?
                                           )
                                           ?
