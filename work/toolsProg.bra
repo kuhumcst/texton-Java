@@ -4932,108 +4932,114 @@ toolsProg=
               & foldInputAndOutput$!Metadata:?Metadata
               & (!ToolName.!Metadata):?Metadata
               & log$(Metadata !Metadata)
-              &   (   !arg:? (bsubmit.?Submit) ?
-                    & (     !Submit
-                          : (!storeToolButton|!replaceToolButton)
-                        & (   validationComments
-                            $ ( !ToolName
-                              . !PassWord
-                              . !ToolVersion
-                              . !FullToolName
-                              . !ToolURL
-                              . !ToolPublisher
-                              . !ContentProvider
-                              . !ToolCreator
-                              . !InfoAbout
-                              . !ToolDescription
-                              . !ToolExternalURI
-                              . !ToolXMLparms
-                              . !ToolPostData
-                              . !ToolInactive
-                              . !Submit
-                              )
-                          |   storeTool
-                            $ ( !Metadata
-                              . !ToolName
-                              . !PassWord:?password
-                              . !ContactEmail:?contactEmail
-                              . !ToolVersion
-                              . !FullToolName
-                              . !ToolURL
-                              . !ToolPublisher
-                              . !ContentProvider
-                              . !ToolCreator
-                              . !InfoAbout
-                              . !ToolDescription
-                              . !ToolExternalURI
-                              . !ToolXMLparms
-                              . !ToolPostData
-                              . !ToolInactive
-                              .     !Submit:!storeToolButton
-                                  & -1
-                                | !ZZ
-                              )
-                          )
-                      |   !Submit:!deleteToolButton
-                        & (   !toolprop:?AA+(!ToolName.?)+!ZZ
-                            & !AA+!ZZ:?toolprop
-                            & saveTable$toolprop
-                            &   str
-                              $ ( "Deleted current incarnation of tool "
-                                  !ToolName
+              & (   !arg:? (bsubmit.?Submit) ?
+                  & (   !Submit:!PHPbutton
+                      & wrapper$(PHP.!ToolName)
+                    |     (     !Submit
+                              : ( !storeToolButton
+                                | !replaceToolButton
                                 )
-                          |     !tooladm
-                              : ?AA+(? (ToolID.!ToolName) ?)+?ZZ
-                            & !AA+!ZZ:?tooladm
-                            & saveTable$tooladm
-                            &   str
-                              $ ( "Deleted administrative info of tool "
-                                  !ToolName
-                                )
-                          )
-                      |   !Submit:!PHPbutton
-                        & wrapper$(PHP.!ToolName)
-                      | Updated
-                      )
-                  | 
-                  | "Enter data in all fields"
-                  )
-                : ?error
-              & log$(error !error)
-              &   toML
-                $ ( !HTMLbodyContainer
-                  $ ( ( !formFields:
-                      |   form
-                        $ ( register
-                          .   ( !handle:
-                              | makeHiddenFields$(handle.!handle)
-                              )
-                              !formFields
-                              submit$!storeToolButton
-                              ( !nth:<0&
-                              |   submit$!replaceToolButton
-                                  makeHiddenFields$(nth.!nth)
-                              )
-                                makeHiddenFields
-                              $ ( (password.!password)
-                                  (   !passwordAsHandle:(.)
-                                    & 
-                                  | (passwordAsHandle.!passwordAsHandle)
+                            & (   validationComments
+                                $ ( !ToolName
+                                  . !PassWord
+                                  . !ToolVersion
+                                  . !FullToolName
+                                  . !ToolURL
+                                  . !ToolPublisher
+                                  . !ContentProvider
+                                  . !ToolCreator
+                                  . !InfoAbout
+                                  . !ToolDescription
+                                  . !ToolExternalURI
+                                  . !ToolXMLparms
+                                  . !ToolPostData
+                                  . !ToolInactive
+                                  . !Submit
                                   )
-                                  ( !mail2:
-                                  | (mail2.!mail2)
+                              |   storeTool
+                                $ ( !Metadata
+                                  . !ToolName
+                                  . !PassWord:?password
+                                  . !ContactEmail:?contactEmail
+                                  . !ToolVersion
+                                  . !FullToolName
+                                  . !ToolURL
+                                  . !ToolPublisher
+                                  . !ContentProvider
+                                  . !ToolCreator
+                                  . !InfoAbout
+                                  . !ToolDescription
+                                  . !ToolExternalURI
+                                  . !ToolXMLparms
+                                  . !ToolPostData
+                                  . !ToolInactive
+                                  .     !Submit:!storeToolButton
+                                      & -1
+                                    | !ZZ
                                   )
-                                  (contactEmail.!contactEmail)
-                                )
-                              submit$!deleteToolButton
-                              submit$!UpdateButton
-                              submit$!PHPbutton
-                          . POST
+                              )
+                          |   !Submit:!deleteToolButton
+                            & (   !toolprop:?AA+(!ToolName.?)+!ZZ
+                                & !AA+!ZZ:?toolprop
+                                & saveTable$toolprop
+                                &   str
+                                  $ ( "Deleted current incarnation of tool "
+                                      !ToolName
+                                    )
+                              |     !tooladm
+                                  :   ?AA
+                                    + (? (ToolID.!ToolName) ?)
+                                    + ?ZZ
+                                & !AA+!ZZ:?tooladm
+                                & saveTable$tooladm
+                                &   str
+                                  $ ( "Deleted administrative info of tool "
+                                      !ToolName
+                                    )
+                              )
+                          | Updated
                           )
-                      )
-                      (p.,!error (br.,) (hr.,))
+                        : ?error
+                      & log$(error !error)
+                      &   toML
+                        $ ( !HTMLbodyContainer
+                          $ ( ( !formFields:
+                              |   form
+                                $ ( register
+                                  .   ( !handle:
+                                      | makeHiddenFields$(handle.!handle)
+                                      )
+                                      !formFields
+                                      submit$!storeToolButton
+                                      ( !nth:<0&
+                                      |   submit$!replaceToolButton
+                                          makeHiddenFields$(nth.!nth)
+                                      )
+                                        makeHiddenFields
+                                      $ ( (password.!password)
+                                          (   !passwordAsHandle:(.)
+                                            & 
+                                          | ( passwordAsHandle
+                                            . !passwordAsHandle
+                                            )
+                                          )
+                                          ( !mail2:
+                                          | (mail2.!mail2)
+                                          )
+                                          (contactEmail.!contactEmail)
+                                        )
+                                      submit$!deleteToolButton
+                                      submit$!UpdateButton
+                                      submit$!PHPbutton
+                                  . POST
+                                  )
+                              )
+                              (p.,!error (br.,) (hr.,))
+                            )
+                          )
                     )
-                  )
+                | str$("unknown button: " !Submit)
+                )
             |   !arg:? (name.?ToolName) ?
               &   update
                 $ ( (msg."Forkert adgangskode!")
