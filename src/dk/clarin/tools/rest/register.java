@@ -246,7 +246,6 @@ public class register extends HttpServlet
                 }
             else if(result.startsWith("<?\nheader") || arg.contains("PHP"))
                 { /* php wrapper */
-                logger.debug("PHP wrapper {}",result);
                 response.setContentType("text/plain; charset=UTF-8");
                 response.setStatus(200);
                 out.println(result);
