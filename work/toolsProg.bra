@@ -255,26 +255,26 @@ toolsProg=
           $ 
       )
       (path=.str$(!toolshome !arg))
-      "\r
-/**\r
- * toolsdata\r
- *\r
- * Return the full file system path to Tool's staging area.\r
- * The input can be a file name: this name is appended to the returned value.\r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * toolsdata
+ *
+ * Return the full file system path to Tool's staging area.
+ * The input can be a file name: this name is appended to the returned value.
+ *
+ * Called from workflow.java
  */"
       ( toolsdata
       = .str$(!documentRoot (|!stagingArea) !arg)
       )
-      "\r
-/**\r
- * toolsdataURL\r
- *\r
- * Return the full URL to Tool's staging area.\r
- * The input can be a file name: this name is appended to the returned value.\r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * toolsdataURL
+ *
+ * Return the full URL to Tool's staging area.
+ * The input can be a file name: this name is appended to the returned value.
+ *
+ * Called from workflow.java
  */"
       (toolsdataURL=.str$(!baseUrlTools !stagingArea !arg))
       (toolsUploadURL=.str$(!baseUrlTools "/tools/upload" !arg))
@@ -434,15 +434,15 @@ toolsProg=
             & (UIlanguage.!LaNg) !hiddenData:?hiddenData
           | log$("failed to set language to " !arg)
       )
-      "\r
-/**\r
- * clean\r
- * \r
- * Free all variables that shouldn't exist.\r
- * Such variables are normally undeclared 'local' variables.\r
- * (In proper coding, all such variables should be declared).\r
- *\r
- * Called from reloadScript.java\r
+      "
+/**
+ * clean
+ * 
+ * Free all variables that shouldn't exist.
+ * Such variables are normally undeclared 'local' variables.
+ * (In proper coding, all such variables should be declared).
+ *
+ * Called from reloadScript.java
  */"
       ( clean
       =   c w sgn
@@ -539,28 +539,28 @@ toolsProg=
           |   !2a
             : ? (?.?,?1a&hasTree$(!1a.!5a)) ?
       )
-      "\r
-/**\r
- * getComponentRef\r
- *\r
- * Parse a resource's metadata.\r
- * (This function is very clarin.dk specific.)\r
- * Finds the item id, the value of the visibility property and the value of\r
- * the xlink:href attribute in the escidocComponents:component element with\r
- * mime-type text/xml, application/xml or text/plain\r
- * \r
- * Input: the metadata of a resource (XML)\r
- *\r
- * No reference is made to any of the tables, so this function could just as\r
- * well have been implemented in Java+XPath. Here, we use Bracmat pattern \r
- * matching in the XML-data.\r
- * Called from create.java when input is obtained from the clarin.dk\r
- * repository.\r
+      "
+/**
+ * getComponentRef
+ *
+ * Parse a resource's metadata.
+ * (This function is very clarin.dk specific.)
+ * Finds the item id, the value of the visibility property and the value of
+ * the xlink:href attribute in the escidocComponents:component element with
+ * mime-type text/xml, application/xml or text/plain
+ * 
+ * Input: the metadata of a resource (XML)
+ *
+ * No reference is made to any of the tables, so this function could just as
+ * well have been implemented in Java+XPath. Here, we use Bracmat pattern 
+ * matching in the XML-data.
+ * Called from create.java when input is obtained from the clarin.dk
+ * repository.
  */"
       ( getComponentRef
       =   p component visibility id attrs ref,mimetype
-        .     "Input: metadata (XML)\r
-               Returns something like dkclarin:111010/components/component/dkclarin:111009/content\r
+        .     "Input: metadata (XML)
+               Returns something like dkclarin:111010/components/component/dkclarin:111009/content
                To get the thing itself, prepend https://infra.clarin.dk/ir/item/ to the ref."
             & put$(!arg,path$"item.xml",NEW)
             &   nestML$(get$(!arg,X,ML,TRM,MEM))
@@ -652,8 +652,8 @@ toolsProg=
       ( getFacet
       =     spec facets type2facet type subType
           , teiHeader teiHeaderAtts
-        .   "<application ident=\"CstClarinDaTokeniser\" subtype=\"tokenizer\" type=\"automatic_annotation\" version=\"1.0\" xml:id=\"CstClarinDaTokeniser\">\r
-                      <desc xml:lang=\"da\">Samler de atomare cbf-segmenter i tokens</desc>\r
+        .   "<application ident=\"CstClarinDaTokeniser\" subtype=\"tokenizer\" type=\"automatic_annotation\" version=\"1.0\" xml:id=\"CstClarinDaTokeniser\">
+                      <desc xml:lang=\"da\">Samler de atomare cbf-segmenter i tokens</desc>
         </application>"
           & NEWSPEC
           & 1:?spec
@@ -704,7 +704,7 @@ toolsProg=
                     )
                     ?
             |   !teiHeaderAtts:? (xmlns.?) ?
-              & "Example: <teiHeader xmlns=\"http://www.tei-c.org/ns/1.0\"> \r
+              & "Example: <teiHeader xmlns=\"http://www.tei-c.org/ns/1.0\"> 
                 Assume its TEIP5, just text"
               & text:?arg
             |   "HACK if appInfo is empty, read content"
@@ -729,12 +729,12 @@ toolsProg=
           & NEWSPEC
           & !arg^!spec
       )
-      "\r
-/**\r
- * Find the mail address associated with a given workflow in the table\r
- * jobAbout.table\r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * Find the mail address associated with a given workflow in the table
+ * jobAbout.table
+ *
+ * Called from workflow.java
  */"
       ( mail2
       =   JobNr
@@ -826,17 +826,17 @@ toolsProg=
             | xm
             )
       )
-      "\r
-/**\r
- * Check whether the Tools staging area already has a copy of a given\r
- * resource. In that case, the slow process of copying the resource from the\r
- * repo and the analysis of this resource can be skipped.\r
- * If there is a copy, its time stamp is refreshed so as to extend its right\r
- * to live.\r
- * Arguments: item id and current date.\r
- * Side effect: the table Uploads.table is updated if the resource is found.\r
- *\r
- * Called from create.java\r
+      "
+/**
+ * Check whether the Tools staging area already has a copy of a given
+ * resource. In that case, the slow process of copying the resource from the
+ * repo and the analysis of this resource can be skipped.
+ * If there is a copy, its time stamp is refreshed so as to extend its right
+ * to live.
+ * Arguments: item id and current date.
+ * Side effect: the table Uploads.table is updated if the resource is found.
+ *
+ * Called from create.java
  */"
       ( hasCopy
       =     item newdate A Z nr Path file
@@ -857,39 +857,39 @@ toolsProg=
             & !visibility
           | no
       )
-      "\r
-/**\r
- * setFeatures\r
- *\r
- * Parse metadata (XML) to find information about the resource's\r
- *      facet       (like tok)\r
- *      format      (like txtann for TEIP5DKCLARIN_ANNOTATION)\r
- *      language    (like da)\r
- *      Olac title  like \r
- *          Annotation: JRC-ACQUIS 31981R3557 Danish, CstClarinSentenceAndParagraphSegmenter\r
- *      base item   (like http://devtools.clarin.dk/ir/item/dkclarin:188006)\r
- * The found information is added to the provisory record in the Uploads table\r
- * that already contains \r
- *      an ordinal number for the resource for internal use by Tools\r
- *      the resource's path (like dkclarin:188024/components/component/dkclarin:188023/content)\r
- *      staging-area-filename (like 19325730672)\r
- *      visibility (public, academic, restricted)\r
- * Input:\r
- *      The metadata (string containing XML)\r
- *      the item (like dkclarin:188028)\r
- *      the date (like 20110723)\r
- * Affected tables:\r
- *      Uploads.table\r
- *\r
- * The helper functions are very resource-type specific and must be elaborated\r
- * for each new resource type:\r
- *      getFacet\r
- *      getFormat\r
- *      getLanguage\r
- *      getOlacTitle\r
- *      getBaseItem\r
- *\r
- *  Called from create.java\r
+      "
+/**
+ * setFeatures
+ *
+ * Parse metadata (XML) to find information about the resource's
+ *      facet       (like tok)
+ *      format      (like txtann for TEIP5DKCLARIN_ANNOTATION)
+ *      language    (like da)
+ *      Olac title  like 
+ *          Annotation: JRC-ACQUIS 31981R3557 Danish, CstClarinSentenceAndParagraphSegmenter
+ *      base item   (like http://devtools.clarin.dk/ir/item/dkclarin:188006)
+ * The found information is added to the provisory record in the Uploads table
+ * that already contains 
+ *      an ordinal number for the resource for internal use by Tools
+ *      the resource's path (like dkclarin:188024/components/component/dkclarin:188023/content)
+ *      staging-area-filename (like 19325730672)
+ *      visibility (public, academic, restricted)
+ * Input:
+ *      The metadata (string containing XML)
+ *      the item (like dkclarin:188028)
+ *      the date (like 20110723)
+ * Affected tables:
+ *      Uploads.table
+ *
+ * The helper functions are very resource-type specific and must be elaborated
+ * for each new resource type:
+ *      getFacet
+ *      getFormat
+ *      getLanguage
+ *      getOlacTitle
+ *      getBaseItem
+ *
+ *  Called from create.java
  */"
       ( setFeatures
       =     K F A Z nr item frmt xml
@@ -1388,9 +1388,9 @@ toolsProg=
                           )
                     )
               )
-            & "de/inmul(tiply) are used to replace (commutative) * operators\r
-			   with (noncommutative) , operators. And back again. Reason:\r
-			   During simplification factors can swap place, leading to\r
+            & "de/inmul(tiply) are used to replace (commutative) * operators
+			   with (noncommutative) , operators. And back again. Reason:
+			   During simplification factors can swap place, leading to
 			   mismatch with the tool plumbing pattern."
             & ( demul
               =   a b
@@ -2671,15 +2671,15 @@ toolsProg=
               )
           & !options
       )
-      "\r
-/**\r
- * uploadJobNr\r
- * \r
- * Return the string preceding the hyphen in the input.\r
- *\r
- * Input: <jobNr>-<jobID>\r
- *\r
- * Called from upload.java\r
+      "
+/**
+ * uploadJobNr
+ * 
+ * Return the string preceding the hyphen in the input.
+ *
+ * Input: <jobNr>-<jobID>
+ *
+ * Called from upload.java
  */"
       ( uploadJobNr
       =   jobID jobNr
@@ -2687,36 +2687,36 @@ toolsProg=
           & !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
           & !jobNr
       )
-      "\r
-/**\r
- * upload\r
- *\r
- * Make a waiting job non-waiting upon receipt of a result from an \r
- * asynchronous tool.\r
- *\r
- * Analyze the job parameter. It tells to which job the sent file belongs.\r
- * The jobs table knows the file name and location for the uploaded file.\r
- *              (Last field)\r
- * Input:\r
- *      List of HTTP request parameters.\r
- *      One of the parameters must be (job.<jobNr>-<jobID>)\r
- *\r
- * Output:\r
- *      The file name that must be given to the received file when saved in\r
- *      the staging area.\r
- *\r
- * Status codes:\r
- *      200     ok\r
- *      400     'job' parameter does not contain hyphen '-' or\r
- *              'job' parameter missing altogether.\r
- *      404     Job is not expecting a result (job is not waiting)\r
- *              Job is unknown\r
- *      500     Job list could not be read\r
- *\r
- * Affected tables:\r
- *      jobs.table\r
- *\r
- * Called from upload.java\r
+      "
+/**
+ * upload
+ *
+ * Make a waiting job non-waiting upon receipt of a result from an 
+ * asynchronous tool.
+ *
+ * Analyze the job parameter. It tells to which job the sent file belongs.
+ * The jobs table knows the file name and location for the uploaded file.
+ *              (Last field)
+ * Input:
+ *      List of HTTP request parameters.
+ *      One of the parameters must be (job.<jobNr>-<jobID>)
+ *
+ * Output:
+ *      The file name that must be given to the received file when saved in
+ *      the staging area.
+ *
+ * Status codes:
+ *      200     ok
+ *      400     'job' parameter does not contain hyphen '-' or
+ *              'job' parameter missing altogether.
+ *      404     Job is not expecting a result (job is not waiting)
+ *              Job is unknown
+ *      500     Job list could not be read
+ *
+ * Affected tables:
+ *      jobs.table
+ *
+ * Called from upload.java
  */"
       ( upload
       =     jobNr jobID jobstatus JOB
@@ -2782,28 +2782,28 @@ toolsProg=
                 )
             )
       )
-      "\r
-/**\r
- * parseStatusCode\r
- *\r
- * Find the number greater than 100 immediately following the string \r
- * 'HTTP-status-code'\r
- *\r
- * Called from upload.java\r
+      "
+/**
+ * parseStatusCode
+ *
+ * Find the number greater than 100 immediately following the string 
+ * 'HTTP-status-code'
+ *
+ * Called from upload.java
  */"
       ( parseStatusCode
       =   
         .   @(!arg:HTTP-status-code (>100:#?arg) ?)
           & !arg
       )
-      "\r
-/**\r
- * parsemessage\r
- *\r
- * Find the text following the number greater than 100 immediately following the string \r
- * 'HTTP-status-code'\r
- *\r
- * Called from upload.java\r
+      "
+/**
+ * parsemessage
+ *
+ * Find the text following the number greater than 100 immediately following the string 
+ * 'HTTP-status-code'
+ *
+ * Called from upload.java
  */"
       ( parsemessage
       = .@(!arg:HTTP-status-code >100 ?arg)&!arg
@@ -2946,18 +2946,18 @@ toolsProg=
               )
           & !ret
       )
-      "\r
-/**\r
- * update\r
- *\r
- * Create an HTML form that allows a user to choose a tool from a pick list.\r
- * The user must also fill out a password.\r
- *\r
- * The input can either be an empty string or two fields: a message to be \r
- * displayed above the form and the name of a tool, which will then be \r
- * selected when the browser shows the pick list.\r
- *\r
- * Called from update.java\r
+      "
+/**
+ * update
+ *
+ * Create an HTML form that allows a user to choose a tool from a pick list.
+ * The user must also fill out a password.
+ *
+ * The input can either be an empty string or two fields: a message to be 
+ * displayed above the form and the name of a tool, which will then be 
+ * selected when the browser shows the pick list.
+ *
+ * Called from update.java
  */"
       ( update
       =     L ToolID Title msg selected
@@ -3286,21 +3286,21 @@ toolsProg=
               )
               \r\n
       )
-      "\r
-/**\r
- * deposit\r
- *\r
- * First step in deposition of a tool. The function generates a simple form\r
- * where the user chooses a tool from a pick list, optionally adds a file to\r
- * be stored as data (an installation file, for example), and chooses under\r
- * which licence the tool must be distributed.\r
- * The next step is implemented in depositXML.\r
- * No arguments.\r
- * Returns an XHTML input form that can be presented to the user straight from\r
- * the box, if needed.\r
- * Status code is normally 200. If Bracmat cannot be loaded, 404 is returned.\r
- *\r
- * Called from deposit.java\r
+      "
+/**
+ * deposit
+ *
+ * First step in deposition of a tool. The function generates a simple form
+ * where the user chooses a tool from a pick list, optionally adds a file to
+ * be stored as data (an installation file, for example), and chooses under
+ * which licence the tool must be distributed.
+ * The next step is implemented in depositXML.
+ * No arguments.
+ * Returns an XHTML input form that can be presented to the user straight from
+ * the box, if needed.
+ * Status code is normally 200. If Bracmat cannot be loaded, 404 is returned.
+ *
+ * Called from deposit.java
  */"
       ( deposit
       =   L ToolID Title,hiddenData,handle licences
@@ -3384,15 +3384,15 @@ toolsProg=
                 )
           | 
       )
-      "\r
-/**\r
- * depositXML\r
- *\r
- * Create complete and valid metadata for deposition. \r
- * All information is collected from the tables tooladm.table and toolprop.table in jboss/server/default/data/tools\r
- * Called from depositXML.java, which is activated from a dynamically created form (see deposit function), and not explicitly from a jsp-page.\r
- * Argument: the unique tool-id of the tool to deposit.\r
- * Returns: 200 OK, 404 if the tool-id is unknown.\r
+      "
+/**
+ * depositXML
+ *
+ * Create complete and valid metadata for deposition. 
+ * All information is collected from the tables tooladm.table and toolprop.table in jboss/server/default/data/tools
+ * Called from depositXML.java, which is activated from a dynamically created form (see deposit function), and not explicitly from a jsp-page.
+ * Argument: the unique tool-id of the tool to deposit.
+ * Returns: 200 OK, 404 if the tool-id is unknown.
  */"
       ( depositXML
       =   Title,name
@@ -3418,45 +3418,45 @@ toolsProg=
               )
           & !arg
       )
-      "\r
-/**\r
-  * register\r
-  *\r
-  * Register a tool - integrated or not.\r
-  * Produces an initially empty html form that dynamically adapts to user's\r
-  * need to register multiple values for the same feature.\r
-  * The form consists of two parts: a part for general information, most of\r
-  * which can be deposited in the repository in a later phase, and a part that\r
-  * is mainly used for integrated tools. The second part collects very precise\r
-  * and formalised information that enables the Tools module to compute\r
-  * workflows with tools and resources that fit together. Only some of the\r
-  * information from this part can be deposited in the repository: a condensed\r
-  * list of supported languages, dataformats and facets, in both input and \r
-  * output. Missing in the deposited metadata are the restrictions on \r
-  * combinations of input and output features and between features. \r
-  * For example there is no formal way for the deposited metadata to express\r
-  * that the input facet 'Part Of Speech' can be combined with input languages\r
-  * Danish and English, but not with Russian as an input language. Nor can\r
-  * deposited metadata formally express that input language Danish implies \r
-  * output language Danish, and input lnaguage Russian either output language\r
-  * Russian or English. (Implying that the tool can translate from Russian to\r
-  * English.) \r
-  * Such relations must be written in natural language in the description of\r
-  * the tool.\r
-  *\r
-  * Affected tables: \r
-  *         tooladm.table   (general part), \r
-  *         toolprop.table  (for integrated tools)\r
-  * Input: a list of HTTP-parameters converted to the form \r
-  *     (<parameter>.<value>) (<parameter>.<value>) (<parameter>.<value>) ...\r
-  *\r
-  * Output: a XHTML-form\r
-  *\r
-  * Input and output form a closed circuit: the form is generated by the \r
-  * register function and the input from the filled-out form is sent to the\r
-  * register function.\r
-  *\r
-  * Called from register.java\r
+      "
+/**
+  * register
+  *
+  * Register a tool - integrated or not.
+  * Produces an initially empty html form that dynamically adapts to user's
+  * need to register multiple values for the same feature.
+  * The form consists of two parts: a part for general information, most of
+  * which can be deposited in the repository in a later phase, and a part that
+  * is mainly used for integrated tools. The second part collects very precise
+  * and formalised information that enables the Tools module to compute
+  * workflows with tools and resources that fit together. Only some of the
+  * information from this part can be deposited in the repository: a condensed
+  * list of supported languages, dataformats and facets, in both input and 
+  * output. Missing in the deposited metadata are the restrictions on 
+  * combinations of input and output features and between features. 
+  * For example there is no formal way for the deposited metadata to express
+  * that the input facet 'Part Of Speech' can be combined with input languages
+  * Danish and English, but not with Russian as an input language. Nor can
+  * deposited metadata formally express that input language Danish implies 
+  * output language Danish, and input lnaguage Russian either output language
+  * Russian or English. (Implying that the tool can translate from Russian to
+  * English.) 
+  * Such relations must be written in natural language in the description of
+  * the tool.
+  *
+  * Affected tables: 
+  *         tooladm.table   (general part), 
+  *         toolprop.table  (for integrated tools)
+  * Input: a list of HTTP-parameters converted to the form 
+  *     (<parameter>.<value>) (<parameter>.<value>) (<parameter>.<value>) ...
+  *
+  * Output: a XHTML-form
+  *
+  * Input and output form a closed circuit: the form is generated by the 
+  * register function and the input from the filled-out form is sent to the
+  * register function.
+  *
+  * Called from register.java
   */"
       ( register
       =     Metadata featureListing staticFields
@@ -3494,14 +3494,14 @@ toolsProg=
               .     ~(!arg:? (name.?) ?)
                   &   !arg
                     : ? (contactEmail.~:?url-contactEmail) ?
-                  & "User hasn't specified a name yet, but email is known. This\r
+                  & "User hasn't specified a name yet, but email is known. This
                      generates a form independent of already registered tools."
                   & ( 
                     . 
                     . !url-contactEmail
                     . !arg (ml2.!url-contactEmail) (nctv.on)
                     )
-                |   "Either the name http parameter is similar to an existing \r
+                |   "Either the name http parameter is similar to an existing 
                      tool's name, or it is the name of a new tool."
                   & ( like
                     =   
@@ -3512,7 +3512,7 @@ toolsProg=
                   & "TODO RESET ALL OF urlparm IF TOOL NOT FOUND"
                   & !arg:?urlparm
                   & ( 
-                    |   "Add parameter for unchecked checkbox if user is logged in.\r
+                    |   "Add parameter for unchecked checkbox if user is logged in.
                      (Only logged-in users may change the Inactive property.)"
                       & ( !urlparm:? (nctv.?) ?
                         |   !urlparm:? (handle.?handle) ?
@@ -3558,10 +3558,10 @@ toolsProg=
                           + ?
                       & !urlparm:?a (name.?) ?z
                       & !a (name.!url-ToolName) !z:?urlparm
-                      & "The name http parameter was similar to an existing tool's name.\r
-                         Use the existing tool's name instead and fetch all that is known\r
+                      & "The name http parameter was similar to an existing tool's name.
+                         Use the existing tool's name instead and fetch all that is known
                          about this tool."
-                    |   "The name http parameter is not seen before, so \r
+                    |   "The name http parameter is not seen before, so 
                          we create an empty form for an inactive tool."
                       & !url-ToolName:?ToolName
                       & !url-contactEmail:?ContactEmail
@@ -3587,11 +3587,11 @@ toolsProg=
                         )
                       & !url-contactEmail:?ContactEmail
                     )
-                  & "You only are allowed to edit a tool that\r
-                        1) is yours (email) \r
-                     or 2) you know the password for\r
-                     or 3) has empty password AND email fields (orphan tool)\r
-                     \r
+                  & "You only are allowed to edit a tool that
+                        1) is yours (email) 
+                     or 2) you know the password for
+                     or 3) has empty password AND email fields (orphan tool)
+                     
                      The password is reset and the tool becomes yours."
                   &     (psswrd.)
                         (ml2.!ContactEmail)
@@ -3612,12 +3612,12 @@ toolsProg=
                   &   (     !urlparm
                           : ? (handle.?handle) ?
                           : ? (nth.?) ?
-                        & "When the user enters the form, the list of http\r
-                           parameters is still short:\r
-                                 handle,contactEmail,name,password,bsubmit\r
-                           A good indication that the user hasn't toggled\r
-                           anything is the absence of the 'nth' parameter.\r
-                           User's input value of Inactive overrules\r
+                        & "When the user enters the form, the list of http
+                           parameters is still short:
+                                 handle,contactEmail,name,password,bsubmit
+                           A good indication that the user hasn't toggled
+                           anything is the absence of the 'nth' parameter.
+                           User's input value of Inactive overrules
                            registered input."
                         & ( !urlparm:? (nctv.?) ?
                           | (nctv.) !urlparm
@@ -4834,15 +4834,15 @@ toolsProg=
                     )
                     !formFields
                 : ?formFields
-              & "\r
-            Decide in how far the features as received in the request string\r
-            (the arg variable) or the features as defined in toolprop.table\r
-            should be used in the ensuing process (storage as needed and\r
-            creation of the form to be returned to the caller):\r
-            One of the submit buttons pressed or tool not defined in \r
-            toolprop.table (i.e. tool is not integrated): use info from request\r
-            string.\r
-            Otherwise: use info from toolprop.table.\r
+              & "
+            Decide in how far the features as received in the request string
+            (the arg variable) or the features as defined in toolprop.table
+            should be used in the ensuing process (storage as needed and
+            creation of the form to be returned to the caller):
+            One of the submit buttons pressed or tool not defined in 
+            toolprop.table (i.e. tool is not integrated): use info from request
+            string.
+            Otherwise: use info from toolprop.table.
             "
               &   (     !arg
                       :   ?
@@ -4850,34 +4850,34 @@ toolsProg=
                           . @(?:(prev|next) #?nth)
                           )
                           ?
-                    & "\r
-                  If user wants to navigate to the next or previous incarnation\r
-                  wind to the requested incarnation of tool and read tools'\r
-                  properties from toolprop.table. ZZ is the part of\r
-                  toolprop.table coming after this incarnation of this tool.\r
-                  This variable is later used to decide whether a 'next' button\r
-                  is needed and also to locate the old version of the\r
-                  incarnation if the user wants to remove or replace it.\r
+                    & "
+                  If user wants to navigate to the next or previous incarnation
+                  wind to the requested incarnation of tool and read tools'
+                  properties from toolprop.table. ZZ is the part of
+                  toolprop.table coming after this incarnation of this tool.
+                  This variable is later used to decide whether a 'next' button
+                  is needed and also to locate the old version of the
+                  incarnation if the user wants to remove or replace it.
                   "
                     &   windfw$(!toolprop.!ToolName.!nth)
                       : (?featjursPreexisting.?ZZ.?nth)
                     &   featureListing
                       $ (unfoldInputAndOutput$!featjursPreexisting)
                   |   !arg:? (nth.?nth) ?
-                    & "\r
-                  The cardinal number of the incarnation is known.\r
+                    & "
+                  The cardinal number of the incarnation is known.
                   "
                     &   windfw$(!toolprop.!ToolName.!nth)
                       : (?featjursPreexisting.?ZZ.?nth)
                     & (   !arg:? (bsubmit.?) ?
-                        & "\r
-                      User presses one of the 'submit' buttons \r
-					  (!storeToolButton, !replaceToolButton,\r
-					  !deleteToolButton, !UpdateButton, !PHPbutton).\r
-                      The features as shown in the form should overrule the\r
-                      properties as recorded in toolprop.table for this\r
-                      incarnation of the tool, so ignore the preexisting\r
-                      properties.\r
+                        & "
+                      User presses one of the 'submit' buttons 
+					  (!storeToolButton, !replaceToolButton,
+					  !deleteToolButton, !UpdateButton, !PHPbutton).
+                      The features as shown in the form should overrule the
+                      properties as recorded in toolprop.table for this
+                      incarnation of the tool, so ignore the preexisting
+                      properties.
                       "
                         & !arg
                       |   featureListing
@@ -4885,22 +4885,22 @@ toolsProg=
                       )
                   |     windfw$(!toolprop.!ToolName.0)
                       : (?featjursPreexisting.?ZZ.?nth)
-                    & "\r
-                  The cardinal number of the incarnation is not known.\r
-                  Navigate to the first incarnation of the tool.\r
+                    & "
+                  The cardinal number of the incarnation is not known.
+                  Navigate to the first incarnation of the tool.
                   "
                     &   featureListing
                       $ (unfoldInputAndOutput$!featjursPreexisting)
                   |   -1:?nth
-                    & "\r
-                  The tool hasn't any features (yet).\r
+                    & "
+                  The tool hasn't any features (yet).
                   "
                     & !arg
                   )
                 : ?featjursURL
               & log$(featjursURL !featjursURL)
-              & "\r
-            Add 'previous' and 'next' buttons as needed.\r
+              & "
+            Add 'previous' and 'next' buttons as needed.
             "
               & ( !nth:<0
                 |   (   !nth:>0
@@ -4915,11 +4915,11 @@ toolsProg=
                     )
                 )
               & !features:?feats
-              & "\r
-            Step through the (short) list of features (facet, format, language)\r
-            For each feature, create an input field and collect in the\r
-            formFields variable. The Metadata variable collects the same data\r
-            in a format similar to the format in the toolprop.table.\r
+              & "
+            Step through the (short) list of features (facet, format, language)
+            For each feature, create an input field and collect in the
+            formFields variable. The Metadata variable collects the same data
+            in a format similar to the format in the toolprop.table.
             "
               & log$(whl !feats)
               &   whl
@@ -5063,51 +5063,51 @@ toolsProg=
                 )
             )
       )
-      "\r
-/*\r
- * storeUpload\r
- *\r
- * Administrate the storage of a copy of a file from repositorium in a place \r
- * where a webservice can fetch it - the staging area of the Tools service.\r
- *\r
- * Adds an entry to a seven-column table Uploads.table. \r
- * The first column is unique number generated by adding 1 to the highest \r
- * currently occupied number, second is the resource identifier of a \r
- * resource that has been copied to a local place, where a webservice can GET\r
- * it. This resource identifier points at a resource's metadata, which also \r
- * shows the way to the resource itself - the third field. The fourth field \r
- * contains the name of the resource as the webservice perceives it. It is\r
- * a concatenation of a number based on current date and cpu-time and the\r
- * value in the first field. (If the file is uploaded, the name is the \r
- * concatenation of 'Uploaded' and the number in the first field.)\r
- * The seventh field states whether the resource is public, academic or \r
- * restricted.\r
- * E.g. \r
- *      ( 9\r
- *      . dkclarin:59004\r
- *      . dkclarin:59004/components/component/dkclarin:59003/content\r
- *      . 19325730679\r
- *      . \r
- *      .\r
- *      . public\r
- *      )\r
- * The resource identifier is going to be used in the new resource's metadata.\r
- * The missing fifth and sixth fields are later filled out in the setFeatures\r
- * function, which analyses the XML metadata.\r
- * If the user provides a file by file upload, the second and third column are the same.\r
- *\r
- * Input: \r
- *      item id (like dkclarin:59004/components/component/dkclarin:59003/content)\r
- *      date\r
- *      fk (optional)\r
- *\r
- * Affected tables:\r
- *      Uploads.table\r
- *\r
- * Output:\r
- *      The local file name of the resource (= fourth field)\r
- *\r
- * Called from create.java\r
+      "
+/*
+ * storeUpload
+ *
+ * Administrate the storage of a copy of a file from repositorium in a place 
+ * where a webservice can fetch it - the staging area of the Tools service.
+ *
+ * Adds an entry to a seven-column table Uploads.table. 
+ * The first column is unique number generated by adding 1 to the highest 
+ * currently occupied number, second is the resource identifier of a 
+ * resource that has been copied to a local place, where a webservice can GET
+ * it. This resource identifier points at a resource's metadata, which also 
+ * shows the way to the resource itself - the third field. The fourth field 
+ * contains the name of the resource as the webservice perceives it. It is
+ * a concatenation of a number based on current date and cpu-time and the
+ * value in the first field. (If the file is uploaded, the name is the 
+ * concatenation of 'Uploaded' and the number in the first field.)
+ * The seventh field states whether the resource is public, academic or 
+ * restricted.
+ * E.g. 
+ *      ( 9
+ *      . dkclarin:59004
+ *      . dkclarin:59004/components/component/dkclarin:59003/content
+ *      . 19325730679
+ *      . 
+ *      .
+ *      . public
+ *      )
+ * The resource identifier is going to be used in the new resource's metadata.
+ * The missing fifth and sixth fields are later filled out in the setFeatures
+ * function, which analyses the XML metadata.
+ * If the user provides a file by file upload, the second and third column are the same.
+ *
+ * Input: 
+ *      item id (like dkclarin:59004/components/component/dkclarin:59003/content)
+ *      date
+ *      fk (optional)
+ *
+ * Affected tables:
+ *      Uploads.table
+ *
+ * Output:
+ *      The local file name of the resource (= fourth field)
+ *
+ * Called from create.java
  */"
       ( storeUpload
       =   nr item fname visibility date a z enam txe ext
@@ -5773,9 +5773,9 @@ toolsProg=
           & createNewGoal$(!newGoal.!toolFeatures):?newGoal
           & (!pathfields.sort$!newGoal)
       )
-      "\r
-/**\r
- * Check that pipes having multiple tasks running in parallel have compatible features and feature specialisations.\r
+      "
+/**
+ * Check that pipes having multiple tasks running in parallel have compatible features and feature specialisations.
  */"
       ( illegalSolution
       =     goal pipes toolA toolB outputA outputB inputA inputB
@@ -5903,7 +5903,7 @@ toolsProg=
               )
           & !arg
       )
-      "20111024 collect worked only if the first argument was output from a \r
+      "20111024 collect worked only if the first argument was output from a 
        previous step, not if it was the very first input."
       ( collect
       =     f v outp a featprod alts opts partOf V remainder
@@ -6237,9 +6237,9 @@ toolsProg=
                           )
                       & 1+!forkk+-1
                   )
-                & " unfoldGoal:\r
-                Construct all 2^n combinations of n options,\r
-                and unfold all alternatives.\r
+                & " unfoldGoal:
+                Construct all 2^n combinations of n options,
+                and unfold all alternatives.
                 Output: a list of disambiguated goals."
                 & ( unfoldGoal
                   =     A Z AA ZZ AAA ZZZ M1 M2
@@ -6517,35 +6517,35 @@ toolsProg=
                 )
             )
       )
-      " convert2URLs receives a list of job steps, each step describing the \r
-step's tool, its output and its inputs. The inputs not only tell the type of\r
-each input, but also which step produced that input. The first step's input is\r
-taken from the Items list. Following steps can, but need not take an item in\r
-the Items list as input. Step descriptions in the JobStack can look like this:\r
-  ( step1                                 STEP\r
-  . pdf2htmlEX                            TOOL\r
-  .   (facet,txt^ocr)                     ------\r
-      (format,html)                       \r
-      (lang,da)                           INPUT\r
-      (pres,nml)                          -----\r
-  .   (facet,txt)                         ------\r
-      (format,pdf)                        \r
-      (lang,da)                           OUTPUT\r
-      (pres,nml)                          ------\r
-  )\r
-...\r
-  ( step8                                  STEP\r
-  . CST-Lem                                TOOL\r
-  .   (facet,lem)                          ------\r
-      (format,flat)\r
-      (lang,da)                            INPUT\r
-      (pres,alf)                           ------\r
-  .   (pres,nml)                           ------\r
-      (lang,da)\r
-      (format,txtann)                      OUTPUT\r
-      (facet,(pos^Par.step7))\r
-      (facet,(tok.step5))                  ------\r
-  )\r
+      " convert2URLs receives a list of job steps, each step describing the 
+step's tool, its output and its inputs. The inputs not only tell the type of
+each input, but also which step produced that input. The first step's input is
+taken from the Items list. Following steps can, but need not take an item in
+the Items list as input. Step descriptions in the JobStack can look like this:
+  ( step1                                 STEP
+  . pdf2htmlEX                            TOOL
+  .   (facet,txt^ocr)                     ------
+      (format,html)                       
+      (lang,da)                           INPUT
+      (pres,nml)                          -----
+  .   (facet,txt)                         ------
+      (format,pdf)                        
+      (lang,da)                           OUTPUT
+      (pres,nml)                          ------
+  )
+...
+  ( step8                                  STEP
+  . CST-Lem                                TOOL
+  .   (facet,lem)                          ------
+      (format,flat)
+      (lang,da)                            INPUT
+      (pres,alf)                           ------
+  .   (pres,nml)                           ------
+      (lang,da)
+      (format,txtann)                      OUTPUT
+      (facet,(pos^Par.step7))
+      (facet,(tok.step5))                  ------
+  )
 "
       ( convert2URLs
       =     requestString Items items file files newJobs feats
@@ -6557,9 +6557,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
           , feat in ou spec v nfiles
           , inputs moreinputs firstinput other fh oh
           , compact compatible simpleInput
-        .   "getDiscerningFeature establishes the feature that the given tool\r
-             has to look for among the input Items, if it needs an item from\r
-             that list. It is not usefull for steps that only take input from\r
+        .   "getDiscerningFeature establishes the feature that the given tool
+             has to look for among the input Items, if it needs an item from
+             that list. It is not usefull for steps that only take input from
              earlier steps."
           & ( getDiscerningFeature
             =     prod feats f v discerningFeature
@@ -6719,7 +6719,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                               & OffSet$!file:?file
                             )
                           |   %@?val^?spec
-                            & "Take this input from Items,\r
+                            & "Take this input from Items,
                                using discerningFeature"
                             & 0:?file
                           )
@@ -6984,16 +6984,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
           & lst$(jobs,path$jobs,APP)
           & !maxjobID
       )
-      "\r
-/**\r
- * getNextJobID\r
- *\r
- * Given the jobNr of a workflow, return the next job that is not pending \r
- * (=waiting for an another job to produce some of its inputs).\r
- * Argument: jobNr\r
- * Returns: jobID (if job found in jobs.table)\r
- *          empty string (if job not found in jobs.table)\r
- * Called from create.java and workflow.java\r
+      "
+/**
+ * getNextJobID
+ *
+ * Given the jobNr of a workflow, return the next job that is not pending 
+ * (=waiting for an another job to produce some of its inputs).
+ * Argument: jobNr
+ * Returns: jobID (if job found in jobs.table)
+ *          empty string (if job not found in jobs.table)
+ * Called from create.java and workflow.java
  */"
       ( getNextJobID
       =   
@@ -7006,18 +7006,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
             & !arg
           | 
       )
-      "\r
-/**\r
- * getJobArg\r
- *\r
- * Consults tables jobs.table and tooladm.table to answer several requests\r
- * Arguments: jobNr, jobID and one of the following requests:\r
- *      endpoint        the URL where the integrated tool lives\r
- *      filename        the name to be given to the output\r
- *      method          POST or GET\r
- *      requestString   the request string as HTTP-parameters or as XML\r
- *      isText          y or n\r
- * Called from workflow.java\r
+      "
+/**
+ * getJobArg
+ *
+ * Consults tables jobs.table and tooladm.table to answer several requests
+ * Arguments: jobNr, jobID and one of the following requests:
+ *      endpoint        the URL where the integrated tool lives
+ *      filename        the name to be given to the output
+ *      method          POST or GET
+ *      requestString   the request string as HTTP-parameters or as XML
+ *      isText          y or n
+ * Called from workflow.java
  */"
       ( getJobArg
       =     JobNr jobID jobby res A B Res makeList
@@ -7114,18 +7114,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
               )
           & !arg
       )
-      "\r
-/**\r
-  * waitingJob\r
-  *\r
-  * Make a job 'waiting'.\r
-  * \r
-  * Input: JobNr and jobID\r
-  *\r
-  * Affected tables:\r
-  *     jobs.table\r
-  *\r
-  * Called from workflow.java\r
+      "
+/**
+  * waitingJob
+  *
+  * Make a job 'waiting'.
+  * 
+  * Input: JobNr and jobID
+  *
+  * Affected tables:
+  *     jobs.table
+  *
+  * Called from workflow.java
   */"
       ( waitingJob
       =   A Z JobNr jobID ZZ jobstatus
@@ -7428,19 +7428,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
             : ?ret
           & !ret
       )
-      "\r
-/**\r
- * relationFile\r
- *\r
- * Create a relation file ready for deposition together with an annotation.\r
- *\r
- * Input: JobNr and jobID\r
- * Output: String that can be saved as a semicolon separated file.\r
- * Consulted tables:\r
- *      relations.table     (for relation type, ctb and ctbid\r
- *      CTBs.table          (for ContentProvider and CTBID)\r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * relationFile
+ *
+ * Create a relation file ready for deposition together with an annotation.
+ *
+ * Input: JobNr and jobID
+ * Output: String that can be saved as a semicolon separated file.
+ * Consulted tables:
+ *      relations.table     (for relation type, ctb and ctbid
+ *      CTBs.table          (for ContentProvider and CTBID)
+ *
+ * Called from workflow.java
  */"
       ( relationFile
       =     A Z JobNr jobID
@@ -7752,22 +7752,22 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
               )
           & !autogenerated
       )
-      "\r
-/**\r
- * doneJob\r
- *\r
- * Marks a job as 'done' in jobs.table\r
- * Constructs a CTBID from date, JobNr and jobID\r
- * Makes sure there is a row in table CTBs connecting\r
- *      JobNr, jobID, email and CTBID\r
- * Creates isDependentOf and isAnnotationOf relations\r
- * Affected tables:\r
- *      jobs.table\r
- *      CTBs.table\r
- *      relations.table\r
- * Arguments: jobNR, JobID, spangroup with annotation and date. \r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * doneJob
+ *
+ * Marks a job as 'done' in jobs.table
+ * Constructs a CTBID from date, JobNr and jobID
+ * Makes sure there is a row in table CTBs connecting
+ *      JobNr, jobID, email and CTBID
+ * Creates isDependentOf and isAnnotationOf relations
+ * Affected tables:
+ *      jobs.table
+ *      CTBs.table
+ *      relations.table
+ * Arguments: jobNR, JobID, spangroup with annotation and date. 
+ *
+ * Called from workflow.java
  */"
       ( doneJob
       =     A Z JobNr jobID ZZ jobid2 a z files facet
@@ -8135,17 +8135,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
               + ?
           & !arg
       )
-      "\r
-/**\r
- * abortJob\r
- *\r
- * Aborts, given a JobNr and a jobID, the specified job and all\r
- * pending jobs that depend on the output from the (now aborted) job.\r
- * Rather than removing the aborted jobs from the jobs.table list, they are\r
- * marked 'aborted'.\r
- * Returns (as XML) a list of (JobNr, jobID, toolName, items)\r
- *\r
- * Called from workflow.java\r
+      "
+/**
+ * abortJob
+ *
+ * Aborts, given a JobNr and a jobID, the specified job and all
+ * pending jobs that depend on the output from the (now aborted) job.
+ * Rather than removing the aborted jobs from the jobs.table list, they are
+ * marked 'aborted'.
+ * Returns (as XML) a list of (JobNr, jobID, toolName, items)
+ *
+ * Called from workflow.java
  */"
       ( abortJob
       =   abort JobNr jobID makeXML list
@@ -9153,36 +9153,36 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
             )
       )
       (pipeAsXML=.str$(!XMLdeclaration pipeSegmentXML$!arg))
-      "\r
-/**\r
- * create\r
- *\r
- * Prepare and run a workflow.\r
- * Functions as a wizard, taking input from various stages.\r
- * The function handles two scenarios:\r
- *      create a resource by choice of goal ('kunde')\r
- *      create a resource by choice of tool ('stenhugger')\r
- * Arguments:\r
- *      - http parameters\r
- *      - directedBy=  GoalChoice (default) \r
- *                   | ToolChoice\r
- *                   | MetadataOnly\r
- * http parameters:\r
- *      mail2=<address>\r
- *      action=batch | batch=on | batch=off\r
- *      TOOL=<toolname>\r
- *      bsubmit=nextStep|prev<N>|next<N>|Submit|View details\r
- *      (item=<itemid>)+\r
- *      (Item=<itemid>)+\r
- *      I<feature>=<featurevalue>\r
- *      O<feature>=<featurevalue>\r
- * itemid's are of the form dkclarin:188028\r
- * features are (currently): facet, format and lang\r
- * feature values are complex strings consisting of a feature value and,\r
- * optionally, a specialisation of the feature values, separated from the\r
- * former by a caret.\r
- *\r
- * Called from create.java\r
+      "
+/**
+ * create
+ *
+ * Prepare and run a workflow.
+ * Functions as a wizard, taking input from various stages.
+ * The function handles two scenarios:
+ *      create a resource by choice of goal ('kunde')
+ *      create a resource by choice of tool ('stenhugger')
+ * Arguments:
+ *      - http parameters
+ *      - directedBy=  GoalChoice (default) 
+ *                   | ToolChoice
+ *                   | MetadataOnly
+ * http parameters:
+ *      mail2=<address>
+ *      action=batch | batch=on | batch=off
+ *      TOOL=<toolname>
+ *      bsubmit=nextStep|prev<N>|next<N>|Submit|View details
+ *      (item=<itemid>)+
+ *      (Item=<itemid>)+
+ *      I<feature>=<featurevalue>
+ *      O<feature>=<featurevalue>
+ * itemid's are of the form dkclarin:188028
+ * features are (currently): facet, format and lang
+ * feature values are complex strings consisting of a feature value and,
+ * optionally, a specialisation of the feature values, separated from the
+ * former by a caret.
+ *
+ * Called from create.java
  */"
       ( create
       =     Tool item parms Items methodName
@@ -9551,7 +9551,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                 , parms presels n val buildItemList
                 , buildItemListFromForeignData
                 , retrieveFeatures date
-              .   "Consult the 'Uploads'-table to find out what we know\r
+              .   "Consult the 'Uploads'-table to find out what we know
                      about the input(s)."
                 & readTable$Uploads
                 & !arg:?parms
@@ -11315,7 +11315,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                   )
             )
           & ( computeWorkflow
-            =     "Shall we treat all resources in one job (non-batch) or shall we\r
+            =     "Shall we treat all resources in one job (non-batch) or shall we
                send each input through a different (though similar) job?"
                 &   (     !parms
                         : ( ? (action.batch) ?
@@ -11335,7 +11335,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                   | 
                   )
                 & !hiddenData (batch.!batch):?hiddenData
-                & "Does the user want to decide which tool to use or does she want\r
+                & "Does the user want to decide which tool to use or does she want
              to let the infrastructure work out a way to reach a set goal?"
                 & (   !directedBy:ToolChoice
                     & ( ~(!parms:? (bsubmit.nextStep) ?)
@@ -11481,19 +11481,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
       (createGoalChoice=.create$(!arg.GoalChoice))
       (createToolChoice=.create$(!arg.ToolChoice))
       (createMetadataOnly=.create$(!arg.MetadataOnly))
-      "\r
-/**\r
- * getStatusCode\r
- *\r
- *  Given a HTTP status code and an informatory text, return an HTML-file\r
- * with a heading containing the status code and the official short description\r
- * of the status code, a paragraph containing the informatory text and a \r
- * paragraph displaying a longer text explaining the code (From wikipedia).\r
- * \r
- * This function could just as well have been written in Java.\r
- * \r
- * Called from create.java, deposit.java, depositXML.java, register.java,\r
- * stresstest.java, update.java, upload.java\r
+      "
+/**
+ * getStatusCode
+ *
+ *  Given a HTTP status code and an informatory text, return an HTML-file
+ * with a heading containing the status code and the official short description
+ * of the status code, a paragraph containing the informatory text and a 
+ * paragraph displaying a longer text explaining the code (From wikipedia).
+ * 
+ * This function could just as well have been written in Java.
+ * 
+ * Called from create.java, deposit.java, depositXML.java, register.java,
+ * stresstest.java, update.java, upload.java
  */"
       ( getStatusCode
       =   code tekst explanation
@@ -11617,27 +11617,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                 )
             )
       )
-      "\r
-/**\r
- * keep\r
- *\r
- * Check whether a result from a tool in the staging area can be deleted.\r
- *\r
- * Results that for some reason are needed by other tasks must be kept.\r
- * The function looks for outstanding jobs that take the argument as input.\r
- * Argument: file name, may be preceded by a slash\r
- *      /19231210291\r
- *\r
- * NOTICE: If the file need not be kept, the file's name is deleted from\r
- * several tables, so calling keep has side effects!\r
- * Affected tables:\r
- *      jobs.table\r
- *      Uploads.table\r
- *      CTBs.table\r
- *      relations.table\r
- *      jobAbout.table\r
- *\r
- * Called from data.java and cleanup.java\r
+      "
+/**
+ * keep
+ *
+ * Check whether a result from a tool in the staging area can be deleted.
+ *
+ * Results that for some reason are needed by other tasks must be kept.
+ * The function looks for outstanding jobs that take the argument as input.
+ * Argument: file name, may be preceded by a slash
+ *      /19231210291
+ *
+ * NOTICE: If the file need not be kept, the file's name is deleted from
+ * several tables, so calling keep has side effects!
+ * Affected tables:
+ *      jobs.table
+ *      Uploads.table
+ *      CTBs.table
+ *      relations.table
+ *      jobAbout.table
+ *
+ * Called from data.java and cleanup.java
  */"
       ( keep
       =     jobNr jobID jobstatus files toolURL parms file
@@ -11736,20 +11736,20 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                 )
             )
       )
-      "\r
-/**\r
- * cleanup\r
- *\r
- * Delete all references to files that no longer exist.\r
- * Argument: a list of the files that still exist in the Staging area.\r
- * Affected tables:\r
- *      Uploads.table\r
- *      jobs.table\r
- *      CTBs.table\r
- *      relations.table\r
- *      jobAbout.table \r
- *\r
- * Called from cleanup.java\r
+      "
+/**
+ * cleanup
+ *
+ * Delete all references to files that no longer exist.
+ * Argument: a list of the files that still exist in the Staging area.
+ * Affected tables:
+ *      Uploads.table
+ *      jobs.table
+ *      CTBs.table
+ *      relations.table
+ *      jobAbout.table 
+ *
+ * Called from cleanup.java
  */"
       ( cleanup
       =     jobNr jobID jobstatus files toolURL parms file
@@ -11830,24 +11830,24 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
           & saveTable$relations
           & saveTable$jobAbout
       )
-      "\r
-/*\r
- * stresstest\r
- *\r
- * Do a computation that occupies Bracmat for several seconds.\r
- * Usage: activate the stresstest from several browsers at\r
- * about the same time, so they have to queue up and wait for\r
- * the previous to finish.\r
- *\r
- * Purpose: check that the transition from Java's multiple threads\r
- * to the Bracmat JNI's single thread and back goes smooth.\r
- *\r
- * Input: a HTTP-parameter 'stress' with a numerical value > 0.\r
- *\r
- * The function computes the first 'stress' terms in the decimal \r
- * approximation of π.\r
- *\r
- * Called from stresstest.java\r
+      "
+/*
+ * stresstest
+ *
+ * Do a computation that occupies Bracmat for several seconds.
+ * Usage: activate the stresstest from several browsers at
+ * about the same time, so they have to queue up and wait for
+ * the previous to finish.
+ *
+ * Purpose: check that the transition from Java's multiple threads
+ * to the Bracmat JNI's single thread and back goes smooth.
+ *
+ * Input: a HTTP-parameter 'stress' with a numerical value > 0.
+ *
+ * The function computes the first 'stress' terms in the decimal 
+ * approximation of π.
+ *
+ * Called from stresstest.java
  */"
       ( stresstest
       =   PI err pi
@@ -11905,13 +11905,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
               $ (paragraph$(str$("Not understood:" !arg)))
               )
       )
-      "\r
-/*\r
- * wrapper\r
- *\r
- * Generate a web service wrapper from tool metadata.\r
- * Usage: wrapper$(PHP.<toolID>)\r
- * (Other languages may be supported in the future.)\r
+      "
+/*
+ * wrapper
+ *
+ * Generate a web service wrapper from tool metadata.
+ * Usage: wrapper$(PHP.<toolID>)
+ * (Other languages may be supported in the future.)
  */"
       ( wrapper
       =     combineFeats combineToolIncarnations getBoilerPlate
@@ -11946,33 +11946,33 @@ the Items list as input. Step descriptions in the JobStack can look like this:\r
                 : ?boolfunc
                 : ?voidfunc
               & "$":?stringvar:?boolvar:?var
-              &     "<?\r
-header(\"Content-type:text/plain; charset=UTF-8\");\r
-/*\r
+              &     "<?
+header(\"Content-type:text/plain; charset=UTF-8\");
+/*
  * This "
                     !arg
-                    " script is generated by CLARIN-DK's tool registration form \r
- * (https://clarin.dk/tools/register). It should, with no or few adaptations\r
- * work out of the box as a dummy for your web service. The output returned\r
- * to the CLARIN-DK workflow manager is just a listing of the HTTP parameters\r
- * received by this web service from the CLARIN-DK workflow manager, and not\r
- * the output proper. For that you have to add your code to this script and\r
- * deactivate the dummy functionality. (The comments near the end of this\r
- * script explain how that is done.)\r
- *\r
- * Places in this script that require your attention are marked 'TODO'.\r
- */\r
+                    " script is generated by CLARIN-DK's tool registration form 
+ * (https://clarin.dk/tools/register). It should, with no or few adaptations
+ * work out of the box as a dummy for your web service. The output returned
+ * to the CLARIN-DK workflow manager is just a listing of the HTTP parameters
+ * received by this web service from the CLARIN-DK workflow manager, and not
+ * the output proper. For that you have to add your code to this script and
+ * deactivate the dummy functionality. (The comments near the end of this
+ * script explain how that is done.)
+ *
+ * Places in this script that require your attention are marked 'TODO'.
+ */
 "
                 : ?boilerPlate
-              &   "    }\r
-catch (SystemExit $e) \r
-    { \r
-    header ('An error occurred.' . $ERROR, true , 404 );\r
-    logit('An error occurred' . $ERROR);\r
-    echo $ERROR;\r
-    }\r
-\r
-?>\r
+              &   "    }
+catch (SystemExit $e) 
+    { 
+    header ('An error occurred.' . $ERROR, true , 404 );
+    logit('An error occurred' . $ERROR);
+    echo $ERROR;
+    }
+
+?>
 "
                 : ?lastWord
             |   !arg:java
@@ -12219,267 +12219,267 @@ catch (SystemExit $e) \r
                           & listAlts$(!o.O.!fname)
                           )
                       )
-                  &     "/*\r
+                  &     "/*
 ToolID         : "
                         !name
-                        "\r
+                        "
 PassWord       : "
                         getBoilerPlate$(!name.PassWord)
-                        "\r
+                        "
 Version        : "
                         getBoilerPlate$(!name.Version)
-                        "\r
+                        "
 Title          : "
                         getBoilerPlate$(!name.Title)
-                        "\r
+                        "
 ServiceURL     : "
                         getBoilerPlate$(!name.ServiceURL)
                         \t
-                        "*** TODO make sure your web service listens on this address and that this script is readable for the webserver. ***\r
+                        "*** TODO make sure your web service listens on this address and that this script is readable for the webserver. ***
 Publisher      : "
                         getBoilerPlate$(!name.Publisher)
-                        "\r
+                        "
 ContentProvider: "
                         getBoilerPlate$(!name.ContentProvider)
-                        "\r
+                        "
 Creator        : "
                         getBoilerPlate$(!name.Creator)
-                        "\r
+                        "
 InfoAbout      : "
                         getBoilerPlate$(!name.InfoAbout)
-                        "\r
+                        "
 Description    : "
                         getBoilerPlate$(!name.Description)
-                        "\r
+                        "
 ExternalURI    : "
                         getBoilerPlate$(!name.ExternalURI)
-                        "\r
+                        "
 XMLparms       : "
                         getBoilerPlate$(!name.XMLparms)
-                        "\r
+                        "
 PostData       : "
                         getBoilerPlate$(!name.PostData)
-                        "\r
+                        "
 Inactive       : "
                         getBoilerPlate$(!name.Inactive)
-                        "\r
-*/\r
-\r
-/*******************\r
-* helper functions *\r
-*******************/\r
+                        "
+*/
+
+/*******************
+* helper functions *
+*******************/
 $toollog = '/var/log/tool/"
                         makeName$!name
-                        ".log'; /* Used by the logit() function. TODO make sure the folder exists and is writable. Adapt if needed */\r
-                \r
-/*  TODO Set $dodelete to false if temporary files in /tmp should not be deleted before returning. */\r
-$dodelete = true;\r
-$tobedeleted = array();\r
-\r
-\r
-function loginit()  /* Wipes the contents of the log file! TODO Change this behaviour if needed. */\r
-    {\r
-    global $toollog,$ftemp;\r
-    $ftemp = fopen($toollog,'w');\r
-    if($ftemp)\r
-        {\r
-        fwrite($ftemp,$toollog . \"\\n\");\r
-        fclose($ftemp);\r
-        }\r
-    }\r
-    \r
-function logit($str) /* TODO You can use this function to write strings to the log file. */\r
-    {\r
-    global $toollog,$ftemp;\r
-    $ftemp = fopen($toollog,'a');\r
-    if($ftemp)\r
-        {\r
-        fwrite($ftemp,$str . \"\\n\");\r
-        fclose($ftemp);\r
-        }\r
-    }\r
-    \r
-class SystemExit extends Exception {}\r
-try {\r
+                        ".log'; /* Used by the logit() function. TODO make sure the folder exists and is writable. Adapt if needed */
+                
+/*  TODO Set $dodelete to false if temporary files in /tmp should not be deleted before returning. */
+$dodelete = true;
+$tobedeleted = array();
+
+
+function loginit()  /* Wipes the contents of the log file! TODO Change this behaviour if needed. */
+    {
+    global $toollog,$ftemp;
+    $ftemp = fopen($toollog,'w');
+    if($ftemp)
+        {
+        fwrite($ftemp,$toollog . \"\\n\");
+        fclose($ftemp);
+        }
+    }
+    
+function logit($str) /* TODO You can use this function to write strings to the log file. */
+    {
+    global $toollog,$ftemp;
+    $ftemp = fopen($toollog,'a');
+    if($ftemp)
+        {
+        fwrite($ftemp,$str . \"\\n\");
+        fclose($ftemp);
+        }
+    }
+    
+class SystemExit extends Exception {}
+try {
     "
                         !boolfunc
                         "hasArgument ("
                         !stringvar
-                        "parameterName)\r
-        {\r
+                        "parameterName)
+        {
         return isset($_REQUEST[\""
                         !stringvar
-                        "parameterName\"]);\r
-        }\r
-\r
+                        "parameterName\"]);
+        }
+
     "
                         !stringfunc
                         "getArgument ("
                         !stringvar
-                        "parameterName)\r
-        {\r
+                        "parameterName)
+        {
         return isset($_REQUEST[\""
                         !stringvar
                         "parameterName\"]) ? $_REQUEST[\""
                         !stringvar
-                        "parameterName\"] : \"\";\r
-        }\r
-\r
+                        "parameterName\"] : \"\";
+        }
+
     "
                         !boolfunc
                         "existsArgumentWithValue ("
                         !stringvar
                         "parameterName, "
                         !stringvar
-                        "parameterValue)\r
-        {\r
-        /* Check whether there is an argument <parameterName> that has value \r
-           <parameterValue>. \r
-           There may be any number of arguments with name <parameterName> !\r
-        */\r
-        $query  = explode('&', $_SERVER['QUERY_STRING']);\r
-\r
-        foreach( $query as $param )\r
-            {\r
-            list($name, $value) = explode('=', $param);\r
+                        "parameterValue)
+        {
+        /* Check whether there is an argument <parameterName> that has value 
+           <parameterValue>. 
+           There may be any number of arguments with name <parameterName> !
+        */
+        $query  = explode('&', $_SERVER['QUERY_STRING']);
+
+        foreach( $query as $param )
+            {
+            list($name, $value) = explode('=', $param);
             if("
                         !stringvar
                         "parameterName == urldecode($name) && "
                         !stringvar
-                        "parameterValue == urldecode($value))\r
-                return true;\r
-            }\r
-        return false;\r
-        }\r
-\r
-    function tempFileName($suff) /* TODO Use this to create temporary files, if needed. */\r
-        {\r
-        global $dodelete;\r
-        global $tobedeleted;\r
-        $tmpno = tempnam('/tmp', $suff);\r
-        if($dodelete)\r
-            $tobedeleted[$tmpno] = true;\r
-        return $tmpno;\r
-        }\r
-        \r
-    function requestFile($requestParm) // e.g. \"IfacettokF\"\r
-        {\r
-        logit(\"requestFile(\" . $requestParm . \")\");\r
-\r
-        if(isset($_REQUEST[$requestParm]))\r
-            {\r
+                        "parameterValue == urldecode($value))
+                return true;
+            }
+        return false;
+        }
+
+    function tempFileName($suff) /* TODO Use this to create temporary files, if needed. */
+        {
+        global $dodelete;
+        global $tobedeleted;
+        $tmpno = tempnam('/tmp', $suff);
+        if($dodelete)
+            $tobedeleted[$tmpno] = true;
+        return $tmpno;
+        }
+        
+    function requestFile($requestParm) // e.g. \"IfacettokF\"
+        {
+        logit(\"requestFile(\" . $requestParm . \")\");
+
+        if(isset($_REQUEST[$requestParm]))
+            {
             $urlbase = isset($_REQUEST[\"base\"]) ? $_REQUEST[\"base\"] : \""
                         !wwwServer
-                        "/toolsdata/\";\r
-\r
-            $item = $_REQUEST[$requestParm];\r
-            $url = $urlbase . $item;\r
-            logit(\"requestParm:$requestParm\");\r
-            logit(\"urlbase:$urlbase\");\r
-            logit(\"item:$item\");\r
-            logit(\"url[$url]\");\r
-\r
-            $handle = fopen($url, \"r\");\r
-            if($handle == false)\r
-                {\r
-                logit(\"Cannot open url[$url]\");\r
-                return \"\";\r
-                }\r
-            else\r
-                {\r
+                        "/toolsdata/\";
+
+            $item = $_REQUEST[$requestParm];
+            $url = $urlbase . $item;
+            logit(\"requestParm:$requestParm\");
+            logit(\"urlbase:$urlbase\");
+            logit(\"item:$item\");
+            logit(\"url[$url]\");
+
+            $handle = fopen($url, \"r\");
+            if($handle == false)
+                {
+                logit(\"Cannot open url[$url]\");
+                return \"\";
+                }
+            else
+                {
                 $tempfilename = tempFileName(\""
                         makeName$!name
-                        "_$requestParm_\");\r
-                $temp_fh = fopen($tempfilename, 'w');\r
-                if($temp_fh == false)\r
-                    {\r
-                    fclose($handle);\r
-                    logit(\"handle closed. Cannot open $tempfilename\");\r
-                    return \"\";\r
-                    }\r
-                else\r
-                    {\r
-                    while (!feof($handle)) \r
-                        {\r
-                        $read = fread($handle, 8192);\r
-                        fwrite($temp_fh, $read);    \r
-                        }\r
-                    fclose($temp_fh);\r
-                    fclose($handle);\r
-                    return $tempfilename;\r
-                    }\r
-                }\r
-            }\r
-        logit(\"empty\");\r
-        return \"\";\r
-        }    \r
+                        "_$requestParm_\");
+                $temp_fh = fopen($tempfilename, 'w');
+                if($temp_fh == false)
+                    {
+                    fclose($handle);
+                    logit(\"handle closed. Cannot open $tempfilename\");
+                    return \"\";
+                    }
+                else
+                    {
+                    while (!feof($handle)) 
+                        {
+                        $read = fread($handle, 8192);
+                        fwrite($temp_fh, $read);    
+                        }
+                    fclose($temp_fh);
+                    fclose($handle);
+                    return $tempfilename;
+                    }
+                }
+            }
+        logit(\"empty\");
+        return \"\";
+        }    
 "
                     : ?helperFunctions
-                  &     "\r
-/***************\r
-* declarations *\r
-***************/\r
-\r
-/*\r
- * TODO Use the variables defined below to configure your tool for the right \r
- * input files and the right settings.\r
- * The input files are local files that your tool can open and close like any\r
- * other file.\r
- * If your tool needs to create temporary files, use the tempFileName() \r
- * function. It can mark the temporary files for deletion when the webservice\r
- * is done. (See the global dodelete variable.)\r
- */\r
+                  &     "
+/***************
+* declarations *
+***************/
+
+/*
+ * TODO Use the variables defined below to configure your tool for the right 
+ * input files and the right settings.
+ * The input files are local files that your tool can open and close like any
+ * other file.
+ * If your tool needs to create temporary files, use the tempFileName() 
+ * function. It can mark the temporary files for deletion when the webservice
+ * is done. (See the global dodelete variable.)
+ */
         "
                         !stringvar
                         "base = \"\";"
                         \t
-                        "/* URL from where this web service downloads input. The generated script takes care of that, so you can ignore this variable. */\r
+                        "/* URL from where this web service downloads input. The generated script takes care of that, so you can ignore this variable. */
         "
                         !stringvar
                         "job = \"\";"
                         \t
-                        "/* Only used if this web service returns 201 and POSTs result later. In that case the uploaded file must have the name of the job. */\r
+                        "/* Only used if this web service returns 201 and POSTs result later. In that case the uploaded file must have the name of the job. */
         "
                         !stringvar
                         "post2 = \"\";"
                         \t
-                        "/* Only used if this web service returns 201 and POSTs result later. In that case the uploaded file must be posted to this URL. */\r
+                        "/* Only used if this web service returns 201 and POSTs result later. In that case the uploaded file must be posted to this URL. */
         "
                         !stringvar
                         "echos = \"\";"
                         \t
-                        "/* List arguments and their actual values. For sanity check of this generated script. All references to this variable can be removed once your web service is working as intended. */\r
+                        "/* List arguments and their actual values. For sanity check of this generated script. All references to this variable can be removed once your web service is working as intended. */
 "
                     : ?declarations
                   & :?toolParmTests
-                  &     "\r
-        if( hasArgument(\"base\") )\r
-            {\r
+                  &     "
+        if( hasArgument(\"base\") )
+            {
             "
                         !var
-                        "base = getArgument(\"base\");\r
-            }\r
-        if( hasArgument(\"job\") )\r
-            {\r
+                        "base = getArgument(\"base\");
+            }
+        if( hasArgument(\"job\") )
+            {
             "
                         !var
-                        "job = getArgument(\"job\");\r
-            }\r
-        if( hasArgument(\"post2\") )\r
-            {\r
+                        "job = getArgument(\"job\");
+            }
+        if( hasArgument(\"post2\") )
+            {
             "
                         !var
-                        "post2 = getArgument(\"post2\");\r
-            }\r
+                        "post2 = getArgument(\"post2\");
+            }
         "
                         !var
-                        "echos = \"base=$base job=$job post2=$post2 \";\r
+                        "echos = \"base=$base job=$job post2=$post2 \";
 "
                     : ?basejobpost2
-                  & "\r
-/*********\r
-* input  *\r
-*********/\r
+                  & "
+/*********
+* input  *
+*********/
 ":?DATATEXT
                   &   whl
                     ' ( !DATA:#*(?IO.?featname.?value.F)+?DATA
@@ -12513,19 +12513,19 @@ try {\r
                           &     !DATATEXT
                                 "        if( hasArgument(\""
                                 !httpparm
-                                "\") )\r
-            {        \r
+                                "\") )
+            {        
             "
                                 !var
                                 !httpparm
                                 " = requestFile(\""
                                 !httpparm
-                                "\");\r
+                                "\");
             if("
                                 !var
                                 !httpparm
-                                " == '')\r
-                {\r
+                                " == '')
+                {
                 header(\"HTTP/1.0 404 Input "
                                 ( !featname:
                                 |   "with "
@@ -12536,9 +12536,9 @@ try {\r
                                 )
                                 "not found ("
                                 !httpparm
-                                " parameter). \");\r
-                return;\r
-                }\r
+                                " parameter). \");
+                return;
+                }
             "
                                 !var
                                 "echos = "
@@ -12548,17 +12548,17 @@ try {\r
                                 "="
                                 !var
                                 !httpparm
-                                " \";\r
-            }\r
+                                " \";
+            }
 "
                             : ?DATATEXT
                         | 
                         )
                       )
-                  &   "\r
-/************************\r
-* input/output features *\r
-************************/\r
+                  &   "
+/************************
+* input/output features *
+************************/
 "
                     : ?FEATURETEXT
                   &   whl
@@ -12576,8 +12576,8 @@ try {\r
                             "        if( hasArgument(\""
                             !IO
                             !data
-                            "\") )\r
-            {\r
+                            "\") )
+            {
 "
                         : ?FEATURETEXT
                       & :?ech
@@ -12602,7 +12602,7 @@ try {\r
                                       " is "
                                       getFeatValues$(!data.!value)
                                     )
-                                    " if true */\r
+                                    " if true */
 "
                                 : ?declarations
                               &     !ech
@@ -12639,15 +12639,15 @@ try {\r
                             !var
                             echos
                             !ech
-                            ";\r
-            }\r
+                            ";
+            }
 "
                         : ?FEATURETEXT
                       )
-                  &   "\r
-/*******************************\r
-* input/output features styles *\r
-*******************************/\r
+                  &   "
+/*******************************
+* input/output features styles *
+*******************************/
 "
                     : ?STYLETEXT
                   &   whl
@@ -12668,8 +12668,8 @@ try {\r
                             !IO
                             !featname
                             !data
-                            "\") )\r
-            {\r
+                            "\") )
+            {
 "
                         : ?STYLETEXT
                       & :?ech
@@ -12704,7 +12704,7 @@ try {\r
                                       : ? (?fval.!value) ?
                                     & !fval
                                     )
-                                    " if true */\r
+                                    " if true */
 "
                                 : ?declarations
                               &     !ech
@@ -12745,8 +12745,8 @@ try {\r
                             !var
                             echos
                             !ech
-                            ";\r
-            }\r
+                            ";
+            }
 "
                         : ?STYLETEXT
                       )
@@ -12756,9 +12756,9 @@ try {\r
                         "\n    "
                         !voidfunc
                         (str$("do_" makeName$!name):?mainfunc)
-                        "()\r
-        {\r
-        global $dodelete;\r
+                        "()
+        {
+        global $dodelete;
         global $tobedeleted;"
                         !declarations
                         !basejobpost2
@@ -12772,60 +12772,60 @@ try {\r
                         makeName$!name
                         "file = tempFileName(\""
                         makeName$!name
-                        "-results\");\r
+                        "-results\");
         $command = \"echo $echos >> "
                         !stringvar
                         makeName$!name
-                        "file\";\r
-        logit($command);\r
-\r
-        if(($cmd = popen($command, \"r\")) == NULL)\r
-            {\r
-            throw new SystemExit(); // instead of exit()\r
-            }\r
-\r
-        while($read = fgets($cmd))\r
-            {\r
-            }\r
-\r
-        pclose($cmd);\r
-/*/\r
-// YOUR CODE STARTS HERE.\r
-//        TODO your code!\r
+                        "file\";
+        logit($command);
+
+        if(($cmd = popen($command, \"r\")) == NULL)
+            {
+            throw new SystemExit(); // instead of exit()
+            }
+
+        while($read = fgets($cmd))
+            {
+            }
+
+        pclose($cmd);
+/*/
+// YOUR CODE STARTS HERE.
+//        TODO your code!
 // YOUR CODE ENDS HERE. OUTPUT EXPECTED IN "
                         !var
                         makeName$!name
-                        "file\r
-//*/\r
+                        "file
+//*/
         $tmpf = fopen("
                         !var
                         makeName$!name
-                        "file,'r');\r
-\r
-        if($tmpf)\r
-            {\r
+                        "file,'r');
+
+        if($tmpf)
+            {
             logit('output from "
                         makeName$!name
-                        ":');\r
-            while($line = fgets($tmpf))\r
-                {\r
-                logit($line);\r
-                print $line;\r
-                }\r
-            fclose($tmpf);\r
-            }\r
-\r
-        if($dodelete)\r
-            {\r
-            foreach ($tobedeleted as $filename => $dot) \r
-                {\r
-                if($dot)\r
-                    unlink($filename);\r
-                }\r
-            unset($tobedeleted);\r
-            }\r
-        }\r
-    loginit();\r
+                        ":');
+            while($line = fgets($tmpf))
+                {
+                logit($line);
+                print $line;
+                }
+            fclose($tmpf);
+            }
+
+        if($dodelete)
+            {
+            foreach ($tobedeleted as $filename => $dot) 
+                {
+                if($dot)
+                    unlink($filename);
+                }
+            unset($tobedeleted);
+            }
+        }
+    loginit();
     "
                         !mainfunc
                         "();\n"
@@ -12875,7 +12875,7 @@ try {\r
       )
       ( countGraphNodes
       =   count tools feats feat i o cnt tcnt fcnt tool
-        .   "Unfold toolprop. Each subspecification doubles count due to specification.\r
+        .   "Unfold toolprop. Each subspecification doubles count due to specification.
              Counts 360 tools that are active (not 'inactive') 20130424"
           & readTable$toolprop
           & readTable$tooladm
@@ -13367,140 +13367,140 @@ r=
 & rmv$"toolsProg.bak"
 & ren$("toolsProg.bra"."toolsProg.bak")
 &   put
-  $ ( "{toolsProg.bra\r
-\r
-\r
-    Copyright 2014, Bart Jongejan\r
-    This file is part of the DK-ClarinTools.\r
-\r
-    DK-ClarinTools is free software: you can redistribute it and/or modify\r
-    it under the terms of the GNU General Public License as published by\r
-    the Free Software Foundation, either version 3 of the License, or\r
-    (at your option) any later version.\r
-\r
-    DK-ClarinTools is distributed in the hope that it will be useful,\r
-    but WITHOUT ANY WARRANTY; without even the implied warranty of\r
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\r
-    GNU General Public License for more details.\r
-\r
-    You should have received a copy of the GNU General Public License\r
-    along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.\r
-\r
-\r
-\r
-\r
-\r
-Source code for DK-Clarin tools webservice \r
-\r
-To neatly re-format this source code, load the file in a running instance of\r
-Bracmat:\r
-\r
-    get$\"toolsprog.bra\"\r
-    \r
-Now, after you have made changes to the source code in a text editor, reload\r
-the source code in Bracmat using the command:\r
-\r
-    !r\r
-\r
-This command re-reads the file, renames the previous version from .bra to .bak\r
-and then saves the source code. Some editors will notice that the text has \r
-changed on disk and offer you to reload the source code.\r
-\r
-To deploy the code on the DK-Clarin JBoss server, copy the file to\r
-\r
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools\r
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools\r
-\r
-The new code can be hot deployed if there is a possibility to issue commands\r
-directly to the running shared library Bracmat. Otherwise, the code will be\r
-read when JBoss is restarted:\r
-\r
-    sudo /etc/init.d/JBoss stop\r
-    sudo /etc/init.d/JBoss start\r
-\r
-If it is possible to issue commands to Bracmat, functions and tables can be\r
-redefined at the prompt.\r
-\r
-The following commands can be issued by sending an 'expression' HTTP parameter\r
-to the 'bracmatevaluator' servlet. They can be made to work from the\r
-command line by changing the 'path$' function.\r
-\r
-To get started from a file containing all tables called 'alltablesxxx' (replace\r
-xxx with actual characters in the file name), e.g., alltables.GPL:\r
-\r
-readTable$\"alltables.GPL\"\r
-\r
-This reads the named file and stores each table in a separate file in a folder\r
-structure\r
-work/\r
-    job/\r
-    meta/\r
-        feature/\r
-        style/\r
-\r
-(This folder structure must already exist.) Finally, the same file is\r
-rewritten, so all lay-out is normalized (Bracmat style).\r
-\r
-After changes have been made to the single table files, for example because\r
-new tools are registered, the 'alltablesxxx' file is made up to date with\r
-\r
-readTable$\r
-\r
-This command reads all single file tables from the folder structure and saves\r
-them to 'alltablesxxx'. The command knows the actual name of the file to write\r
-to because that name is stored in alltablesxxx as a self-reference and\r
-therefore known after the last time readTable$alltablesxxx was issued.\r
-In this way, it is possible to change context by reading an 'alltablesyyy'\r
-that is different from 'alltablesxxx'.\r
-\r
-To do a clean up, removing almost all that is not defined in this file from \r
-Bracmat's memory, call the clean function\r
-\r
-    clean$\r
-    \r
-To save everything in memory to disk, enter\r
-\r
-    save$\r
-    \r
-A file called \"all.bra\" is created in the folder\r
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools\r
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools\r
-    \r
-If only a single function foo must be saved, issue the command\r
-\r
-    save$foo\r
-\r
-If the tables must be saved in separate files, issue\r
-\r
-    saveTable$\r
-    \r
-If a single table blah must be saved in a file, issue\r
-\r
-    saveTable$blah\r
-\r
-Changed table files can always be hot deployed by simply copying them to the folder\r
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools\r
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools\r
-    \r
-Server:\r
-Add following line to /etc/httpd/conf.d/proxy_ajp.conf:\r
-    ProxyPass /toolsdata !\r
-(Restart Apache sudo /etc/init.d/httpd restart)\r
-    \r
-Make sure bracmat is in JBoss's PATH:\r
-    /usr/lib/libbracmat.so -> /usr/lib/libbracmat.so.1.0\r
-    /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0\r
-    /usr/lib/libbracmat.so.1.0\r
-\r
-Examples of locations for this file are:\r
-    /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra\r
-    /usr/local/jboss/server/default/data/tools/toolsProg.bra\r
-    \r
-This location is defined in properties.xml, e.g.,\r
-    <entry key=toolsHome>../server/default/data/tools/</entry>  (relative to bin directory)\r
-or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>\r
-}\r
-\r
+  $ ( "{toolsProg.bra
+
+
+    Copyright 2014, Bart Jongejan
+    This file is part of the DK-ClarinTools.
+
+    DK-ClarinTools is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    DK-ClarinTools is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+
+Source code for DK-Clarin tools webservice 
+
+To neatly re-format this source code, load the file in a running instance of
+Bracmat:
+
+    get$\"toolsprog.bra\"
+    
+Now, after you have made changes to the source code in a text editor, reload
+the source code in Bracmat using the command:
+
+    !r
+
+This command re-reads the file, renames the previous version from .bra to .bak
+and then saves the source code. Some editors will notice that the text has 
+changed on disk and offer you to reload the source code.
+
+To deploy the code on the DK-Clarin JBoss server, copy the file to
+
+    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
+    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
+
+The new code can be hot deployed if there is a possibility to issue commands
+directly to the running shared library Bracmat. Otherwise, the code will be
+read when JBoss is restarted:
+
+    sudo /etc/init.d/JBoss stop
+    sudo /etc/init.d/JBoss start
+
+If it is possible to issue commands to Bracmat, functions and tables can be
+redefined at the prompt.
+
+The following commands can be issued by sending an 'expression' HTTP parameter
+to the 'bracmatevaluator' servlet. They can be made to work from the
+command line by changing the 'path$' function.
+
+To get started from a file containing all tables called 'alltablesxxx' (replace
+xxx with actual characters in the file name), e.g., alltables.GPL:
+
+readTable$\"alltables.GPL\"
+
+This reads the named file and stores each table in a separate file in a folder
+structure
+work/
+    job/
+    meta/
+        feature/
+        style/
+
+(This folder structure must already exist.) Finally, the same file is
+rewritten, so all lay-out is normalized (Bracmat style).
+
+After changes have been made to the single table files, for example because
+new tools are registered, the 'alltablesxxx' file is made up to date with
+
+readTable$
+
+This command reads all single file tables from the folder structure and saves
+them to 'alltablesxxx'. The command knows the actual name of the file to write
+to because that name is stored in alltablesxxx as a self-reference and
+therefore known after the last time readTable$alltablesxxx was issued.
+In this way, it is possible to change context by reading an 'alltablesyyy'
+that is different from 'alltablesxxx'.
+
+To do a clean up, removing almost all that is not defined in this file from 
+Bracmat's memory, call the clean function
+
+    clean$
+    
+To save everything in memory to disk, enter
+
+    save$
+    
+A file called \"all.bra\" is created in the folder
+    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
+    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
+    
+If only a single function foo must be saved, issue the command
+
+    save$foo
+
+If the tables must be saved in separate files, issue
+
+    saveTable$
+    
+If a single table blah must be saved in a file, issue
+
+    saveTable$blah
+
+Changed table files can always be hot deployed by simply copying them to the folder
+    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
+    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
+    
+Server:
+Add following line to /etc/httpd/conf.d/proxy_ajp.conf:
+    ProxyPass /toolsdata !
+(Restart Apache sudo /etc/init.d/httpd restart)
+    
+Make sure bracmat is in JBoss's PATH:
+    /usr/lib/libbracmat.so -> /usr/lib/libbracmat.so.1.0
+    /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0
+    /usr/lib/libbracmat.so.1.0
+
+Examples of locations for this file are:
+    /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra
+    /usr/local/jboss/server/default/data/tools/toolsProg.bra
+    
+This location is defined in properties.xml, e.g.,
+    <entry key=toolsHome>../server/default/data/tools/</entry>  (relative to bin directory)
+or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>
+}
+
 "
     , "toolsProg.bra"
     , NEW BIN

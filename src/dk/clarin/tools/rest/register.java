@@ -50,58 +50,6 @@ public class register extends HttpServlet
         super.init(config);
         }
 
-    public void sendMail(String name, String mail2, String ToolName)
-        {
-/*
-        try
-            { 
-            logger.debug("sendMail(" + name + ", " + mail2 + ", " + ToolName + ")");
-
-            SimpleEmail email = new SimpleEmail();
-            email.setHostName(ToolsProperties.mailServer);
-            email.setFrom(ToolsProperties.mailFrom, ToolsProperties.mailFromName);
-            email.setSmtpPort(Integer.parseInt(ToolsProperties.mailPort));
-            email.setCharset("UTF-8");
-
-            String body = "some body";
-            String subject = "some subject ﷰ";
-            subject = "[clarin.dk] web service wrapper (PHP) for registered tool";
-            body = BracMat.Eval("wrapper$(PHP." + ToolName + ")");
-            email.setSubject(subject);
-            email.setMsg(body);
-            email.updateContentType("text/x-php; charset=UTF-8");
-            email.addTo(mail2,name);
-            email.send();
-            } 
-        catch (org.apache.commons.mail.EmailException m)
-            {
-            logger.error
-                ("[Tools generated org.apache.commons.mail.EmailException] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            //m.printStackTrace();
-            logger.error("{} Error sending email. Message is: {}","Tools", m.getMessage());
-            }
-        catch (Exception e)
-            {//Catch exception if any
-            logger.error
-                ("[Tools generated Exception] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            logger.error("{} Exception:{}","Tools",e.getMessage());
-            }
-*/
-        }
-
-
     public String getarg(HttpServletRequest request, List<FileItem> items, String name)
         {
         /*
@@ -204,8 +152,6 @@ public class register extends HttpServlet
         throws ServletException, IOException 
         {
         logger.debug("doPost");
-        response.setContentType("text/html; charset=UTF-8");
-        response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
@@ -282,6 +228,7 @@ public class register extends HttpServlet
             String result = BracMat.Eval("register$(" + arg + ")");
             if(result == null || result.equals(""))
                 {
+                response.setContentType("text/html; charset=UTF-8");
                 response.setStatus(404);
                 /**
                  * getStatusCode$
@@ -297,12 +244,18 @@ public class register extends HttpServlet
                 out.println(messagetext);
                 return;
                 }
-            sendMail("dig"
-                    ,getarg(request,items,"contactEmail")
-                    ,getarg(request,items,"name")
-                    );
-                
-            out.println(result);
+            else if(result.startsWith("<?\nheader"))
+                { /* php wrapper */
+                response.setContentType("text/plain; charset=UTF-8");
+                response.setStatus(200);
+                out.println(result);
+                }
+            else
+                {
+                response.setContentType("text/html; charset=UTF-8");
+                response.setStatus(200);
+                out.println(result);
+                }
             }
         else
             {
