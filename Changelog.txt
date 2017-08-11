@@ -1,1 +1,6 @@
+20170811 - Kicked out work flows that contain same tool more than once with
+           same facets, only differing in subspecification of facets. But first
+           it is attempted to harmonize these instances by adding
+           subspecifications where necessary and possible. 
+
 20170512 - Recognize TEI input

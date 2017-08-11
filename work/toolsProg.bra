@@ -5335,12 +5335,9 @@ toolsProg=
           | !arg
       )
       ( supplyMissingFields
-      =     features x
-          , outfeat infeat childfeaturevalue
+      =     features x outfeat infeat childfeaturevalue
           , childfeaturevalues featurename featurevalue
-          , nfeatures xs v
-          , getChildVal
-          , cleanExponent cleanSum
+          , nfeatures xs v getChildVal cleanExponent cleanSum
         .     !arg:(?outfeat.?infeat.?features)
             & :?nfeatures
             &   whl
@@ -6018,39 +6015,53 @@ toolsProg=
             | !arg
             )
       )
+      (assert=.!arg)
+      "restrictOutputParms What is this for? Is it needed?"
       ( restrictOutputParms
-      =     Path pathh toolFeatures outp nou A f
-          , vs nvs v val i tool ou prop in
+      =   pathh toolFeatures outp tool ou prop in
         .   !arg:(?pathh.?toolFeatures)
           & 0:?outp
           &   whl
-            ' ( !pathh:%?Path+?pathh
-              & !Path:(?tool,(?ou.?prop.?in))
-              & :?nou
-              &   whl
-                ' ( !ou:?A (?f,%+%:?vs) ?ou
-                  & 0:?nvs
-                  &   whl
-                    ' ( !vs:%?v+?vs
-                      & (   !toolFeatures:? (!f,?val) ?
-                          & (     !val
-                                : ( 0
-                                  |   ?
-                                    + ( (?i.?+?*!v^?*?+?)
-                                      &   !prop
-                                        : ? (!f,?+?*!i^?*?+?) ?
+            ' ( !pathh:(?tool,(?ou.?prop.?in))+?pathh
+              &     !outp
+                  + ( !tool
+                    , (   map
+                        $ ( ( 
+                            =   f vs val nvs i v
+                              .       !arg
+                                    : ( ?f
+                                      ,   %+%:?vs
+                                        &   !toolFeatures
+                                          : ? (!f,?val) ?
                                       )
-                                    + ?
-                                  )
-                              & !nvs+!v:?nvs
-                            | 
+                                  & 0:?nvs
+                                  &   whl
+                                    ' ( !vs:%?v+?vs
+                                      & (     !val
+                                            : ( 0
+                                              |   ?
+                                                + ( (?i.?+?*!v^?*?+?)
+                                                  &   !prop
+                                                    :   ?
+                                                        (!f,?+?*!i^?*?+?)
+                                                        ?
+                                                  )
+                                                + ?
+                                              )
+                                          & !nvs+!v:?nvs
+                                        | 
+                                        )
+                                      )
+                                  & (!f,!nvs)
+                                | !arg
                             )
-                        | !nvs+!v:?nvs
-                        )
+                          . !ou
+                          )
+                      . !prop
+                      . !in
                       )
-                  & !nou !A (!f,!nvs):?nou
-                  )
-              & !outp+(!tool,(!nou !ou.!prop.!in)):?outp
+                    )
+                : ?outp
               )
           & !outp
       )
@@ -6188,11 +6199,29 @@ toolsProg=
                                                                 )
                                                               )
                                                             : ?pathh
-                                                          &     restrictOutputParms
-                                                              $ ( !pathh
-                                                                . !toolFeatures
+                                                          & (   assert
+                                                              ' ( !pathh
+                                                                : ~( ?
+                                                                   + ( ?
+                                                                     , (   ?
+                                                                           ( ?
+                                                                           ,   %
+                                                                             + %
+                                                                           )
+                                                                           ?
+                                                                       . ?
+                                                                       . ?
+                                                                       )
+                                                                     )
+                                                                   + ?
+                                                                   )
                                                                 )
-                                                            : ?pathh
+                                                            |     restrictOutputParms
+                                                                $ ( !pathh
+                                                                  . !toolFeatures
+                                                                  )
+                                                              : ?pathh
+                                                            )
                                                           & (   !toolspath
                                                               : ?+!pathh+?
                                                             |       !toolspath
@@ -6204,24 +6233,17 @@ toolsProg=
                                                             )
                                                           )
                                                       )
+                                                  &   hasfulfilled
+                                                    $ ( !source
+                                                      . !pathfields
+                                                      . !memopaths
+                                                      )
                                                   & (   !goaly
                                                       : !pathfields
-                                                    | 
-                                                    )
-                                                  & (   "Memoization does not work well. Some important workflows drop out."
-                                                      & ~
-                                                    |     hasfulfilled
-                                                        $ ( !source
-                                                          . !pathfields
-                                                          . !memopaths
-                                                          )
-                                                      & (   !goaly
-                                                          : !pathfields
-                                                        |   hasfulfilled
-                                                          $ ( !source
-                                                            . !goaly
-                                                            . !memopaths
-                                                            )
+                                                    |   hasfulfilled
+                                                      $ ( !source
+                                                        . !goaly
+                                                        . !memopaths
                                                         )
                                                     )
                                                 | 0:?pathh
@@ -6304,20 +6326,18 @@ toolsProg=
                     & (     (     unify$(!source.fold$!goalterm)
                                 : ?sourcePlus
                               & sort$!sourcePlus
-                            |   0:?nnnpathh
-                              &     fulfilGoalProduct
+                            |       fulfilGoalProduct
                                   $ (!source.!goalterm.!tools)
                                 : ?forkk
-                              & ( !forkk:(0|1)
-                                | !nnnpathh:?+(!goalterm.!forkk)+?
-                                |     illegalSolution$(!goalterm.!forkk)
-                                    : (?WRONGPIPES.?OKPIPES)
-                                  &   !nnnpathh+(!goalterm.!OKPIPES)
-                                    : ?nnnpathh
-                                |   !nnnpathh+(!goalterm.!forkk)
-                                  : ?nnnpathh
-                                )
-                              & !nnnpathh:~0
+                              &   (   !forkk:(0|1)
+                                    & 0
+                                  |     illegalSolution$(!goalterm.!forkk)
+                                      : (?WRONGPIPES.?OKPIPES)
+                                    & (!goalterm.!OKPIPES)
+                                  | (!goalterm.!forkk)
+                                  )
+                                : ~0
+                                : ?nnnpathh
                               & refold$!nnnpathh
                             )
                           : ?Pipeline
@@ -7596,7 +7616,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
             )
           & ( recurse
-            =   
+            =   A Z a attval place subtree
               .   !PlaceInHeader:%?place ?PlaceInHeader
                 & (   !place:(?place,?attval)
                     & (     !tree
@@ -7617,7 +7637,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
             )
           & ( final
-            =   
+            =   A Z a attval b
               .     !PlaceInHeader:@
                   & (     !tree
                         :   ?A
@@ -8674,7 +8694,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 | 
             )
           & ( explain
-            =   
+            =   explanation
               .     !fileFormats:? (?.!arg.?explanation) ?
                   & !explanation:~
                   & " (" localized$!explanation ") "
@@ -11200,11 +11220,242 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       )
                     & "We succeeded in computing one or more pipelines."
                     & (|log$(pipes !pipes))
+                    & ( signatures
+                      =   A prog o i sub
+                        .     !arg:(((?,?) ?)*?.?arg)
+                            & signatures$!arg
+                          |   !arg:%?A*%?arg
+                            & signatures$!A*signatures$!arg
+                          |   !arg:(%@?prog,(?o.?i.?sub))
+                            & !prog^(!o.!i)*signatures$!sub
+                          | 1
+                      )
+                    & ( Values
+                      =   x y
+                        .   !arg:@?x^?&!x
+                          |   !arg:?x_?y
+                            & (Values$!x)_(Values$!y)
+                          | !arg
+                      )
+                    & ( equal
+                      =   A B
+                        .   !arg:(?A.?B)
+                          & Values$!A:?A
+                          & Values$!B:?B
+                          & !A:!B
+                      )
+                    & ( containedBy
+                      =   short long fac val e E rem
+                        .   !arg:(?short.?long)
+                          & ( !short:
+                            |   !short:(?fac,@?val^?e) ?short
+                              & !long:? (!fac,!val^?E) ?
+                              & (   !e:(1|!E)
+                                  & containedBy$(!short.!long):?rem
+                                  & (!fac,!val^!E) !rem
+                                |   !E:1
+                                  & containedBy$(!short.!long):?rem
+                                  & (!fac,!val^!e) !rem
+                                )
+                            )
+                      )
+                    & ( uneven
+                      =   oi1 oi2
+                        .   !sjt
+                          :   ?
+                            + #*((?.?):?oi1)
+                            + ?
+                            +   #
+                              * ( (?.?):?oi2
+                                & equal$(!oi1.!oi2)
+                                )
+                            + ?
+                      )
+                    & ( unif
+                      =   a b A B X Y Z a1 a2 b1 b2
+                        .   !arg:(?a.?b)
+                          & (   !a:%@?A^?X
+                              & !b:%@?B^?Y
+                              & !A:!B
+                              &   ( !X:!Y
+                                  | !X:1&!Y
+                                  | !Y:1&!X
+                                  )
+                                : ?Z
+                              & !A^!Z
+                            |   !a:%?a1 %?a2
+                              & !b:%?b1 %?b2
+                              & unif$(!a1.!b1) unif$(!a2.!b2)
+                            |   !a:%?a1*%?a2
+                              & !b:%?b1*%?b2
+                              & unif$(!a1.!b1)*unif$(!a2.!b2)
+                            |   !a:(%?a1.%?a2)
+                              & !b:(%?b1.%?b2)
+                              & (unif$(!a1.!b1).unif$(!a2.!b2))
+                            |   !a:(%?a1,%?a2)
+                              & !b:(%?b1,%?b2)
+                              & (!a1:!b1,unif$(!a2.!b2))
+                            )
+                      )
+                    & ( reparable
+                      =   oi1 oi2 A M Z OI rep
+                        .       !arg
+                              :   ?A
+                                + #*((?.?):?oi1)
+                                + ?M
+                                +   #
+                                  * ( (?.?):?oi2
+                                    & equal$(!oi1.!oi2)
+                                    )
+                                + ?Z
+                            & (   unif$(!oi1.!oi2):?OI
+                                & reparable$(!A+!OI+!M+!Z)
+                              | `~
+                              )
+                          | !arg
+                      )
+                    & ( compatible
+                      =   tool sigs moresigs A
+                        .       !arg
+                              :   ?A
+                                *   %@?tool
+                                  ^ (%+%:uneven$:?sigs)
+                                * ?arg
+                            & reparable$!sigs:?sigs
+                            & (   ~(!sigs:uneven$)
+                                & compatible$!arg:?moresigs
+                                & !A*!tool^!sigs*!moresigs
+                              | `~
+                              )
+                          | !arg
+                      )
+                    & ( substitute
+                      =     OI I A o i sub prog
+                          , H h h1 H1 O gold
+                        .   !arg:(?arg.?OI)
+                          & (     !arg
+                                : (((?,?) ?)*?:?H.?arg)
+                              & substitute$(!arg.!OI):?arg
+                              & 1:?h
+                              &   whl
+                                ' ( !H:%?H1*?H
+                                  & (     !arg
+                                        :   ?
+                                          * ( ?
+                                            , (   ?O
+                                                &   containedBy$(!H1.!O)
+                                                  : ?h1
+                                              . ?
+                                              )
+                                            )
+                                          * ?
+                                      & !h*!h1:?h
+                                    | !h*(!H1 problem !arg):?h
+                                    )
+                                  )
+                              & (   !h:1&HA!
+                                  | !h
+                                . !arg
+                                )
+                            |   !arg:%?A*%?arg
+                              &   substitute$(!A.!OI)
+                                * substitute$(!arg.!OI)
+                            |   !arg:(%@?prog,(?o.?i.?sub))
+                              &   !OI
+                                :   ?
+                                  *   !prog
+                                    ^ ( ?
+                                      +   #
+                                        * ( ?O
+                                          .   ?I
+                                            & equal$(!O.!o)
+                                            & equal$(!I.!i)
+                                          )
+                                      + ?
+                                      )
+                                  * ?
+                              & substitute$(!sub.!OI):?sub
+                              & ( rpl
+                                =   vals val fac gold A B exp
+                                  .     !arg:(?vals.?fac.?gold)
+                                      & !vals:%?A*%?B
+                                      &   rpl$(!A.!fac.!gold)
+                                        * rpl$(!B.!fac.!gold)
+                                    |   !vals:%?A %?B
+                                      &   rpl$(!A.!fac.!gold)
+                                          ( rpl$(!B.!fac.!gold)
+                                          | !B
+                                          )
+                                    |   !vals:@?A^?B
+                                      & (     !gold
+                                            :   ?
+                                              * (? (!fac,!vals) ?)
+                                              * ?
+                                          & !vals
+                                        |     !gold
+                                            :   ?
+                                              * (? (!fac,!A^?exp) ?)
+                                              * ?
+                                          &   ( !B:!exp
+                                              |   !exp:1
+                                                & !B
+                                              |   !B:1
+                                                & !exp
+                                              )
+                                            : ?B
+                                          & !A^!B
+                                        )
+                                )
+                              & ( adaptInputProfile
+                                =     gold I subs fac val
+                                    , exp A Z old gld nI
+                                  .     !arg:(?I.?subs)
+                                      &   !subs
+                                        : ( ((?,?) ?)*?:?gold
+                                          . ?
+                                          )
+                                      & :?nI
+                                      &   whl
+                                        ' ( !I:(?fac,?vals) ?I
+                                          &     !nI
+                                                ( !fac
+                                                , rpl$(!vals.!fac.!gold)
+                                                )
+                                            : ?nI
+                                          )
+                                      & !nI
+                                    | !I
+                                )
+                              & ( !prog
+                                , (!O.adaptInputProfile$(!I.!sub).!sub)
+                                )
+                            | !arg
+                            )
+                      )
+                    & ( wantThis
+                      =   sig nsig
+                        .   signatures$!arg:?sig
+                          & (   !sig:?*?^(%+%:uneven$)*?
+                              & "Discard solutions that contain steps that only differ at the spec level.
+                                 It discards too much. These steps should be adapted so the specs are
+                                 applied to all relevant steps. Only if that is not possible (clashing specs)
+                                 solutions should be abolished."
+                              & (   compatible$!sig:?nsig
+                                  & substitute$(!arg.!nsig)
+                                | 0
+                                )
+                            | !arg
+                            )
+                      )
                     & (   unfoldTreeN$(1.!pipes):?pipesN
                         & 0:?pipes
                         &   whl
                           ' ( !pipesN:(?.?pipe)+?pipesN
-                            & !pipe+!pipes:?pipes
+                            & wantThis$!pipe:?pipe
+                            & ( !pipe:0
+                              | !pipes:?+!pipe+?
+                              | !pipe+!pipes:?pipes
+                              )
                             )
                       | unfoldTree$!pipes:?pipes
                       )
