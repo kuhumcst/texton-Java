@@ -1,3 +1,7 @@
+20170817 - Percolated unused features from the leafs (=input) to the root
+           (=output). This made many tool invocations identical. This caused a
+           further reduction in the number of distinct workflows. 
+
 20170811 - Kicked out work flows that contain same tool more than once with
            same facets, only differing in subspecification of facets. But first
            it is attempted to harmonize these instances by adding
