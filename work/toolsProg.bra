@@ -11526,7 +11526,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     )
                                   : ?B
                                 & !A^!B
-                              | !A
+                              | !A^!B
                               )
                       )
                     & ( adaptInputProfile
@@ -11541,18 +11541,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 &   !nI (!fac,rpl$(!vals.!fac.!gold))
                                   : ?nI
                                 )
-                            & (     !nI
-                                  :   ?
-                                      ( period
-                                      ,   (facet,txt)
-                                          (format,txtbasis)
-                                          (lang,da)
-                                          (pres,nml)
-                                      )
-                                      ?
-                                & log$FOUT
-                              | 
-                              )
                             & !nI
                           | !I
                       )
@@ -11719,14 +11707,39 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   )
                             )
                           & ( fromRootToLeafs
-                            = F.!arg:(?arg.?F)&!arg
+                            =   L R F NF OF LF RF
+                              .   !arg:(?arg.?OF)
+                                & (     !arg
+                                      : (@?,~(?.?)) ?
+                                      : ?NF
+                                    & ( supplement$(!NF.!OF)
+                                      . update$(!OF.!NF)
+                                      )
+                                  |   !arg:(?L,?R)
+                                    &   fromRootToLeafs$(!R.!OF)
+                                      : (?R.?)
+                                    & (!L,!R.!OF)
+                                  |   !arg:(?L.?R)
+                                    &   fromRootToLeafs$(!L.!OF)
+                                      : (?L.?NF)
+                                    &   fromRootToLeafs$(!R.!NF)
+                                      : (?R.?)
+                                    & ((!L.!R).)
+                                  |   !arg:%?L*%?R
+                                    &   fromRootToLeafs$(!L.!OF)
+                                      : (?L.?)
+                                    &   fromRootToLeafs$(!R.!OF)
+                                      : (?R.?)
+                                    & (!L*!R.)
+                                  )
                             )
                           & 0:?pipes
                           &   whl
                             ' ( !arg:(?nnn.?pipe)+?arg
                               &   fromLeafsToRoot$(!pipe.)
                                 : (?pipe.?F)
-                              & fromRootToLeafs$(!pipe.!F):?pipe
+                              &   fromRootToLeafs$(!pipe.!F)
+                                : (?pipe.?)
                               & ( !pipe:0
                                 | !pipes:?+(?.!pipe)+?
                                 | (!nnn.!pipe)+!pipes:?pipes
