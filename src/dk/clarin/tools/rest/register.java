@@ -170,7 +170,12 @@ public class register extends HttpServlet
             String arg = "";
             passwordAsHandle = getarg(request,items,"passwordAsHandle");
             logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
-            if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
+            if(ToolsProperties.password.equals(""))
+                {
+                userEmail = getarg(request,items,"mail2");
+	            arg += " (handle.LOCALMACHINEDUMMY)";
+                }
+            else if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
 	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = getarg(request,items,"mail2");
