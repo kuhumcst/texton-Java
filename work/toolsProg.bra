@@ -1664,6 +1664,14 @@ toolsProg=
               )
           & !reorderedworkflowlist
       )
+      ( SortList
+      =   S L e
+        .   0:?S
+          & whl'(!arg:%?e ?arg&!e+!S:?S)
+          & :?L
+          & whl'(!S:%?e+?S&!L !e:?L)
+          & !L
+      )
       ( makeWorkflowRadioButtons
       =     i buttons nr goodness Ntools currGoodness
           , disambiguatedworkflowlist groupedworkflowlist n nth
