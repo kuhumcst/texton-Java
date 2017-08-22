@@ -5723,6 +5723,11 @@ toolsProg=
           & !newGoal
       )
       (NA=|"?"|0)
+      ( sentence
+      =   a
+        .   !arg:%?a*%?arg&!a sentence$!arg
+          | !arg
+      )
       ( product
       =   a
         .   !arg:%?a %?arg&!a*product$!arg
@@ -11775,7 +11780,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       )
                     & !pipes:?+[?NNN
                     & log$(NNN !NNN)
-                    & log$(pipes !pipes)
                     & (   !NNN:>1000
                         & log$TooMany
                         & TooMany$!NNN
