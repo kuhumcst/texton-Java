@@ -6,14 +6,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>DKCLARIN</title>
   </head>
-  <body bgcolor="#C6D8D9">
+  <body bgcolor="#F5F5F5">
     <h1>Automatic Navigation through Language Technology</h1>
 
-<fieldset style="background-color:rgb(255,245,245)"><legend>Apply LT workflow to uploaded file(s)</legend>
+<fieldset style="background-color:rgb(255,245,245)"><legend style="font-weight: bold;" >Apply LT workflow to uploaded file(s)</legend>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
 		<table>
 		  <tr>
-		    <td><span id="item1a" style="font-weight: bold;" >Choose one or more files:</span></td>
+		    <td><span id="item1a">Choose one or more files:</span></td>
 			<td><input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" /></td>
 		  </tr><tr>
 			<td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
@@ -33,7 +33,7 @@
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
 </fieldset>
-<fieldset style="background-color:rgb(245,255,245)"><legend>Apply workflow to typed-in text only</legend>
+<fieldset style="background-color:rgb(245,255,245)"><legend style="font-weight: bold;" >Apply workflow to typed-in text only</legend>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
 		<table>
 		  <tr>
@@ -89,7 +89,7 @@
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form -->
 
-<fieldset style="background-color:rgb(245,245,255)"><legend>Apply workflow to data behind URL(s)</legend>
+<fieldset style="background-color:rgb(245,245,255)"><legend style="font-weight: bold;" >Apply workflow to data behind URL(s)</legend>
 	<form method="get" action="createByGoalChoice">
 		<table>
 		  <tr>
@@ -135,7 +135,7 @@
 		<input type="submit" value="create CMDI metadata" alt="create CMDI metadata" />
 	</form -->
 
-<fieldset style="background-color:rgb(225,245,255)"><legend>Create CMDI metadata only</legend>
+<fieldset style="background-color:rgb(225,245,255)"><legend style="font-weight: bold;" >Create CMDI metadata only</legend>
 	<form method="get" action="createMetadataOnly">
 		<table>
 		  <!--<tr>
