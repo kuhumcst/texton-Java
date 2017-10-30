@@ -8,8 +8,8 @@
   </head>
   <body bgcolor="#C6D8D9">
     <h1>Automatic Navigation through Language Technology</h1>
-    
-    <h2>Apply LT workflow to uploaded file(s)</h2>
+
+<fieldset style="background-color:rgb(255,245,245)"><legend>Apply LT workflow to uploaded file(s)</legend>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
 		<table>
 		  <tr>
@@ -19,9 +19,9 @@
 			<td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
 			<td><input type="radio" name="action" value="dataset" />Compound input</td>
 		  </tr><tr>
-			<td><span id="maila" style="font-weight: bold;" >Your email address:</span></td>
+			<!--<td><span id="maila" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2a" style="vertical-align: middle;" />
-			(Notifications will be sent to this address.)</td>
+			(Notifications will be sent to this address.)</td>-->
 			
 		  </tr>
   		  <tr style="display:none;"><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
@@ -32,8 +32,8 @@
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
-
-    <h2>Apply workflow to typed-in text only</h2>
+</fieldset>
+<fieldset style="background-color:rgb(245,255,245)"><legend>Apply workflow to typed-in text only</legend>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
 		<table>
 		  <tr>
@@ -45,12 +45,11 @@
 			</td>
 		  </tr><tr>
 			<td><input type="hidden" name="action" value="dataset" checked="checked" />Compound input</td>
-		  </tr><tr>
+		  </tr><!--<tr>
 			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
-			(Notifications will be sent to this address.)</td>
-			
-		  </tr>
+			(Notifications will be sent to this address.)</td>			
+		  </tr>-->
   		  <tr style="display:none;"><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
 		  </tr><tr>
 			<td><input type="radio" name="UIlanguage" value="da" />Danish</td>
@@ -59,7 +58,7 @@
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
-
+</fieldset>
     <!-- h2>Apply workflow to data behind URL(s) (POST method)</h2>
     <h3>(Choose a goal)</h3>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
@@ -90,8 +89,7 @@
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form -->
 
-    <h2>Apply workflow to data behind URL(s)</h2>
-    <h3>(Choose a goal)</h3>
+<fieldset style="background-color:rgb(245,245,255)"><legend>Apply workflow to data behind URL(s)</legend>
 	<form method="get" action="createByGoalChoice">
 		<table>
 		  <tr>
@@ -105,12 +103,11 @@
 			</td>
 		  </tr><tr>
 			<td><input type="hidden" name="action" value="batch" checked="checked" />Iterate over input</td>
-		  </tr><tr>
+		  </tr><!--<tr>
 			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
 			(Notifications will be sent to this address.)</td>
-			
-		  </tr>
+		  </tr>-->
   		  <tr style="display:none;"><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
 		  </tr><tr>
 			<td><input type="radio" name="UIlanguage" value="da" />Danish</td>
@@ -119,6 +116,7 @@
 		</table>
 		<input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
 	</form>
+</fieldset>
 
     <!-- h2>Create CMDI metadata only (POST method)</h2>
 	<form enctype="multipart/form-data" method="post" action="createMetadataOnly">
@@ -137,14 +135,14 @@
 		<input type="submit" value="create CMDI metadata" alt="create CMDI metadata" />
 	</form -->
 
-    <h2>Create CMDI metadata only</h2>
+<fieldset style="background-color:rgb(225,245,255)"><legend>Create CMDI metadata only</legend>
 	<form method="get" action="createMetadataOnly">
 		<table>
-		  <tr>
+		  <!--<tr>
 			<td><span id="mailaa" style="font-weight: bold;" >Your email address:</span></td>
 			<td><input name="mail2" type="text" size="30" id="mail2aa" style="vertical-align: middle;" />
 			(Notifications will be sent to this address.)</td>
-		  </tr>
+		  </tr>-->
   		  <tr style="display:none;"><td>Password:</td><td><input type="password" name="password" value="" alt="password"/></td>
 		  </tr><tr>
 			<td><input type="radio" name="UIlanguage" value="da" />Danish</td>
@@ -153,7 +151,8 @@
 		</table>
 		<input type="submit" value="create CMDI metadata" alt="create CMDI metadata" />
 	</form>
-
+</fieldset>
+<!--
     <h2>Apply precooked workflow to uploaded file</h2>
     <h3>DASISH T5.5</h3>
 	<form enctype="multipart/form-data" method="post" action="createByGoalChoice">
@@ -248,6 +247,6 @@
 		</table>
      	<input type="submit" value="create annotation" alt="create annotation for uploaded file, tool directed" />
 	</form>
-    
+-->    
   </body>
 </html>
