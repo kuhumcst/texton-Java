@@ -66,7 +66,7 @@ public class workflow implements Runnable
     private static final int BUFFER = 2048;
 
     public static final int ACCEPT       = 1; //We have accepted your request for applying tools to resources.
-//    public static final int WRAPUP       = 2; //The results from the tool-workflow are ready to inspect
+    public static final int WRAPUP       = 2; //The results from the tool-workflow are ready to inspect
     public static final int ERROR        = 3; //Something went wrong
     public static final int ERRORUSER    = 4; //Something went wrong
 
@@ -283,11 +283,11 @@ public class workflow implements Runnable
                     + "eller du har spørgsmål, kan du henvende dig på mail-adressen admin@clarin.dk<br /><br />\n\n"
                     + "Venlig hilsen \nclarin.dk</p></body></html>";    
                 break;
-          /*case WRAPUP:
+            case WRAPUP:
                 logger.debug("sendMail("  + status + ", " + name + ", " + string1 + ", " + toolErrorMessage + ", " + toolsandfiles + ", " + mail2 + ")");
                 subject = "[clarin.dk]  Samlet output fra integrerede værktøjer - success";
                 body = BracMat.Eval("WRAPUPbody$(" + workflow.quote(toolsandfiles) + ")"); 
-                break;*/
+                break;
             case ERRORUSER: 
                 subject = "[clarin.dk] Integreret værktøj melder fejl";
                 body = "<html><body><p>"
@@ -465,7 +465,6 @@ public class workflow implements Runnable
              * the staging area.
              */
             logger.debug("processPipeLine calls doneAllJob {} DONE", result);
-            /*
             try
                 {
                 if(!mail2.equals(""))
@@ -483,7 +482,6 @@ public class workflow implements Runnable
                 {//Catch exception if any
                 logger.warn("Could not send mail to " + mail2 + ". Reason:" + e.getMessage());
                 }
-            */
             }
         logger.debug("processPipeLine exits", code);
         }
