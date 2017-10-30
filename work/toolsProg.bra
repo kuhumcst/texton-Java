@@ -11202,11 +11202,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         "Der er intet at lave. Gå tilbage med knappen \"Forrige\"."
                                       )
                                 )
-                            |     localized
-                                $ ( "You will receive an email when we have produced results."
-                                    "Du vil få mail når der er resultater. "
-                                  )
-                                ( a
+                            |   ( a
                                 .   ( href
                                     .   str
                                       $ (!wwwServer "/tools/mypoll?job=" !JobNr)
@@ -12098,10 +12094,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       .   (href.!wwwServer "/tools/zipresults?JobNr=" !arg)
                         , localized$("Download result" "Download resultat")
                       )
-                        localized
-                      $ ( ". Alternatively, follow the link from the new message in your email box."
-                          ". Alternativt kan du følge linket i den email vi har sent til dig."
-                        )
                   )
                 )
               )
