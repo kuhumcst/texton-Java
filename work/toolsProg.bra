@@ -391,7 +391,7 @@ toolsProg=
                       &   whl
                         ' ( !Tables
                           :   ( %?tab
-                              & saveTable$(!folder.!tab):?v
+                              & saveTable$(!folder.!tab)
                               & !saved !tab:?saved
                               )
                               ?Tables
@@ -1205,7 +1205,7 @@ toolsProg=
       )
       ( disam
       =     nextvar ding nextn nextvars wfs wflw N toolPlumbing
-          , demul demultiply inmul inmultiply
+          , demul demultiply inmul inmultiply c2m
         .     0:?nextn
             & :?nextvars
             & ( nextvar
@@ -1364,10 +1364,14 @@ toolsProg=
                       )
                   & !wfs
               )
+            & ( c2m
+              =   x
+                .   !arg:(?x,?arg)&!x*c2m$!arg
+                  | !arg
+              )
             & ( inmul
               =   a b
-                .     !arg:(~@?a,?b)
-                    & inmul$!a*inmul$!b
+                .   !arg:(@?a,?b)&(!a,c2m$!b)
                   |   !arg:?a_?b
                     & (inmul$!a)_(inmul$!b)
                   | !arg
@@ -1678,7 +1682,7 @@ toolsProg=
           , o pat pipe pipes prev flatten sameToolDifferentRoles
           , toolPlumbing "*" simplify translateToHumanLanguage
           , wf wfs workflow workflowlist saveio toolPattern
-          , Workflowlist StartClk enumerateToolsDetail
+          , StartClk enumerateToolsDetail
           , abbr reorderedworkflowlist struct weight
         .     !arg:?pipes
             & ( enumerateToolsDetail
@@ -1698,31 +1702,24 @@ toolsProg=
                           )
                         + ?
                     & ( myfold
-                      =   a b aa az ba bz F v R v1 v2
+                      =   a b A B F R v1 v2
                         .     !arg:%?a*%?b
-                            &   whl
-                              ' (   !a
-                                  :   ?aa
-                                      (?F,?v)
-                                      ( ?az
-                                      & !b:?ba (!F,!v) ?bz
+                            & myfold$!b:?b
+                            & (     !a
+                                  :   ?
+                                      ( ?F
+                                      ,   ?v1
+                                        &   !b
+                                          :   ?A
+                                              (!F,~!v1:?v2)
+                                              ?B
+                                        &   !A (!F,!v1*!v2) !B
+                                          : ?R
                                       )
-                                & !aa !az:?a
-                                & !ba !bz:?b
-                                )
-                            & :?R
-                            &   whl
-                              ' (   !a
-                                  :   ?aa
-                                      (?F,?v1)
-                                      ( ?az
-                                      & !b:?ba (!F,?v2) ?bz
-                                      )
-                                & !aa !az:?a
-                                & !ba !bz:?b
-                                & !R (!F,!v1*!v2):?R
-                                )
-                            & !R
+                                      ?
+                                & !R
+                              | 
+                              )
                           | !arg
                       )
                     &   ( !predecessors:
@@ -1753,7 +1750,7 @@ toolsProg=
                   & sortout$!arg
                   & :?dun
                   & ( replace
-                    =   n r p L R WF IO I O A Z
+                    =   n r p L R WF
                       .     !arg
                           : (?WF.?n.(=?p).(=?r))
                         & (   !WF:(=?.?)
@@ -1902,7 +1899,7 @@ toolsProg=
                   & '$"#"
               )
             & ( translateToHumanLanguage
-              =     circle describe nice inoutdesc
+              =     circle Circle describe nice inoutdesc
                   , description seqno struct abbrevs
                 .   ( circle
                     =   
@@ -1915,6 +1912,18 @@ toolsProg=
                                       & !arg+-48
                                     | chr$!arg
                                     )
+                              | chu$!arg
+                          )
+                    )
+                  & ( Circle
+                    =   
+                      .   !arg:~#&!arg
+                        | ( strong
+                          .   
+                            ,     !arg:<128
+                                & ( !arg:~<48&!arg+-48
+                                  | chr$!arg
+                                  )
                               | chu$!arg
                           )
                     )
@@ -1967,14 +1976,27 @@ toolsProg=
                           )
                     )
                   & ( describe
-                    =   a b m n
+                    =   a b c m n
                       .     !arg:(?a,?b)
-                          & describe$!a " + " describe$!b
+                          & (     !b
+                                : ( (?.?.?)
+                                  | ((?.?.?),?)
+                                  )
+                              & describe$!a " + " describe$!b
+                            |   !b:(?b,?c)
+                              &   describe$!a
+                                  " + ["
+                                  describe$!b
+                                  "] + "
+                                  describe$!c
+                            | describe$!a " + [" describe$!b "] "
+                            )
                         |   !arg:%?a %?b
                           & describe$!a " → " describe$!b
                         |   !arg:(?m.?seqno.?n)
-                          &   (!m:~|output)
-                              circle$!seqno
+                          &   ( !m:&Circle$!seqno
+                              | !m circle$!seqno
+                              )
                               ( !m:
                               |   !abbrevs:?*(!m.!n)^?n*?
                                 & nice$!n
@@ -1991,84 +2013,117 @@ toolsProg=
                     )
               )
             & ( sameToolDifferentRoles
-              =     mrg replac I Ix Iy O Ox Oy aa
-                  , beast mm result simple tool tree
-                  , xI xO xdetails yI yO ydetails zz
-                .   ( mrg
-                    =   this other dif old diffs
-                      .   ( diffs
-                          =   this other L t o
-                            .   !arg:(?this.?other)
-                              & :?L
-                              &   whl
-                                ' ( !this:%?t ?this
-                                  & !other:%?o ?other
-                                  & ( !t:!o
-                                    | !L !t:?L
-                                    )
+              =     delta Delta replac I O
+                  , beast result simple tool tree
+                  , details flatlist updat
+                  , fx fy reps sx sy
+                .   ( delta
+                    =   this other L f v
+                      .   !arg:(?this.?other)
+                        & :?L
+                        & (   !this
+                            :   ?
+                                ( (?f,?v)
+                                & ( !other:? (!f,!v) ?
+                                  | (!f,!v) !L:?L
                                   )
-                              & !L
+                                & ~
+                                )
+                                ?
+                          | !L
                           )
-                        & !arg:(?old.?this.?other)
-                        & diffs$(!this.!other):?dif
-                        & sort$(!old !dif)
+                    )
+                  & ( Delta
+                    =   AI AO BI BO
+                      .   !arg:((?AI.?AO),(?BI.?BO))
+                        & (delta$(!AI.!BI).delta$(!AO.!BO))
                     )
                   & ( replac
                     =   t s r a b
-                      .   !arg:(?t.?s.?r)
+                      .   !arg:(?t.?s,?r)
                         & ( !t:!s&!r
                           |   !t:%?a %?b
-                            & replac$(!a.!s.!r) replac$(!b.!s.!r)
-                          |   !t:%?a*%?b
-                            & replac$(!a.!s.!r)*replac$(!b.!s.!r)
+                            & replac$(!a.!s,!r) replac$(!b.!s,!r)
+                          |   !t:(%?a,%?b)
+                            & (replac$(!a.!s,!r),replac$(!b.!s,!r))
                           | !t
                           )
                     )
                   & 0:?result
-                  &   whl
-                    ' ( !arg:(?n,?beast)+?arg
-                      &     !result
-                          + ( !n
-                            ,       !beast
-                                  : (   ?aa
-                                        (?tool.?simple.?xdetails)
-                                        ?mm
-                                        ( !tool
-                                        . !simple
-                                        . ~!xdetails:?ydetails
-                                        )
-                                        ?zz
-                                    . ?tree
-                                    )
-                                & !simple:(?I.?O)
-                                & !xdetails:(?Ix.?Ox)
-                                & !ydetails:(?Iy.?Oy)
-                                & mrg$(!I.!Ix.!Iy):?xI
-                                & mrg$(!O.!Ox.!Oy):?xO
-                                & mrg$(!I.!Iy.!Ix):?yI
-                                & mrg$(!O.!Oy.!Ox):?yO
-                                & (   !aa
-                                      (!tool.(!xI.!xO).!xdetails)
-                                      !mm
-                                      (!tool.(!yI.!yO).!ydetails)
-                                      !zz
-                                  .   replac
-                                    $ (   replac
-                                        $ ( !tree
-                                          . (!tool.!simple.!xdetails)
-                                          . !tool
-                                          . (!xI.!xO)
-                                          . !xdetails
-                                          )
-                                      . (!tool.!simple.!ydetails)
-                                      . !tool
-                                      . (!yI.!yO)
-                                      . !ydetails
-                                      )
-                                  )
-                              | !beast
+                  & ( flatlist
+                    =   p q
+                      .     !arg
+                          : ( @
+                            . (?.?)
+                            . (?,?) ?
+                            . (?,?) ?
                             )
-                        : ?result
+                        |   !arg:((?p,?q)|%?p %?q)
+                          & flatlist$!p+flatlist$!q
+                    )
+                  & ( updat
+                    =     reps tool i o id
+                        , od I O details A Z
+                      .     !arg
+                          : ( ?reps
+                            . ?tool
+                            . (?i.?o),(?id.?od)
+                            . ?details
+                            )
+                        & (     !reps
+                              :   ?A
+                                  (!tool.(?I.?O).!details)
+                                  ?Z
+                            &   !A
+                                ( !tool
+                                . (set$(!I !i !id).set$(!O !o !od))
+                                . !details
+                                )
+                                !Z
+                          |   ( !tool
+                              . (set$(!i !id).set$(!o !od))
+                              . !details
+                              )
+                              !reps
+                          )
+                    )
+                  &   whl
+                    ' ( !arg:(?n,(?beast.?tree))+?arg
+                      & :?reps
+                      & (   flatlist$!beast
+                          :   ?
+                            + ?*(?tool.?sx.?fx)
+                            + ?
+                            + ?*(!tool.?sy.?fy)
+                            + ( ?
+                              &     updat
+                                  $ ( !reps
+                                    . !tool
+                                    . !sx,Delta$(!fx,!fy)
+                                    . !fx
+                                    )
+                                : ?reps
+                              &     updat
+                                  $ ( !reps
+                                    . !tool
+                                    . !sy,Delta$(!fy,!fx)
+                                    . !fy
+                                    )
+                                : ?reps
+                              & ~
+                              )
+                        |     whl
+                            ' (   !reps
+                                : (?tool.?simple.?details) ?reps
+                              &     replac
+                                  $ ( !tree
+                                    .   (!tool.?.!details)
+                                      , (!tool.!simple.!details)
+                                    )
+                                : ?tree
+                              )
+                          & !result+(!n,(!beast.!tree)):?result
+                        )
                       )
                   & !result
               )
@@ -2097,16 +2152,8 @@ toolsProg=
                     & (saveio$!x)_(saveio$!y)
                   | !arg
               )
+            & map$(saveio.!workflowlist):?workflowlist
             & "workflowlist is numbered list of workflows, with equal branches not merged yet, and with I/O duplicated."
-            & :?Workflowlist
-            &   whl
-              ' ( !workflowlist:%?wf ?workflowlist
-                & saveio$!wf !Workflowlist:?Workflowlist
-                )
-            &   whl
-              ' ( !Workflowlist:%?wf ?Workflowlist
-                & !wf !workflowlist:?workflowlist
-                )
             & :?groupedworkflowlist
             & :?toolPlumbing
             &   whl
@@ -2126,9 +2173,7 @@ toolsProg=
                 &   ('$toolPlumbing.!wfs) !groupedworkflowlist
                   : ?groupedworkflowlist
                 )
-            & log$(groupedworkflowlist jsn$(clk$+!StartClk))
-            & (   !n:<1000000
-                & log$("while groupedworkflowlist:" !n)
+            & ( !n:<1000000
               |   log
                 $ "while groupedworkflowlist: MAX NUMBER OF WORKFLOW OPERATIONS REACHED (1000000)"
               )
@@ -2158,12 +2203,10 @@ toolsProg=
                     + !disambiguatedworkflowlist
                   : ?disambiguatedworkflowlist
                 )
-            & log$(disambiguatedworkflowlist jsn$(clk$+!StartClk))
             &   sameToolDifferentRoles$!disambiguatedworkflowlist
               : ?disambiguatedworkflowlist
             &   reorder$!disambiguatedworkflowlist
               : ?reorderedworkflowlist
-            & log$(reorder jsn$(clk$+!StartClk))
             & (   !disambiguatedworkflowlist:%+%
                 & :?buttons
                 & 1:?nth
@@ -2205,7 +2248,6 @@ toolsProg=
                 &   translateToHumanLanguage$(!abbr.!struct) (br.,)
                   : ?buttons
               )
-            & log$(translateToHumanLanguage jsn$(clk$+!StartClk))
             & !buttons
           |   localized
             $ ( "Go to the previous screen and specify your goal in more detail."
@@ -5741,6 +5783,17 @@ toolsProg=
           & whl'(!S:%?e+?S&!L !e:?L)
           & !L
       )
+      ( set
+      =   S L e
+        .   0:?S
+          &   whl
+            ' ( !arg:%?e ?arg
+              & (!S:?+!e+?|!e+!S:?S)
+              )
+          & :?L
+          & whl'(!S:%?e+?S&!L !e:?L)
+          & !L
+      )
       ( matchGoalWithFeatures
       =     goal toolFeatures
           , newGoal pathfields gfield gvaluesAlts ngoal
@@ -7588,7 +7641,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       ( inject
       =     userProvidedMetadata autogenerated final recurse
-          , Required/optional/automatic val Line
+          , Required/optional/automatic val Line tree
           , PlaceInHeader id addOrInsert remove Metadata
           , replaceOrInsert addOrInsertOneOrMoreNames metadataType
         .   ( remove
@@ -9003,7 +9056,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , featname
           , whlvalues
         .   ( limitedTable
-            =     featname row rows abbs table abbr pat
+            =     featname row rows abbs table abbr
                 , feattable specificationTables YYY
               .   !arg:(?featname.?abbs)
                 & readTable$features
@@ -9269,27 +9322,26 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & sort$!I:?I
           & !I
       )
+      ( supplement
+      =   f v NF OF
+        .   !arg:(?NF.?OF)
+          & (   !OF
+              :   ?
+                  (?f,?v)
+                  ( ?
+                  & ~(!NF:? (!f,?) ?)
+                  & (!f,!v) !NF:?NF
+                  & ~
+                  )
+            | sort$!NF
+            )
+      )
       ( percolateForgottenFeatures
-      =     pipe pipes F nnn update
-          , supplement FeatureList Results
+      =     pipes F nnn update
+          , FeatureList Results pipe1 pipe2 pipe3
           , fromMethods fromResultMethod fromTool
           , toMethods toResultMethod toTool
-        .   ( supplement
-            =   f v NF OF
-              .   !arg:(?NF.?OF)
-                & (   !OF
-                    :   ?
-                        (?f,?v)
-                        ( ?
-                        & ~(!NF:? (!f,?) ?)
-                        & (!f,!v) !NF:?NF
-                        & !NF
-                        & ~
-                        )
-                  | sort$!NF
-                  )
-            )
-          & ( update
+        .   ( update
             =   OF NF f v A Z
               .   !arg:(?OF.?NF)
                 & (   !NF
@@ -9317,7 +9369,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               .   !arg:(?arg.?OF)
                 & (   !arg:%?L*%?R
                     & Results$(!R.!OF):(?R.?RF)
-                    & FeatureList$(!L.!OF):(?L.?LF)
+                    & ( FeatureList$(!L.!OF):(?L.?LF)
+                      | log$(NoFeatureList !arg)&~
+                      )
                     & Intersection$(!RF.!LF):?NF
                     & (!L*!R.!NF)
                   |   FeatureList$(!arg.!OF):(?L.?LF)
@@ -9330,7 +9384,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !arg:(?tool,(?output.?meta.?sub))
                 & fromResultMethod$(!sub.!OF):(?sub.?RF)
                 & FeatureList$(!output.!RF):(?output.?LF)
-                & (!tool,(!output.!meta.!sub).!LF)
+                & (!tool,(!output.supplement$(!meta.!RF).!sub).!LF)
             )
           & ( fromMethods
             =   L R NF OF LF RF
@@ -9361,7 +9415,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !arg:(?tool,(?output.?meta.?sub))
                 & FeatureList$(!output.!OF):(?output.?LF)
                 & toResultMethod$(!sub.!LF):(?sub.?RF)
-                & (!tool,(!output.!meta.!sub).!RF)
+                & (!tool,(!output.supplement$(!meta.!LF).!sub).!RF)
             )
           & ( toMethods
             =   L R NF OF LF RF
@@ -9405,8 +9459,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  * Prepare and run a workflow.
  * Functions as a wizard, taking input from various stages.
  * The function handles two scenarios:
- *      create a resource by choice of goal ('kunde')
- *      create a resource by choice of tool ('stenhugger')
+ *      create a resource by choice of goal ('hairdresser')
+ *      create a resource by choice of tool ('wizard')
  * Arguments:
  *      - http parameters
  *      - directedBy=  GoalChoice (default) 
@@ -9447,9 +9501,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , makeHarmonizingContainer errorInMetadata
           , MetadataInParms canConsumeMetadata noExamplePage
           , Compatible Equal EqualPairs Subst Tubst
-          , Uni Values adaptInputProfile conflict containedBy
-          , noConflict rememberMetadata
-          , reparable rpl signatures uneven unif union wantThis
+          , Values adaptInputProfile conflict containedBy
+          , noConflict rememberMetadata reparable
+          , rpl signatures differentSubSpecs unif union wantThis
           , computeWorkflow computeWorkflowDASISH examplePage
         .   ( noExamplePage
             =   AX ZY
@@ -11202,24 +11256,20 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         "Der er intet at lave. Gå tilbage med knappen \"Forrige\"."
                                       )
                                 )
-                            |     localized
-                                $ ( "You will receive an email when we have produced results."
-                                    "Du vil få mail når der er resultater. "
+                            | ( a
+                              .   ( href
+                                  .   str
+                                    $ (!wwwServer "/tools/mypoll?job=" !JobNr)
                                   )
-                                ( a
-                                .   ( href
-                                    .   str
-                                      $ (!wwwServer "/tools/mypoll?job=" !JobNr)
+                                ,   str
+                                  $ (   localized
+                                      $ ( "Follow the status of job ["
+                                          "Følg status af job ["
+                                        )
+                                      !JobNr
+                                      "]."
                                     )
-                                  ,   str
-                                    $ (   localized
-                                        $ ( "Follow the status of job ["
-                                            "Følg status af job ["
-                                          )
-                                        !JobNr
-                                        "]."
-                                      )
-                                )
+                              )
                             )
                           )
                         )
@@ -11533,7 +11583,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                             )
                       )
-                    & ( uneven
+                    & ( differentSubSpecs
                       =   oi1 oi2
                         .   !sjt
                           :   ?
@@ -11571,25 +11621,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               & (!a1:!b1,unif$(!a2.!b2))
                             )
                       )
-                    & ( Uni
-                      =   A B f e
-                        .   !arg:(?A.?B)
-                          & (   !B
-                              :   ?
-                                  ( ?f
-                                  ,   ?e
-                                    & ~(!A:? (!f,?) ?)
-                                    & (!f,!e) !A:?A
-                                    & ~
-                                  )
-                                  ?
-                            | sort$!A
-                            )
-                      )
                     & ( union
                       =   Ao Ai Bo Bi res
                         .   !arg:((?Ao.?Ai).?Bo.?Bi)
-                          & (Uni$(!Ao.!Bo).Uni$(!Ai.!Bi)):?res
+                          &   (supplement$(!Ao.!Bo).supplement$(!Ai.!Bi))
+                            : ?res
                           & !res
                       )
                     & ( reparable
@@ -11616,10 +11652,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         .       !arg
                               :   ?A
                                 *   %@?tool
-                                  ^ (%+%:uneven$:?sigs)
+                                  ^ ( %+%
+                                    : differentSubSpecs$
+                                    : ?sigs
+                                    )
                                 * ?arg
                             & reparable$!sigs:?sigs
-                            & (   ~(!sigs:uneven$)
+                            & (   ~(!sigs:differentSubSpecs$)
                                 & Compatible$!arg:?moresigs
                                 & !A*!tool^!sigs*!moresigs
                               | `~
@@ -11752,7 +11791,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & ( wantThis
                       =   sig nsig
                         .   signatures$!arg:?sig
-                          & (   !sig:?*?^(%+%:uneven$)*?
+                          & (     !sig
+                                : ?*?^(%+%:differentSubSpecs$)*?
                               & "Discard solutions that contain steps that only differ at the spec level.
                                  It discards too much. These steps should be adapted so the specs are
                                  applied to all relevant steps. Only if that is not possible (clashing specs)
@@ -12098,10 +12138,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       .   (href.!wwwServer "/tools/zipresults?JobNr=" !arg)
                         , localized$("Download result" "Download resultat")
                       )
-                        localized
-                      $ ( ". Alternatively, follow the link from the new message in your email box."
-                          ". Alternativt kan du følge linket i den email vi har sent til dig."
-                        )
                   )
                 )
               )
@@ -14073,6 +14109,6 @@ or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>
     , "toolsProg.bra"
     , NEW BIN
     )
-& lst'(toolsProg,"toolsProg.bra",APP)
+& lst'(toolsProg,"toolsProg.bra",APP BIN)
 & put'(\n,"toolsProg.bra",APP BIN)
-& lst'(r,"toolsProg.bra",APP);
+& lst'(r,"toolsProg.bra",APP BIN);
