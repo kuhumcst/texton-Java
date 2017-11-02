@@ -2730,7 +2730,7 @@ toolsProg=
                                 .   str
                                   $ ( !seconds
                                       ( !URL:
-                                      | !URL "; " !URL
+                                      | "; " !URL
                                       )
                                     )
                                 )
