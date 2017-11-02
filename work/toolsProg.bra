@@ -2729,9 +2729,7 @@ toolsProg=
                                 ( content
                                 .   str
                                   $ ( !seconds
-                                      ( !URL:
-                                      | "; " !URL
-                                      )
+                                      (!URL:|"; " !URL)
                                     )
                                 )
                             , 
@@ -12162,12 +12160,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           &   toML
             $ (     !jobs
                   :   ?
-                      (!arg.@?step.~(? (?,pending) ?).?serviceurl.?)
+                      ( !arg
+                      . @?step
+                      . ~(? (?,pending) ?)
+                      . ?serviceurl
+                      . ?
+                      )
                       ?
                 & 0:?n
                 &   whl
-                  ' (   !jobs
-                      : ? (!arg.?) ?jobs
+                  ' ( !jobs:? (!arg.?) ?jobs
                     & 1+!n:?n
                     )
                 & readTable$tooladm
@@ -12179,8 +12181,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     + ?
                 &   refreshingXHTMLbodyContainer
                   $ ( 60 str$(!wwwServer "/tools/mypoll?job=" !arg)
-                    .   paragraph
-                      $ ("pending " !step " of " !n " (" !title ")")
+                    .     paragraph
+                        $ ("pending " !step " of " !n " (" !title ")")
+                          paragraph
+                        $ "Reload this page to track the status of your job. Or wait. This page auto-reloads after 60 seconds."
                     )
               |   !HTMLbodyContainer
                 $ ( paragraph
