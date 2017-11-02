@@ -12162,12 +12162,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           &   toML
             $ (     !jobs
                   :   ?
-                      (!arg.@?step.~(? (?,pending) ?).?)
+                      (!arg.@?step.~(? (?,pending) ?).?serviceurl.?)
                       ?
                 & 0:?n
                 &   whl
                   ' (   !jobs
-                      : ? (!arg.?.?.?serviceurl.?) ?jobs
+                      : ? (!arg.?) ?jobs
                     & 1+!n:?n
                     )
                 & readTable$tooladm
