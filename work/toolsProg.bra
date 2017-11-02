@@ -2705,6 +2705,45 @@ toolsProg=
             )
             \r\n
       )
+      ( refreshingXHTMLbodyContainer
+      =   seconds body URL
+        .   !arg:(%?seconds ?URL.?body)
+          &   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
+              \r\n
+              ( "!DOCTYPE"
+              . " html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\""
+              )
+              \r\n
+              ( html
+              .     (xmlns."http://www.w3.org/1999/xhtml")
+                    ("xml:lang".da)
+                    (lang.da)
+                ,   \r\n
+                    ( head
+                    .   
+                      ,   \r\n
+                          (title.,"DK-Clarin: Tools")
+                          \r\n
+                          ( meta
+                          .     (http-equiv.refresh)
+                                ( content
+                                .   str
+                                  $ ( !seconds
+                                      ( !URL:
+                                      | !URL "; " !URL
+                                      )
+                                    )
+                                )
+                            , 
+                          )
+                          \r\n
+                          !style
+                    )
+                    \r\n
+                    (body.(bgcolor."#C6D8D9"),!body)
+              )
+              \r\n
+      )
       ( atts
       =   name value
         .     !arg:(?name,?value) ?arg
@@ -12121,25 +12160,37 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   @(!arg:? #?arg)
           & readTable$jobs
           &   toML
-            $ ( !HTMLbodyContainer
-              $ ( paragraph
-                $ (     !jobs
-                      :   ?
-                          (!arg.@?step.~(? (?,pending) ?).?)
-                          ?
-                    & 0:?n
-                    &   whl
-                      ' ( !jobs:? (!arg.?) ?jobs
-                        & 1+!n:?n
-                        )
-                    & "pending " !step " of " !n
-                  |   localized$("Done! " "Færdig! ")
+            $ (     !jobs
+                  :   ?
+                      (!arg.@?step.~(? (?,pending) ?).?)
+                      ?
+                & 0:?n
+                &   whl
+                  ' (   !jobs
+                      : ? (!arg.?.?.?serviceurl.?) ?jobs
+                    & 1+!n:?n
+                    )
+                & readTable$tooladm
+                &   !tooladm
+                  :   ?
+                    + ( ? (ServiceURL.!serviceurl) ?
+                      : ? (Title.?title) ?
+                      )
+                    + ?
+                &   refreshingXHTMLbodyContainer
+                  $ ( 60 str$(!wwwServer "/tools/mypoll?job=" !arg)
+                    .   paragraph
+                      $ ("pending " !step " of " !n " (" !title ")")
+                    )
+              |   !HTMLbodyContainer
+                $ ( paragraph
+                  $ ( localized$("Done! " "Færdig! ")
                       ( a
                       .   (href.!wwwServer "/tools/zipresults?JobNr=" !arg)
                         , localized$("Download result" "Download resultat")
                       )
+                    )
                   )
-                )
               )
       )
       ( WRAPUPbody
