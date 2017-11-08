@@ -6,8 +6,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>TEXT TONSORIUM</title>
     <style>
-        h1, h2, h3, span, p, td, input, legend {
+        h1, h2, h3, span, p, td, input, legend, textarea {
             font-family: "Comic Sans MS", cursive, sans-serif;
+        }
+        input, textarea {
+            font-size: 12pt;
         }
     </style>
 </head>
@@ -42,13 +45,12 @@
             <table>
                 <tr>
                     <td>
-                        <span id="item3a">URLs (full addresses, starting <br/>
-						                  with http:// or https://</span>
+                        <span id="item3a">URLs (full addresses, starting with http:// or https://</span>
                     </td>
-                    <td>
-                        <input name="URL" type="text" id="url1" size="87" /><br />
-                        <input name="URL" type="text" id="url2" size="87" /><br />
-                        <input name="URL" type="text" id="url3" size="87" />
+                    <td width="70%">
+                        <input name="URL" type="text" id="url1" size="80" /><br />
+                        <input name="URL" type="text" id="url2" size="80" /><br />
+                        <input name="URL" type="text" id="url3" size="80" />
                     </td>
                 </tr>
             </table>
@@ -61,7 +63,7 @@
                     <td>
                         <span id="item2a">Text to process:</span>
                     </td>
-                    <td><textarea name="text" rows="4" cols="84"></textarea></td>
+                    <td width="70%"><textarea name="text" rows="4" cols="80"></textarea></td>
                 </tr>
             </table>
         </fieldset>
@@ -76,17 +78,15 @@
                     <input type="radio" name="UIlanguage" value="en" checked="checked" />English<br />
                     <input type="radio" name="UIlanguage" value="da" />Danish
                 </td>
-            </tr>
-			<tr>
-			<td>Next:</td>
-			<td><input type="hidden" name="action" value="batch" checked="checked" />
+				<td width="20%"></td>
+			<td>Next:<input type="hidden" name="action" value="batch" checked="checked" />
         <input type="submit" value="Specify the required result" alt="create annotation, goal directed" /></td>
 			</tr>
         </table>
         <p>
             <small>Although we will do our best to protect your data, we cannot guarantee the security of your data transmitted to our site.<br/>
 			Use this service is at your own risk!<br />
-			This workflow manager is open source and can be downloaded from <a href="https://github.com/kuhumcst/DK-ClarinTools">https://github.com/kuhumcst/DK-ClarinTools</a>.</small>
+			This Workflow Management System is open source and can be downloaded from <a href="https://github.com/kuhumcst/DK-ClarinTools">https://github.com/kuhumcst/DK-ClarinTools</a>.</small>
         </p>
     </form>
 </div>
