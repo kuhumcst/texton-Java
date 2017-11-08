@@ -12,7 +12,10 @@
     </style>
 </head>
 <body bgcolor="#F5F5F5">
-    <h1>Text Tonsorium</h1>
+<div  style="width:860px">
+    <h1>	
+&#128136; Text Tonsorium 	
+&#128136;</h1>
     <p>
         Texts in many languages and formats (plain, word, pdf, html and even images) are welcome in our salon de beaut&eacute;.<br />
         If possible, our robot will apply cuts, markups, extensions and annotations according to your specifications.<br />
@@ -86,5 +89,6 @@
 			This workflow manager is open source and can be downloaded from <a href="https://github.com/kuhumcst/DK-ClarinTools">https://github.com/kuhumcst/DK-ClarinTools</a>.</small>
         </p>
     </form>
+</div>
 </body>
 </html>
