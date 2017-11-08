@@ -1009,21 +1009,22 @@ public class create extends HttpServlet
                     if(!vals[j].equals(""))
                         {
                         int textLength = vals[j].length();
+                        if(textLength > 0)
+							{
+							String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+							File file = new File(destinationDir,LocalFileName);
+							arg = arg + " (FieldName,"      + workflow.quote("text")
+									  + ".Name,"            + workflow.quote("text")
+									  + ".ContentType,"     + workflow.quote("text/plain")
+									  + ".Size,"            + Long.toString(textLength)
+									  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+									  + ".LocalFileName,"   + workflow.quote(LocalFileName)
+									  + ")";
                         
-                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
-                        File file = new File(destinationDir,LocalFileName);
-                        arg = arg + " (FieldName,"      + workflow.quote("text")
-                                  + ".Name,"            + workflow.quote("text")
-                                  + ".ContentType,"     + workflow.quote("text/plain")
-                                  + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                                  + ".LocalFileName,"   + workflow.quote(LocalFileName)
-                                  + ")";
-                        
-                        PrintWriter outf = new PrintWriter(file);
-                        outf.println(vals[j]); 
-                        outf.close();                       
-                        
+							PrintWriter outf = new PrintWriter(file);
+							outf.println(vals[j]); 
+							outf.close();                       
+							}
                         }
                     }
                 }
@@ -1152,22 +1153,20 @@ public class create extends HttpServlet
                     if(item.getFieldName().equals("text"))
                         {
                         int textLength = item.getString().length();
-                        
-                        String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
-                        File file = new File(destinationDir,LocalFileName);
-                        arg = arg + " (FieldName,"      + workflow.quote("text")
-                                  + ".Name,"            + workflow.quote("text")
-                                  + ".ContentType,"     + workflow.quote("text/plain")
-                                  + ".Size,"            + Long.toString(textLength)
-                                  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                                  + ".LocalFileName,"   + workflow.quote(LocalFileName)
-                                  + ")";
-
-
-
-
-                        item.write(file);
-                        }
+						if(textLength > 0)
+							{
+							String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+							File file = new File(destinationDir,LocalFileName);
+							arg = arg + " (FieldName,"      + workflow.quote("text")
+									  + ".Name,"            + workflow.quote("text")
+									  + ".ContentType,"     + workflow.quote("text/plain")
+									  + ".Size,"            + Long.toString(textLength)
+									  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+									  + ".LocalFileName,"   + workflow.quote(LocalFileName)
+									  + ")";
+							item.write(file);
+							}
+						}
                     else if(item.getFieldName().equals("URL"))
                         {
                         logger.debug("item.getFieldName().equals {}",item.getFieldName());
