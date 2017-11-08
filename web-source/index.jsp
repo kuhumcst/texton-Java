@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="da">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>DKCLARIN</title>
+    <title>TEXT TONSORIUM</title>
     <style>
         h1, h2, h3, span, p, td, input, legend {
             font-family: "Comic Sans MS", cursive, sans-serif;
@@ -81,87 +81,10 @@
 			</tr>
         </table>
         <p>
-            <small>Although we will do our best to protect your data, we cannot guarantee the security of your data transmitted to our site.<br/>Use this service is at your own risk!</small>
+            <small>Although we will do our best to protect your data, we cannot guarantee the security of your data transmitted to our site.<br/>
+			Use this service is at your own risk!<br />
+			This workflow manager is open source and can be downloaded from <a href="https://github.com/kuhumcst/DK-ClarinTools">https://github.com/kuhumcst/DK-ClarinTools</a>.</small>
         </p>
     </form>
-    <!--
-    <fieldset style="background-color:rgb(255,235,235)">
-        <legend style="font-weight: bold;">Apply LT workflow to uploaded file(s)</legend>
-        <form enctype="multipart/form-data" method="post" action="createByGoalChoice">
-            <table>
-                <tr>
-                    <td><span id="item1a">Choose one or more files:</span></td>
-                    <td><input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" /></td>
-                </tr>
-                <tr>
-                    <td><input type="radio" name="action" value="batch" checked="checked" />Iterate over input</td>
-                    <td><input type="radio" name="action" value="dataset" />Compound input</td>
-                </tr>
-                <tr></tr>
-                <tr style="display:none;">
-                    <td>Password:</td>
-                    <td><input type="password" name="password" value="" alt="password" /></td>
-                </tr>
-                <tr>
-                    <td><input type="radio" name="UIlanguage" value="da" />Danish</td>
-                    <td><input type="radio" name="UIlanguage" value="en" checked="checked" />English</td>
-                </tr>
-            </table>
-            <input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
-        </form>
-    </fieldset>
-    <fieldset style="background-color:rgb(235,255,235)">
-        <legend style="font-weight: bold;">Apply workflow to typed-in text only</legend>
-        <form enctype="multipart/form-data" method="post" action="createByGoalChoice">
-            <table>
-                <tr>
-                    <td>
-                        Text to process:
-                    </td>
-                    <td>
-                        <textarea name="text" rows="4" cols="60"></textarea>
-                        <input type="hidden" name="action" value="dataset" checked="checked" />
-                    </td>
-                </tr>
-                <tr style="display:none;">
-                    <td>Password:</td>
-                    <td><input type="password" name="password" value="" alt="password" /></td>
-                </tr>
-                <tr>
-                    <td><input type="radio" name="UIlanguage" value="da" />Danish</td>
-                    <td><input type="radio" name="UIlanguage" value="en" checked="checked" />English</td>
-                </tr>
-            </table>
-            <input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
-        </form>
-    </fieldset>
-    <fieldset style="background-color:rgb(235,235,255)">
-        <legend style="font-weight: bold;">Apply workflow to data behind URL(s)</legend>
-        <form method="get" action="createByGoalChoice">
-            <table>
-                <tr>
-                    <td>
-                        URLs (max 3)
-                    </td>
-                    <td>
-                        <input name="URL" type="text" id="url1" size="60" /><br />
-                        <input name="URL" type="text" id="url2" size="60" /><br />
-                        <input name="URL" type="text" id="url3" size="60" />
-                        <input type="hidden" name="action" value="batch" checked="checked" />
-                    </td>
-                </tr>
-                <tr style="display:none;">
-                    <td>Password:</td>
-                    <td><input type="password" name="password" value="" alt="password" /></td>
-                </tr>
-                <tr>
-                    <td><input type="radio" name="UIlanguage" value="da" />Danish</td>
-                    <td><input type="radio" name="UIlanguage" value="en" checked="checked" />English</td>
-                </tr>
-            </table>
-            <input type="submit" value="create annotation" alt="create annotation for uploaded file, goal directed" />
-        </form>
-    </fieldset>
-    -->
 </body>
 </html>
