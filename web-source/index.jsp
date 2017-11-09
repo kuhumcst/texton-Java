@@ -85,7 +85,7 @@
         </table>
         <p>
             <small>Although we will do our best to protect your data, we cannot guarantee the security of your data transmitted to our site.<br/>
-			Use this service is at your own risk!<br />
+			Use of this service is at your own risk!<br />
 			This Workflow Management System is open source and can be downloaded from <a href="https://github.com/kuhumcst/DK-ClarinTools">https://github.com/kuhumcst/DK-ClarinTools</a>.</small>
         </p>
     </form>
