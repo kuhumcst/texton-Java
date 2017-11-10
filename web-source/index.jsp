@@ -12,13 +12,14 @@
         input, textarea {
             font-size: 12pt;
         }
+		body { font-size: 100%; }
+		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
     </style>
 </head>
 <body bgcolor="#F5F5F5">
-<div  style="width:860px">
-    <h1>	
-&#128136; Text Tonsorium 	
-&#128136;</h1>
+<!--div  style="margin:0px auto;width:860px;text-align:left;border:1px solid #336699;"-->
+<div  style="margin:0px auto;width:55em;text-align:left;">
+    <h1 class="smallmargin">&#128136; Text Tonsorium &#128136;</h1>
     <p>
         Texts in many languages and formats (plain, word, pdf, html and even images) are welcome in our salon de beaut&eacute;.<br />
         If possible, our robot will apply cuts, markups, extensions and annotations according to your specifications.<br />
@@ -39,23 +40,23 @@
                 </tr>
             </table>
         </fieldset>
-		<p><strong><small>... or ...</small></strong></p>
+		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
         <fieldset style="background-color:rgb(235,235,255)">
             <legend style="font-weight: bold;">Enter up to three addresses of web pages</legend>
             <table>
                 <tr>
                     <td>
-                        <span id="item3a">URLs (full addresses, starting with http:// or https://</span>
+                        <span id="item3a">URLs - full addresses, starting with http:// or https://</span>
                     </td>
                     <td width="70%">
-                        <input name="URL" type="text" id="url1" size="80" /><br />
-                        <input name="URL" type="text" id="url2" size="80" /><br />
-                        <input name="URL" type="text" id="url3" size="80" />
+                        <input name="URL" type="text" id="url1" size="50" /><br />
+                        <input name="URL" type="text" id="url2" size="50" /><br />
+                        <input name="URL" type="text" id="url3" size="50" />
                     </td>
                 </tr>
             </table>
         </fieldset>
-		<p><strong><small>... or ...</small></strong></p>
+		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
         <fieldset style="background-color:rgb(235,255,235)">
             <legend style="font-weight: bold;">Type or cut-and-paste some text</legend>
             <table>
