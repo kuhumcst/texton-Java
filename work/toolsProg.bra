@@ -10627,8 +10627,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                           : ?errors
                         )
-                      &   !formFields makeTextFormField$(.mail2.val.)
-                        : ?formFields
+                      & ( !hiddenData (mail2.):?hiddenData
+                        |     !formFields
+                              makeTextFormField$(.mail2.val.)
+                          : ?formFields
+                        )
                       & 
                   . !formFields
                   . !hiddenData
