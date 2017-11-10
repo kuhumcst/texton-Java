@@ -5064,7 +5064,9 @@ toolsProg=
               & foldInputAndOutput$!Metadata:?Metadata
               & (!ToolName.!Metadata):?Metadata
               & log$(Metadata !Metadata)
-              & (   !arg:? (bsubmit.?Submit) ?
+              & (   ( !arg:? (bsubmit.?Submit) ?
+                    | :?Submit
+                    )
                   & (   !Submit:!PHPbutton
                       & wrapper$(PHP.!ToolName)
                     |     (     !Submit
