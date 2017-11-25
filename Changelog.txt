@@ -1,3 +1,7 @@
+20171125 - Skipped screen saying "Follow the status of job [##]".
+           Fixed incorrect handling of input feature value with internal
+		   structure, such as "txt^hq".
+
 20170817 - Percolated unused features from the leafs (=input) to the root
            (=output). This made many tool invocations identical. This caused a
            further reduction in the number of distinct workflows. 

@@ -123,7 +123,7 @@ Make sure bracmat is in JBoss's PATH:
     /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1.0
 
-Examples of locations for this file are:
+Examples of locations for this file are:?
     /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra
     /usr/local/jboss/server/default/data/tools/toolsProg.bra
     
@@ -960,29 +960,32 @@ toolsProg=
       )
       ( lexan
       =   T A B op ops
-        .     !arg:(?ops.?arg)
-            & "safe alternative for get$(!arg,MEM). Ignores JBoss-life-threatening (closing) parentheses."
-            & !ops:%?op ?ops
-            & NEWSPEC
-            & (   @(!arg:?A !op ?B)
-                &   !op
-                  : (   " "
-                      &   lexan$(!ops.!A) lexan$(!op !ops.!B)
-                        : ?T
-                    |   "+"
-                      &   lexan$(!ops.!A)+lexan$(!op !ops.!B)
-                        : ?T
-                    |   "*"
-                      &   lexan$(!ops.!A)*lexan$(!op !ops.!B)
-                        : ?T
-                    |   "^"
-                      &   lexan$(!ops.!A)^lexan$(!op !ops.!B)
-                        : ?T
-                    )
-                & !T
-              | lexan$(!ops.!arg)
-              )
-          | !arg
+        .   !arg:(?ops.?arg)
+          & "safe alternative for get$(!arg,MEM). Ignores JBoss-life-threatening (closing) parentheses."
+          & (   !arg:?A_?B
+              & (lexan$(!ops.!A))_(lexan$(!ops.!B))
+            |   !ops:%?op ?ops
+              & NEWSPEC
+              & (   @(!arg:?A !op ?B)
+                  &   !op
+                    : (   " "
+                        &   lexan$(!ops.!A) lexan$(!op !ops.!B)
+                          : ?T
+                      |   "+"
+                        &   lexan$(!ops.!A)+lexan$(!op !ops.!B)
+                          : ?T
+                      |   "*"
+                        &   lexan$(!ops.!A)*lexan$(!op !ops.!B)
+                          : ?T
+                      |   "^"
+                        &   lexan$(!ops.!A)^lexan$(!op !ops.!B)
+                          : ?T
+                      )
+                  & !T
+                | lexan$(!ops.!arg)
+                )
+            | !arg
+            )
       )
       ( unpackIOparm
       =   A parms parm nparms val
@@ -3067,7 +3070,7 @@ toolsProg=
                     ( input
                     .     (type.hidden)
                           (name.!par)
-                          (value.!val)
+                          (value.str$!val)
                       , 
                     )
                 : ?ret
@@ -7193,12 +7196,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( getJobArg
       =     JobNr jobID jobby res A B Res makeList
           , req servurl xmlparms fmt spc
-        .   log$("getJobArg " !arg)
-          & !arg:(@(?:? #?JobNr).?jobID.?arg)
-          & log$(JobNr !JobNr jobID !jobID arg !arg)
+        .   !arg:(@(?:? #?JobNr).?jobID.?arg)
           & readTable$jobs
           & !jobs:? (!JobNr.!jobID.?jobby) ?
-          & log$(getJobArg !arg step !jobby)
           &   !arg
             : ( endpoint&!jobby:(?.?arg.?)
               |   method
@@ -8483,14 +8483,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       & TEI
                     )
                   : ?type
-                &   log
-                  $ ( TyPe
-                      !type
-                      userProvidedMetadata
-                      !userProvidedMetadata
-                      Metadata
-                      !Metadata
-                    )
                 & ( XPath
                   =   el at
                     .     !arg:%?el ?arg
@@ -8503,7 +8495,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & ( listOfFields
                   =   List
                     .   :?List
-                      & log$(listOfFields !arg)
                       &   whl
                         ' (   !arg
                             :   ( ?ID
@@ -8517,10 +8508,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 . ?URL
                                 )
                                 ?arg
-                          & log$whl
                           & (     !userProvidedMetadata
                                 : ? (!ID.?Val) ?
-                              & log$(ID !ID Val !Val)
                               &     !List
                                     ( dt
                                     . ,addurl$(localized$!TextInUI.!URL)
@@ -8545,13 +8534,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 &   whl
                   ' (   !Metadata
                       : ? (?Heading,?Fields) ?Metadata
-                    & log$(HeAding !Heading)
                     &     !HTML
                           (h2.,localized$!Heading)
                           (dl.,listOfFields$!Fields)
                       : ?HTML
                     )
-                & log$(HTML str$!HTML)
                 & (!HTML.!type)
               | log$NOuserProvidedMetadata&(.)
               )
@@ -8603,8 +8590,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     : ?XXX
                     )
                     ?Z
-              &   log
-                $ (!JobNr !JobId filename !filename !aborted XXX !XXX)
               & !A !Z:?jobs
               & deleteDepending$(!JobNr.!JobId)
               &     !filelist
@@ -8856,7 +8841,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 , items I O format id title fil
                 , Href2 Href2nometa Href2relations
               .   :?body
-                & log$(Steps !arg)
                 &   whl
                   ' (   !arg
                       :   ( step
@@ -10613,23 +10597,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                           & !mail2
                         )
-                    |   ( 
-                        |     str
-                            $ ( 400~~~
-                                  toML
-                                $ ( !BodyContainer
-                                  $ ( paragraph
-                                    $ ( localized
-                                      $ ( "Email address missing."
-                                          "Der mangler en email-adresse."
-                                        )
-                                      )
-                                    )
-                                  )
-                              )
-                          : ?errors
-                        )
-                      & ( !hiddenData (mail2.):?hiddenData
+                    |   ( !hiddenData (mail2.):?hiddenData
                         |     !formFields
                               makeTextFormField$(.mail2.val.)
                           : ?formFields
@@ -11272,49 +11240,30 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       "~"
                       !JobId
                       "~"
-                        toML
-                      $ ( !BodyContainer
-                        $ ( paragraph
-                          $ (   !JobId:
-                              & (   !directedBy:MetadataOnly
-                                  &   ( a
-                                      .   ( href
-                                          .   !baseUrlTools
-                                              "/tools/zipresults?JobNr="
-                                              !JobNr
-                                          )
-                                        ,   localized
-                                          $ ( "Download result"
-                                              "Download resultat"
-                                            )
-                                      )
-                                        localized
-                                      $ ( ". Alternatively, follow the link from the new message in your email box."
-                                          ". Alternativt kan du følge linket i den email vi har sent til dig."
+                      (   !JobId:
+                        &   toML
+                          $ ( !BodyContainer
+                            $ ( paragraph
+                              $ (   !directedBy:MetadataOnly
+                                  & ( a
+                                    .   ( href
+                                        .   !baseUrlTools
+                                            "/tools/zipresults?JobNr="
+                                            !JobNr
                                         )
+                                      ,   localized
+                                        $ ("Download result" "Download resultat")
+                                    )
                                 |   !directedBy
                                       localized
                                     $ ( "There is nothing to do. The goal seems to be fulfilled already. Go back with the \"back\" button."
                                         "Der er intet at lave. Gå tilbage med knappen \"Forrige\"."
                                       )
                                 )
-                            | ( a
-                              .   ( href
-                                  .   str
-                                    $ (!wwwServer "/tools/mypoll?job=" !JobNr)
-                                  )
-                                ,   str
-                                  $ (   localized
-                                      $ ( "Follow the status of job ["
-                                          "Følg status af job ["
-                                        )
-                                      !JobNr
-                                      "]."
-                                    )
                               )
                             )
-                          )
-                        )
+                      | poll$!JobNr
+                      )
                     )
             )
           & ( canConsumeMetadata
@@ -12054,7 +12003,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & log$NEW
           & log$CREATELOGJE
           & !arg:(?parms:?arg.?directedBy)
-          & log$(arg noExamplePage$!arg)
+          & log$(argcreate noExamplePage$!arg)
           & (   !arg:? (examplePage.?examplePage) ?
               & (   @(!examplePage:? error ?)
                   & :?examplePage
@@ -13627,6 +13576,31 @@ try {
               . GoalChoice
               )
       )
+      ( testDutch
+      =   
+        .   0:?indent
+          &   create
+            $ (   (method.GET)
+                  (DATE.20171123)
+                  (UIlanguage.en)
+                  (batch.on)
+                  (Item.text)
+                  (Ifacet.txt^hq)
+                  (Ipres.)
+                  (Iformat.flat)
+                  (Ilang.nl)
+                  (Iperiod.)
+                  (Iapp.)
+                  (Ofacet.lem)
+                  (Opres.)
+                  (Oformat.flat)
+                  (Olang.)
+                  (Operiod.)
+                  (Oapp.)
+                  (bsubmit.nextStep)
+              . GoalChoice
+              )
+      )
       ( imgtest
       =   
         .   log$NEW
@@ -14156,7 +14130,7 @@ Make sure bracmat is in JBoss's PATH:
     /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1.0
 
-Examples of locations for this file are:
+Examples of locations for this file are:?
     /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra
     /usr/local/jboss/server/default/data/tools/toolsProg.bra
     
