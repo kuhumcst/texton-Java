@@ -12141,9 +12141,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         $ ("pending " !step " of " !n " (" !title ")")
                           paragraph
                         $ ( str
-                          $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                          $ (   localized
+                              $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                                  "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
+                                )
                               !secs
-                              " seconds."
+                              localized$(" seconds." " sekunder.")
                             )
                           )
                     )
