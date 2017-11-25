@@ -11262,7 +11262,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                               )
                             )
-                      | poll$!JobNr
+                      | poll$(!JobNr.1)
                       )
                     )
             )
@@ -12108,8 +12108,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
       )
       ( poll
-      =   jobs n step
-        .   @(!arg:? #?arg)
+      =   jobs n step secs
+        .   ( !arg:(?arg.?secs)
+            | @(!arg:? #?arg)&30:?secs
+            )
           & readTable$jobs
           &   toML
             $ (     !jobs
@@ -12134,11 +12136,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       )
                     + ?
                 &   refreshingXHTMLbodyContainer
-                  $ ( 60 str$(!wwwServer "/tools/mypoll?job=" !arg)
+                  $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
                     .     paragraph
                         $ ("pending " !step " of " !n " (" !title ")")
                           paragraph
-                        $ "Reload this page to track the status of your job. Or wait. This page auto-reloads after 60 seconds."
+                        $ ( str
+                          $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                              !secs
+                              " seconds."
+                            )
+                          )
                     )
               |   !HTMLbodyContainer
                 $ ( paragraph
