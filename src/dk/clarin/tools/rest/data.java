@@ -61,15 +61,6 @@ public class data extends HttpServlet
             }
         }
 
-    /*
-    Method doGet is called if Tools is used to process resources copied from 
-    the repository.
-     (In contrast to processing uploaded files.)
-    Each resource is represented as an 'item' parameter, e.g.
-    https://clarin.dk/tools/create?item=dkclarin:111012&item=dkclarin:111016
-    Alternatively, all resources can be listed in a single 'ids' parameter, e.g.
-    https://clarin.dk/tools/create?ids=dkclarin:168004,dkclarin:168028,dkclarin:168332 
-    */
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {

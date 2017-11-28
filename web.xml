@@ -1,14 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
                          "http://java.sun.com/dtd/web-app_2_3.dtd">
-<!--
-  Author: Jacob Larsen (jac@kb.dk)
-
-  very basic web.xml
-
--->
 <web-app>
-    <description>web.xml file for the COP loadcontroller</description>
+    <description>web.xml file for the original DK-Clarin Workflow ManagementSystem</description>
     <session-config>
         <session-timeout>35</session-timeout>
     </session-config>
@@ -63,48 +57,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>createByToolChoice</servlet-name>
-        <servlet-class>dk.clarin.tools.rest.createByToolChoice</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>createByToolChoice</servlet-name>
-        <url-pattern>/createByToolChoice/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>createMetadataOnly</servlet-name>
-        <servlet-class>dk.clarin.tools.rest.createMetadataOnly</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>createMetadataOnly</servlet-name>
-        <url-pattern>/createMetadataOnly/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>data</servlet-name>
         <servlet-class>dk.clarin.tools.rest.data</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>data</servlet-name>
         <url-pattern>/data/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>deposit</servlet-name>
-        <servlet-class>dk.clarin.tools.rest.deposit</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>deposit</servlet-name>
-        <url-pattern>/deposit/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>depositXML</servlet-name>
-        <servlet-class>dk.clarin.tools.rest.depositXML</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>depositXML</servlet-name>
-        <url-pattern>/depositXML/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

@@ -42,17 +42,6 @@ public class cleanup extends HttpServlet
 
     private File destinationDir;
     private bracmat BracMat;
-    /// The eSciDoc userHandle
-    //private String userHandle = null;
-    /// The eSciDoc id of the user
-    //private String userId;
-    /// The users email
-    //private String userEmail;
-
-    //private String date;
-    //private String toolsdataURL;
-
-
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
@@ -75,9 +64,6 @@ public class cleanup extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        //userHandle = null;
-        //userId = null;
-        //userEmail = null;
         logger.info("Calling tools/cleanup");
         response.setContentType("text/plain; charset=UTF-8");
         response.setStatus(200);

@@ -3417,130 +3417,6 @@ toolsProg=
               )
               \r\n
       )
-      "
-/**
- * deposit
- *
- * First step in deposition of a tool. The function generates a simple form
- * where the user chooses a tool from a pick list, optionally adds a file to
- * be stored as data (an installation file, for example), and chooses under
- * which licence the tool must be distributed.
- * The next step is implemented in depositXML.
- * No arguments.
- * Returns an XHTML input form that can be presented to the user straight from
- * the box, if needed.
- * Status code is normally 200. If Bracmat cannot be loaded, 404 is returned.
- *
- * Called from deposit.java
- */"
-      ( deposit
-      =   L ToolID Title,hiddenData,handle licences
-        .     0:?tabind
-            & log$NEW
-            & log$DEPOSITLOG
-            & readTable$tooladm
-            & :?L:?hiddenData
-            &   !tooladm
-              :   ?
-                + (   ? (ToolID.?ToolID) ?
-                    : ? (Title.?Title) ?
-                  & !L (!Title.!ToolID):?L
-                  )
-                + (?:0)
-            & readTable$licences
-            & log$("deposit arg=" !arg)
-            & (   !arg:? (handle.?handle) ?
-                & (handle.!handle) !hiddenData:?hiddenData
-              | :?hiddenData
-              )
-            &   toML
-              $ ( !HTMLbodyContainer
-                $ ( form
-                  $ ( depositXML
-                    .     heading
-                        $ ( 1
-                          .   localized
-                            $ ( "Deposit a tool that is registered already"
-                                "Deponering af allerede registreret værktøj"
-                              )
-                          )
-                          paragraph
-                        $ (   localized
-                            $ ( "Here you can deposit a tool in the repository and thereby publish information about the tool. If you have an installation file for the tool, you can deposit that as well. If you don't see the file in the list, you first have to "
-                                "Her kan du deponere et værktøj i repositoriet og derved offentligøre oplysninger om værktøjet og eventuelt også en installationsfil. Hvis du ikke kan se dit værktøj i listen, skal du først udfylde "
-                              )
-                            ( a
-                            .   (href."/tools/register")
-                              ,   localized
-                                $ ("register the tool" registreringsformularen)
-                            )
-                            "."
-                          )
-                          paragraph
-                        $ ( makeSelectFormField
-                          $ ( localized$("Choose a tool" "Vælg et værktøj")
-                            . name
-                            .   (options.makeOptionList$(!L.))
-                                (required."*")
-                            )
-                          )
-                          paragraph
-                        $ ( makeFileFormField
-                          $ (   localized
-                              $ ( "Upload an installation file  (.zip, .tgz, .tar.gz)"
-                                  "Upload en installationsfil (.zip, .tgz, .tar.gz)"
-                                )
-                            . file
-                            .   
-                              | "application/zip, application/x-compressed, application/x-gzip"
-                            )
-                          )
-                          paragraph
-                        $ ( makeSelectFormField
-                          $ (     localized
-                                $ ( "Licence (distribution)"
-                                    "Licens hvorunder værktøjet bliver distribueret"
-                                  )
-                                "Licence (distribution)"
-                            . licence
-                            . options
-                            . makeOptionList$(!licences.public)
-                            )
-                          )
-                        makeHiddenFields$!hiddenData
-                        submit$next
-                    . POST
-                    )
-                  )
-                )
-          | 
-      )
-      "
-/**
- * depositXML
- *
- * Create complete and valid metadata for deposition. 
- * All information is collected from the tables tooladm.table and toolprop.table in jboss/server/default/data/tools
- * Called from depositXML.java, which is activated from a dynamically created form (see deposit function), and not explicitly from a jsp-page.
- * Argument: the unique tool-id of the tool to deposit.
- * Returns: 200 OK, 404 if the tool-id is unknown.
- */"
-      ( depositXML
-      =   Title,name
-        .     0:?tabind
-            & log$NEW
-            & log$DEPOSITLOG
-            & readTable$tooladm
-            & !arg:? (name.?name) ?
-            &   !tooladm
-              :   ?
-                + ( ? (ToolID.!name) ?
-                  : ? (Title.?Title) ?
-                  )
-                + ?
-            & toML$(createMetaDataForDeposition$!name)
-          | 
-      )
       ( denumerizeSum
       =   A M Z
         .     whl
@@ -6524,12 +6400,6 @@ toolsProg=
             )
           & fulfil$(activeTools$!toolprop.!source.!goal.0)
       )
-      ( noExamplePage
-      =   AX ZY
-        .     !arg:?AX (examplePage.?) ?ZY
-            & !AX (examplePage."[EXAMPLEPAGE XML]") !ZY
-          | !arg
-      )
       ( Pipelines
       =     f fs i o name short
           , A Z V feat spec return restriction p v
@@ -9487,8 +9357,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  * Arguments:
  *      - http parameters
  *      - directedBy=  GoalChoice (default) 
- *                   | ToolChoice
- *                   | MetadataOnly
  * http parameters:
  *      mail2=<address>
  *      action=batch | batch=on | batch=off
@@ -9511,7 +9379,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , formFields val mail2 password ERR
           , Submit pipes pipe windFW reqs req descr
           , JobStack JobNr presels hid feats analyzeInput
-          , TOOL errors batch checkMail fakeGoalChoice
+          , TOOL errors batch checkMail
           , jobIDoffset subjobs Sources sourcesAndGoals
           , directedBy nth unpackIOparms BodyContainer
           , nicify handle checkIOparms PIPE lookForLanguage
@@ -9521,200 +9389,14 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , ShowAllPipes ShowOnlyTheCurrentPipe AddMetadata
           , "We are at the start. Show an input form."
           , "We are past the first stage: the user has pressed a button"
-          , makeHarmonizingContainer errorInMetadata
-          , MetadataInParms canConsumeMetadata noExamplePage
+          , errorInMetadata
+          , MetadataInParms canConsumeMetadata
           , Compatible Equal EqualPairs Subst Tubst
           , Values adaptInputProfile conflict containedBy
           , noConflict rememberMetadata reparable
           , rpl signatures differentSubSpecs unif union wantThis
-          , computeWorkflow computeWorkflowDASISH examplePage
-        .   ( noExamplePage
-            =   AX ZY
-              .     !arg:?AX (examplePage.?) ?ZY
-                  & !AX (examplePage."[EXAMPLEPAGE XML]") !ZY
-                | !arg
-            )
-          & ( makeHarmonizingContainer
-            =     absolutePath makeAbsolutePaths removeBodyContent
-                , examplePage wrkflw A B C UIlanguage
-              .     !arg
-                  : ( ?examplePage
-                    . ?wrkflw
-                    .   ? (UIlanguage.?UIlanguage) ?
-                      | ?&da:?UIlanguage
-                    )
-                & ( absolutePath
-                  =   a k u z
-                    .       !arg
-                          :   ?a
-                              ((src|href):?k.?u)
-                              ?z
-                        &   !a
-                            ( !k
-                            .   @( !u
-                                 :   ( "ftp://"
-                                     | "http://"
-                                     | "https://"
-                                     | "/"
-                                     )
-                                     ?
-                                 )
-                              | str$("/clarindk/" !u)
-                            )
-                            absolutePath$!z
-                      | !arg
-                  )
-                & ( makeAbsolutePaths
-                  =   A Z el atts cont
-                    .     !arg:?A (?el.?atts,?cont) ?Z
-                        &   !A
-                            ( !el
-                            . absolutePath$!atts,makeAbsolutePaths$!cont
-                            )
-                            makeAbsolutePaths$!Z
-                      | !arg
-                  )
-                & ( removeBodyContent
-                  =     A Z el atts cont a b c d
-                      , selcleaning selmetadata selwizard
-                    .     !arg:?A (?el.?atts,?cont) ?Z
-                        & (   !el:div
-                            & !atts:? (class.body) ?
-                            &   
-                              ' ($A ($el.$atts,!arg) ()$Z)
-                          |   !el:ul
-                            & !atts:? (class.clearfix) ?
-                            &   !cont
-                              :   ?
-                                  (li.?,? (a.?,?a) ?)
-                                  ?
-                                  (li.?,? (a.?,?b) ?)
-                                  ?
-                                  (li.?,? (a.?,?c) ?)
-                                  ?
-                                  (li.?,? (a.?,?d) ?)
-                                  ?
-                            &   (   !wrkflw:CLEANING
-                                  & (sel..)
-                                |   !directedBy:MetadataOnly
-                                  & (.sel.)
-                                | (..sel)
-                                )
-                              : (?selcleaning.?selmetadata.?selwizard)
-                            &   
-                              ' ( ul
-                                .   $atts
-                                  ,   ( li
-                                      .   
-                                        , ( a
-                                          .     ( href
-                                                . "/clarindk/tools-upload.jsp"
-                                                )
-                                                (class.$selcleaning)
-                                            , $a
-                                          )
-                                      )
-                                      ( li
-                                      .   
-                                        , ( a
-                                          .     ( href
-                                                . "/clarindk/tools-metadata.jsp"
-                                                )
-                                                (class.$selmetadata)
-                                            , $b
-                                          )
-                                      )
-                                      ( li
-                                      .   
-                                        , ( a
-                                          .     ( href
-                                                . "/clarindk/tools-wizard.jsp"
-                                                )
-                                                (class.$selwizard)
-                                            , $c
-                                          )
-                                      )
-                                      ( li
-                                      .   
-                                        , ( a
-                                          .     ( href
-                                                . "/clarindk/tools-integration.jsp"
-                                                )
-                                                (class.)
-                                            , $d
-                                          )
-                                      )
-                                )
-                          |     removeBodyContent$!cont
-                              : (=?cont)
-                            & removeBodyContent$!Z:(=?Z)
-                            &   
-                              ' ( $A
-                                  ($el.$atts,$cont)
-                                  ()$Z
-                                )
-                          )
-                      | '$arg
-                  )
-                & get$(!examplePage,MEM,HT ML):?examplePage
-                & (     ( 
-                        =   A C,lang locale langName
-                          .     !arg
-                              :   ?A
-                                  ( span
-                                  .   (class.userLogin)
-                                      ( onclick
-                                      . @( ?
-                                         :   "document.cookie='preferredLocale="
-                                             ?
-                                             "; path=/';location.reload(true);"
-                                         )
-                                      )
-                                  )
-                                  ?
-                                  (.span.)
-                                  ?C
-                            & log$(locale !UIlanguage)
-                            &   (   !UIlanguage:da
-                                  & (en.English)
-                                | (da.dansk)
-                                )
-                              : (?lang.?langName)
-                            & log$(lang !lang langName !langName)
-                            &   !A
-                                ( span
-                                .   (class.userLogin)
-                                    ( onclick
-                                    .   "document.cookie='preferredLocale="
-                                        !lang
-                                        "; path=/';location.reload(true);"
-                                    )
-                                )
-                                !langName
-                                (.span.)
-                                !C
-                        )
-                      $ !examplePage
-                    : ?examplePage
-                  | 
-                  )
-                & (   !examplePage:?A (script.?B) ?C
-                    &     !A
-                          ( style
-                          .   (type.text/css)
-                            , ".tool table#inputs {display: block;} .tool table#inputs tbody tr > :first-child {width: 100px;display: inline-block;vertical-align: middle;margin: 10px 0;}"
-                          )
-                          (script.!B)
-                          !C
-                      : ?examplePage
-                  | 
-                  )
-                &     removeBodyContent
-                    $ (makeAbsolutePaths$(nestML$!examplePage))
-                  : (=?examplePage)
-                & '(.$examplePage)
-            )
-          & ( analyseContentType
+          , computeWorkflow computeWorkflowDASISH
+        .   ( analyseContentType
             =   R spec nofonts ct
               .   !arg:(?arg.?nofonts)
                 & @( !arg
@@ -10607,57 +10289,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   . !hiddenData
                   . !errors
                   )
-            )
-          & ( fakeGoalChoice
-            =     parms TOOL removeOParms removeIParmsButFormat
-                , implicitsources implicitgoals
-              .     !arg:?parms
-                  & !parms:? (TOOL.?TOOL) ?
-                  & (@(!TOOL:\" ?TOOL \")|)
-                  & !TOOL:~
-                  & "Remove all 'O' parameters and replace by union of Tool's output features."
-                  & ( removeOParms
-                    =   A
-                      .       !arg
-                            : ?A (@(?:O ?).?) ?arg
-                          & !A removeOParms$!arg
-                        | !arg
-                    )
-                  & ( removeIParmsButFormat
-                    =   A N
-                      .       !arg
-                            :   ?A
-                                (   @(?:I ?N)
-                                  & !N:~tem:~format
-                                . ?
-                                )
-                                ?arg
-                          & !A removeIParmsButFormat$!arg
-                        | !arg
-                    )
-                  &   removeIParmsButFormat$(removeOParms$!parms)
-                    : ?parms
-                  &   ConstructUnionOfInputOutputParmsFromToolProp$!TOOL
-                    : (?implicitsources.?implicitgoals)
-                  & !parms !implicitsources !implicitgoals:?parms
-                  & !hiddenData (TOOL.!TOOL):?hiddenData
-                  & (!TOOL.!parms)
-                |   !errors:
-                  &     str
-                      $ ( 400~~~
-                            toML
-                          $ ( !BodyContainer
-                            $ ( paragraph
-                              $ ( localized
-                                $ ( "You have not chosen a tool. Use the back button and choose a tool from the list."
-                                    "Du har ikke valgt et værktøj. Brug knappen \"Forrige\" og vælg et værktøj fra listen."
-                                  )
-                                )
-                              )
-                            )
-                        )
-                    : ?errors
-                  & ~
             )
           & ( windFW
             =   nth ZZ pipes pipe
@@ -11938,17 +11569,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !hiddenData (batch.!batch):?hiddenData
                 & "Does the user want to decide which tool to use or does she want
              to let the infrastructure work out a way to reach a set goal?"
-                & (   !directedBy:ToolChoice
-                    & ( ~(!parms:? (bsubmit.nextStep) ?)
-                      |   fakeGoalChoice$!parms
-                        : (?TOOL.?parms:?arg)
-                      )
-                  |   !directedBy:GoalChoice
+                & (   !directedBy:GoalChoice
                     & :?TOOL
                   |     str
-                      $ ( 400~~~
-                          toML$(!BodyContainer$(paragraph$"goal or tool?"))
-                        )
+                      $ (400~~~ toML$(!BodyContainer$(paragraph$goal?)))
                     : ?errors
                   )
                 & !errors:
@@ -12003,14 +11627,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & log$NEW
           & log$CREATELOGJE
           & !arg:(?parms:?arg.?directedBy)
-          & log$(argcreate noExamplePage$!arg)
-          & (   !arg:? (examplePage.?examplePage) ?
-              & (   @(!examplePage:? error ?)
-                  & :?examplePage
-                | 
-                )
-            | :?examplePage
-            )
           & !HTMLbodyContainer:?BodyContainer
           & setLanguageNotPermanently$!arg
           & ( !arg:? (analysis.?analysis) ?
@@ -12020,12 +11636,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           &   checkMail$(!parms.!formFields.!hiddenData.!errors)
             : (?mail2.?formFields.?hiddenData.?errors)
           & (   !arg:?A (wrkflw.?wrkflw) ?Z
-              & ( !examplePage:
-                |     makeHarmonizingContainer$(!examplePage.!wrkflw.!arg)
-                    : ?BodyContainer
-                  & lst$(BodyContainer,path$BodyContainer,NEW)
-                  & !BodyContainer
-                )
               & (   !Items:
                   &   str
                     $ ( 200~~~
@@ -12043,43 +11653,33 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       $ (200~~~ toML$(!BodyContainer$(paragraph$!errmsg)))
                     )
                 )
-            |   ( !examplePage:
-                |     makeHarmonizingContainer$(!examplePage..!arg)
-                    : ?BodyContainer
-                  & lst$(BodyContainer,path$BodyContainer,NEW)
-                  & !BodyContainer
-                )
-              & (   !directedBy:MetadataOnly
-                  & (   ~(MetadataInParms$(CMDImetadata.!parms))
-                      &   rememberMetadata$(CMDImetadata.!parms)
-                        : ?parms
-                      &   ( errorInMetadata$(CMDImetadata.!parms)
-                          | 
-                          )
-                        : ?ERR
-                      &   AddMetadata
-                        $ (CMDImetadata.1.!directedBy.!parms.!ERR)
-                    |   MetadataInParms$(CMDImetadata.!parms)
-                      & errorInMetadata$(CMDImetadata.!parms):?ERR
-                      &   AddMetadata
-                        $ (CMDImetadata.1.!directedBy.!parms.!ERR)
-                    |   ApplyThePipelineToTheInput
-                      $ ( CMDImetadata
-                        . !pipe
-                        . !batch
-                        . !Items
-                        . !mail2
-                        . !parms
-                        . !directedBy
-                        )
+            |   !directedBy:MetadataOnly
+              & (   ~(MetadataInParms$(CMDImetadata.!parms))
+                  & rememberMetadata$(CMDImetadata.!parms):?parms
+                  &   ( errorInMetadata$(CMDImetadata.!parms)
+                      | 
+                      )
+                    : ?ERR
+                  &   AddMetadata
+                    $ (CMDImetadata.1.!directedBy.!parms.!ERR)
+                |   MetadataInParms$(CMDImetadata.!parms)
+                  & errorInMetadata$(CMDImetadata.!parms):?ERR
+                  &   AddMetadata
+                    $ (CMDImetadata.1.!directedBy.!parms.!ERR)
+                |   ApplyThePipelineToTheInput
+                  $ ( CMDImetadata
+                    . !pipe
+                    . !batch
+                    . !Items
+                    . !mail2
+                    . !parms
+                    . !directedBy
                     )
-                | !computeWorkflow
                 )
+            | !computeWorkflow
             )
       )
       (createGoalChoice=.create$(!arg.GoalChoice))
-      (createToolChoice=.create$(!arg.ToolChoice))
-      (createMetadataOnly=.create$(!arg.MetadataOnly))
       "
 /**
  * getStatusCode
@@ -12091,7 +11691,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  * 
  * This function could just as well have been written in Java.
  * 
- * Called from create.java, deposit.java, depositXML.java, register.java,
+ * Called from create.java, register.java,
  * stresstest.java, update.java, upload.java
  */"
       ( getStatusCode

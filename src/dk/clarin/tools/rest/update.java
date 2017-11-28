@@ -20,7 +20,7 @@ package dk.clarin.tools.rest;
 import dk.cst.*;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
-import dk.clarin.tools.userhandle;
+import dk.clarin.tools.parameters;
 import java.io.*;
 import java.util.Enumeration;
 import javax.servlet.ServletConfig;
@@ -45,48 +45,6 @@ public class update extends HttpServlet
         super.init(config);
         }
 
-    public String getarg(HttpServletRequest request, String name)
-        {
-        @SuppressWarnings("unchecked")
-        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        logger.debug("Got some parmNames");
-
-        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-            {
-            String parmName = e.nextElement();
-            String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
-                {
-                if(name != null && name.equals(parmName))
-                    {
-                    return vals[j];
-                    }
-                }
-            }
-        return null;
-        }
-
-    public String getAllArgs(HttpServletRequest request)
-        {
-        String arg = "";
-        @SuppressWarnings("unchecked")
-        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        logger.debug("Got some parmNames");
-
-        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-            {
-            String parmName = e.nextElement();
-            arg = arg + " (" + workflow.quote(parmName) + ".";
-            String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
-                {
-                arg += " " + workflow.quote(vals[j]) + "";
-                }
-            arg += ")";
-            }
-        return arg;
-        }
-        
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
@@ -106,64 +64,16 @@ public class update extends HttpServlet
              * displayed above the form and the name of a tool, which will then be 
              * selected when the browser shows the pick list.
              */
-/*            String userHandle = userhandle.getUserHandle(request,null);
-            String userEmail = null;
-            String passwordAsHandle = null;
-            if(userHandle == null)
-                {
-                passwordAsHandle = getarg(request,"passwordAsHandle");
-                logger.debug("getarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
-                    {
-                    //userEmail = request.getParameter("mail2");
-                    userEmail = getarg(request,"mail2");
-                    logger.debug("getarg(request,\"mail2\") returns:" + (userEmail == null ? "not found" : userEmail));
-                    }                
-                if(userEmail == null)
-                    {
-                    response.setStatus(401);
-                    response.setContentType("text/html; charset=UTF-8");
-                    StringBuilder html = new StringBuilder();
-                    html.append("<html>");
-                    html.append("<head>");
-                    html.append("<title>Opdatering af registrerede oplysninger for et værktøj</title>");
-                    html.append("</head>");
-                    html.append("<body>");
-                    html.append("<h1>Login krævet</h1>");
-                    html.append("<p>Du skal være logget ind for at kunne opdatere oplysninger for et værktøj.<a href=\"" + 
-                        ToolsProperties.baseUrlTools + "/aa/login?target=" + ToolsProperties.baseUrlTools + 
-                        "/clarindk/login?target=" + "/tools/update" + "\">Klik her for at logge ind</a>.</p>");
-                        //"/tools/update" + "\">Klik her for at logge ind</a>.</p>");
-                    html.append("</body>");
-                    html.append("</html>");
 
-                    out.println(html.toString());
-                    return;
-                    }
-                }
-            else
-                {
-                logger.debug("userHandle = {}",userHandle);
-
-                String userId = userhandle.getUserId(request,null,userHandle);
-                userEmail = userhandle.getEmailAddress(request,null,userHandle,userId);
-                }
-                
-            logger.info("userHandle = {}",userHandle);
-
-            String arg = "";
-            if(userEmail != null)
-                arg = " (contactEmail." + workflow.quote(userEmail) + ")";
-            arg += getAllArgs(request);
-*/
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            passwordAsHandle = getarg(request,"passwordAsHandle");
-            logger.debug("getarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+            passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
+            logger.debug("getGETarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
             if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
 	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                userEmail = getarg(request,"mail2");
+                userEmail = parameters.getGETarg(request,"mail2");
 	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
 			else
@@ -174,10 +84,9 @@ public class update extends HttpServlet
                 
             logger.debug("userEmail = {}",userEmail);
 
-            if(userEmail != null && getarg(request,"contactEmail") == null)
+            if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
                 arg += " (contactEmail." + workflow.quote(userEmail) + ")";
-            //arg += getargs(request,items);
-            arg += getAllArgs(request);
+            arg += parameters.getAllGETArgsBracmatFormat(request);
 
             String result = BracMat.Eval("update$(" + arg + ")");
             if(result == null || result.equals(""))

@@ -54,7 +54,7 @@ public class reloadScript extends HttpServlet
         }
 
     @Override
-        public void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
         response.setContentType("text/xml");

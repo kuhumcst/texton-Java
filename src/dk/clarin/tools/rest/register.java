@@ -20,7 +20,7 @@ package dk.clarin.tools.rest;
 import dk.cst.*;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
-import dk.clarin.tools.userhandle;
+import dk.clarin.tools.parameters;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -50,104 +50,6 @@ public class register extends HttpServlet
         super.init(config);
         }
 
-    public String getarg(HttpServletRequest request, List<FileItem> items, String name)
-        {
-        /*
-        * Parse the request
-        */
-
-        @SuppressWarnings("unchecked")
-        boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-
-        logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-        
-        if(is_multipart_formData)
-            {
-            try 
-                {
-                Iterator<FileItem> itr = items.iterator();
-                while(itr.hasNext()) 
-                    {
-                    FileItem item = (FileItem) itr.next();
-                    if(item.isFormField()) 
-                        {
-                        if(name.equals(item.getFieldName()))
-                            return item.getString("UTF-8").trim();
-                        }
-                    }
-                }
-            catch(Exception ex) 
-                {
-                logger.error("uploadHandler.parseRequest Exception");
-                }
-            }
-        
-        @SuppressWarnings("unchecked")
-        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-            {
-            String parmName = e.nextElement();
-            String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
-                {
-                if(name.equals(parmName))
-                    {
-                    logger.debug("parmName:"+parmName+" equals:"+name+" , return "+vals[j]);
-                    return vals[j];
-                    }
-                }
-            }
-        return null;
-        }
-        
-    public String getargs(HttpServletRequest request, List<FileItem> items)
-        {
-        String arg = "";
-        /*
-        * Parse the request
-        */
-
-        @SuppressWarnings("unchecked")
-        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-
-        logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-        
-        if(is_multipart_formData)
-            {
-            try 
-                {
-                Iterator<FileItem> itr = items.iterator();
-                while(itr.hasNext()) 
-                    {
-                    FileItem item = (FileItem) itr.next();
-                    if(item.isFormField()) 
-                        {
-                        arg = arg + " (" + workflow.quote(item.getFieldName()) + "." + workflow.quote(item.getString("UTF-8").trim()) + ")";
-                        }
-                    }
-                }
-            catch(Exception ex) 
-                {
-                logger.error("uploadHandler.parseRequest Exception");
-                }
-            }
-        
-        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-            {
-            String parmName = e.nextElement();
-            arg = arg + " (" + workflow.quote(parmName) + ".";
-            String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
-                {
-                arg += " " + workflow.quote(vals[j]) + "";
-                }
-            arg += ")";
-            }
-        logger.debug("arg = [" + arg + "]");
-        return arg;
-        }
-
     public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
@@ -155,30 +57,21 @@ public class register extends HttpServlet
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
-            List<FileItem> items = userhandle.getParmList(request);
-            
-
-
-            
-            
-            
-            
-            
-
+            List<FileItem> items = parameters.getParmList(request);
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            passwordAsHandle = getarg(request,items,"passwordAsHandle");
-            logger.debug("getarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+            passwordAsHandle = parameters.getPOSTorGETarg(request,items,"passwordAsHandle");
+            logger.debug("getPOSTorGETarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
             if(ToolsProperties.password.equals(""))
                 {
-                userEmail = getarg(request,items,"mail2");
+                userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
 	            arg += " (handle.LOCALMACHINEDUMMY)";
                 }
             else if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
 	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                userEmail = getarg(request,items,"mail2");
+                userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
 	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
 			else
@@ -189,9 +82,9 @@ public class register extends HttpServlet
                 
             logger.debug("userEmail = {}",userEmail);
 
-            if(userEmail != null && getarg(request,items,"contactEmail") == null)
+            if(userEmail != null && parameters.getPOSTorGETarg(request,items,"contactEmail") == null)
                 arg += " (contactEmail." + workflow.quote(userEmail) + ")";
-            arg += getargs(request,items);
+            arg += parameters.getargsBracmatFormat(request,items);
             /**
               * register$
               *
@@ -271,7 +164,7 @@ public class register extends HttpServlet
         public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
             {        
-           logger.debug("doGet");
+            logger.debug("doGet");
             doPost(request, response);
             }
     }
