@@ -165,7 +165,7 @@ public class create extends HttpServlet
 			URL url = new URL(urladdr);
 			URLConnection urlConnection = url.openConnection();
 		    String mimeType = urlConnection.getContentType();
-            logger.debug("mimeType according to getContentType() {} is {}",urladdr,mimeType);
+            logger.info("mimeType according to getContentType() {} is {}",urladdr,mimeType);
 		    return mimeType;
 		}catch(IOException e){
 			return "error connecting to server.";
@@ -283,13 +283,11 @@ public class create extends HttpServlet
             }
            
             
-        logger.debug("Result from BracMat create$: ["+result+"]");
         int start = result.indexOf("<?"); // XML-output (XHTML)
         if(start < 0)
             start = result.indexOf("<!"); // HTML5-output
         if(start > 0)
             {
-            logger.debug("Funny?");
             /* Something went wrong, e.g.:
             
             400<!DOCTYPE html>
@@ -387,18 +385,12 @@ public class create extends HttpServlet
         {
         if(!val.equals(""))
             {
-            logger.debug("val == {}",val);
-
             String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote(val) + "." + workflow.quote(date) + ")");
-
-            logger.debug("LocalFileName == {}",LocalFileName);
 
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(val,file);
-            logger.debug("file size == {}",textLength);
             String ContentType = theMimeType(val);
-            logger.debug("ContentType == {}",ContentType);
             if(!ContentType.equals(""))
                 {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
@@ -441,7 +433,6 @@ public class create extends HttpServlet
             String vals[] = request.getParameterValues(parmName);
             if(parmName.equals("mail2"))
                 {
-                logger.debug("mail2");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
@@ -455,7 +446,6 @@ public class create extends HttpServlet
                 }
             else if(parmName.equals("text"))
                 {
-                logger.debug("text");
                 for(int j = 0;j < vals.length;++j)
                     {
                     if(!vals[j].equals(""))
@@ -482,7 +472,6 @@ public class create extends HttpServlet
                 }
             else if(parmName.equals("URL"))
                 {
-                logger.debug("parmName.equals {}",parmName);
                 for(int j = 0;j < vals.length;++j)
                     {
                     arg = arg + makeLocalCopyOfRemoteFile(vals[j]);
@@ -492,7 +481,6 @@ public class create extends HttpServlet
                 {
                 for(int j = 0;j < vals.length;++j)
                     {
-                    logger.debug("({})",parmName);
                     arg = arg + " (" + workflow.quote(parmName) + ".";
                     arg += " " + workflow.quote(vals[j]);
                     arg += ")";
@@ -621,7 +609,6 @@ public class create extends HttpServlet
 						}
                     else if(item.getFieldName().equals("URL"))
                         {
-                        logger.debug("item.getFieldName().equals {}",item.getFieldName());
                         arg = arg + makeLocalCopyOfRemoteFile(item.getString());
                         }
                     else

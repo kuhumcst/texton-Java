@@ -69,7 +69,6 @@ public class zipresults extends HttpServlet
         throws ServletException, IOException 
         {
         response.setStatus(200);
-        logger.debug("doGetZip " + localFilePath + "+" + fileName);
 
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition","attachment;filename=\"" + fileName + "\"");
@@ -136,7 +135,6 @@ public class zipresults extends HttpServlet
     public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        logger.debug("zipresults");
         response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
         if(BracMat.loaded())
@@ -145,16 +143,13 @@ public class zipresults extends HttpServlet
             Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
             String job;
-            logger.debug("before loop");
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
-                    logger.debug("job:"+job);
                     String metadata = BracMat.Eval("jobMetaDataAsHTML$(" + job + ")");
-                    logger.debug("metadata:"+metadata);
                     String filelist = "";
                     String letter = BracMat.Eval("letter$(" + job + ")");
                     String readme = BracMat.Eval("readme$(" 
@@ -164,27 +159,20 @@ public class zipresults extends HttpServlet
                                                 + "." 
                                                 + workflow.quote(letter) 
                                                 + ")");
-                    logger.debug("letter:"+letter);
                     String localFilePath = ToolsProperties.documentRoot;
-                    logger.debug("localFilePath:"+localFilePath);
                     String toolsdataURL = BracMat.Eval("toolsdataURL$");
-                    logger.debug("toolsdataURL:"+toolsdataURL);
                     String Body = null;
-                    
-                    logger.debug("letterA [" + letter + "]");
                     
                     FileOutputStream zipdest = null;
                     ZipOutputStream zipout = null;
                     boolean hasFiles = false;
                     if(letter.startsWith("file:"))
                         {
-                        logger.debug("letter.startsWith(\"file:\")");
                         hasFiles = true;
                         zipdest = new FileOutputStream(localFilePath + job + ".zip");
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         while(letter.startsWith("file:"))
                             {
-                            logger.debug("start [" + letter + "]");
                             int end = letter.indexOf(";");
                             String filename = letter.substring(5,end);
                             String zipname = filename;
@@ -194,40 +182,30 @@ public class zipresults extends HttpServlet
                                 zipname = filename.substring(zipnameStart+1);
                                 filename = filename.substring(0,zipnameStart);
                                 }
-                            logger.debug("filename [" + filename + "] zipname [" + zipname + "]" );
                             workflow.zip(localFilePath + filename,zipname,zipout);
                             letter = letter.substring(end+1);
                             }
                         }
                     else if(letter.startsWith("metadata:"))
                         {
-                        logger.debug("letter.startsWith(\"metadata:\")");
                         String MetaData = BracMat.Eval("metadataAsXML$(" + job + "." + workflow.quote(date) + ")");
                         hasFiles = true;
                         zipdest = new FileOutputStream(localFilePath + job + ".zip");
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                        logger.debug("start [" + letter + "]");
                         int end = letter.indexOf(";");
                         String type = letter.substring(9,end);
                         workflow.zipstring(type + ".xml",zipout,MetaData);
                         letter = letter.substring(end+1);
                         }
-                    logger.debug("letterZ [" + letter + "]");
 
                     if(hasFiles)
                         {
-                        logger.debug("hasFiles");
                         workflow.zipstring("readme.txt",zipout,readme);
-                        logger.debug("wrote readme");
                         workflow.zipstring("index.html",zipout,letter);
-                        logger.debug("wrote letter");
                         zipout.close();
-                        logger.debug("closed zipout");
                         }
-                    logger.debug("calling doGetZip("+localFilePath + ", " + job + ".zip");
                     doGetZip(localFilePath, job + ".zip",response);                            
                     
-                    logger.debug("break");
                     break;
                     }
                 }

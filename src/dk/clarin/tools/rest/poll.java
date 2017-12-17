@@ -57,7 +57,6 @@ public class poll extends HttpServlet
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
-        logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
@@ -118,7 +117,6 @@ public class poll extends HttpServlet
             response.setContentType("text/html; charset=UTF-8");
 
             String svar = BracMat.Eval("poll$("+workflow.quote(job) + ")");
-            logger.info("poll$("+workflow.quote(job) + ") svar: " + svar);
             out.println(svar);            
             }
         }
