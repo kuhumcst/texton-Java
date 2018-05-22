@@ -5180,6 +5180,7 @@ toolsProg=
                      | "|"
                      | "="
                      | ","
+	 | "%"
                      )
                      ?z
                  )
@@ -12203,7 +12204,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 : ?boolfunc
                 : ?voidfunc
               & "$":?stringvar:?boolvar:?var
-              &     "<?
+              &     "<?php
 header(\"Content-type:text/plain; charset=UTF-8\");
 /*
  * This "

@@ -49,7 +49,6 @@ public class data extends HttpServlet
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
-        logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
@@ -64,7 +63,6 @@ public class data extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        logger.info("Calling tools/data");
         response.setStatus(200);
         if(!BracMat.loaded())
             {
@@ -86,7 +84,6 @@ public class data extends HttpServlet
                 }
             }
         :Test*/
-        logger.info("getPathInfo() returns {}",request.getPathInfo());              // /blablah/de/blah
         if(request.getPathInfo() == null || request.getPathInfo().equals("/"))
             {
             response.setContentType("text/html; charset=UTF-8");

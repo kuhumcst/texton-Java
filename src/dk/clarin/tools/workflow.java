@@ -104,7 +104,6 @@ public class workflow implements Runnable
         {
         try
             {
-            logger.debug("zip("  + path + ", " + name + ")");
             BufferedInputStream origin = null;
             byte data[] = new byte[BUFFER];
             FileInputStream fi = new FileInputStream(path);
@@ -132,7 +131,6 @@ public class workflow implements Runnable
         {
         try
             {
-            logger.debug("zipstring("  + name + ", " + str + ")");
             byte data[] = str.getBytes();
             ZipEntry entry = new ZipEntry(name);
             out.putNextEntry(entry);
@@ -373,7 +371,6 @@ public class workflow implements Runnable
     private void processPipeLine(String result)
         {
         int jobs = 10; // Brake (or break) after 10 failed iterations. Then something is possibly wrong
-        logger.debug("processPipeLine("  + result + ")");
         int code = 0;
         boolean asynchronous = false;
         while(jobs > 0)
@@ -386,7 +383,6 @@ public class workflow implements Runnable
             //    All jobs with the same job number must be performed sequentially, in increasing order of their job id.
             // getNextJobID looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
             // Each job number represents one pipeline. A pipeline consists of one or more jobs, each with a jobID that is unique within the job.
-            logger.debug("processPipeLine calls getNextJobID("  + result + ")");
             /**
              * getNextJobID$
              *
@@ -398,13 +394,11 @@ public class workflow implements Runnable
              */
             String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
             // Now we have a job that must be launched
-            logger.debug("processPipeLine getNextJobID returns {}",jobID);
             
             if(jobID.equals(""))
                 jobs = 0; // No more jobs on job list, quit from loop
             else
                 {
-                logger.debug("processPipeLine does the job");
                 // getJobArg looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
 
                 /**
@@ -427,12 +421,10 @@ public class workflow implements Runnable
                 String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
-                logger.debug("sendRequest("  + result + ", " + endpoint + "," + requestString + ", " + filename + ", " + jobID + ", " + postmethod + ")");
-
+                
                 code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
                 if(code == 202)
                     asynchronous = true;
-                logger.debug("processPipeLine has done the job");
                 }
             if(code != 200 && code != 202)
                 {
@@ -440,7 +432,6 @@ public class workflow implements Runnable
                 logger.info("processPipeLine aborts");
                 }
             }
-        logger.debug("processPipeLine while loop exited with code {}", code);
         if(!asynchronous)
             {
             /**
@@ -450,7 +441,6 @@ public class workflow implements Runnable
              * jobAbout.table in jboss/server/default/data/tools
              */
             String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
-            logger.debug("processPipeLine calls doneAllJob {}", result);
             /**
              * doneAllJob$
              *
@@ -464,7 +454,6 @@ public class workflow implements Runnable
              * sendMail, and lists the items that the user can download from
              * the staging area.
              */
-            logger.debug("processPipeLine calls doneAllJob {} DONE", result);
             try
                 {
                 if(!mail2.equals(""))
@@ -483,12 +472,10 @@ public class workflow implements Runnable
                 logger.warn("Could not send mail to " + mail2 + ". Reason:" + e.getMessage());
                 }
             }
-        logger.debug("processPipeLine exits", code);
         }
 
     public static void got200(String result, bracmat BracMat, String filename, String jobID, InputStream input)
         {
-        logger.debug("got200");
         /**
          * toolsdata$
          *
@@ -504,9 +491,7 @@ public class workflow implements Runnable
          */
         try
             {
-            logger.debug("isTEIoutput$(" + result + "." + jobID + ")");
             String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
-            logger.debug("TEIformat=" + TEIformat);
             
             byte[] buffer = new byte[4096];
             int n = - 1;
@@ -520,7 +505,6 @@ public class workflow implements Runnable
             String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
             if(textable.equals("y"))
                 isTextual = true;
-            logger.debug("textable:" + (isTextual ? "ja" : "nej"));
                     
             while((n = input.read(buffer)) != -1)
                 {
@@ -548,7 +532,6 @@ public class workflow implements Runnable
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String date = sdf.format(cal.getTime());
-            logger.debug("Calling doneJob(" + result + "," + jobID + "," + date + ")");
             /**
              * doneJob$
              *
@@ -575,7 +558,6 @@ public class workflow implements Runnable
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
                 // Create file plus metadata
-                logger.debug("Going to write {}",destdir+Filename(filename,BracMat));
                 FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
                 BufferedWriter Out = new BufferedWriter(fstream);
                 Out.write(newResource);
@@ -619,7 +601,6 @@ public class workflow implements Runnable
         {
         String filelist;
         String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
-        logger.debug("Job " + jobID + " has mail2 '" + mail2 + "'");
         try
             {
             if(code == 202)
@@ -733,7 +714,6 @@ public class workflow implements Runnable
                 String urlStr = endpoint;
                 if(postmethod) // HTTP POST
                     {
-                    logger.debug("HTTP POST");
                     StringReader input = new StringReader(requestString);
                     StringWriter output = new StringWriter();
                     URL endp = new URL(endpoint);
@@ -807,7 +787,6 @@ public class workflow implements Runnable
                                     if (in != null)
                                         in.close();
                                     }
-                                logger.debug("urlc.getResponseCode() == {}",code);
                                 message = urlc.getResponseMessage();
                                 didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
                                 }                            
@@ -819,12 +798,9 @@ public class workflow implements Runnable
                             didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
                             }
                         }
-                    //requestResult = output.toString();
-                    logger.debug("postData returns " + requestResult);
                     }
                 else // HTTP GET
                     {
-                    logger.debug("HTTP GET");
                     // Send data
                     
                     if (requestString != null && requestString.length () > 0)
@@ -840,7 +816,6 @@ public class workflow implements Runnable
                         {
                         HttpURLConnection httpConnection = (HttpURLConnection) conn;
                         code = httpConnection.getResponseCode();
-                        logger.debug("httpConnection.getResponseCode() == {}",code);
                         message = httpConnection.getResponseMessage();
                         BufferedReader rd;
                         StringBuilder sb = new StringBuilder();;
@@ -869,7 +844,6 @@ public class workflow implements Runnable
                         didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
                         }
                     }
-                logger.debug("Job " + jobID + " receives status code [" + code + "] from tool.");
                 } 
             catch (Exception e)
                 {
