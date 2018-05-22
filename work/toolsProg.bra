@@ -2689,24 +2689,26 @@ toolsProg=
       )
       ( XHTMLbodyContainer
       =   
-        .   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
-            \r\n
-            ( "!DOCTYPE"
-            . " html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\""
-            )
-            \r\n
-            ( html
-            .     (xmlns."http://www.w3.org/1999/xhtml")
-                  ("xml:lang".da)
-                  (lang.da)
-              ,   \r\n
-                  ( head
-                  . ,\r\n (title.,"DK-Clarin: Tools") \r\n !style
-                  )
-                  \r\n
-                  (body.(bgcolor."#C6D8D9"),!arg)
-            )
-            \r\n
+        .   "iso8859-1 and not utf-8, because of problematic handling of UTF-8 by JNI"
+          &   ("?"."xml version=\"1.0\" encoding=\"iso8859-1\"")
+              \r\n
+              ( "!DOCTYPE"
+              . " html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\""
+              )
+              \r\n
+              ( html
+              .     (xmlns."http://www.w3.org/1999/xhtml")
+                    ("xml:lang".da)
+                    (lang.da)
+                ,   \r\n
+                    ( head
+                    .   
+                      , \r\n (title.,"DK-Clarin: Tools") \r\n !style
+                    )
+                    \r\n
+                    (body.(bgcolor."#C6D8D9"),!arg)
+              )
+              \r\n
       )
       ( refreshingXHTMLbodyContainer
       =   seconds body URL
@@ -2852,66 +2854,63 @@ toolsProg=
       ( upload
       =     jobNr jobID jobstatus JOB
           , A Z files toolURL parms file
-        .   log$(upload !arg)
-          & (     !arg
-                : ? (job.@(?:?jobNr "-" ?jobID)) ?
-              & (   readTable$jobs
-                  & (     !jobs
-                        :   ?A
-                            ( !jobNr
-                            . !jobID ?jobstatus
-                            . ?files
-                            . ?toolURL
-                            . ?parms
-                            . ?file
-                            )
-                            ?Z
-                      & (   !jobstatus:waiting
-                          &     !A
-                                (!jobNr.!jobID.!files.!toolURL.!parms.!file)
-                                !Z
-                            : ?jobs
-                          & saveTable$jobs
-                          & !file
-                        |   str
-                          $ ( "HTTP-status-code404upload$("
-                              !arg
-                              ") failed. Job "
-                              !jobNr
-                              "-"
-                              !jobID
-                              " is not expecting a result."
-                            )
-                        )
-                    |   str
-                      $ ( "HTTP-status-code404upload$("
-                          !arg
-                          ") failed. Job "
-                          !jobNr
-                          "-"
-                          !jobID
-                          " not found in joblist:"
-                          !jobs
-                        )
-                    )
-                |   str
-                  $ ( "HTTP-status-code500upload$("
-                      !arg
-                      ") failed. Joblist could not be read"
-                    )
-                )
-            |   str
-              $ ( "HTTP-status-code400upload$("
-                  !arg
-                  ") failed. "
-                  (   !arg:? (job.?JOB) ?
-                    & ( @(!JOB:% "-" %)
-                      | "'job' parameter value must contain a hyphen '-'. "
+        .     !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
+            & (   readTable$jobs
+                & (     !jobs
+                      :   ?A
+                          ( !jobNr
+                          . !jobID ?jobstatus
+                          . ?files
+                          . ?toolURL
+                          . ?parms
+                          . ?file
+                          )
+                          ?Z
+                    & (   !jobstatus:waiting
+                        &     !A
+                              (!jobNr.!jobID.!files.!toolURL.!parms.!file)
+                              !Z
+                          : ?jobs
+                        & saveTable$jobs
+                        & !file
+                      |   str
+                        $ ( "HTTP-status-code404upload$("
+                            !arg
+                            ") failed. Job "
+                            !jobNr
+                            "-"
+                            !jobID
+                            " is not expecting a result."
+                          )
                       )
-                  | "'job' parameter missing. "
+                  |   str
+                    $ ( "HTTP-status-code404upload$("
+                        !arg
+                        ") failed. Job "
+                        !jobNr
+                        "-"
+                        !jobID
+                        " not found in joblist:"
+                        !jobs
+                      )
                   )
+              |   str
+                $ ( "HTTP-status-code500upload$("
+                    !arg
+                    ") failed. Joblist could not be read"
+                  )
+              )
+          |   str
+            $ ( "HTTP-status-code400upload$("
+                !arg
+                ") failed. "
+                (   !arg:? (job.?JOB) ?
+                  & ( @(!JOB:% "-" %)
+                    | "'job' parameter value must contain a hyphen '-'. "
+                    )
+                | "'job' parameter missing. "
                 )
-            )
+              )
       )
       "
 /**
@@ -5165,27 +5164,32 @@ toolsProg=
             )
           & str$(removePercentEncodings$!item):?item
           & str$(!item "-" !nr):?fname
-          &   whl
-            ' ( @( !fname
-                 :   ?a
-                     ( "/"
-                     | "\\"
-                     | ":"
-                     | " "
-                     | "?"
-                     | "*"
-                     | "["
-                     | "]"
-                     | ";"
-                     | "|"
-                     | "="
-                     | ","
-	 | "%"
-                     )
-                     ?z
-                 )
-              & str$(!a "_" !z):?fname
-              )
+          &     str
+              $ ( vap
+                $ ( ( 
+                    =   
+                      .       !arg
+                            : ( "/"
+                              | "\\"
+                              | ":"
+                              | " "
+                              | "?"
+                              | "*"
+                              | "["
+                              | "]"
+                              | ";"
+                              | "|"
+                              | "="
+                              | ","
+                              | "%"
+                              )
+                          & "_"
+                        | !arg
+                    )
+                  . !fname
+                  )
+                )
+            : ?fname
           & !str$(!fname !ext):?fname
           &     (!nr.str$(!item !ext).!arg.!fname...!visibility)
                 !Uploads
@@ -7762,7 +7766,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           &   whl
             ' (   !userProvidedMetadata
                 : (?id.?val) ?userProvidedMetadata
-              & log$(whl id !id val !val)
               & trim$!val:?val
               & (     !Metadata
                     :   ?
@@ -8590,7 +8593,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   
           & log$(doneAllJob !arg)
           & doneAllJobSub$!arg:?abc
-          & log$(abc !abc)
           &   str
             $ ( toML
               $ ( ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
@@ -8768,20 +8770,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   : ? (title.,?title) ?
                               )
                               ?items
-                        & log$(item id !id title !title)
                         & ( !resources:? !title ?
                           |   !resources !title:?resources
                             & ( ~
                               |     !Uploads
                                   : ? (?.!title.?.?fil.?) ?
-                                & log$(files BEFORE !files)
                                 &   !files "file:" !fil "*" !title ";"
                                   : ?files
-                                & log$(files AFTER !files)
                               | 
                               )
                           )
-                        & log$(resources !resources)
                         )
                     &     !body
                           (   @(!filename:fejl ?)
@@ -8808,13 +8806,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       (dd.,!tool)
                                 )
                           |   Filename$!filename:?Href2
-                            & log$(Href2 !Href2)
                             &   FilenameNoMetadata$!filename
                               : ?Href2nometa
-                            & log$(Href2nometa !Href2nometa)
                             &   FilenameRelations$!filename
                               : ?Href2relations
-                            & log$(Href2relations !Href2relations)
                             &   ( dt
                                 .   
                                   , ( strong
@@ -8900,10 +8895,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & (dl.,!body)
             )
           & log$(letter !arg)
-          & log$"Before jobMetaData"
           & jobMetaData$!arg:(?metadata.?type)
-          &   log
-            $ ("After jobMetaData metadata:" str$!metadata " type:" !type)
           & (   !type:CMDI
               &     toML
                   $ ( html
@@ -8972,8 +8964,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                     )
                 : ?html
-              & log$(html str$!html)
-              & log$(files !files)
               & str$(!files !html)
             )
       )
@@ -9663,7 +9653,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     )
                                     !Z
                                 : ?Uploads
-                              & !Items (Item.!Name):?Items
+                              &     !Items
+                                    ( Item
+                                    . str$(removePercentEncodings$!Name)
+                                    )
+                                : ?Items
                               )
                               ?arg
                           )
@@ -9831,9 +9825,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 , goalpicklists preselvals presels
                 , srcs fromRepo createArgs
               .   !arg:(?presels.?createArgs.?fromRepo)
-                & log$(presels !presels)
-                & log$(createArgs !createArgs)
-                & log$(fromRepo !fromRepo)
                 & readTable$features
                 & !features:?fs
                 & :?preselvalsrows
@@ -10421,7 +10412,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       !ERR
                     )
                 & readTable$!metadataType:?Metadata
-                & log$(Read !metadataType)
                 & :?formFields
                 & ( metadataForm
                   =     formFields tekst inputs
@@ -11604,6 +11594,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !hiddenData (batch.!batch):?hiddenData
                 & "Does the user want to decide which tool to use or does she want
              to let the infrastructure work out a way to reach a set goal?"
+                & log$(formFields3 !formFields)
                 & (   !directedBy:GoalChoice
                     & :?TOOL
                   |     str

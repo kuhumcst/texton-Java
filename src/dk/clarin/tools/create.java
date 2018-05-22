@@ -195,7 +195,7 @@ public class create extends HttpServlet
 	
 	private int webPageBinary(String urladdr, File file){
 		try{
-		    logger.debug("urladdr:"+urladdr)
+		    logger.debug("urladdr:"+urladdr);
 			URL url = new URL(urladdr);
 			URLConnection urlConnection = url.openConnection();
 
@@ -212,7 +212,7 @@ public class create extends HttpServlet
             output.close();
             return N;
 		}catch(IOException e){
-		    logger.debug("IOException in webPageBinary")
+		    logger.debug("IOException in webPageBinary");
 			return -1;
 		}
 	}
@@ -250,6 +250,7 @@ public class create extends HttpServlet
              * former by a caret.
              */
             result = BracMat.Eval("create$(" + arg + ".)");
+			logger.debug("result is Γροεκσ:"+result);
             }
         else
             {
@@ -257,6 +258,7 @@ public class create extends HttpServlet
             workflowRequest = GoalChoice
             */
             result = BracMat.Eval("create" + workflowRequest + "$(" + arg + ")");
+			logger.debug("result is Γοαλ:"+result);
             }
         if(result == null || result.equals(""))
             {
