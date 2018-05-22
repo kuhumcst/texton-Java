@@ -421,9 +421,10 @@ public class workflow implements Runnable
                 String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
-                
+				logger.debug("requestStringA:"+requestString);
+                requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
+				logger.debug("requestStringB:"+requestString);
                 code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
-				logger.debug("requestString:"+requestString);
                 if(code == 202)
                     asynchronous = true;
                 }
