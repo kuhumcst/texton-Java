@@ -195,6 +195,7 @@ public class create extends HttpServlet
 	
 	private int webPageBinary(String urladdr, File file){
 		try{
+		    logger.debug("urladdr:"+urladdr)
 			URL url = new URL(urladdr);
 			URLConnection urlConnection = url.openConnection();
 
@@ -208,9 +209,10 @@ public class create extends HttpServlet
                 output.write(buffer, 0, n);
                 N += 1;
             }
-            output.close();		
+            output.close();
             return N;
 		}catch(IOException e){
+		    logger.debug("IOException in webPageBinary")
 			return -1;
 		}
 	}
@@ -480,10 +482,12 @@ public class create extends HttpServlet
                 }
             else if(parmName.equals("URL"))
                 {
+				logger.debug("Going to call makeLocalCopyOfRemoteFile A");
                 for(int j = 0;j < vals.length;++j)
                     {
                     arg = arg + makeLocalCopyOfRemoteFile(vals[j]);
                     }
+				logger.debug("in Workflow URLargs:"+arg);
                 }
             else
                 {
@@ -617,7 +621,9 @@ public class create extends HttpServlet
 						}
                     else if(item.getFieldName().equals("URL"))
                         {
+        				logger.debug("Going to call makeLocalCopyOfRemoteFile B");
                         arg = arg + makeLocalCopyOfRemoteFile(item.getString());
+						logger.debug("in getParmsAndFiles URLargs is now:"+arg);
                         }
                     else
                         arg = arg + " (" + item.getFieldName() + "." + workflow.quote(item.getString()) + ")";
