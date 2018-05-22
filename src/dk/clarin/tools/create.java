@@ -389,21 +389,23 @@ public class create extends HttpServlet
             {
             logger.debug("val == {}",val);
 
+            String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+workflow.quote(val) + ")");
             String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote(val) + "." + workflow.quote(date) + ")");
 
             logger.debug("LocalFileName == {}",LocalFileName);
+            logger.debug("PercentEncodedURL == {}",PercentEncodedURL);
 
             File file = new File(destinationDir,LocalFileName);
 
-            int textLength = webPageBinary(val,file);
+            int textLength = webPageBinary(PercentEncodedURL,file);
             logger.debug("file size == {}",textLength);
-            String ContentType = theMimeType(val);
+            String ContentType = theMimeType(PercentEncodedURL);
             logger.debug("ContentType == {}",ContentType);
             if(!ContentType.equals(""))
                 {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
                     return      " (FieldName,"      + workflow.quote("input")
-                              + ".Name,"            + workflow.quote(val)
+                              + ".Name,"            + workflow.quote(PercentEncodedURL)
                               + ".ContentType,"     + workflow.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
                               + ".Size,"            + Long.toString(textLength)
                               + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)

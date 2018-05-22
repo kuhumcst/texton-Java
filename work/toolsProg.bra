@@ -5163,6 +5163,7 @@ toolsProg=
               & !nr+1:?nr
             | :?Uploads
             )
+          & str$(removePercentEncodings$!item):?item
           & str$(!item "-" !nr):?fname
           &   whl
             ' ( @( !fname
@@ -5190,6 +5191,39 @@ toolsProg=
             : ?Uploads
           & saveTable$Uploads
           & !fname
+      )
+      ( removePercentEncodings
+      =   A g h
+        .   @( !arg
+             :   ?A
+                 "%"
+                 ( %@
+                 : ( ~<0:~>9
+                   | ~<a:~>f
+                   | ~<A:~>F
+                   )
+                 : ?g
+                 )
+                 ( %@
+                 : ( ~<0:~>9
+                   | ~<a:~>f
+                   | ~<A:~>F
+                   )
+                 : ?h
+                 )
+                 ?arg
+             )
+          & !A chr$(x2d$(str$(!g !h))) removePercentEncodings$!arg
+      )
+      ( percentEncodeURL
+      =   pEU
+        .   ( pEU
+            =   A h
+              .   @(!arg:?A (%@:>"~":?h) ?arg)
+                & d2x$(asc$!h):?h
+                & !A "%" upp$!h pEU$!arg
+            )
+          & str$(pEU$!arg)
       )
       ( element
       =   name attr content
