@@ -423,6 +423,7 @@ public class workflow implements Runnable
                 boolean postmethod = method.equals("POST");
                 
                 code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
+				logger.debug("requestString:"+requestString);
                 if(code == 202)
                     asynchronous = true;
                 }
