@@ -810,108 +810,6 @@ toolsProg=
             & !visibility
           | no
       )
-      "
-/**
- * setFeatures
- *
- * Parse metadata (XML) to find information about the resource's
- *      facet       (like tok)
- *      format      (like txtann for TEIP5DKCLARIN_ANNOTATION)
- *      language    (like da)
- *      Olac title  like 
- *          Annotation: JRC-ACQUIS 31981R3557 Danish, CstClarinSentenceAndParagraphSegmenter
- *      base item   (like http://devtools.clarin.dk/ir/item/dkclarin:188006)
- * The found information is added to the provisory record in the Uploads table
- * that already contains 
- *      an ordinal number for the resource for internal use by Tools
- *      the resource's path (like dkclarin:188024/components/component/dkclarin:188023/content)
- *      staging-area-filename (like 19325730672)
- *      visibility (public, academic, restricted)
- * Input:
- *      The metadata (string containing XML)
- *      the item (like dkclarin:188028)
- *      the date (like 20110723)
- * Affected tables:
- *      Uploads.table
- *
- * The helper functions are very resource-type specific and must be elaborated
- * for each new resource type:
- *      getFacet
- *      getFormat
- *      getLanguage
- *      getOlacTitle
- *      getBaseItem
- *
- *  Called from create.java
- */"
-      ( setFeatures
-      =     K F A Z nr item frmt xml olac
-          , date Path file meta feats visibility
-        .   !arg:(?arg.?item.?date)
-          & nestML$(get$(!arg,X,ML,TRM,MEM)):?xml
-          &   !xml
-            :   ?
-                ( "escidocItem:item"
-                .   ?
-                  ,   ?
-                      ( "escidocMetadataRecords:md-records"
-                      .   ?
-                        ,   ?
-                            ( "escidocMetadataRecords:md-record"
-                            .   ?
-                              ,   ?
-                                  ( CMD
-                                  .   ?
-                                    ,   ?
-                                        ( Components
-                                        . ,? (olac.,?olac) ?
-                                        )
-                                        ?
-                                  )
-                                  ?
-                            )
-                            ?
-                      )
-                      ?
-                )
-                ?
-          &     (facet.getFacet$!xml|)
-                ( format
-                .     (getOlacFormat$!olac|getFormat$!xml)
-                    : %@?frmt^?
-                  | :?frmt
-                )
-                ( pres
-                .       !frmt
-                      : ( txtbasis
-                        | txtann
-                        | teip5
-                        )
-                    & nml
-                  | 
-                )
-                ( lang
-                . getOlacLanguage$!olac|getLanguage$!xml
-                )
-            : ?K
-          &     (TITLE.getOlacTitle$!olac|)
-                (BASEITEM.getBaseItem$!xml|)
-                (DATE.!date)
-            : ?meta
-          & :?feats
-          &   whl
-            ' ( !K:? ((?.~):?F) ?K
-              & !feats !F:?feats
-              )
-          & readTable$Uploads
-          &   !Uploads
-            : ?A (?nr.!item.?Path.?file.?.?.?visibility) ?Z
-          &     !A
-                (!nr.!item.!Path.!file.!meta.!feats.!visibility)
-                !Z
-            : ?Uploads
-          & saveTable$Uploads
-      )
       ( NCNameStartChar
       =   ~<A:~>Z
         | "_"
@@ -5104,8 +5002,7 @@ toolsProg=
  *      . public
  *      )
  * The resource identifier is going to be used in the new resource's metadata.
- * The missing fifth and sixth fields are later filled out in the setFeatures
- * function, which analyses the XML metadata.
+ * The missing fifth and sixth fields are later filled out.
  * If the user provides a file by file upload, the second and third column are the same.
  *
  * Input: 
@@ -9558,6 +9455,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                     | :?R
                     )
+                & !R (qual.una):?R
                 & log$("analyseContentType returns:" !R)
                 & !R
             )
