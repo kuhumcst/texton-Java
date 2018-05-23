@@ -16,13 +16,20 @@ where=
       dcmi-type-vocabulary
   . meta/
   )
-  ( facets fileFormats linguae periods presentations vulticuli
+  (   facets
+      fileFormats
+      linguae
+      periods
+      presentations
+      vulticuli
+      qualities
   . meta/feature/
   )
   (   annotationStyles
       basistextStyles
       flatFileTypes
       imageStyles
+      lemmaStyles
       sndStyles
       tagSets
       textStyles

@@ -1294,7 +1294,7 @@ facets=
   ("PoS tags" POS-tags.pos.)
   (lemmas Lemma.lem.)
   ("word class" ordklasse.cls.)
-  (syntax "Syntaks (dependensstrukturer)".stx.)
+  ("syntax (dependency structure)" "Syntaks (dependensstruktur)".stx.)
   ("tokens,PoS-tags".tp.)
   ("tokens,PoS-tags,Dependency relations".tpd.)
   ("tokens,lemmas,PoS-tags" "tokens,lemmaer,PoS-tags".tpl.)
@@ -1324,7 +1324,8 @@ features=
     )
     (table.facets)
     ( specificationTable
-    .   (txt.textStyles)
+    .   (lem.lemmaStyles)
+        (txt.textStyles)
         (pos tp tpd tpl tplo.tagSets)
         (tok.tokenisationStyles)
     )
@@ -1413,7 +1414,8 @@ fileFormats=
   (audio.snd.)
   (video.vid.)
   (CoNLL2009.conll.)
-  ("Penn Treebank".pt.);
+  ("Penn Treebank".pt.)
+  (JSON.json.);
 flatFileTypes=
 (Latin-1.latin1.) (UTF-8.utf8.);
 imageStyles=
@@ -1639,6 +1641,11 @@ presentations=
   ("combined w. previous steps" "kombineret m. tidligere trin".comb.)
   ("frequency list" frekvensliste.frq.)
   ("alphabetic list" "alfabetisk liste".alf.);
+qualities=
+  (unambiguous utvetydig.una.)
+  (ambiguous tvetydig.amb.)
+  (pruned beskåret.pru.)
+  (OCR.ocr.);
 relations=
 ;
 sndStyles=
@@ -1667,7 +1674,8 @@ tagSets=
   ("ANI new tag set" "ANI_nyt_tagsæt".ANInyt.)
   ("Universal Part-of-Speech Tagset".Uni.);
 textStyles=
-(HQ.hq.) (OCR.ocr.);
+  ("regular text" "normal tekst".hq.)
+  ("OCR text" OCR-tekst.ocr.);
 tokenisationStyles=
   ("Penn Treebank".PT.)
   (DSL-basic.DSLb.)
@@ -2604,13 +2612,20 @@ where=
       dcmi-type-vocabulary
   . meta/
   )
-  ( facets fileFormats linguae periods presentations vulticuli
+  (   facets
+      fileFormats
+      linguae
+      periods
+      presentations
+      vulticuli
+      qualities
   . meta/feature/
   )
   (   annotationStyles
       basistextStyles
       flatFileTypes
       imageStyles
+      lemmaStyles
       sndStyles
       tagSets
       textStyles
