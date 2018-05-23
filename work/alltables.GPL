@@ -1376,6 +1376,12 @@ features=
     (short.app)
     (description."Decorative tradition, for example typeface class.")
     (table.vulticuli)
+  )
++ ( (inDex.G)
+    (name.Quality Kvalitet)
+    (short.qual)
+    (description."Quality standard.")
+    (table.qualities)
   );
 fileFormats=
   ( flat flad
@@ -1387,6 +1393,10 @@ fileFormats=
   (PDF.pdf.)
   (HTML.html.)
   (XML.xm.)
+  ( "Corpus Workbench (for CQP queries)"
+  . vrt
+  . "verticalized text, Corpus Workbench input format"
+  )
   (CSV.csv.)
   (DOC.doc.)
   (DOCX.docx.)
@@ -2384,15 +2394,17 @@ toolprop=
       (pres,(nml.alf+frq+nml))
   )
 + ( ANI-RTFread
-  .   (facet,(txt+txt^ocr.tok^(PT+simple)))
+  .   (facet,(txt.tok^(PT+simple)))
       (format,(flat+rtf.flat))
       (lang,(en.en))
       (pres,(nml.nml))
+      (qual,(ocr+una.una))
   )
 + ( ANI-RTFread
-  .   (facet,(txt+txt^ocr.seg+tok^simple))
+  .   (facet,(txt.seg+tok^simple))
       (format,(flat+rtf.flat))
       (pres,(nml.nml))
+      (qual,(ocr+una.una))
   )
 + ( ANI-Rep
   . (facet,(lem+pos+tok+txt.rep)) (format,(flat.flat))
@@ -2437,7 +2449,7 @@ toolprop=
       (lang,(da.da))
   )
 + ( CuneiForm
-  .   (facet,(txt.txt^ocr))
+  .   (facet,(txt.txt))
       ( format
       , ( img^gif+img^jpeg+img^pdf+img^png+img^tiff
         . flat+rtf
@@ -2468,16 +2480,18 @@ toolprop=
         + (tr.tr)
         + (uk.uk)
       )
+      (qual,(una.ocr))
   )
 + (PDFBox.format,(pdf.flat^utf8))
 + ( conllout
   .   ( facet
-      ,   (lem*pos*seg*tok.lem)
+      ,   (lem*pos*seg*tok.tpl)
         + (pos*seg*tok.pos)
         + (seg*tok.tok)
+        + (lem^ent*pos*seg*tok.lem^ent)
       )
       (format,(txtann.conll))
-      (pres,(nml.comb))
+      (pres,(nml.nml))
   )
 + ( espeak
   .   (format,(flat.snd^"vnd.wave"))
@@ -2562,7 +2576,12 @@ toolprop=
       (pres,(nml.nml))
   )
 + (pdf2htmlEX.format,(pdf.html))
-+ (pdfminer.format,(pdf.flat^utf8))
++ ( pdfminer
+  .   (facet,(txt.txt))
+      (format,(pdf.flat^utf8))
+      (pres,(nml.nml))
+      (qual,(una.una))
+  )
 + (seg.(facet,(sent*tok.seg)) (format,(txtann.txtann)))
 + (soffice.format,(doc+docx+odt.rtf)+(odp+ppt+pptx.pdf))
 + ( tesseract
@@ -2570,12 +2589,14 @@ toolprop=
       (facet,(txt.txt))
       (format,(img.flat))
       (lang,(da.da))
+      (qual,(una.ocr))
   )
 + ( tesseract
   .   (app,(rom.rom))
       (facet,(txt.txt))
       (format,(img.flat))
       (lang,(da.da)+(el.el)+(en.en))
+      (qual,(una.ocr))
   )
 + ( toksent
   . (facet,(txt.sent+tok)) (format,(txtbasis.txtann^one))
@@ -2593,7 +2614,9 @@ vidStyles=
   ("Flash video (FLV files)".x-flv.);
 vulticuli=
   (roman roman.rom.)
-  (blackletter gotisk.got.);
+  (blackletter gotisk.got.)
+  ("optimized for software" "bedst for programmer".drty.)
+  ("pretty printed" "nydelig opsætning".prtty.);
 where=
   (AAA where./)
   (CTBs jobAbout jobNr jobs relations Uploads.job/)
