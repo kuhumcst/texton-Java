@@ -13,6 +13,7 @@
             font-size: 12pt;
         }
 		body { font-size: 100%; }
+		fieldset {border-style: none;}
 		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
         /*Bold Blacks and Vibrant Highlights*/
 		/*.bodycanvas {background-color:#F5F5F5}
