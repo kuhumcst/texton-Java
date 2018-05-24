@@ -14,9 +14,19 @@
         }
 		body { font-size: 100%; }
 		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
+        /*Bold Blacks and Vibrant Highlights*/
+		/*.bodycanvas {background-color:#F5F5F5}
+		.fileupload {background-color:#EC576b}
+		.URLs {background-color:#4EC5C1}
+		.typein {background-color:#E5E338}*/
+        /*Striking and Energetic*/
+		.bodycanvas {background-color:#F2EEE2}
+		.fileupload {background-color:#F5CE28}
+		.typein {background-color:#43C0F6}
+		.URLs {background-color:#F81B84}
     </style>
 </head>
-<body bgcolor="#F5F5F5">
+<body class="bodycanvas">
 <!--div  style="margin:0px auto;width:860px;text-align:left;border:1px solid #336699;"-->
 <div  style="margin:0px auto;width:55em;text-align:left;">
     <h1 class="smallmargin">&#128136; Text Tonsorium &#128136;</h1>
@@ -26,7 +36,7 @@
         This service is free for single texts and for smaller groups of texts, but please do not mix languages or formats.<br />
     </p>
     <form enctype="multipart/form-data" method="post" action="createByGoalChoice">
-        <fieldset style="background-color:rgb(255,235,235)">
+        <fieldset class="fileupload">
             <legend style="font-weight: bold;">Upload file(s)</legend>
             <table>
                 <tr>
@@ -41,7 +51,7 @@
             </table>
         </fieldset>
 		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
-        <fieldset style="background-color:rgb(235,235,255)">
+        <fieldset class="URLs">
             <legend style="font-weight: bold;">Enter up to three addresses of web pages</legend>
             <table>
                 <tr>
@@ -57,7 +67,7 @@
             </table>
         </fieldset>
 		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
-        <fieldset style="background-color:rgb(235,255,235)">
+        <fieldset class="typein">
             <legend style="font-weight: bold;">Type or cut-and-paste some text</legend>
             <table>
                 <tr>
