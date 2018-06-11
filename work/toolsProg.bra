@@ -9455,7 +9455,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                     | :?R
                     )
-                & !R (qual.una):?R
+                & !R (ambig.una):?R
                 & log$("analyseContentType returns:" !R)
                 & !R
             )
