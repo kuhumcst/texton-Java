@@ -23,6 +23,7 @@ where=
       presentations
       vulticuli
       qualities
+      ambiguity
   . meta/feature/
   )
   (   annotationStyles
