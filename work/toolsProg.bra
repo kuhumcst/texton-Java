@@ -5475,21 +5475,28 @@ toolsProg=
       ( unfoldTreeN
       =     tool ou ou2 inputprop childstuff A Z goal b
           , inputprop feature stop a ret As stp z sp
-          , projectOnto
+          , projectOnto rt
         .   !arg:(?stop.?arg)
+          & 1+!calls:?calls:<100000
+          & ( @(!calls:? 000)&log$(calls !calls)
+            | 
+            )
           & (   !arg:%?A*%?arg
               & 0:?ret
               & unfoldTreeN$(!stop.!A):?Z
+              & !calls:<100000
               &   whl
                 ' ( !Z:(?stp.?a)+?Z
                   & unfoldTreeN$(!stop*!stp.!arg):?z
+                  & !calls:<100000
                   &   whl
                     ' ( !z:(?sp.?b)+?z
                       & !ret+(!sp.!a*!b):?ret
                       )
                   )
               & !ret
-            |   !arg:%+%
+            |   !calls:<100000
+              & !arg:%+%
               & (   !stop:?*(!arg.?projectOnto)^?*?
                   & (!stop.!projectOnto)
                 |   0:?ret
@@ -5497,6 +5504,7 @@ toolsProg=
                   &   whl
                     ' ( !As:%?A+?As
                       & unfoldTreeN$(!stop.!A):?Z
+                      & !calls:<100000
                       &   whl
                         ' ( !Z:(?stp.?a)+?Z
                           & !ret+((!arg.!a)*!stop.!a):?ret
@@ -5504,15 +5512,18 @@ toolsProg=
                       )
                   & !ret
                 )
-            |   !arg:(?goal.?childstuff)
+            |   !calls:<100000
+              & !arg:(?goal.?childstuff)
               & unfoldTreeN$(!stop.!childstuff):?Z
+              & !calls:<100000
               & 0:?ret
               &   whl
                 ' ( !Z:(?stp.?A)+?Z
                   & !ret+(!stp.!goal.!A):?ret
                   )
               & !ret
-            |     !arg
+            |   !calls:<100000
+              &   !arg
                 : ( ?tool
                   , ( ?A (?feature,%+%:?ou) ?Z
                     . ?inputprop
@@ -5528,24 +5539,27 @@ toolsProg=
                           . !childstuff
                           )
                       )
-                |   !ou:?ou2
+                |   !calls:<100000
+                  & !ou:?ou2
                   & 0:?ret
                   &   whl
                     ' ( !ou2:%?a+?ou2
-                      &     !ret
-                          +   unfoldTreeN
-                            $ ( !stop*(!ou.!a)
-                              .   !tool
-                                , ( !A (!feature,!a) !Z
-                                  . !inputprop
-                                  . !childstuff
-                                  )
-                              )
-                        : ?ret
+                      &     unfoldTreeN
+                          $ ( !stop*(!ou.!a)
+                            .   !tool
+                              , ( !A (!feature,!a) !Z
+                                . !inputprop
+                                . !childstuff
+                                )
+                            )
+                        : ?rt
+                      & !ret+!rt:?ret
                       )
+                  & !calls:<100000
                   & !ret
                 )
-            |   !arg:(?tool,(?ou.?inputprop.?childstuff))
+            |   !calls:<100000
+              & !arg:(?tool,(?ou.?inputprop.?childstuff))
               & unfoldTreeN$(!stop.!childstuff):?Z
               & 0:?ret
               &   whl
@@ -5553,7 +5567,7 @@ toolsProg=
                   & !ret+(!stp.!tool,(!ou.!inputprop.!A)):?ret
                   )
               & !ret
-            | (!stop.!arg)
+            | !calls:<100000&(!stop.!arg)
             )
       )
       ( unfoldTree
@@ -10846,19 +10860,33 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( NoWay
             =   
-              .   str
-                $ ( 404~~~
-                      toML
-                    $ ( !BodyContainer
-                      $ ( paragraph
-                        $ ( localized
-                          $ ( "Your goal cannot be fulfilled with the currently integrated tools."
-                              "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
+              .     !arg:~<100000
+                  &   str
+                    $ ( 404~~~
+                          toML
+                        $ ( !BodyContainer
+                          $ ( paragraph
+                            $ ( localized
+                              $ ( "The computation takes too much time. It may succeed if you narrow your goal."
+                                  "Beregningen tager for lang tid. Måske vil det lykkes hvis du definerer dit mål lidt nærmere."
+                                )
+                              )
+                            )
+                          )
+                      )
+                |   str
+                  $ ( 404~~~
+                        toML
+                      $ ( !BodyContainer
+                        $ ( paragraph
+                          $ ( localized
+                            $ ( "Your goal cannot be fulfilled with the currently integrated tools."
+                                "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
+                              )
                             )
                           )
                         )
-                      )
-                  )
+                    )
             )
           & ( TooMany
             =   
@@ -11011,7 +11039,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & ( "We are past the first stage: the user has pressed a button"
             =     parms TOOL pipes Submit directedBy hiddenData
                 , parms nth pipe batch Items mail2 ERR
-                , NNN pipesN
+                , NNN pipesN calls
               .     !arg
                   : ( ?parms
                     . ?TOOL
@@ -11023,6 +11051,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . ?Items
                     . ?mail2
                     )
+                & 0:?calls
                 & (   (   !directedBy:GoalChoice
                         & !wrkflw:~
                         &   precooked-DASISH$(!wrkflw.!A !Z)
@@ -11350,8 +11379,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             | !arg
                             )
                       )
+                    & !pipes:?+[?NNN
+                    & log$(NNN1 !NNN)
+                    & log$"Now unfold"
                     & (   unfoldTreeN$(1.!pipes):?pipesN
+                        & log$"unfoldTreeN done"
+                        & !pipesN:?+[?NNN
+                        & log$(NNN1a !NNN)
+                        & log$"Now percolateForgottenFeatures"
                         & percolateForgottenFeatures$!pipesN:?pipesN
+                        & log$"percolateForgottenFeatures done"
+                        & !pipesN:?+[?NNN
+                        & log$(NNN1b !NNN)
                         & 0:?pipes
                         &   whl
                           ' ( !pipesN:(?.?pipe)+?pipesN
@@ -11361,10 +11400,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               | !pipe+!pipes:?pipes
                               )
                             )
-                      | unfoldTree$!pipes:?pipes
+                      |   !calls:<100000
+                        & unfoldTree$!pipes:?pipes
+                      | log$(calls !calls)&~
                       )
                     & !pipes:?+[?NNN
-                    & log$(NNN !NNN)
+                    & log$(NNN2 !NNN)
                     & (   !NNN:>1000
                         & log$TooMany
                         & TooMany$!NNN
@@ -11466,7 +11507,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                           )
                       )
-                  | NoWay$
+                  | log$noway&NoWay$!calls
                   )
             )
           & ( computeWorkflow
