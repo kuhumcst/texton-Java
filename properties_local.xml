@@ -25,11 +25,11 @@
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
              ProxyPass /toolsdata !
         -->
-    <entry key="documentRoot">C:/projects/clarin/trunk/dkclarin-services/tools/work/data/</entry>
+    <entry key="documentRoot">C:/gitprojects/DK-ClarinTools/work/data/</entry>
     <!-- The value of the stagingArea key must also be the name of a service,
            so that all fetches of results by users are under control of the service! -->
     <entry key="stagingArea">/tools/work/data/</entry>
-    <entry key="toolsHome">C:/projects/clarin/trunk/dkclarin-services/tools/work/</entry>
+    <entry key="toolsHome">C:/gitprojects/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
     <entry key="tempdir">work/Catalina/localhost/tools</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->

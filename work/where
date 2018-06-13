@@ -22,7 +22,6 @@ where=
       periods
       presentations
       vulticuli
-      qualities
       ambiguity
   . meta/feature/
   )
@@ -30,10 +29,8 @@ where=
       basistextStyles
       flatFileTypes
       imageStyles
-      lemmaStyles
       sndStyles
       tagSets
-      textStyles
       tokenisationStyles
       vidStyles
   . meta/style/

@@ -9348,17 +9348,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                         : ?R
                     |   "application/vnd.ms-powerpoint"
-                      & (facet.txt^hq) (format.ppt):?R
+                      & (app.nrm) (facet.txt) (format.ppt):?R
                     |   "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                      & (facet.txt^hq) (format.pptx):?R
+                      & (app.nrm) (facet.txt) (format.pptx):?R
                     |   "application/vnd.oasis.opendocument.presentation"
-                      & (facet.txt^hq) (format.odp):?R
+                      & (app.nrm) (facet.txt) (format.odp):?R
                     |   "application/vnd.ms-excel"
-                      & (facet.txt^hq) (format.xls):?R
+                      & (app.nrm) (facet.txt) (format.xls):?R
                     |   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                      & (facet.txt^hq) (format.xlsx):?R
+                      & (app.nrm) (facet.txt) (format.xlsx):?R
                     |   "application/vnd.oasis.opendocument.spreadsheet"
-                      & (facet.txt^hq) (format.ods):?R
+                      & (app.nrm) (facet.txt) (format.ods):?R
                     |   ( application/x-download
                         | application/octet-stream
                         )
@@ -9406,11 +9406,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       & (facet.txt) (format.docx):?R
                     |   text/html
-                      & (facet.txt^hq) (format.html):?R
+                      & (app.nrm) (facet.txt) (format.html):?R
                     |   text/rtf
-                      & (facet.txt) (format.rtf):?R
+                      & (app.nrm) (facet.txt) (format.rtf):?R
                     |   text/plain
-                      & (facet.txt^hq) (format.flat):?R
+                      & (app.nrm) (facet.txt) (format.flat):?R
                     | text/x-conll&(format.flat):?R
                     |   @( ?
                          :   image/
