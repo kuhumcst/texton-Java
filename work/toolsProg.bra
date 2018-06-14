@@ -5617,16 +5617,19 @@ toolsProg=
           | !arg
       )
       ( createNewGoal
-      =   toolFeatures rfield rvals rins rin newGoal
+      =   toolFeatures rfield rvals rins rin newGoal RI
         .   !arg:(?newGoal.?toolFeatures)
           &   whl
             ' ( !toolFeatures:(?rfield,?rvals) ?toolFeatures
               & 0:?rins
               &   whl
                 ' ( !rvals:(?rin.?)+?rvals
-                  & ( !rins:?+!rin+?
-                    | !rin+!rins:?rins
-                    )
+                  &   whl
+                    ' ( !rin:%?RI+?rin
+                      & ( !rins:?+!RI+?
+                        | !RI+!rins:?rins
+                        )
+                      )
                   )
               & (!rfield,!rins) !newGoal:?newGoal
               )
@@ -9348,17 +9351,35 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                         : ?R
                     |   "application/vnd.ms-powerpoint"
-                      & (app.nrm) (facet.txt) (format.ppt):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.ppt)
+                        : ?R
                     |   "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                      & (app.nrm) (facet.txt) (format.pptx):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.pptx)
+                        : ?R
                     |   "application/vnd.oasis.opendocument.presentation"
-                      & (app.nrm) (facet.txt) (format.odp):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.odp)
+                        : ?R
                     |   "application/vnd.ms-excel"
-                      & (app.nrm) (facet.txt) (format.xls):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.xls)
+                        : ?R
                     |   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                      & (app.nrm) (facet.txt) (format.xlsx):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.xlsx)
+                        : ?R
                     |   "application/vnd.oasis.opendocument.spreadsheet"
-                      & (app.nrm) (facet.txt) (format.ods):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.ods)
+                        : ?R
                     |   ( application/x-download
                         | application/octet-stream
                         )
@@ -9406,11 +9427,20 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       & (facet.txt) (format.docx):?R
                     |   text/html
-                      & (app.nrm) (facet.txt) (format.html):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.html)
+                        : ?R
                     |   text/rtf
-                      & (app.nrm) (facet.txt) (format.rtf):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.rtf)
+                        : ?R
                     |   text/plain
-                      & (app.nrm) (facet.txt) (format.flat):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.flat)
+                        : ?R
                     | text/x-conll&(format.flat):?R
                     |   @( ?
                          :   image/
