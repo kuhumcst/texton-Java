@@ -1876,6 +1876,22 @@ toolsProg=
                               ")"
                           )
                     )
+                  & ( infoabout
+                    =   Description
+                      .     !tooladm
+                          :   ?
+                            + ( ? (Title.!arg) ?
+                              : ? (Description.?Description) ?
+                              )
+                            + ?
+                        & ( div
+                          .   (class.tooltip)
+                            ,   !arg
+                                ( span
+                                . (class.tooltiptext),!Description
+                                )
+                          )
+                    )
                   & ( describe
                     =   a b c m n
                       .     !arg:(?a,?b)
@@ -1896,7 +1912,7 @@ toolsProg=
                           & describe$!a " → " describe$!b
                         |   !arg:(?m.?seqno.?n)
                           &   ( !m:&Circle$!seqno
-                              | !m circle$!seqno
+                              | infoabout$!m circle$!seqno
                               )
                               ( !m:
                               |   !abbrevs:?*(!m.!n)^?n*?
@@ -1905,6 +1921,7 @@ toolsProg=
                         | !arg
                     )
                   & !arg:(?abbrevs.?struct)
+                  & log$(describe !struct)
                   & describe$!struct:?description
                   & ( !description:~
                     |   localized
@@ -2293,6 +2310,88 @@ toolsProg=
                 "legend {display: inline-block; padding: 0.2em 0.5em; border:1px solid green; color:green; font-size:90%; text-align:left; }"
                 \r\n
                 ".required {color:red; font-size:90%;}"
+                \r\n
+                "/* Tooltip container */"
+                \r\n
+                ".tooltip {"
+                \r\n
+                "    position: relative;"
+                \r\n
+                "    display: inline-block;"
+                \r\n
+                "    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */"
+                \r\n
+                "}"
+                \r\n\r\n
+                "/* Tooltip text */"
+                \r\n
+                ".tooltip .tooltiptext {"
+                \r\n
+                "    visibility: hidden;"
+                \r\n
+                "    width: 320px;"
+                \r\n
+                "    background-color: #555;"
+                \r\n
+                "    color: #fff;"
+                \r\n
+                "    text-align: left;"
+                \r\n
+                "    padding: 5px 0;"
+                \r\n
+                "    border-radius: 6px;"
+                \r\n\r\n
+                "    /* Position the tooltip text */"
+                \r\n
+                "    position: absolute;"
+                \r\n
+                "    z-index: 1;"
+                \r\n
+                "    bottom: 125%;"
+                \r\n
+                "    left: 50%;"
+                \r\n
+                "    margin-left: -60px;"
+                \r\n\r\n
+                "    /* Fade in tooltip */"
+                \r\n
+                "    opacity: 0;"
+                \r\n
+                "    transition: opacity 0.3s;"
+                \r\n
+                "}"
+                \r\n\r\n
+                "/* Tooltip arrow */"
+                \r\n
+                ".tooltip .tooltiptext::after {"
+                \r\n
+                "    content: ;"
+                \r\n
+                "    position: absolute;"
+                \r\n
+                "    top: 100%;"
+                \r\n
+                "    left: 50%;"
+                \r\n
+                "    margin-left: -5px;"
+                \r\n
+                "    border-width: 5px;"
+                \r\n
+                "    border-style: solid;"
+                \r\n
+                "    border-color: #555 transparent transparent transparent;"
+                \r\n
+                "}"
+                \r\n\r\n
+                "/* Show the tooltip text when you mouse over the tooltip container */"
+                \r\n
+                ".tooltip:hover .tooltiptext {"
+                \r\n
+                "    visibility: visible;"
+                \r\n
+                "    opacity: 1;"
+                \r\n
+                "}"
           )
           \r\n
       )
@@ -10278,15 +10377,43 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   $ ( 200~~~
                         toML
                       $ ( !BodyContainer
-                        $ ( form
-                          $ ( methodName$!directedBy
-                            .   submit$"View details"
-                                submit$Metadata
-                                submit$Submit
-                                (br.,)
-                                makeHiddenFields$!hiddenData
-                                makeWorkflowRadioButtons$!pipes
+                        $ ( (   !pipes:%+%
+                              &   (h3.,Workflows)
+                                  ( p
+                                  .   
+                                    ,     localized
+                                        $ ( "These are the workflows that fulfill the goal set by you."
+                                            "Dette er arbejdsgangene som løser din opgave."
+                                          )
+                                        (br.,)
+                                          localized
+                                        $ ( "Select one before pressing the submit button."
+                                            "Vælg en og tryk på submit-knappen."
+                                          )
+                                        (br.,)
+                                          localized
+                                        $ ( "Move the mouse pointer over the tool names for a short explanation of what the tool does."
+                                            "Du får en kort forklaring for hvert værktøj ved at flytte musepilen over værktøjets navn."
+                                          )
+                                  )
+                            |   (h3.,Workflow)
+                                ( p
+                                .   
+                                  ,   localized
+                                    $ ( "This is the workflow that fulfills the goal set by you."
+                                        "Dette er arbejdsgangen som løser din opgave."
+                                      )
+                                )
                             )
+                              form
+                            $ ( methodName$!directedBy
+                              .   submit$"View details"
+                                  submit$Metadata
+                                  submit$Submit
+                                  (br.,)
+                                  makeHiddenFields$!hiddenData
+                                  makeWorkflowRadioButtons$!pipes
+                              )
                           )
                         )
                     )
