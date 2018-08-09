@@ -1921,7 +1921,6 @@ toolsProg=
                         | !arg
                     )
                   & !arg:(?abbrevs.?struct)
-                  & log$(describe !struct)
                   & describe$!struct:?description
                   & ( !description:~
                     |   localized
@@ -5369,13 +5368,17 @@ toolsProg=
             )
       )
       ( fold
-      =   A M Z a f v1 v2 z
+      =   A M Z B a f v1 v2 z
         .       !arg
               :   ?A
-                * (?a (?f,?v1) ?z)
-                * ?M
-                * (!a (!f,?v2) !z)
-                * ?Z
+                * ( `%?B*?Z
+                  &   !B
+                    :   ?a
+                        (?f,?v1)
+                        ( ?z
+                        & !Z:?M*(!a (!f,?v2) !z)*?Z
+                        )
+                  )
             & fold$(!A*(!a (!f,!v1*!v2) !z)*!M*!Z)
           |     !arg
               : ?A*(?a (?f,?v1) ?M (!f,?v2) ?z)*?Z
@@ -9372,8 +9375,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
             )
           & 0:?pipes
+          & 0:?NN
           &   whl
             ' ( !arg:(?nnn.?pipe1)+?arg
+              & 1+!NN:?NN
               & fromResultMethod$(!pipe1.):(?pipe2.?F)
               & toResultMethod$(!pipe2.!F):(?pipe3.?)
               & ( !pipe3:0
