@@ -5579,25 +5579,25 @@ toolsProg=
           , inputprop feature stop a ret As stp z sp
           , projectOnto rt
         .   !arg:(?stop.?arg)
-          & 1+!calls:?calls:<100000
+          & 1+!calls:?calls:<10000
           & ( @(!calls:? 000)&log$(calls !calls)
             | 
             )
           & (   !arg:%?A*%?arg
               & 0:?ret
               & unfoldTreeN$(!stop.!A):?Z
-              & !calls:<100000
+              & !calls:<10000
               &   whl
                 ' ( !Z:(?stp.?a)+?Z
                   & unfoldTreeN$(!stop*!stp.!arg):?z
-                  & !calls:<100000
+                  & !calls:<10000
                   &   whl
                     ' ( !z:(?sp.?b)+?z
                       & !ret+(!sp.!a*!b):?ret
                       )
                   )
               & !ret
-            |   !calls:<100000
+            |   !calls:<10000
               & !arg:%+%
               & (   !stop:?*(!arg.?projectOnto)^?*?
                   & (!stop.!projectOnto)
@@ -5606,7 +5606,7 @@ toolsProg=
                   &   whl
                     ' ( !As:%?A+?As
                       & unfoldTreeN$(!stop.!A):?Z
-                      & !calls:<100000
+                      & !calls:<10000
                       &   whl
                         ' ( !Z:(?stp.?a)+?Z
                           & !ret+((!arg.!a)*!stop.!a):?ret
@@ -5614,17 +5614,17 @@ toolsProg=
                       )
                   & !ret
                 )
-            |   !calls:<100000
+            |   !calls:<10000
               & !arg:(?goal.?childstuff)
               & unfoldTreeN$(!stop.!childstuff):?Z
-              & !calls:<100000
+              & !calls:<10000
               & 0:?ret
               &   whl
                 ' ( !Z:(?stp.?A)+?Z
                   & !ret+(!stp.!goal.!A):?ret
                   )
               & !ret
-            |   !calls:<100000
+            |   !calls:<10000
               &   !arg
                 : ( ?tool
                   , ( ?A (?feature,%+%:?ou) ?Z
@@ -5641,7 +5641,7 @@ toolsProg=
                           . !childstuff
                           )
                       )
-                |   !calls:<100000
+                |   !calls:<10000
                   & !ou:?ou2
                   & 0:?ret
                   &   whl
@@ -5657,10 +5657,10 @@ toolsProg=
                         : ?rt
                       & !ret+!rt:?ret
                       )
-                  & !calls:<100000
+                  & !calls:<10000
                   & !ret
                 )
-            |   !calls:<100000
+            |   !calls:<10000
               & !arg:(?tool,(?ou.?inputprop.?childstuff))
               & unfoldTreeN$(!stop.!childstuff):?Z
               & 0:?ret
@@ -5669,7 +5669,7 @@ toolsProg=
                   & !ret+(!stp.!tool,(!ou.!inputprop.!A)):?ret
                   )
               & !ret
-            | !calls:<100000&(!stop.!arg)
+            | !calls:<10000&(!stop.!arg)
             )
       )
       ( unfoldTree
@@ -11022,7 +11022,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( NoWay
             =   
-              .     !arg:~<100000
+              .     !arg:~<10000
                   &   str
                     $ ( 404~~~
                           toML
@@ -11562,7 +11562,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               | !pipe+!pipes:?pipes
                               )
                             )
-                      |   !calls:<100000
+                      |   !calls:<10000
                         & unfoldTree$!pipes:?pipes
                       | log$(calls !calls)&~
                       )
