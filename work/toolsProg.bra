@@ -9376,14 +9376,37 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & 0:?pipes
           & 0:?NN
+          & ( validateInputsForEachTool
+            =   recr
+              .   "No tool shall have multiple inputs that differ in more than one feature"
+                & ( recr
+                  =   a b A
+                    .     !arg:%?a*%?b
+                        & recr$!a
+                        & recr$!b
+                      | !arg:(?,(?.?.(?,?) ?))
+                      |   !arg:(?,(?.?.?a.?b))
+                        &   whl
+                          ' ( !a:%?A*?a
+                            & !b:?*(?,(!A.?))*?
+                            )
+                        & !a:1
+                        & recr$!b
+                  )
+                & !arg:(?.?arg)
+                & recr$!arg
+            )
           &   whl
             ' ( !arg:(?nnn.?pipe1)+?arg
               & 1+!NN:?NN
               & fromResultMethod$(!pipe1.):(?pipe2.?F)
               & toResultMethod$(!pipe2.!F):(?pipe3.?)
               & ( !pipe3:0
-                | !pipes:?+(?.!pipe3)+?
-                | (!nnn.!pipe3)+!pipes:?pipes
+                |   validateInputsForEachTool$!pipe3
+                  & ( !pipes:?+(?.!pipe3)+?
+                    | (!nnn.!pipe3)+!pipes:?pipes
+                    )
+                | 
                 )
               )
           & !pipes

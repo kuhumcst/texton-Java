@@ -1,3 +1,8 @@
+20180810 - Pruned workflows with a tool that has multiple inputs that differ
+           in more than one feature. (Features of inputs shall differ in
+           one and only one feature, e.g. different formats or different
+           languages, but not both.)
+
 20180810 - Reduced max calls from 100000 to 10000
 
 20180809 - Fixed error in fold$ function causing features being set to 0.
