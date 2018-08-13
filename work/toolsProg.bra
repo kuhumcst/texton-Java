@@ -5574,16 +5574,74 @@ toolsProg=
             | 1
             )
       )
+      ( leaveFeat
+      =   A
+        .     !arg:%?A*%?arg
+            & leaveFeat$!A*leaveFeat$!arg
+          | !arg:(?,(?.?.?.?arg))&leaveFeat$!arg
+          | !arg:(?,(?.?.?arg))&!arg
+          |   !arg:(?.(?,?):?arg)
+            & leaveFeat$!arg
+      )
+      ( subtract
+      =   
+        .   !arg:(?all.?org)
+          &   map
+            $ ( ( 
+                =   f
+                  .   !arg:(?f,?)
+                    & ( !org:? (!f,?) ?&
+                      | !arg
+                      )
+                )
+              . !all
+              )
+      )
+      ( compatible
+      =   A B
+        .   ~(!arg:%*%)
+          |   1:?B
+            &   whl
+              ' ( !arg:((?,?) ?:?A)^?*?arg
+                & subtract$(!A.!sources)*!B:?B
+                )
+            & ~( !B
+               :   %?C
+                 * ( %?D
+                   &   !C
+                     :   ?
+                         ( ?F
+                         ,   ?V
+                           & !D:?*(? (!F,~!V) ?)*?
+                         )
+                         ?
+                   )
+               )
+      )
       ( unfoldTreeN
       =     tool ou ou2 inputprop childstuff A Z goal b
           , inputprop feature stop a ret As stp z sp
           , projectOnto rt
-        .   !arg:(?stop.?arg)
+        .   "Returns sum. Each term is a dot separated structure:
+                 (<stop list> . <user provided output specs> . <sum of unambiguous trees>)
+             The stop list is a product of (<key>.<value>) pairs, where the key is an (ambiguous) tree and the value
+             is a disambiguated solution. The stop list is passed down to the leafs and also up again as part of the
+             return value. In that way some consistency is assured and many inviable solutions are never attempted.
+             The ambiguities (declared as terms in sums) in the original tree can be in feature values and in tool choices.
+             
+             The argument consists of a product of already found unfoldings and the (sub)tree to unfold, separated by a dot.
+             Each factor in the product of already found unfoldings consists of the tree to unfold (the key) and the tree
+             it was unfolded to (the value). Factors can have an exponent.
+             
+             Expects that the variable 'sources' is a list of input feature/value pairs. 
+             (A single pair can contain more than one value. That is the case if there are more than one inputs.)"
+          & !arg:(?stop.?arg)
           & 1+!calls:?calls:<10000
           & ( @(!calls:? 000)&log$(calls !calls)
             | 
             )
           & (   !arg:%?A*%?arg
+              & "Multiply each term in unfolded first factor with each term in unfolded remaining factors."
               & 0:?ret
               & unfoldTreeN$(!stop.!A):?Z
               & !calls:<10000
@@ -5591,15 +5649,21 @@ toolsProg=
                 ' ( !Z:(?stp.?a)+?Z
                   & unfoldTreeN$(!stop*!stp.!arg):?z
                   & !calls:<10000
+                  & leaveFeat$!a:?af
                   &   whl
                     ' ( !z:(?sp.?b)+?z
-                      & !ret+(!sp.!a*!b):?ret
+                      & leaveFeat$!b:?bf
+                      & (   compatible$(!af*!bf)
+                          & !ret+(!sp.!a*!b):?ret
+                        | 
+                        )
                       )
                   )
               & !ret
             |   !calls:<10000
               & !arg:%+%
               & (   !stop:?*(!arg.?projectOnto)^?*?
+                  & "This removes MANY solutions that assume incompatible input specs."
                   & (!stop.!projectOnto)
                 |   0:?ret
                   & !arg:?As
@@ -6455,21 +6519,21 @@ toolsProg=
             )
           & fulfil$(activeTools$!toolprop.!source.!goal.0)
       )
-      ( Pipelines
-      =     f fs i o name short
-          , A Z V feat spec return restriction p v
-        .   0:?indent
-          & !arg:(?arg.?restriction)
-          & :?i:?o
-          & readTable$features
-          & !features:?fs
+      ( extractIOfeaturesFromHTTParg
+      =   fs IorO f name short p A v Z feat spec io V
+        .   "Collects features of the input(s) or of the output. Each feature
+             is mentioned once. If there are more than one input, one feature
+             will have more than one value. These values are the factors in a
+             product."
+          & !arg:(?fs.?IorO.?arg)
+          & :?io
           &   whl
             ' ( !fs:%?f+?fs
               &   !f
                 : ? (name.?name) ?
                 : ? (short.?short) ?
               & localized$!name:?name
-              & str$(I !short):?p
+              & str$(!IorO !short):?p
               &   whl
                 ' ( !arg:?A (!p.?v) ?Z
                   & !A !Z:?arg
@@ -6480,7 +6544,7 @@ toolsProg=
                     | 
                     )
                   & ( !v:
-                    |     !i
+                    |     !io
                         : ( ?A (!short,?V) ?Z
                           | ?A (!name,?V) ?Z
                           )
@@ -6488,38 +6552,25 @@ toolsProg=
                         |   ( !A (!short,!V*!v) !Z
                             | !A (!name,!V*!v) !Z
                             )
-                          : ?i
+                          : ?io
                         )
-                    |   ( (!short,!v) !i
-                        | (!name,!v) !i
+                    |   ( (!short,!v) !io
+                        | (!name,!v) !io
                         )
-                      : ?i
-                    )
-                  )
-              & str$(O !short):?p
-              &   whl
-                ' ( !arg:?A (!p.?v) ?Z
-                  & !A !Z:?arg
-                  & ( !v:
-                    |     !o
-                        : ( ?A (!short,?V) ?Z
-                          | ?A (!name,?V) ?Z
-                          )
-                      & ( !V:?*!v*?
-                        |   ( !A (!short,!V*!v) !Z
-                            | !A (!name,!V*!v) !Z
-                            )
-                          : ?o
-                        )
-                    |   ( (!short,!v) !o
-                        | (!name,!v) !o
-                        )
-                      : ?o
+                      : ?io
                     )
                   )
               )
-          & fp$(sort$!i.sort$!o.!restriction):?return
-          & !return
+          & sort$!io
+      )
+      ( Pipelines
+      =   i o restriction
+        .   0:?indent
+          & !arg:(?arg.?restriction)
+          & readTable$features
+          & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
+          & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
+          & (!i.fp$(!i.!o.!restriction))
       )
       ( testPipelines
       =   
@@ -9374,8 +9425,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & (!results.!NF)
                   )
             )
-          & 0:?pipes
-          & 0:?NN
           & ( validateInputsForEachTool
             =   recr
               .   "No tool shall have multiple inputs that differ in more than one feature"
@@ -9396,6 +9445,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !arg:(?.?arg)
                 & recr$!arg
             )
+          & 0:?pipes
+          & 0:?NN
           &   whl
             ' ( !arg:(?nnn.?pipe1)+?arg
               & 1+!NN:?NN
@@ -9403,7 +9454,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               & toResultMethod$(!pipe2.!F):(?pipe3.?)
               & ( !pipe3:0
                 |   validateInputsForEachTool$!pipe3
-                  & ( !pipes:?+(?.!pipe3)+?
+                  & (   !pipes:?+(?.!pipe3)+?
+                      & log$"pipe3 already added"
                     | (!nnn.!pipe3)+!pipes:?pipes
                     )
                 | 
@@ -11236,6 +11288,301 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . ?Items
                     . ?mail2
                     )
+                & ( signatures
+                  =   A prog o i sub
+                    .     !arg:(((?,?) ?)*?.?arg)
+                        & signatures$!arg
+                      |   !arg:%?A*%?arg
+                        & signatures$!A*signatures$!arg
+                      |   !arg:(%@?prog,(?o.?i.?sub))
+                        & !prog^(!o.!i)*signatures$!sub
+                      | 1
+                  )
+                & ( Values
+                  =   x y
+                    .   !arg:@?x^?&!x
+                      |   !arg:?x_?y
+                        & (Values$!x)_(Values$!y)
+                      | !arg
+                  )
+                & ( containedBy
+                  =   A B a
+                    .   !arg:(?A.?B)
+                      & (     !A
+                            : ? (`%?a&~(!B:? !a ?)) ?
+                          & `~
+                        | 
+                        )
+                  )
+                & ( conflict
+                  =   A B f e
+                    .   !arg:(?A.?B)
+                      &   !A
+                        :   ?
+                            ( ?f
+                            ,   ?e
+                              & !B:? (!f,~!e) ?
+                            )
+                            ?
+                  )
+                & ( noConflict
+                  =   A B
+                    .   !arg:(?A.?B)
+                      & ( !A:!B
+                        |   ( conflict$(!A.!B)
+                            | conflict$(!B.!A)
+                            )
+                          & `~
+                        | 
+                        )
+                  )
+                & ( EqualPairs
+                  =   A B c d e f
+                    .   !arg:(?A.?B)
+                      & Values$!A:(?c.?d)
+                      & Values$!B:(?e.?f)
+                      & noConflict$(!c.!e)
+                      & noConflict$(!d.!f)
+                  )
+                & ( Equal
+                  =   A B
+                    .   !arg:(?A.?B)
+                      & Values$!A:?A
+                      & Values$!B:?B
+                      & noConflict$(!A.!B)
+                  )
+                & ( containedBy
+                  =   short long fac val e E rem
+                    .   !arg:(?short.?long)
+                      & ( !short:
+                        |   !short:(?fac,@?val^?e) ?short
+                          & !long:? (!fac,!val^?E) ?
+                          & (   !e:(1|!E)
+                              & containedBy$(!short.!long):?rem
+                              & (!fac,!val^!E) !rem
+                            |   !E:1
+                              & containedBy$(!short.!long):?rem
+                              & (!fac,!val^!e) !rem
+                            )
+                        )
+                  )
+                & ( differentSubSpecs
+                  =   oi1 oi2
+                    .   !sjt
+                      :   ?
+                        + #*((?.?):?oi1)
+                        + ?
+                        +   #
+                          * ( (?.?):?oi2
+                            & EqualPairs$(!oi1.!oi2)
+                            )
+                        + ?
+                  )
+                & ( unif
+                  =   a b A B X Y Z a1 a2 b1 b2
+                    .   !arg:(?a.?b)
+                      & (   !a:%@?A^?X
+                          & !b:%@?B^?Y
+                          & !A:!B
+                          &   ( !X:!Y
+                              | !X:1&!Y
+                              | !Y:1&!X
+                              )
+                            : ?Z
+                          & !A^!Z
+                        |   !a:%?a1 %?a2
+                          & !b:%?b1 %?b2
+                          & unif$(!a1.!b1) unif$(!a2.!b2)
+                        |   !a:%?a1*%?a2
+                          & !b:%?b1*%?b2
+                          & unif$(!a1.!b1)*unif$(!a2.!b2)
+                        |   !a:(%?a1.%?a2)
+                          & !b:(%?b1.%?b2)
+                          & (unif$(!a1.!b1).unif$(!a2.!b2))
+                        |   !a:(%?a1,%?a2)
+                          & !b:(%?b1,%?b2)
+                          & (!a1:!b1,unif$(!a2.!b2))
+                        )
+                  )
+                & ( union
+                  =   Ao Ai Bo Bi res
+                    .   !arg:((?Ao.?Ai).?Bo.?Bi)
+                      &   (supplement$(!Ao.!Bo).supplement$(!Ai.!Bi))
+                        : ?res
+                      & !res
+                  )
+                & ( reparable
+                  =   oi1 oi2 A M Z OI
+                    .       !arg
+                          :   ?A
+                            + #*((?.?):?oi1)
+                            + ?M
+                            +   #
+                              * ( (?.?):?oi2
+                                & EqualPairs$(!oi1.!oi2)
+                                )
+                            + ?Z
+                        & (   union$(!oi1.!oi2):?oi1
+                            & union$(!oi2.!oi1):?oi2
+                            & unif$(!oi1.!oi2):?OI
+                            & reparable$(!A+!OI+!M+!Z)
+                          | `~
+                          )
+                      | !arg
+                  )
+                & ( Compatible
+                  =   tool sigs moresigs A
+                    .       !arg
+                          :   ?A
+                            *   %@?tool
+                              ^ ( %+%
+                                : differentSubSpecs$
+                                : ?sigs
+                                )
+                            * ?arg
+                        & reparable$!sigs:?sigs
+                        & (   ~(!sigs:differentSubSpecs$)
+                            & Compatible$!arg:?moresigs
+                            & !A*!tool^!sigs*!moresigs
+                          | `~
+                          )
+                      | !arg
+                  )
+                & ( rpl
+                  =   vals fac gold A B exp
+                    .     !arg:(?vals.?fac.?gold)
+                        & !vals:%?A*%?B
+                        & rpl$(!A.!fac.!gold):?A
+                        & rpl$(!B.!fac.!gold):?B
+                        & !A*!B
+                      |   !vals:%?A %?B
+                        & rpl$(!A.!fac.!gold):?A
+                        & (rpl$(!B.!fac.!gold):?B|)
+                        & !A !B
+                      |   !vals:@?A^?B
+                        & (   !gold:?*(? (!fac,!vals) ?)*?
+                            & !vals
+                          |     !gold
+                              : ?*(? (!fac,!A^?exp) ?)*?
+                            &   ( !B:!exp
+                                | !exp:1&!B
+                                | !B:1&!exp
+                                )
+                              : ?B
+                            & !A^!B
+                          | !A^!B
+                          )
+                  )
+                & ( adaptInputProfile
+                  =   I subs fac gold nI vals
+                    .     !arg:(?I.?subs)
+                        &   !subs
+                          : (((?,?) ?)*?:?gold.?)
+                        & :?nI
+                        &   whl
+                          ' ( !I:(?fac,?vals) ?I
+                            &   !nI (!fac,rpl$(!vals.!fac.!gold))
+                              : ?nI
+                            )
+                        & !nI
+                      | !I
+                  )
+                & ( Tubst
+                  =     OI I A o i sub prog
+                      , H h h1 H1 O
+                    .   !arg:(?arg.?OI)
+                      & (     !arg
+                            : (((?,?) ?)*?:?H.?arg)
+                          & Tubst$(!arg.!OI):?arg
+                          & 1:?h
+                          &   whl
+                            ' ( !H:%?H1*?H
+                              & (     !arg
+                                    :   ?
+                                      * ( ?
+                                        , (   ?O
+                                            &   containedBy$(!H1.!O)
+                                              : ?h1
+                                          . ?
+                                          )
+                                        )
+                                      * ?
+                                  & !h*!h1:?h
+                                | !h*(!H1 problem !arg):?h
+                                )
+                              )
+                          & (   !h:1&HA!
+                              | !h
+                            . !arg
+                            )
+                        |   !arg:%?A*%?arg
+                          & Tubst$(!A.!OI)*Tubst$(!arg.!OI)
+                        |   !arg:(%@?prog,(?o.?i.?sub))
+                          &   !OI
+                            :   ?
+                              *   !prog
+                                ^ ( ?
+                                  +   #
+                                    * ( ?O
+                                      .   ?I
+                                        & Equal$(!O.!o)
+                                        & Equal$(!I.!i)
+                                      )
+                                  + ?
+                                  )
+                              * ?
+                          & Subst$(!sub.!OI):?sub
+                          & (!prog,(!O.adaptInputProfile$(!I.!sub).!sub))
+                        | !arg
+                        )
+                  )
+                & ( Subst
+                  =   OI H h h1 H1 O
+                    .   !arg:(?arg.?OI)
+                      & (     !arg
+                            : (((?,?) ?)*?:?H.?arg)
+                          & Tubst$(!arg.!OI):?arg
+                          & 1:?h
+                          &   whl
+                            ' ( !H:%?H1*?H
+                              & (     !arg
+                                    :   ?
+                                      * ( ?
+                                        , (   ?O
+                                            &   containedBy$(!H1.!O)
+                                              : ?h1
+                                          . ?
+                                          )
+                                        )
+                                      * ?
+                                  & !h*!h1:?h
+                                | !h*(!H1 problem !arg):?h
+                                )
+                              )
+                          & (   !h:1&HA!
+                              | !h
+                            . !arg
+                            )
+                        | !arg
+                        )
+                  )
+                & ( wantThis
+                  =   sig nsig
+                    .   signatures$!arg:?sig
+                      & (     !sig
+                            : ?*?^(%+%:differentSubSpecs$)*?
+                          & "Discard solutions that contain steps that only differ at the spec level.
+                                 It discards too much. These steps should be adapted so the specs are
+                                 applied to all relevant steps. Only if that is not possible (clashing specs)
+                                 solutions should be abolished."
+                          & (   Compatible$!sig:?nsig
+                              & Subst$(!arg.!nsig):?arg
+                              & !arg
+                            | 0
+                            )
+                        | !arg
+                        )
+                  )
                 & 0:?calls
                 & (   (   !directedBy:GoalChoice
                         & !wrkflw:~
@@ -11259,336 +11606,36 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & log$FoundWorkflow
                       |   log$ComputePipelines
                         &   Pipelines$(!parms.!TOOL|)
-                          : ?pipes
+                          : (?sources.?pipes)
+                        & !pipes:?+[?NNN
+                        & log$(NNN1 !NNN)
+                        & log$"Now unfold"
+                        & (   !pipes:(?.?pipesNN)
+                            & unfoldTreeN$(1.!pipes):?pipesN
+                            & log$"unfoldTreeN done"
+                            & !pipesN:?+[?NNN
+                            & log$(NNN1a !NNN)
+                            & log$"Now percolateForgottenFeatures"
+                            &   percolateForgottenFeatures$!pipesN
+                              : ?pipesN
+                            & log$"percolateForgottenFeatures done"
+                            & !pipesN:?+[?NNN
+                            & log$(NNN1b !NNN)
+                            & 0:?pipes
+                            &   whl
+                              ' ( !pipesN:(?.?pipe)+?pipesN
+                                & wantThis$!pipe:?pipe
+                                & ( !pipe:0
+                                  | !pipes:?+!pipe+?
+                                  | !pipe+!pipes:?pipes
+                                  )
+                                )
+                          |   !calls:<10000
+                            & unfoldTree$!pipes:?pipes
+                          | log$(calls !calls)&~
+                          )
                       )
                     & "We succeeded in computing one or more pipelines."
-                    & ( signatures
-                      =   A prog o i sub
-                        .     !arg:(((?,?) ?)*?.?arg)
-                            & signatures$!arg
-                          |   !arg:%?A*%?arg
-                            & signatures$!A*signatures$!arg
-                          |   !arg:(%@?prog,(?o.?i.?sub))
-                            & !prog^(!o.!i)*signatures$!sub
-                          | 1
-                      )
-                    & ( Values
-                      =   x y
-                        .   !arg:@?x^?&!x
-                          |   !arg:?x_?y
-                            & (Values$!x)_(Values$!y)
-                          | !arg
-                      )
-                    & ( containedBy
-                      =   A B a
-                        .   !arg:(?A.?B)
-                          & (     !A
-                                :   ?
-                                    (`%?a&~(!B:? !a ?))
-                                    ?
-                              & `~
-                            | 
-                            )
-                      )
-                    & ( conflict
-                      =   A B f e
-                        .   !arg:(?A.?B)
-                          &   !A
-                            :   ?
-                                ( ?f
-                                ,   ?e
-                                  & !B:? (!f,~!e) ?
-                                )
-                                ?
-                      )
-                    & ( noConflict
-                      =   A B
-                        .   !arg:(?A.?B)
-                          & ( !A:!B
-                            |   ( conflict$(!A.!B)
-                                | conflict$(!B.!A)
-                                )
-                              & `~
-                            | 
-                            )
-                      )
-                    & ( EqualPairs
-                      =   A B c d e f
-                        .   !arg:(?A.?B)
-                          & Values$!A:(?c.?d)
-                          & Values$!B:(?e.?f)
-                          & noConflict$(!c.!e)
-                          & noConflict$(!d.!f)
-                      )
-                    & ( Equal
-                      =   A B
-                        .   !arg:(?A.?B)
-                          & Values$!A:?A
-                          & Values$!B:?B
-                          & noConflict$(!A.!B)
-                      )
-                    & ( containedBy
-                      =   short long fac val e E rem
-                        .   !arg:(?short.?long)
-                          & ( !short:
-                            |   !short:(?fac,@?val^?e) ?short
-                              & !long:? (!fac,!val^?E) ?
-                              & (   !e:(1|!E)
-                                  & containedBy$(!short.!long):?rem
-                                  & (!fac,!val^!E) !rem
-                                |   !E:1
-                                  & containedBy$(!short.!long):?rem
-                                  & (!fac,!val^!e) !rem
-                                )
-                            )
-                      )
-                    & ( differentSubSpecs
-                      =   oi1 oi2
-                        .   !sjt
-                          :   ?
-                            + #*((?.?):?oi1)
-                            + ?
-                            +   #
-                              * ( (?.?):?oi2
-                                & EqualPairs$(!oi1.!oi2)
-                                )
-                            + ?
-                      )
-                    & ( unif
-                      =   a b A B X Y Z a1 a2 b1 b2
-                        .   !arg:(?a.?b)
-                          & (   !a:%@?A^?X
-                              & !b:%@?B^?Y
-                              & !A:!B
-                              &   ( !X:!Y
-                                  | !X:1&!Y
-                                  | !Y:1&!X
-                                  )
-                                : ?Z
-                              & !A^!Z
-                            |   !a:%?a1 %?a2
-                              & !b:%?b1 %?b2
-                              & unif$(!a1.!b1) unif$(!a2.!b2)
-                            |   !a:%?a1*%?a2
-                              & !b:%?b1*%?b2
-                              & unif$(!a1.!b1)*unif$(!a2.!b2)
-                            |   !a:(%?a1.%?a2)
-                              & !b:(%?b1.%?b2)
-                              & (unif$(!a1.!b1).unif$(!a2.!b2))
-                            |   !a:(%?a1,%?a2)
-                              & !b:(%?b1,%?b2)
-                              & (!a1:!b1,unif$(!a2.!b2))
-                            )
-                      )
-                    & ( union
-                      =   Ao Ai Bo Bi res
-                        .   !arg:((?Ao.?Ai).?Bo.?Bi)
-                          &   (supplement$(!Ao.!Bo).supplement$(!Ai.!Bi))
-                            : ?res
-                          & !res
-                      )
-                    & ( reparable
-                      =   oi1 oi2 A M Z OI
-                        .       !arg
-                              :   ?A
-                                + #*((?.?):?oi1)
-                                + ?M
-                                +   #
-                                  * ( (?.?):?oi2
-                                    & EqualPairs$(!oi1.!oi2)
-                                    )
-                                + ?Z
-                            & (   union$(!oi1.!oi2):?oi1
-                                & union$(!oi2.!oi1):?oi2
-                                & unif$(!oi1.!oi2):?OI
-                                & reparable$(!A+!OI+!M+!Z)
-                              | `~
-                              )
-                          | !arg
-                      )
-                    & ( Compatible
-                      =   tool sigs moresigs A
-                        .       !arg
-                              :   ?A
-                                *   %@?tool
-                                  ^ ( %+%
-                                    : differentSubSpecs$
-                                    : ?sigs
-                                    )
-                                * ?arg
-                            & reparable$!sigs:?sigs
-                            & (   ~(!sigs:differentSubSpecs$)
-                                & Compatible$!arg:?moresigs
-                                & !A*!tool^!sigs*!moresigs
-                              | `~
-                              )
-                          | !arg
-                      )
-                    & ( rpl
-                      =   vals fac gold A B exp
-                        .     !arg:(?vals.?fac.?gold)
-                            & !vals:%?A*%?B
-                            & rpl$(!A.!fac.!gold):?A
-                            & rpl$(!B.!fac.!gold):?B
-                            & !A*!B
-                          |   !vals:%?A %?B
-                            & rpl$(!A.!fac.!gold):?A
-                            & ( rpl$(!B.!fac.!gold):?B
-                              | 
-                              )
-                            & !A !B
-                          |   !vals:@?A^?B
-                            & (     !gold
-                                  : ?*(? (!fac,!vals) ?)*?
-                                & !vals
-                              |     !gold
-                                  : ?*(? (!fac,!A^?exp) ?)*?
-                                &   ( !B:!exp
-                                    | !exp:1&!B
-                                    | !B:1&!exp
-                                    )
-                                  : ?B
-                                & !A^!B
-                              | !A^!B
-                              )
-                      )
-                    & ( adaptInputProfile
-                      =   I subs fac gold nI vals
-                        .     !arg:(?I.?subs)
-                            &   !subs
-                              : (((?,?) ?)*?:?gold.?)
-                            & :?nI
-                            &   whl
-                              ' ( !I:(?fac,?vals) ?I
-                                &   !nI (!fac,rpl$(!vals.!fac.!gold))
-                                  : ?nI
-                                )
-                            & !nI
-                          | !I
-                      )
-                    & ( Tubst
-                      =     OI I A o i sub prog
-                          , H h h1 H1 O
-                        .   !arg:(?arg.?OI)
-                          & (     !arg
-                                : (((?,?) ?)*?:?H.?arg)
-                              & Tubst$(!arg.!OI):?arg
-                              & 1:?h
-                              &   whl
-                                ' ( !H:%?H1*?H
-                                  & (     !arg
-                                        :   ?
-                                          * ( ?
-                                            , (   ?O
-                                                &   containedBy$(!H1.!O)
-                                                  : ?h1
-                                              . ?
-                                              )
-                                            )
-                                          * ?
-                                      & !h*!h1:?h
-                                    | !h*(!H1 problem !arg):?h
-                                    )
-                                  )
-                              & (   !h:1&HA!
-                                  | !h
-                                . !arg
-                                )
-                            |   !arg:%?A*%?arg
-                              & Tubst$(!A.!OI)*Tubst$(!arg.!OI)
-                            |   !arg:(%@?prog,(?o.?i.?sub))
-                              &   !OI
-                                :   ?
-                                  *   !prog
-                                    ^ ( ?
-                                      +   #
-                                        * ( ?O
-                                          .   ?I
-                                            & Equal$(!O.!o)
-                                            & Equal$(!I.!i)
-                                          )
-                                      + ?
-                                      )
-                                  * ?
-                              & Subst$(!sub.!OI):?sub
-                              & ( !prog
-                                , (!O.adaptInputProfile$(!I.!sub).!sub)
-                                )
-                            | !arg
-                            )
-                      )
-                    & ( Subst
-                      =   OI H h h1 H1 O
-                        .   !arg:(?arg.?OI)
-                          & (     !arg
-                                : (((?,?) ?)*?:?H.?arg)
-                              & Tubst$(!arg.!OI):?arg
-                              & 1:?h
-                              &   whl
-                                ' ( !H:%?H1*?H
-                                  & (     !arg
-                                        :   ?
-                                          * ( ?
-                                            , (   ?O
-                                                &   containedBy$(!H1.!O)
-                                                  : ?h1
-                                              . ?
-                                              )
-                                            )
-                                          * ?
-                                      & !h*!h1:?h
-                                    | !h*(!H1 problem !arg):?h
-                                    )
-                                  )
-                              & (   !h:1&HA!
-                                  | !h
-                                . !arg
-                                )
-                            | !arg
-                            )
-                      )
-                    & ( wantThis
-                      =   sig nsig
-                        .   signatures$!arg:?sig
-                          & (     !sig
-                                : ?*?^(%+%:differentSubSpecs$)*?
-                              & "Discard solutions that contain steps that only differ at the spec level.
-                                 It discards too much. These steps should be adapted so the specs are
-                                 applied to all relevant steps. Only if that is not possible (clashing specs)
-                                 solutions should be abolished."
-                              & (   Compatible$!sig:?nsig
-                                  & Subst$(!arg.!nsig):?arg
-                                  & !arg
-                                | 0
-                                )
-                            | !arg
-                            )
-                      )
-                    & !pipes:?+[?NNN
-                    & log$(NNN1 !NNN)
-                    & log$"Now unfold"
-                    & (   unfoldTreeN$(1.!pipes):?pipesN
-                        & log$"unfoldTreeN done"
-                        & !pipesN:?+[?NNN
-                        & log$(NNN1a !NNN)
-                        & log$"Now percolateForgottenFeatures"
-                        & percolateForgottenFeatures$!pipesN:?pipesN
-                        & log$"percolateForgottenFeatures done"
-                        & !pipesN:?+[?NNN
-                        & log$(NNN1b !NNN)
-                        & 0:?pipes
-                        &   whl
-                          ' ( !pipesN:(?.?pipe)+?pipesN
-                            & wantThis$!pipe:?pipe
-                            & ( !pipe:0
-                              | !pipes:?+!pipe+?
-                              | !pipe+!pipes:?pipes
-                              )
-                            )
-                      |   !calls:<10000
-                        & unfoldTree$!pipes:?pipes
-                      | log$(calls !calls)&~
-                      )
                     & !pipes:?+[?NNN
                     & log$(NNN2 !NNN)
                     & (   !NNN:>1000

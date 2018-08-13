@@ -1,3 +1,8 @@
+20180813 - Improved unfoldTreeN$ to discard solutions that imply incompatible
+           assumptions about input feature values. (Not all input features are
+           necessarily fixed when workflows are computed.) Computation is
+           generally faster and the results are cleaner.
+
 20180810 - Pruned workflows with a tool that has multiple inputs that differ
            in more than one feature. (Features of inputs shall differ in
            one and only one feature, e.g. different formats or different
