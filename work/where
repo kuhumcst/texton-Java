@@ -28,6 +28,7 @@ where=
   (   annotationStyles
       basistextStyles
       flatFileTypes
+      htmlStyles
       imageStyles
       sndStyles
       tagSets
