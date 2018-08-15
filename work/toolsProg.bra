@@ -7340,6 +7340,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             : ?Version
             : ?ToolID
             : ?Description
+          & (   !SPANGRP
+              : ? ("?".@(?:? xml ? version ?)) ?SPANGRP
+            | 
+            )
           & (     !SPANGRP
                 :   ?
                     ( spanGrp
@@ -7569,14 +7573,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   )
                             )
                             \n
-                            ( (   !SPANGRP
-                                :   ?
-                                    ("?".@(?:? xml ? version ?))
-                                    ?SPANGRP
-                              | 
-                              )
-                            & !SPANGRP
-                            )
+                            !SPANGRP
                       )
                 )
             : ?ret
