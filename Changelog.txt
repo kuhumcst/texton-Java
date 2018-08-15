@@ -1,3 +1,6 @@
+20180815 - Clip xml declaration from spangrp file before embedding it in text
+           element in TEI file.
+
 20180813 - Improved unfoldTreeN$ to discard solutions that imply incompatible
            assumptions about input feature values. (Not all input features are
            necessarily fixed when workflows are computed.) Computation is
