@@ -11909,7 +11909,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
       )
       ( poll
-      =   jobs n step secs steplinks
+      =   jobs n step secs steplinks links
         .   ( steplinks
             =   links jobs file step
               .   !arg:(?arg.?jobs)
@@ -11957,6 +11957,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       . ?
                       )
                       ?
+                & steplinks$(!arg.!jobs):?links
                 & 0:?n
                 &   whl
                   ' ( !jobs:? (!arg.?) ?jobs
@@ -11971,7 +11972,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     + ?
                 &   refreshingXHTMLbodyContainer
                   $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
-                    .   steplinks$(!arg.!jobs)
+                    .   !links
                           paragraph
                         $ ("pending " !step " of " !n " (" !title ")")
                           paragraph
