@@ -11911,10 +11911,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( poll
       =   jobs n step secs steplinks links
         .   ( steplinks
-            =   links jobs file step
+            =   links jobs file step outp
               .   !arg:(?arg.?jobs)
                 &   !jobs
-                  : ? (!arg.step1 ?.?file.?) ?jobs
+                  :   ?
+                      ( (!arg.step1 ?.?file.?.?.?outp) ?
+                      : ?jobs
+                      )
                 &     paragraph
                     $ ( "input:"
                         ( a
@@ -11940,6 +11943,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                       : ?links
                     )
+                & ( !links:% %
+                  | !jobs:? (!arg.?) ?
+                  |     !links
+                          paragraph
+                        $ ( "output:"
+                            ( a
+                            .   (href.str$(!wwwServer "/tools/data/" !file))
+                              , !outp
+                            )
+                          )
+                    : ?links
+                  )
                 & !links
             )
           & ( !arg:(?arg.?secs)
