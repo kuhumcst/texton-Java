@@ -21,6 +21,8 @@ import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.zip.*;
 import javax.servlet.ServletConfig;
@@ -88,7 +90,8 @@ public class results extends HttpServlet
                     
                     try 
                         {
-                        FileOutputStream zipdest = null;
+//                        FileOutputStream zipdest = null;
+                        OutputStream zipdest = null;
                         ZipOutputStream zipout = null;
                         Element workflowElement = null;
                         String workflowString = null;
@@ -110,7 +113,8 @@ public class results extends HttpServlet
                             Body = "<h1>Resultater</h1><h2>Workflow</h2><p>"+workflowString+"</p>";
                             body += "<h2>Workflow</h2><p>"+workflowString+"</p>";
                             body += "<h2>Produceret data</h2><p><a target=\"_blank\" href=\"" + toolsdataURL + job + ".zip\">Alt i en zip-fil</a></p>";
-                            zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                            //zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                            zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
                             zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                             }
                         else

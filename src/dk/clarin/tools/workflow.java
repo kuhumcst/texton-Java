@@ -25,10 +25,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -42,6 +39,9 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.zip.*;
@@ -49,7 +49,6 @@ import java.util.zip.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-//import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
@@ -89,7 +88,8 @@ public class workflow implements Runnable
         {
         try
             {
-            FileInputStream fis = new java.io.FileInputStream( new java.io.File( fileName ) );
+            //FileInputStream fis = new java.io.FileInputStream( new java.io.File( fileName ) );
+            InputStream fis = Files.newInputStream(Paths.get(fileName));
             String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex( fis );
             return md5;
             } 
@@ -106,7 +106,8 @@ public class workflow implements Runnable
             {
             BufferedInputStream origin = null;
             byte data[] = new byte[BUFFER];
-            FileInputStream fi = new FileInputStream(path);
+            //FileInputStream fi = new FileInputStream(path);
+            InputStream fi = Files.newInputStream(Paths.get(path));
             origin = new BufferedInputStream(fi, BUFFER);
             ZipEntry entry = new ZipEntry(name);
             out.putNextEntry(entry);
@@ -501,7 +502,8 @@ public class workflow implements Runnable
             //boolean isBasisText = TEIformat.equals("txtbasis");
             StringWriter outputM = new StringWriter();
             
-            OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );
+//          OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );
+            OutputStream outputF = Files.newOutputStream(Paths.get(destdir+FilenameNoMetadata(filename,BracMat)));
 
             boolean isTextual = false;        
             String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
@@ -560,8 +562,9 @@ public class workflow implements Runnable
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
                 // Create file plus metadata
-                FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
-                BufferedWriter Out = new BufferedWriter(fstream);
+                //FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
+                //BufferedWriter Out = new BufferedWriter(fstream);
+                BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+Filename(filename,BracMat)), StandardCharsets.UTF_8);
                 Out.write(newResource);
                 Out.close();
                 }
@@ -578,8 +581,9 @@ public class workflow implements Runnable
              */
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename,BracMat));
-            BufferedWriter Out = new BufferedWriter(fstream);
+//            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename,BracMat));
+//            BufferedWriter Out = new BufferedWriter(fstream);
+            BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+FilenameRelations(filename,BracMat)), StandardCharsets.UTF_8);
             Out.write(relations);
             Out.close();
             }

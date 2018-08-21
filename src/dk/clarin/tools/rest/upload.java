@@ -21,8 +21,6 @@ import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.*;
-//import javax.servlet.*;
-//import javax.servlet.http.*;
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;

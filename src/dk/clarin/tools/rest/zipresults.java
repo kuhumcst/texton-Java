@@ -20,6 +20,8 @@ package dk.clarin.tools.rest;
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,12 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.NodeList;
-//import org.xml.sax.InputSource;
 
 
 /**
@@ -74,11 +70,13 @@ public class zipresults extends HttpServlet
         response.setHeader("Content-Disposition","attachment;filename=\"" + fileName + "\"");
         try
             {
-            File f = new File(localFilePath+fileName);
+//          File f = new File(localFilePath+fileName);
             int nLen = 0;
             OutputStream out;
-            FileInputStream in;
-            in = new FileInputStream(f);
+//          FileInputStream in;
+//          in = new FileInputStream(f);
+            InputStream in = Files.newInputStream(Paths.get(localFilePath+fileName));
+
             out = response.getOutputStream();
             byte[] bBuf = new byte[1024];
             try
@@ -159,13 +157,16 @@ public class zipresults extends HttpServlet
                                                 + ")");
                     String localFilePath = ToolsProperties.documentRoot;
                     
-                    FileOutputStream zipdest = null;
+                    //FileOutputStream zipdest = null;
+                    OutputStream zipdest = null;
                     ZipOutputStream zipout = null;
                     boolean hasFiles = false;
                     if(letter.startsWith("file:"))
                         {
                         hasFiles = true;
-                        zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                        //zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
+
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         while(letter.startsWith("file:"))
                             {
@@ -186,7 +187,8 @@ public class zipresults extends HttpServlet
                         {
                         String MetaData = BracMat.Eval("metadataAsXML$(" + job + "." + workflow.quote(date) + ")");
                         hasFiles = true;
-                        zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                        //zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         int end = letter.indexOf(";");
                         String type = letter.substring(9,end);

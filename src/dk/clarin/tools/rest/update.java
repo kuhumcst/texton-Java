@@ -22,7 +22,6 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
 import java.io.*;
-//import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

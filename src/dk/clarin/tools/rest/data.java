@@ -1,10 +1,9 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-//import dk.clarin.tools.workflow;
 import dk.cst.bracmat;
 import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
-//import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -109,8 +107,9 @@ public class data extends HttpServlet
                 File f = new File(fileName);
                 int nLen = 0;
                 OutputStream out;
-                FileInputStream in;
-                in = new FileInputStream(f);
+                //FileInputStream in;
+                //in = new FileInputStream(f);
+                InputStream in = Files.newInputStream(f.toPath());
                 out = response.getOutputStream();
                 byte[] bBuf = new byte[1024];
                 try

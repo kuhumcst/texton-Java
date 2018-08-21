@@ -21,17 +21,11 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
 import dk.cst.bracmat;
-
-//import java.io.BufferedWriter;
-//import java.io.ByteArrayInputStream;
 import java.io.File;
-//import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
-//import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
-//import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -49,16 +43,10 @@ import org.apache.commons.fileupload.FileItem;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.FileOutputStream;
+import java.nio.file.Files;
 
-//import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Element;
-
-//import org.overviewproject.mime_types.MimeTypeDetector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -203,7 +191,8 @@ public class create extends HttpServlet
             byte[] buffer = new byte[4096];
             int n = - 1;
             int N = 0;
-            OutputStream output = new FileOutputStream( file );
+            //OutputStream output = new FileOutputStream( file );
+            OutputStream output = Files.newOutputStream(file.toPath());
             while ( (n = input.read(buffer)) != -1) 
             {
                 output.write(buffer, 0, n);
