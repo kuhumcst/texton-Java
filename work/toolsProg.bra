@@ -11935,7 +11935,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               .   ( href
                                   . str$(!wwwServer "/tools/data/" !file)
                                   )
-                                , !inp
+                                , !file
                               )
                             )
                       : ?links
