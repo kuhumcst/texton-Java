@@ -1,4 +1,5 @@
-20180821 - Clean up java code
+20180821 - Clean up java code, added links to the input, the intermediary files
+           and the output to the poll window.
 
 20180815 - Clip xml declaration from spangrp file before embedding it in text
            element in TEI file.
