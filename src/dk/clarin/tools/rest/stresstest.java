@@ -59,9 +59,9 @@ public class stresstest extends HttpServlet
                 String parmName = e.nextElement();
                 arg = arg + " (\"" + workflow.escape(parmName) + "\".";
                 String vals[] = request.getParameterValues(parmName);
-                for(int j = 0;j < vals.length;++j)
+                for(String val : vals)
                     {
-                    arg += " \"" + workflow.escape(vals[j]) + "\"";
+                    arg += " \"" + workflow.escape(val) + "\"";
                     }
                 arg += ")";
                 }

@@ -39,9 +39,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class data extends HttpServlet 
     {
-    // Static logger object.  
-    private static final Logger logger = LoggerFactory.getLogger(data.class);
-
     private File destinationDir;
     private bracmat BracMat;
 
@@ -167,7 +164,7 @@ public class data extends HttpServlet
                 response.setStatus(404);
                 PrintWriter out = response.getWriter();
                 String name = request.getPathInfo();
-                if(name.startsWith("/"))
+                if(name.charAt(0) == '/')
                     name = name.substring(1);
                 out.println("File " + name + " is no longer accessible.");
                 }

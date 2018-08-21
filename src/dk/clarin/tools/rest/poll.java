@@ -45,9 +45,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class poll extends HttpServlet 
     {
-    // Static logger object.  
-    private static final Logger logger = LoggerFactory.getLogger(poll.class);
-
     private File destinationDir;
     private bracmat BracMat;
 

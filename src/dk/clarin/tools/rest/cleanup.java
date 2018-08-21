@@ -84,10 +84,8 @@ public class cleanup extends HttpServlet
         else
             {
             out.println("Files in staging area:");
-            for(int i = 0; i < chld.length; i++)
+            for(String fileName : chld)
                 {
-                String fileName = chld[i];
-
                 File f = new File(destinationDir,fileName);
 
                 // Make sure the file or directory exists and isn't write protected
@@ -172,9 +170,8 @@ public class cleanup extends HttpServlet
         else
             {
             String arg = "";
-            for(int i = 0; i < chld.length; i++)
+            for(String fileName : chld)
                 {
-                String fileName = chld[i];
                 arg += " " + workflow.quote(fileName);
                 }
             /**

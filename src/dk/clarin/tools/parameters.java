@@ -35,7 +35,7 @@ public class parameters
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(parameters.class);
 
-    private static String reason = null;
+    private static String reason;// = null;
 
     public void init(ServletConfig config) throws ServletException 
         {
@@ -58,11 +58,11 @@ public class parameters
 				{
 				String parmName = e.nextElement();
 				String vals[] = request.getParameterValues(parmName);
-				for(int j = 0;j < vals.length;++j)
+				for(String val : vals)
 					{
 					if(name.equals(parmName))
 						{
-						return vals[j];
+						return val;
 						}
 					}
 				}
@@ -155,9 +155,9 @@ public class parameters
             String parmName = e.nextElement();
             arg = arg + " (" + workflow.quote(parmName) + ".";
             String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
+            for(String val : vals)
                 {
-                arg += " " + workflow.quote(vals[j]);
+                arg += " " + workflow.quote(val);
                 }
             arg += ")";
             }
@@ -202,9 +202,9 @@ public class parameters
             String parmName = e.nextElement();
             arg = arg + " (" + workflow.quote(parmName) + ".";
             String vals[] = request.getParameterValues(parmName);
-            for(int j = 0;j < vals.length;++j)
+            for(String val : vals)
                 {
-                arg += " " + workflow.quote(vals[j]);
+                arg += " " + workflow.quote(val);
                 }
             arg += ")";
             }
@@ -275,9 +275,9 @@ public class parameters
                 if(parmName.equals(parm))
                     {
                     String vals[] = request.getParameterValues(parmName);
-                    for(int j = 0;j < vals.length;++j)
+                    for(String val : vals)
                         {
-                        value = vals[j];
+                        value = val;
                         //break;
                         }
                     }

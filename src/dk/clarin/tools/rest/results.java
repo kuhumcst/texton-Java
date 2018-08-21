@@ -75,6 +75,7 @@ public class results extends HttpServlet
             Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
             String job;
+            InputSource is = new InputSource();
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
@@ -98,7 +99,6 @@ public class results extends HttpServlet
 
                         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                         DocumentBuilder db = dbf.newDocumentBuilder();
-                        InputSource is = new InputSource();
                         is.setCharacterStream(new StringReader(filelist));
 
                         Document doc = db.parse(is);

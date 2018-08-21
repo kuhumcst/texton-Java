@@ -85,9 +85,9 @@ public class create extends HttpServlet
     private File destinationDir;
     private bracmat BracMat;
     /// The user's email
-    private String userEmail = null;
+    private String userEmail;// = null;
     /// The user's preferred interface language
-    private String UIlanguage = null;
+    private String UIlanguage;// = null;
 
     public static final int ACCEPT=1;       //We have accepted your request for applying tools to resources.
     public static final int CONFIRMATION=2; //The results from the tool-workflow are ready to inspect
@@ -96,7 +96,7 @@ public class create extends HttpServlet
     //private String toolsdataURL;
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    private DocumentBuilder builder = null;
+    private DocumentBuilder builder;// = null;
 
 
     public String assureArgHasUIlanguage(HttpServletRequest request,List<FileItem> items, String arg)
@@ -267,7 +267,8 @@ public class create extends HttpServlet
             if(!JobId.equals(""))
                 {
                 // Asynkron håndtering:
-                Runnable runnable = new workflow(JobNr, destinationDir);
+                //Runnable runnable = new workflow(JobNr, destinationDir);
+                Runnable runnable = new workflow(JobNr);
                 Thread thread = new Thread(runnable);
                 thread.start();
                 }
@@ -331,7 +332,8 @@ public class create extends HttpServlet
             else
                 {
                 // Asynkron håndtering:
-                Runnable runnable = new workflow(result, destinationDir);
+//                Runnable runnable = new workflow(result, destinationDir);
+                Runnable runnable = new workflow(result);
                 Thread thread = new Thread(runnable);
                 thread.start();
                 out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
@@ -434,24 +436,24 @@ public class create extends HttpServlet
             String vals[] = request.getParameterValues(parmName);
             if(parmName.equals("mail2"))
                 {
-                for(int j = 0;j < vals.length;++j)
+                for(String val : vals)
                     {
-                    if(!vals[j].equals(""))
+                    if(!val.equals(""))
                         {
                         userEmail = null;
                         arg = arg + " (" + workflow.quote(parmName) + ".";
-                        arg += " " + workflow.quote(vals[j]);
+                        arg += " " + workflow.quote(val);
                         arg += ")";
                         }
                     }
                 }
             else if(parmName.equals("text"))
                 {
-                for(int j = 0;j < vals.length;++j)
+                for(String val : vals)
                     {
-                    if(!vals[j].equals(""))
+                    if(!val.equals(""))
                         {
-                        int textLength = vals[j].length();
+                        int textLength = val.length();
                         if(textLength > 0)
 							{
 							String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
@@ -465,7 +467,7 @@ public class create extends HttpServlet
 									  + ")";
                         
 							PrintWriter outf = new PrintWriter(file);
-							outf.println(vals[j]); 
+							outf.println(val); 
 							outf.close();                       
 							}
                         }
@@ -474,18 +476,18 @@ public class create extends HttpServlet
             else if(parmName.equals("URL"))
                 {
 				logger.debug("Going to call makeLocalCopyOfRemoteFile A");
-                for(int j = 0;j < vals.length;++j)
+                for(String val : vals)
                     {
-                    arg = arg + makeLocalCopyOfRemoteFile(vals[j]);
+                    arg = arg + makeLocalCopyOfRemoteFile(val);
                     }
 				logger.debug("in Workflow URLargs:"+arg);
                 }
             else
                 {
-                for(int j = 0;j < vals.length;++j)
+                for(String val : vals)
                     {
                     arg = arg + " (" + workflow.quote(parmName) + ".";
-                    arg += " " + workflow.quote(vals[j]);
+                    arg += " " + workflow.quote(val);
                     arg += ")";
                     }
                 }

@@ -207,7 +207,8 @@ public class upload extends HttpServlet
                      * Input: <jobNr>-<jobID>
                      */
                     String JobNr = BracMat.Eval("uploadJobNr$(" + arg + ")");
-                    Runnable runnable = new workflow(JobNr, destinationDir);
+                    //Runnable runnable = new workflow(JobNr, destinationDir);
+                    Runnable runnable = new workflow(JobNr);
                     Thread thread = new Thread(runnable);
                     thread.start();
                     response.setStatus(201);

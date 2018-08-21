@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class zipresults extends HttpServlet 
     {
-    private static final Logger logger = LoggerFactory.getLogger(zipresults.class);
     private String date;
     private bracmat BracMat;
 
@@ -123,7 +122,7 @@ public class zipresults extends HttpServlet
             response.setContentType("text/html; charset=UTF-8");
             response.setStatus(404);
             PrintWriter out = response.getWriter();
-            if(fileName.startsWith("/"))
+            if(fileName.charAt(0) == '/')
                 fileName = fileName.substring(1);
             out.println("File " + fileName + " is no longer accessible.");
             }
@@ -170,10 +169,10 @@ public class zipresults extends HttpServlet
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         while(letter.startsWith("file:"))
                             {
-                            int end = letter.indexOf(";");
+                            int end = letter.indexOf(';');
                             String filename = letter.substring(5,end);
                             String zipname = filename;
-                            int zipnameStart = filename.indexOf("*");
+                            int zipnameStart = filename.indexOf('*');
                             if(zipnameStart > 0)
                                 {
                                 zipname = filename.substring(zipnameStart+1);
@@ -190,7 +189,7 @@ public class zipresults extends HttpServlet
                         //zipdest = new FileOutputStream(localFilePath + job + ".zip");
                         zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                        int end = letter.indexOf(";");
+                        int end = letter.indexOf(';');
                         String type = letter.substring(9,end);
                         workflow.zipstring(type + ".xml",zipout,MetaData);
                         letter = letter.substring(end+1);

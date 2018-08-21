@@ -24,7 +24,6 @@ import dk.clarin.tools.ToolsProperties;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,7 +68,8 @@ public class workflow implements Runnable
     public static final int ERROR        = 3; //Something went wrong
     public static final int ERRORUSER    = 4; //Something went wrong
 
-    public workflow(String Result, File DestinationDir)
+//    public workflow(String Result, File DestinationDir)
+    public workflow(String Result)
         {
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         result = Result; // Ends with the Job Number 
