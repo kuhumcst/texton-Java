@@ -19,7 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
-import dk.cst.*;
+import dk.cst.bracmat;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;

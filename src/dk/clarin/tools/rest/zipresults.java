@@ -17,7 +17,7 @@
 */
 package dk.clarin.tools.rest;
 
-import dk.cst.*;
+import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.*;
@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+//import javax.xml.parsers.DocumentBuilder;
+//import javax.xml.parsers.DocumentBuilderFactory;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.NodeList;
+//import org.xml.sax.InputSource;
 
 
 /**
@@ -149,8 +149,6 @@ public class zipresults extends HttpServlet
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
-                    String metadata = BracMat.Eval("jobMetaDataAsHTML$(" + job + ")");
-                    String filelist = "";
                     String letter = BracMat.Eval("letter$(" + job + ")");
                     String readme = BracMat.Eval("readme$(" 
                                                 + job 
@@ -160,8 +158,6 @@ public class zipresults extends HttpServlet
                                                 + workflow.quote(letter) 
                                                 + ")");
                     String localFilePath = ToolsProperties.documentRoot;
-                    String toolsdataURL = BracMat.Eval("toolsdataURL$");
-                    String Body = null;
                     
                     FileOutputStream zipdest = null;
                     ZipOutputStream zipout = null;

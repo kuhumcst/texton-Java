@@ -18,7 +18,7 @@
 
 package dk.clarin.tools;
 
-import dk.cst.*;
+import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 
 import java.io.BufferedInputStream;
@@ -498,7 +498,7 @@ public class workflow implements Runnable
             byte[] buffer = new byte[4096];
             int n = - 1;
             int N = 0;
-            boolean isBasisText = TEIformat.equals("txtbasis");
+            //boolean isBasisText = TEIformat.equals("txtbasis");
             StringWriter outputM = new StringWriter();
             
             OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );

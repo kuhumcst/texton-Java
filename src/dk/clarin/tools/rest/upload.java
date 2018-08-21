@@ -17,12 +17,17 @@
 */
 package dk.clarin.tools.rest;
 
-import dk.cst.*;
+import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+//import javax.servlet.*;
+//import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.fileupload.FileItem;

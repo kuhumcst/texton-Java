@@ -20,18 +20,18 @@ package dk.clarin.tools;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
-import dk.cst.*;
+import dk.cst.bracmat;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
+//import java.io.BufferedWriter;
+//import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileWriter;
+//import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
-import java.io.BufferedInputStream;
+//import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+//import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -54,9 +54,9 @@ import java.io.FileOutputStream;
 //import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.NodeList;
+//import org.w3c.dom.Element;
 
 //import org.overviewproject.mime_types.MimeTypeDetector;
 
@@ -171,7 +171,7 @@ public class create extends HttpServlet
 			return "error connecting to server.";
 		}
 	}
-
+/*
 	private String webPage(String urladdr){
 		try{
 			URL url = new URL(urladdr);
@@ -192,7 +192,7 @@ public class create extends HttpServlet
 			return "error connecting to server.";
 		}
 	}
-	
+*/	
 	private int webPageBinary(String urladdr, File file){
 		try{
 		    logger.debug("urladdr:"+urladdr);
@@ -369,7 +369,7 @@ public class create extends HttpServlet
     * @param xml  The Xml in a stream
     * @return the xml document 
     */
-    private Document streamToXml(InputStream stream) 
+/*    private Document streamToXml(InputStream stream) 
         {
         Document doc;
         try 
@@ -384,7 +384,7 @@ public class create extends HttpServlet
             }
         return doc;
         }
-
+*/
     private String makeLocalCopyOfRemoteFile(String val)
         {
         if(!val.equals(""))
@@ -569,7 +569,7 @@ public class create extends HttpServlet
     * Timeout for the process to assist workflow
     * @param delay time in milliseconds
     */
-    private static void wait(int delay)
+/*    private static void wait(int delay)
         {
         try {
             Thread.sleep(delay);
@@ -579,7 +579,7 @@ public class create extends HttpServlet
             logger.error(ex.getMessage());
             }
         }
-
+*/
     public String getParmsAndFiles(List<FileItem> items,HttpServletResponse response,PrintWriter out) throws ServletException
         {        
         if(!BracMat.loaded())
@@ -670,8 +670,8 @@ public class create extends HttpServlet
         response.setContentType("text/html; charset=UTF-8");
 
         response.setStatus(200);
-        String referer = request.getHeader("referer");
         /* TODO Add DASISH server
+        String referer = request.getHeader("referer");
         if(  referer == null
           || (  !referer.startsWith(ToolsProperties.wwwServer) 
              && !referer.startsWith(ToolsProperties.wwwServer.replaceFirst("^(https|http)://", "$1://www."))

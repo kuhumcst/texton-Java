@@ -1,8 +1,8 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
-import dk.cst.*;
+//import dk.clarin.tools.workflow;
+import dk.cst.bracmat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Enumeration;
+//import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

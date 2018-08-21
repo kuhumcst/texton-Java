@@ -17,7 +17,7 @@
 */
 package dk.clarin.tools.rest;
 
-import dk.cst.*;
+import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.*;
@@ -139,9 +139,9 @@ public class results extends HttpServlet
                             {
                             Element element = (Element) nodes.item(i);
 
-                            NodeList JobNrlist = element.getElementsByTagName("JobNr");
-                            Element JobNrelement = (Element) JobNrlist.item(0);
-                            String JobNr = workflow.getCharacterDataFromElement(JobNrelement);
+                            //NodeList JobNrlist = element.getElementsByTagName("JobNr");
+                            //Element JobNrelement = (Element) JobNrlist.item(0);
+                            //String JobNr = workflow.getCharacterDataFromElement(JobNrelement);
 
                             NodeList JobIDlist = element.getElementsByTagName("JobId");
                             Element JobIDelement = (Element) JobIDlist.item(0);

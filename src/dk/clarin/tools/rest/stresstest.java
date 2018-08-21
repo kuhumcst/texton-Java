@@ -17,7 +17,7 @@
 */
 package dk.clarin.tools.rest;
 
-import dk.cst.*;
+import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import java.io.IOException;
