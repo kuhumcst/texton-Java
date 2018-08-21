@@ -157,7 +157,7 @@ public class parameters
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-                arg += " " + workflow.quote(vals[j]) + "";
+                arg += " " + workflow.quote(vals[j]);
                 }
             arg += ")";
             }
@@ -204,7 +204,7 @@ public class parameters
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-                arg += " " + workflow.quote(vals[j]) + "";
+                arg += " " + workflow.quote(vals[j]);
                 }
             arg += ")";
             }
