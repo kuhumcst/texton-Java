@@ -95,8 +95,36 @@ public class data extends HttpServlet
                 // (If sent as ContentType("text/plain"), an XML-file doesn't look nice in the receiver's browser.)
                 if(request.getPathInfo().endsWith(".xml"))
                     response.setContentType("text/xml");
+                else if(request.getPathInfo().endsWith(".csv"))
+                    response.setContentType("text/csv");
+                else if(request.getPathInfo().endsWith(".htm"))
+                    response.setContentType("text/html");
+                else if(request.getPathInfo().endsWith(".html"))
+                    response.setContentType("text/html");
+                else if(request.getPathInfo().endsWith(".docx"))
+                    response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                else if(request.getPathInfo().endsWith(".ppt"))
+                    response.setContentType("application/application/vnd.ms-powerpoint");
+                else if(request.getPathInfo().endsWith(".pptx"))
+                    response.setContentType("application/application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                else if(request.getPathInfo().endsWith(".odp"))
+                    response.setContentType("application/vnd.oasis.opendocument.presentation");
+                else if(request.getPathInfo().endsWith(".ods"))
+                    response.setContentType("application/vnd.oasis.opendocument.spreadsheet");
+                else if(request.getPathInfo().endsWith(".odt"))
+                    response.setContentType("application/vnd.oasis.opendocument.text");
+                else if(request.getPathInfo().endsWith(".json"))
+                    response.setContentType("application/json");
+                else if(request.getPathInfo().endsWith(".rtf"))
+                    response.setContentType("application/rtf");
                 else if(request.getPathInfo().endsWith(".zip"))
                     response.setContentType("application/zip");
+                else if(request.getPathInfo().endsWith(".doc"))
+                    response.setContentType("application/msword");
+                else if(request.getPathInfo().endsWith(".pdf"))
+                    response.setContentType("application/pdf");
+                else if(request.getPathInfo().endsWith(".xhtml"))
+                    response.setContentType("application/xhtml+xml");                    
                 else
                     response.setContentType("text/plain");
     
