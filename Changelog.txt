@@ -1,3 +1,5 @@
+20180821 - Clean up java code
+
 20180815 - Clip xml declaration from spangrp file before embedding it in text
            element in TEI file.
 
