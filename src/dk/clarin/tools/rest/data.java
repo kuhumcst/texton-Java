@@ -126,7 +126,7 @@ public class data extends HttpServlet
                 else if(request.getPathInfo().endsWith(".xhtml"))
                     response.setContentType("application/xhtml+xml");                    
                 else
-                    response.setContentType("text/plain");
+                    response.setContentType("text/plain; charset=UTF-8");
     
                 String fileName = destinationDir + request.getPathInfo();
                 File f = new File(fileName);
