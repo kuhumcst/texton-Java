@@ -124,7 +124,9 @@ public class data extends HttpServlet
                 else if(request.getPathInfo().endsWith(".pdf"))
                     response.setContentType("application/pdf");
                 else if(request.getPathInfo().endsWith(".xhtml"))
-                    response.setContentType("application/xhtml+xml");                    
+                    response.setContentType("application/xhtml+xml");
+                else if(request.getPathInfo().endsWith(".wav"))
+                    response.setContentType("audio/wav");                    
                 else
                     response.setContentType("text/plain; charset=UTF-8");
     
