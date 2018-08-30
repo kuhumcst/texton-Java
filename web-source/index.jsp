@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="da">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>TEXT TONSORIUM - Service for automatic composition and scheduling of Natural Language Processing toolchains</title>
+    <title>TEXT TONSORIUM - Natural Language Processing toolchains automatically composed and scheduled for you</title>
     <style>
         h1, h2, h3, span, p, td, input, legend, textarea {
             font-family: "Comic Sans MS", cursive, sans-serif;
@@ -31,14 +31,11 @@
 <body class="bodycanvas">
 <!--div  style="margin:0px auto;width:860px;text-align:left;border:1px solid #336699;"-->
 <div  style="margin:0px auto;width:55em;text-align:left;">
-    <h1 class="smallmargin">&#128136; Text Tonsorium</h1>
-    <h3>Service for automatic composition and scheduling of Natural Language Processing toolchains</h3>
+    <h1 class="smallmargin">Text Tonsorium &#128136; <small><small>A salon de beaut&eacute; for Natural Language Processing</small></small></h1>
     <p>
-        Texts in many languages and formats (plain, word, pdf, html and even images) are welcome in our salon de beaut&eacute;.<br />
-        If possible, various Natural Language Processing tools will apply cuts, markups, extensions and annotations.<br />
-        When you have entered your input, you are asked to specify what the final result should look like. 
-        A workflow management system (WMS) then selects and orchestrates the tools that are needed to achieve your goal.<br />
-        This service is free for single texts and for smaller groups of texts. Please do not mix languages or formats.<br />
+        Upload your input using the form on this page. On the next page you specify the desired final result -
+        there are several annotation types, file formats, languages and other traits to choose from. Then sit back.
+        Our advanced workflow management system (WMS) selects and orchestrates the NLP tools that are needed to achieve your goal.<br />
     </p>
     <form enctype="multipart/form-data" method="post" action="createByGoalChoice">
         <fieldset class="fileupload">
@@ -51,6 +48,9 @@
                     </td>
                     <td>
                         <input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" />
+                    </td>
+                    <td>
+                        (Do not mix file formats.)
                     </td>
                 </tr>
             </table>
@@ -101,10 +101,11 @@
         </table>
         <p>
             <small>
-			This WMS came to life in the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project. It is independent of clarin.dk since 2017. Find it on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>.<br />
-            All the intelligence of the WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat programming language</a>.<br /><br />
-            Although we will do our best to protect your data, we cannot guarantee the security of your data transmitted to our site.<br/>
-			Use of this service is at your own risk!
+            In some cases the WMS will tell you that your goal is not within reach of the currently integrated tools.<br />
+            The original version of this web service was made during the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project. The most recent source code of the WMS is on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you also can contact us.
+            Note that most of the WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat programming language</a>.<br />
+            This service is free for single texts and for smaller groups of texts.
+            Do not send sensitive data to this service and use it at your own risk!
             </small>
         </p>
     </form>
