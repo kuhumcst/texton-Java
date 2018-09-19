@@ -1,3 +1,5 @@
+20180818 - Added optional "workflow must include this tool"-field.
+
 20180823 - "audio/wav" content type for files ending with ".wav"
 
 20180821 - Clean up java code, added links to the input, the intermediary files
