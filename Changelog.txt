@@ -1,3 +1,5 @@
+20180820 - You can leave goal specs empty if you specify which tool to use.
+
 20180818 - Added optional "workflow must include this tool"-field.
 
 20180823 - "audio/wav" content type for files ending with ".wav"
