@@ -11126,7 +11126,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . ?parms
                     . ?directedBy
                     )
-                & log$(ApplyThePipelineToTheInput !directedBy)
                 & ( retrieveMetadataFromParms
                   =   metadata metadataType inputs id V pat
                     .   !arg:(?metadataType.?arg)
@@ -11947,17 +11946,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     . !parms
                                     . !ERR
                                     )
-                              |     log
-                                  $ (ApplyThePipelineToTheInput parms !parms)
-                                &   ApplyThePipelineToTheInput
-                                  $ ( TEImetadata
-                                    . !pipe
-                                    . !batch
-                                    . !Items
-                                    . !mail2
-                                    . !parms
-                                    . !directedBy
-                                    )
+                              |   ApplyThePipelineToTheInput
+                                $ ( TEImetadata
+                                  . !pipe
+                                  . !batch
+                                  . !Items
+                                  . !mail2
+                                  . !parms
+                                  . !directedBy
+                                  )
                               )
                           )
                       )
@@ -12005,7 +12002,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & unpackIOparms$!parms:?parms
                 & checkIOparms$!parms
                 & readTable$tooladm
-                & log$(computeWorkflow parms !parms)
                 & (   !parms:? (bsubmit.?Submit) ?
                     &   "We are past the first stage: the user has pressed a button"
                       $ ( !parms
