@@ -11854,7 +11854,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & TooMany$!NNN
                       |   !Submit:nextStep
                         & log$nextStep
-                        & ShowAllPipes$(!directedBy.!hiddenData.!pipes)
+                        &   ShowAllPipes
+                          $ ( !directedBy
+                            .   !hiddenData
+                                (     !parms
+                                    : ? (desiredtool.?rstr) ?
+                                  & (desiredtool.!rstr)
+                                | 
+                                )
+                            . !pipes
+                            )
                       |     !parms
                           : (   ?
                                 ( bsubmit
@@ -11938,15 +11947,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     . !parms
                                     . !ERR
                                     )
-                              |   ApplyThePipelineToTheInput
-                                $ ( TEImetadata
-                                  . !pipe
-                                  . !batch
-                                  . !Items
-                                  . !mail2
-                                  . !parms
-                                  . !directedBy
-                                  )
+                              |     log
+                                  $ (ApplyThePipelineToTheInput parms !parms)
+                                &   ApplyThePipelineToTheInput
+                                  $ ( TEImetadata
+                                    . !pipe
+                                    . !batch
+                                    . !Items
+                                    . !mail2
+                                    . !parms
+                                    . !directedBy
+                                    )
                               )
                           )
                       )
@@ -11994,6 +12005,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & unpackIOparms$!parms:?parms
                 & checkIOparms$!parms
                 & readTable$tooladm
+                & log$(computeWorkflow parms !parms)
                 & (   !parms:? (bsubmit.?Submit) ?
                     &   "We are past the first stage: the user has pressed a button"
                       $ ( !parms
