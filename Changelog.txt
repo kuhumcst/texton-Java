@@ -1,6 +1,7 @@
 20180826 - When only selecting a tool, this tool will always be last in the
            workflow. Also quit unfold function when number of solutions
            is going to explode.
+           Added (guessed) values for input appearance: 'normal' or 'roman'.
 
 20180820 - You can leave goal specs empty if you specify which tool to use.
 

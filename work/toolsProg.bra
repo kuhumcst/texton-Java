@@ -9662,7 +9662,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                    )
                 &   !ct
                   : (   application/pdf
-                      &     (facet.txt)
+                      &     (   !nofonts:true
+                              & (app.rom)
+                            | (app.nrm)
+                            )
+                            (facet.txt)
                             ( format
                             .     !nofonts:true
                                 & img^pdf
@@ -9704,7 +9708,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : ( ("%PDF" ?|"%pdf" ?)
-                           &     (facet.txt)
+                           &     (   !nofonts:true
+                                   & (app.rom)
+                                 | (app.nrm)
+                                 )
+                                 (facet.txt)
                                  ( format
                                  .     !nofonts:true
                                      & img^pdf
@@ -9716,31 +9724,54 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   application/msword
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : (   ? rtf [<10 ?
-                             & (facet.txt) (format.rtf):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.rtf)
+                               : ?R
                            |   ? xml [<10 ?
-                             & (facet.txt) (format.xml):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.xml)
+                               : ?R
                            |   PK ?
-                             &   (facet.txt) (format.docx)
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.docx)
                                : ?R
                            |   ? [<9
-                             & (facet.txt) (format.doc):?R
-                           | ?&(facet.txt):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.doc)
+                               : ?R
+                           |   ?
+                             & (app.nrm) (facet.txt):?R
                            )
                          )
                     |   "application/vnd.oasis.opendocument.text"
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : (   PK ?
-                             & (facet.txt) (format.odt):?R
-                           | ?&(facet.txt):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.odt)
+                               : ?R
+                           |   ?
+                             & (app.nrm) (facet.txt):?R
                            )
                          )
                     |   application/octet-stream
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : (   ? rtf [<10 ?
-                             & (facet.txt) (format.rtf):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.rtf)
+                               : ?R
                            |   ? xml [<10 ?
-                             & (facet.txt) (format.xml):?R
-                           | ?&(facet.txt):?R
+                             &     (app.nrm)
+                                   (facet.txt)
+                                   (format.xml)
+                               : ?R
+                           |   ?
+                             & (app.nrm) (facet.txt):?R
                            )
                          )
                     |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -9774,7 +9805,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                              : ?spec
                              )
                          )
-                      & (format.img^!spec):?R
+                      & (app.rom) (format.img^!spec):?R
                     |   @( ?
                          :   audio/
                              ( ( basic
@@ -9813,7 +9844,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 , TRM
                                 )
                             : ? (TEI.?) ?
-                          & (facet.txt) (format.teip5):?R
+                          &     (app.nrm)
+                                (facet.txt)
+                                (format.teip5)
+                            : ?R
                         | (format.xm):?R
                         )
                     | :?R
