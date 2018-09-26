@@ -9775,7 +9775,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                            )
                          )
                     |   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                      & (facet.txt) (format.docx):?R
+                      &     (app.nrm)
+                            (facet.txt)
+                            (format.docx)
+                        : ?R
                     |   text/html
                       &     (app.nrm)
                             (facet.txt)
