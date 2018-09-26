@@ -1,3 +1,7 @@
+20180826 - When only selecting a tool, this tool will always be last in the
+           workflow. Also quit unfold function when number of solutions
+           is going to explode.
+
 20180820 - You can leave goal specs empty if you specify which tool to use.
 
 20180818 - Added optional "workflow must include this tool"-field.
