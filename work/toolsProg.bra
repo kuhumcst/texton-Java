@@ -6572,8 +6572,17 @@ toolsProg=
                     )
                   $ (!activeTools.!restriction)
                 : (?goal.?restriction)
-            | 
+            | :!restriction&0:?restriction
             )
+          &   log
+            $ ( fulfil
+                source
+                !source
+                goal
+                !goal
+                restriction
+                !restriction
+              )
           & fulfil$(!activeTools.!source.!goal.0.!restriction)
       )
       ( extractIOfeaturesFromHTTParg
@@ -6700,6 +6709,7 @@ toolsProg=
           & readTable$features
           & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
+          & log$(restriction !restriction)
           & fp$(!i.!o.!restriction):?FP
           & ( !i
             . !FP
@@ -9779,7 +9789,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             (facet.txt)
                             (format.docx)
                         : ?R
-                    | application/json&(format.json)
+                    |   application/json
+                      & (format.json) (app.drty):?R
                     |   text/html
                       &     (app.nrm)
                             (facet.txt)
@@ -9856,7 +9867,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                     | :?R
                     )
-                & !R (ambig.una):?R
+                & ( !R:? (format.json) ?
+                  | !R (ambig.una):?R
+                  )
                 & log$("analyseContentType returns:" !R)
                 & !R
             )
