@@ -239,7 +239,6 @@ public class create extends HttpServlet
              * former by a caret.
              */
             result = BracMat.Eval("create$(" + arg + ".)");
-			logger.debug("result is Γροεκσ:"+result);
             }
         else
             {
@@ -247,7 +246,6 @@ public class create extends HttpServlet
             workflowRequest = GoalChoice
             */
             result = BracMat.Eval("create" + workflowRequest + "$(" + arg + ")");
-			logger.debug("result is Γοαλ:"+result);
             }
         if(result == null || result.equals(""))
             {
