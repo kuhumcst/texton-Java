@@ -9779,7 +9779,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             (facet.txt)
                             (format.docx)
                         : ?R
-                    | application/json&(format.jsn)
+                    | application/json&(format.json)
                     |   text/html
                       &     (app.nrm)
                             (facet.txt)
