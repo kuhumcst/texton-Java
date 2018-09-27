@@ -1,3 +1,5 @@
+20180826 - Recognise input MIME type application/json.
+
 20180826 - When only selecting a tool, this tool will always be last in the
            workflow. Also quit unfold function when number of solutions
            is going to explode.
