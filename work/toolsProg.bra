@@ -9667,6 +9667,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   ( analyseContentType
             =   R spec nofonts ct
               .   !arg:(?arg.?nofonts)
+                & log$(analyseContentType !arg nofonts !nofonts)
                 & @( !arg
                    : ((%? "/" %?:?ct) ";" ?|?ct)
                    )
@@ -9903,6 +9904,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                      about the input(s)."
                 & readTable$Uploads
                 & !arg:?parms
+                & log$(analyzeInput !arg)
                 & ( !arg:? (DATE.?date) ?
                   | :?date
                   )

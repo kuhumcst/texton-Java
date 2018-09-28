@@ -1,3 +1,6 @@
+20180827 - Adapted path to pdffonts (/usr/local/bin/pdffonts). (By the way,
+           this program is not available under windows.)
+
 20180826 - Recognise input MIME type application/json.
 
 20180826 - When only selecting a tool, this tool will always be last in the
