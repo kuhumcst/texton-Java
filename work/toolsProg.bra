@@ -6558,18 +6558,8 @@ toolsProg=
                     )
                   $ (!activeTools.!restriction)
                 : (?goal.?restriction)
-            | :!restriction&0:?restriction
-            | 
+            | 0:?restriction
             )
-          &   log
-            $ ( fulfil
-                source
-                !source
-                goal
-                !goal
-                restriction
-                !restriction
-              )
           & fulfil$(!activeTools.!source.!goal.0.!restriction)
       )
       ( extractIOfeaturesFromHTTParg
@@ -6698,13 +6688,13 @@ toolsProg=
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
           & log$(restriction !restriction)
           & fp$(!i.!o.!restriction):?FP
-          & log$(FP !FP)
           & ( !i
             . !FP
-            .     !FP:(?.?fP)
-                & ( haz$(!fP.!restriction)&withRestriction
-                  | onlyWithoutRestriction
-                  )
+            .   (     !FP
+                    : ?+(?.?fP&haz$(!fP.!restriction))+?
+                  & withRestriction
+                | onlyWithoutRestriction
+                )
               | triviallyFulfilled
             )
       )
@@ -8423,7 +8413,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( ToolTitle
       =   
         .     readTable$tooladm
-            & log$(ToolTitle !arg)
             &   !tooladm
               :   ?
                 + ( ? (ToolID.!arg) ?
@@ -11893,16 +11882,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                               : ?restr
                             )
-                        & log$(restr !restr)
+                        & log$(restrA !restr)
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
-                            &   log
-                              $ ( "Now unfold NNN "
-                                  !NNN
-                                  ( !NNN:1&!pipes
-                                  | 
-                                  )
-                                )
                             & (   !pipes:(?.?pipesNN)
                                 & log$"now unfoldTreeN"
                                 & unfoldTreeN$(1.!pipes):?pipesN
