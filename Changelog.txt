@@ -1,3 +1,6 @@
+20181001 - Changed text that appears when goal is underspecified and a tool is
+           chosen. Show alphabetically sorted list of tools.
+
 20180827 - Adapted path to pdffonts (/usr/local/bin/pdffonts). (By the way,
            this program is not available under windows.)
 

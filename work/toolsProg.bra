@@ -1087,12 +1087,7 @@ toolsProg=
       ( enumerateTools
       =   tool o i inp I,a b
         .     !arg:(?tool,(?o.?i.?inp))
-            &   !tooladm
-              :   ?
-                + ( ? (ToolID.!tool) ?
-                  : ? (Title.?tool) ?
-                  )
-                + ?
+            & ToolTitle$!tool:?tool
             &   (enumerateTools$!inp:?I)
                 (!I:|" → ")
                 !tool
@@ -1596,12 +1591,7 @@ toolsProg=
                           | ?i&:?predecessors
                         )
                       )
-                  &   !tooladm
-                    :   ?
-                      + ( ? (ToolID.!tool) ?
-                        : ? (Title.?tool) ?
-                        )
-                      + ?
+                  & ToolTitle$!tool:?tool
                   & ( myfold
                     =   a b A B F R v1 v2
                       .     !arg:%?a*%?b
@@ -2997,12 +2987,7 @@ toolsProg=
                           ?
                     )
                   & ( !pairs:? (?.!toolShort) ?
-                    |     !tooladm
-                        :   ?
-                          + ( ? (ToolID.!toolShort) ?
-                            : ? (Title.?toolFull) ?
-                            )
-                          + ?
+                    |   ToolTitle$!toolShort:?toolFull
                       & (!toolFull.!toolShort) !pairs:?pairs
                     )
                   & ~
@@ -6512,6 +6497,7 @@ toolsProg=
                 )
               $ !toolprop
             : ?activeTools
+          & log$(goal !goal)
           & (   !goal:
               & log$emptygoal
               & ( getGoals
@@ -6573,6 +6559,7 @@ toolsProg=
                   $ (!activeTools.!restriction)
                 : (?goal.?restriction)
             | :!restriction&0:?restriction
+            | 
             )
           &   log
             $ ( fulfil
@@ -6711,6 +6698,7 @@ toolsProg=
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
           & log$(restriction !restriction)
           & fp$(!i.!o.!restriction):?FP
+          & log$(FP !FP)
           & ( !i
             . !FP
             .     !FP:(?.?fP)
@@ -8432,6 +8420,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               + ?
           & !arg
       )
+      ( ToolTitle
+      =   
+        .     readTable$tooladm
+            & log$(ToolTitle !arg)
+            &   !tooladm
+              :   ?
+                + ( ? (ToolID.!arg) ?
+                  : ? (Title.?arg) ?
+                  )
+                + ?
+            & !arg
+          | str$("ToolTitle:" !arg " does not exist.")
+      )
       "
 /**
  * abortJob
@@ -9343,13 +9344,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & !XML
                   )
             |   !arg:(?tool,(?output.?inputprop.?input))
-              & readTable$tooladm
-              &   !tooladm
-                :   ?
-                  + ( ? (ToolID.!tool) ?
-                    : ? (Title.?tool) ?
-                    )
-                  + ?
+              & ToolTitle$!tool:?tool
               &     !XML
                       Field
                     $ ( pipe
@@ -10130,17 +10125,22 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
             )
           & ( desiredTools
-            =   L ToolID Title
+            =   L ToolID Title S
               .   readTable$tooladm
+                & 0:?S
                 & :?L
                 &   !tooladm
                   :   ?
                     + (   ~(? (Inactive.on) ?)
                         : ? (ToolID.?ToolID) ?
                         : ? (Title.?Title) ?
-                      & !L (!Title.!ToolID):?L
+                      & !S+(low$!Title.!Title.!ToolID):?S
                       )
                     + 0
+                &   whl
+                  ' ( !S:(?.?Title.?ToolID)+?S
+                    & !L (!Title.!ToolID):?L
+                    )
                 &   fieldset
                   $ (     localized
                         $ ( "Restrict list of workflow candidates. (Optional)"
@@ -10683,9 +10683,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !pipe
             )
           & ( ShowAllPipes
-            =   directedBy hiddenData pipes
+            =   directedBy hiddenData pipes rstr
               .   !arg:(?directedBy.?hiddenData.?pipes)
-                & log$ShowAllPipes
+                & ( !hiddenData:? (desiredtool.?rstr) ?
+                  | :?rstr
+                  )
                 &   str
                   $ ( 200~~~
                         toML
@@ -10739,10 +10741,18 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                               ( p
                               .   
-                                ,   localized
-                                  $ ( "The goal is trivially fulfilled by the input. Go to the previous screen and specify your goal (or even the input) in more detail."
-                                      "Inputtet opfylder allerede målet. Gå tilbage til forrige skærm og specificer dit mål (og eventuelt også inputtet) nærmere."
-                                    )
+                                ,     !rstr:
+                                    &   localized
+                                      $ ( "The goal is trivially fulfilled by the input. Go to the previous screen and specify your goal (or even the input) in more detail."
+                                          "Inputtet opfylder allerede målet. Gå tilbage til forrige skærm og specificer dit mål (og eventuelt også inputtet) nærmere."
+                                        )
+                                  |     localized
+                                      $ ( "The goal is trivially fulfilled by the input. Go to the previous screen and either specify your goal in more detail, or do not specify a goal at all. If you choose the second option, an implicit goal will be derived from the tool that you specified."
+                                          "Inputtet opfylder allerede målet. Gå tilbage til forrige skærm og specificer dit mål nærmere, eller lad være med at specificere et mål. Hvis du vælger det sidste, bliver målet implicit bestemt af det værktøj du har valgt."
+                                        )
+                                      " ("
+                                      ToolTitle$!rstr
+                                      ")"
                               )
                           )
                         )
@@ -11374,13 +11384,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                               )
                           )
-                    |   readTable$tooladm
-                      &   !tooladm
-                        :   ?
-                          + ( ? (ToolID.!restriction) ?
-                            : ? (Title.?Title) ?
-                            )
-                          + ?
+                    |   ToolTitle$!restriction:?Title
                       &   str
                         $ ( 404~~~
                               toML
@@ -11889,52 +11893,60 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                               : ?restr
                             )
-                        &   !restr
-                          : ( withRestriction
-                            | triviallyFulfilled
-                            )
-                        & !pipes:?+[?NNN
-                        & log$"Now unfold"
-                        & (   !pipes:(?.?pipesNN)
-                            & log$"now unfoldTreeN"
-                            & unfoldTreeN$(1.!pipes):?pipesN
-                            & log$"unfoldTreeN done"
-                            & !pipesN:?+[?NNN
-                            & filter$(!pipesN.!parms):?pipesN
-                            & log$(NNN1a !NNN)
-                            & log$"Now percolateForgottenFeatures"
-                            &   percolateForgottenFeatures$!pipesN
-                              : ?pipesN
-                            & log$"percolateForgottenFeatures done"
-                            & !pipesN:?+[?NNN
-                            & log$(NNN1b !NNN)
-                            & 0:?pipes
-                            &   whl
-                              ' ( !pipesN:(?.?pipe)+?pipesN
-                                & wantThis$!pipe:?pipe
-                                & ( !pipe:0
-                                  | !pipes:?+!pipe+?
-                                  | !pipe+!pipes:?pipes
+                        & log$(restr !restr)
+                        & (   !restr:withRestriction
+                            & !pipes:?+[?NNN
+                            &   log
+                              $ ( "Now unfold NNN "
+                                  !NNN
+                                  ( !NNN:1&!pipes
+                                  | 
                                   )
                                 )
-                          |   !calls:<10000
-                            & log$("!calls:<10000" !calls)
-                            & unfoldTree$!pipes:?pipes
-                            & ( !pipes:#&log$TooMany
-                              |   log$"now filter"
-                                & filter2$(!pipes.!parms):?pipes
-                                & log$"filter done"
+                            & (   !pipes:(?.?pipesNN)
+                                & log$"now unfoldTreeN"
+                                & unfoldTreeN$(1.!pipes):?pipesN
+                                & log$"unfoldTreeN done"
+                                & !pipesN:?+[?NNN
+                                & filter$(!pipesN.!parms):?pipesN
+                                & log$(NNN1a !NNN)
+                                & log$"Now percolateForgottenFeatures"
+                                &   percolateForgottenFeatures$!pipesN
+                                  : ?pipesN
+                                & log$"percolateForgottenFeatures done"
+                                & !pipesN:?+[?NNN
+                                & log$(NNN1b !NNN)
+                                & 0:?pipes
+                                &   whl
+                                  ' ( !pipesN:(?.?pipe)+?pipesN
+                                    & wantThis$!pipe:?pipe
+                                    & ( !pipe:0
+                                      | !pipes:?+!pipe+?
+                                      | !pipe+!pipes:?pipes
+                                      )
+                                    )
+                              |   !calls:<10000
+                                & log$("!calls:<10000" !calls)
+                                & unfoldTree$!pipes:?pipes
+                                & (   !pipes:#
+                                    & log$TooMany
+                                  |   log$"now filter"
+                                    & filter2$(!pipes.!parms):?pipes
+                                    & log$"filter done"
+                                  )
+                              | log$(calls !calls)&~
                               )
-                          | log$(calls !calls)&~
+                          | !restr:triviallyFulfilled
                           )
                       )
                     & "We may have succeeded in computing one or more pipelines."
-                    & (   ( !pipes:#:?NNN
+                    & (   (   !pipes:#:?NNN
+                            & log$(NNN3 !pipes)
                           |   !pipes:?+[?NNN
                             & log$(NNN2 !NNN)
                             & !NNN:>1000
                           )
-                        & log$TooMany
+                        & log$(TooMany !pipes)
                         & TooMany$!NNN
                       |   !Submit:nextStep
                         & log$nextStep
