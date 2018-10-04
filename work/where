@@ -12,8 +12,6 @@ where=
       Workflows
       UIlanguage
       TEImetadata
-      CMDImetadata
-      dcmi-type-vocabulary
   . meta/
   )
   (   facets

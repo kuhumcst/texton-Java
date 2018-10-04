@@ -182,18 +182,6 @@ public class zipresults extends HttpServlet
                             letter = letter.substring(end+1);
                             }
                         }
-                    else if(letter.startsWith("metadata:"))
-                        {
-                        String MetaData = BracMat.Eval("metadataAsXML$(" + job + "." + workflow.quote(date) + ")");
-                        hasFiles = true;
-                        //zipdest = new FileOutputStream(localFilePath + job + ".zip");
-                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
-                        zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                        int end = letter.indexOf(';');
-                        String type = letter.substring(9,end);
-                        workflow.zipstring(type + ".xml",zipout,MetaData);
-                        letter = letter.substring(end+1);
-                        }
 
                     if(hasFiles)
                         {

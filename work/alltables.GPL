@@ -1278,6 +1278,10 @@ Workflows=
     )
   . "DASISH cleaning workflow, flat text input, TEIP5DKCLARIN output"
   );
+ambiguity=
+  (unambiguous utvetydig.una.)
+  (ambiguous tvetydig.amb.)
+  (pruned beskåret.pru.);
 annotationStyles=
 ("id: not disclosed".one.) ("id: i#.# (sentence.token)".two.);
 basistextStyles=
@@ -1302,7 +1306,7 @@ facets=
   . tplo
   . 
   )
-  ("tokens,lemmaer".tl.)
+  ("tokens,lemmas" "tokens,lemmaer".tl.)
   ("tagged terms" termer.trm.)
   ("anonymized named entities".ano.)
   ("name entities" Navne.ner.)
@@ -1324,9 +1328,7 @@ features=
     )
     (table.facets)
     ( specificationTable
-    .   (lem.lemmaStyles)
-        (txt.textStyles)
-        (pos tp tpd tpl tplo.tagSets)
+    .   (pos tp tpd tpl tplo.tagSets)
         (tok.tokenisationStyles)
     )
   )
@@ -1349,6 +1351,7 @@ features=
     (table.fileFormats)
     ( specificationTable
     .   (flat.flatFileTypes)
+        (html.htmlStyles)
         (txtbasis.basistextStyles)
         (txtann.annotationStyles)
         (img.imageStyles)
@@ -1377,11 +1380,11 @@ features=
     (description."Decorative tradition, for example typeface class.")
     (table.vulticuli)
   )
-+ ( (inDex.G)
-    (name.Quality Kvalitet)
-    (short.qual)
-    (description."Quality standard.")
-    (table.qualities)
++ ( (inDex.H)
+    (name.Ambiguity Flertydighed)
+    (short.ambig)
+    (description."Whether data contains ambiguous elements.")
+    (table.ambiguity)
   );
 fileFormats=
   ( flat flad
@@ -1421,13 +1424,19 @@ fileFormats=
   (RDF.rdf.)
   (Anvil.anvil.)
   (image billede.img.)
-  (audio.snd.)
+  (audio.wav.)
   (video.vid.)
   (CoNLL2009.conll.)
   ("Penn Treebank".pt.)
   (JSON.json.);
 flatFileTypes=
 (Latin-1.latin1.) (UTF-8.utf8.);
+htmlStyles=
+  ( "Traditional tags (h, p, etc.)" "Med traditionelle tags (h, p, etc.)"
+  . ROTM
+  . 
+  )
+  ("Exact layout" layoutbevarende.pedantic.);
 imageStyles=
   (GIF.gif.)
   ("JPEG JFIF".jpeg.)
@@ -1440,7 +1449,7 @@ imageStyles=
 jobAbout=
 ;
 jobNr=
-;
+0;
 jobs=
 ;
 licences=
@@ -1651,11 +1660,6 @@ presentations=
   ("combined w. previous steps" "kombineret m. tidligere trin".comb.)
   ("frequency list" frekvensliste.frq.)
   ("alphabetic list" "alfabetisk liste".alf.);
-qualities=
-  (unambiguous utvetydig.una.)
-  (ambiguous tvetydig.amb.)
-  (pruned beskåret.pru.)
-  (OCR.ocr.);
 relations=
 ;
 sndStyles=
@@ -1683,9 +1687,6 @@ tagSets=
   (DSL-tagset.DSL.)
   ("ANI new tag set" "ANI_nyt_tagsæt".ANInyt.)
   ("Universal Part-of-Speech Tagset".Uni.);
-textStyles=
-  ("regular text" "normal tekst".hq.)
-  ("OCR text" OCR-tekst.ocr.);
 tokenisationStyles=
   ("Penn Treebank".PT.)
   (DSL-basic.DSLb.)
@@ -2615,6 +2616,9 @@ vidStyles=
 vulticuli=
   (roman roman.rom.)
   (blackletter gotisk.got.)
+  (OCR.ocr.)
+  (unnormalised ikke-normaliseret.unn.)
+  (normalised normaliseret.nrm.)
   ("optimized for software" "bedst for programmer".drty.)
   ("pretty printed" "nydelig opsætning".prtty.);
 where=
@@ -2631,8 +2635,6 @@ where=
       Workflows
       UIlanguage
       TEImetadata
-      CMDImetadata
-      dcmi-type-vocabulary
   . meta/
   )
   (   facets
@@ -2641,17 +2643,16 @@ where=
       periods
       presentations
       vulticuli
-      qualities
+      ambiguity
   . meta/feature/
   )
   (   annotationStyles
       basistextStyles
       flatFileTypes
+      htmlStyles
       imageStyles
-      lemmaStyles
       sndStyles
       tagSets
-      textStyles
       tokenisationStyles
       vidStyles
   . meta/style/

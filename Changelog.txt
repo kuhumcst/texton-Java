@@ -1,3 +1,6 @@
+20181004 - Removed dead code that had to do with production of CMDI-metadata
+           for text resources. (Now superseded by TEI-metadata.)
+
 20181001 - Changed text that appears when goal is underspecified and a tool is
            chosen. Show alphabetically sorted list of tools.
 
