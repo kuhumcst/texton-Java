@@ -59,7 +59,7 @@ command line by changing the 'path$' function.
 To get started from a file containing all tables called 'alltablesxxx' (replace
 xxx with actual characters in the file name), e.g., alltables.GPL:
 
-readTable$"alltables.GPL"
+importTables$"alltables.GPL"
 
 This reads the named file and stores each table in a separate file in a folder
 structure
@@ -75,14 +75,20 @@ rewritten, so all lay-out is normalized (Bracmat style).
 After changes have been made to the single table files, for example because
 new tools are registered, the 'alltablesxxx' file is made up to date with
 
-readTable$
+exportTables$
 
 This command reads all single file tables from the folder structure and saves
 them to 'alltablesxxx'. The command knows the actual name of the file to write
 to because that name is stored in alltablesxxx as a self-reference and
-therefore known after the last time readTable$alltablesxxx was issued.
+therefore known after the last time importTables$alltablesxxx was called.
 In this way, it is possible to change context by reading an 'alltablesyyy'
 that is different from 'alltablesxxx'.
+
+To export all tables to a different file, do
+
+exportTables$<filename>
+
+where <filename> must be a valid file name that starts with 'alltables'.
 
 To do a clean up, removing almost all that is not defined in this file from 
 Bracmat's memory, call the clean function
@@ -307,26 +313,23 @@ toolsProg=
       ( read
       = .get$(path$((!arg:~|all) ".bra"))
       )
-      ( readTable
+      ( importTables
       =   tabs tab Tables folder gotThis error file
-        .     !arg:(AAA|where)
-            & get$(path$!arg)
-          |   !arg:(?folder.?file)
-            &   get$(path$(!folder !file))
-              : ( !file
-                |   ?!file
-                  &   log
-                    $ (str$("No assignment in [" !file "] Result:") !!file)
-                )
-            & !!file
-          |   @(!arg:alltables ?)
-            & get$(path$!arg)
-            & saveTable$
-            & readTable$
-          |   ( !where:(?.?) ?
+        .     @(!arg:alltables ?)
+            & (   get$(path$!arg)
+                & saveTable$
+                & exportTables$
+              | str$("Cannot read " !arg)&~
+              )
+          |   str
+            $ "Usage: importTables$\"<file name>\" .  <file name> must start with 'alltables'."
+      )
+      ( exportTables
+      =   tabs tab Tables folder gotThis error file
+        .     ( !where:(?.?) ?
               | readTable$where
               )
-            & (   !arg:
+            & (   !arg:(|@(?:alltables ?))
                 & 0:?tabs
                 & :?error
                 & (   !where
@@ -336,7 +339,7 @@ toolsProg=
                           &   whl
                             ' ( !Tables
                               :   ( %@?tab
-                                  & (   readTable$(!folder.!tab)
+                                  & (   readTableFromFolder$(!folder.!tab)
                                       & !tab+!tabs:?tabs
                                     |   log
                                       $ ( str
@@ -357,9 +360,17 @@ toolsProg=
                   |   ( !tabs:?+where+?
                       | where+!tabs:?tabs
                       )
+                    & (   @(!arg:alltables ?)
+                        & !arg:?AAA
+                      | 
+                      )
                     & (   lst$(!tabs,path$!AAA,NEW)
                         &   str
-                          $ ( "Read all tables and saved them in 'alltables.bra' (or whatever is the value of AAA) as a back-up. To restore, type readTable$\"alltables...\" where alltables... is up to you, but should match an existing file name."
+                          $ ( "Read all tables and saved them in '"
+                              path$!AAA
+                              "' as a back-up. To restore, type importTables$\""
+                              !AAA
+                              "\"."
                               (!error:|!error)
                             )
                       |   str
@@ -369,7 +380,32 @@ toolsProg=
                           )
                       )
                   )
-              |   !where:? (? !arg ?.?folder) ?
+              |   str
+                $ "'exportTables$' must be called without argument or with the name of a file that must start with 'alltables'."
+              )
+          | str$"Cannot read table 'where'"&~
+      )
+      ( readTableFromFolder
+      =   tabs tab Tables folder gotThis error file
+        .     !arg:(?folder.?file)
+            &   get$(path$(!folder !file))
+              : ( !file
+                |   ?!file
+                  &   log
+                    $ (str$("No assignment in [" !file "] Result:") !!file)
+                )
+            & !!file
+          | str$("Cannot read " !arg)&~
+      )
+      ( readTable
+      =   tabs tab Tables folder gotThis error file
+        .     !arg:%@
+            & (   !arg:(AAA|where)
+                & (get$(path$!arg)|`~)
+              |   ( !where:(?.?) ?
+                  | readTable$where
+                  )
+                & !where:? (? !arg ?.?folder) ?
                 &   ( get$(path$(!folder !arg))
                     | get$(path$(!folder !arg ".table"))
                     )
@@ -8546,11 +8582,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             ?
                       )
                       ?
-                &      readTable$TEImetadata:?Metadata
-                      & log$TEImetadata-READ
-                      & TEI
-                    
-                  : ?type
+                & readTable$TEImetadata:?Metadata
+                & log$TEImetadata-READ
+                & TEI:?type
                 & ( XPath
                   =   el at
                     .     !arg:%?el ?arg
@@ -9055,47 +9089,44 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & log$(letter !arg)
           & jobMetaData$!arg:(?metadata.?type)
-          & (   readTable$fileFormats
-              & readTable$Uploads
-              &   doneAllJobSub$!arg
-                : (workflow.,?workflow) (steps.,?steps)
-              & log$(steps !steps)
-              & :?resources:?files
-              &     toML
-                  $ ( html
-                    .   
-                      ,   ( head
-                          .   
-                            ,   (meta.charset.UTF-8)
-                                ( title
-                                .   
-                                  ,   localized
-                                    $ ( "Results from CLARIN-DK tools"
-                                        "Resultater fra Tools"
-                                      )
-                                )
-                          )
-                          ( body
-                          .   (bgcolor."#FF66FF")
-                            ,   (h1.,localized$(Results Resultater))
-                                (h2.,Workflow)
-                                (p.,!workflow)
-                                (h2.,localized$(Steps Trin))
-                                (dl.,Steps$!steps)
-                                ( h2
-                                .   
-                                  ,   localized
-                                    $ ( "Input to the workflow:"
-                                        "Workflowets input:"
-                                      )
-                                )
-                                (p.,inps$!resources)
-                                !metadata
-                          )
-                    )
-                : ?html
-              & str$(!files !html)
-            )
+          & readTable$fileFormats
+          & readTable$Uploads
+          &   doneAllJobSub$!arg
+            : (workflow.,?workflow) (steps.,?steps)
+          & log$(steps !steps)
+          & :?resources:?files
+          &     toML
+              $ ( html
+                .   
+                  ,   ( head
+                      .   
+                        ,   (meta.charset.UTF-8)
+                            ( title
+                            .   
+                              ,   localized
+                                $ ( "Results from CLARIN-DK tools"
+                                    "Resultater fra Tools"
+                                  )
+                            )
+                      )
+                      ( body
+                      .   (bgcolor."#FF66FF")
+                        ,   (h1.,localized$(Results Resultater))
+                            (h2.,Workflow)
+                            (p.,!workflow)
+                            (h2.,localized$(Steps Trin))
+                            (dl.,Steps$!steps)
+                            ( h2
+                            .   
+                              ,   localized
+                                $ ("Input to the workflow:" "Workflowets input:")
+                            )
+                            (p.,inps$!resources)
+                            !metadata
+                      )
+                )
+            : ?html
+          & str$(!files !html)
       )
       ( pipeSegmentFields
       =     XML tool output input xml spec A
@@ -10671,12 +10702,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
             )
           & ( methodName
-            =   
-              .   str
-                $ ( create
-                    ( (!arg:|By) !arg
-                    )
-                  )
+            = .str$(create (!arg:|By) !arg)
             )
           & ( ShowOnlyTheCurrentPipe
             =   formFields nicify pipe nth directedBy
@@ -11190,9 +11216,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & (readTable$jobAbout|:?jobAbout)
                 &     ( !JobNr
                       .   (mail2.!mail2)
-                          ( human
-                          .   makeWorkflowRadioButtons$!PIPE
-                          )
+                          (human.makeWorkflowRadioButtons$!PIPE)
                           ( userProvidedMetadata
                           . retrieveMetadataFromParms$(!metadataType.!parms)
                           )
@@ -11214,10 +11238,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         &   toML
                           $ ( !BodyContainer
                             $ ( paragraph
-                              $ (   localized
-                                  $ ( "There is nothing to do. The goal seems to be fulfilled already. Go back with the \"back\" button."
-                                      "Der er intet at lave. Gå tilbage med knappen \"Forrige\"."
-                                    )
+                              $ ( localized
+                                $ ( "There is nothing to do. The goal seems to be fulfilled already. Go back with the \"back\" button."
+                                    "Der er intet at lave. Gå tilbage med knappen \"Forrige\"."
+                                  )
                                 )
                               )
                             )
@@ -14112,7 +14136,7 @@ command line by changing the 'path$' function.
 To get started from a file containing all tables called 'alltablesxxx' (replace
 xxx with actual characters in the file name), e.g., alltables.GPL:
 
-readTable$\"alltables.GPL\"
+importTables$\"alltables.GPL\"
 
 This reads the named file and stores each table in a separate file in a folder
 structure
@@ -14128,14 +14152,20 @@ rewritten, so all lay-out is normalized (Bracmat style).
 After changes have been made to the single table files, for example because
 new tools are registered, the 'alltablesxxx' file is made up to date with
 
-readTable$
+exportTables$
 
 This command reads all single file tables from the folder structure and saves
 them to 'alltablesxxx'. The command knows the actual name of the file to write
 to because that name is stored in alltablesxxx as a self-reference and
-therefore known after the last time readTable$alltablesxxx was issued.
+therefore known after the last time importTables$alltablesxxx was called.
 In this way, it is possible to change context by reading an 'alltablesyyy'
 that is different from 'alltablesxxx'.
+
+To export all tables to a different file, do
+
+exportTables$<filename>
+
+where <filename> must be a valid file name that starts with 'alltables'.
 
 To do a clean up, removing almost all that is not defined in this file from 
 Bracmat's memory, call the clean function

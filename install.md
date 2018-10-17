@@ -128,8 +128,8 @@ How?
    
     Go to the 'Evaluate program code' form near the bottom of the window. Now we need to create working copies of metadata for tools. These metadata can be read from file alltables.bra. In the text area, write the following text and press the 'Bracmat' button.
 
-        readTable$"alltables.bra"
+        importTables$"alltables.bra"
 
-(or readTable$"alltables.GPL")
+(or importTables$"alltables.GPL")
 
 15. Now you can try to create a workflow for a file that you upload or for a text that you write. You do this in one of the two forms close to the top of the window. ('Apply workflow to uploaded file(s)' and 'Apply workflow to typed-in text only.')
