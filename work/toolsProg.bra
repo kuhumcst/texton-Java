@@ -33,28 +33,18 @@ the source code in Bracmat using the command:
 
     !r
 
-This command re-reads the file, renames the previous version from .bra to .bak
-and then saves the source code. Some editors will notice that the text has 
-changed on disk and offer you to reload the source code.
+This command re-reads the file, renames the previous version from toolsprog.bra
+to toolsprog.bak and then saves the source code. Some editors will notice that
+the text has changed on disk and offer you to reload the source code.
 
-To deploy the code on the DK-Clarin JBoss server, copy the file to
-
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
-
-The new code can be hot deployed if there is a possibility to issue commands
-directly to the running shared library Bracmat. Otherwise, the code will be
-read when JBoss is restarted:
-
-    sudo /etc/init.d/JBoss stop
-    sudo /etc/init.d/JBoss start
-
-If it is possible to issue commands to Bracmat, functions and tables can be
-redefined at the prompt.
+To change the comment near the start of this file, you need to go to the bottom
+of the file and find the text there. A change made to that text takes effect
+after saving once and pressing !r two times. Remember to escape quotes " with
+a backslash \. Comments elsewhere (i.e. text enclosed by braces { and } is NOT
+saved. Use string expressions if you want a comment somewhere.
 
 The following commands can be issued by sending an 'expression' HTTP parameter
-to the 'bracmatevaluator' servlet. They can be made to work from the
-command line by changing the 'path$' function.
+to the 'bracmatevaluator' servlet.
 
 To get started from a file containing all tables called 'alltablesxxx' (replace
 xxx with actual characters in the file name), e.g., alltables.GPL:
@@ -79,63 +69,38 @@ exportTables$
 
 This command reads all single file tables from the folder structure and saves
 them to 'alltablesxxx'. The command knows the actual name of the file to write
-to because that name is stored in alltablesxxx as a self-reference and
-therefore known after the last time importTables$alltablesxxx was called.
-In this way, it is possible to change context by reading an 'alltablesyyy'
-that is different from 'alltablesxxx'.
+to because that name is stored in the variable AAA, which is itself stored
+alongside all tables, and is therefore known after the last time 
+importTables$alltablesxxx was called. It is possible to change context by
+reading an 'alltablesyyy' that is different from 'alltablesxxx'.
 
 To export all tables to a different file, do
 
-exportTables$<filename>
+exportTables$"alltableszzz"
 
-where <filename> must be a valid file name that starts with 'alltables'.
+where alltableszzz must be a valid file name that starts with 'alltables'.
 
 To do a clean up, removing almost all that is not defined in this file from 
 Bracmat's memory, call the clean function
 
     clean$
     
-To save everything in memory to disk, enter
-
-    save$
-    
-A file called "all.bra" is created in the folder
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
-    
-If only a single function foo must be saved, issue the command
-
-    save$foo
-
-If the tables must be saved in separate files, issue
-
-    saveTable$
-    
-If a single table blah must be saved in a file, issue
-
-    saveTable$blah
-
-Changed table files can always be hot deployed by simply copying them to the folder
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
+Changes made to table files take immediately effect. It is advised to use the
+admin page to register new tools. Some changes cannot be made using the admin
+page, such as adding a new feature or feature value.
     
 Server:
 Add following line to /etc/httpd/conf.d/proxy_ajp.conf:
     ProxyPass /toolsdata !
 (Restart Apache sudo /etc/init.d/httpd restart)
     
-Make sure bracmat is in JBoss's PATH:
+Make sure bracmat is in JBoss's or Tomcat PATH:
     /usr/lib/libbracmat.so -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1.0
 
-Examples of locations for this file are:?
-    /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra
-    /usr/local/jboss/server/default/data/tools/toolsProg.bra
-    
-This location is defined in properties.xml, e.g.,
-    <entry key=toolsHome>../server/default/data/tools/</entry>  (relative to bin directory)
-or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>
+The conf/properties.xml file has an entry "toolsHome". The value of this entry
+is the location of this file, toolsprog.bra.
 }
 
 toolsProg=
@@ -316,9 +281,7 @@ toolsProg=
       ( importTables
       =   tabs tab Tables folder gotThis error file
         .     @(!arg:alltables ?)
-            & (   get$(path$!arg)
-                & saveTable$
-                & exportTables$
+            & ( get$(path$!arg)&saveAllTables$
               | str$("Cannot read " !arg)&~
               )
           |   str
@@ -368,7 +331,7 @@ toolsProg=
                         &   str
                           $ ( "Read all tables and saved them in '"
                               path$!AAA
-                              "' as a back-up. To restore, type importTables$\""
+                              "'. To restore, type importTables$\""
                               !AAA
                               "\"."
                               (!error:|!error)
@@ -416,6 +379,28 @@ toolsProg=
               )
           | str$("Cannot read " !arg)&~
       )
+      ( saveAllTables
+      =   tab saved folder
+        .   !arg:
+          & :?saved
+          & (   !where
+              :   ?
+                  ( ?Tables
+                  .   ?folder
+                    &   whl
+                      ' ( !Tables
+                        :   ( %?tab
+                            & saveTable$(!folder.!tab)
+                            & !saved !tab:?saved
+                            )
+                            ?Tables
+                        )
+                    & ~
+                  )
+                  ?
+            | Saved !saved
+            )
+      )
       ( saveTable
       =   tab saved folder
         .     !arg:
@@ -447,11 +432,6 @@ toolsProg=
                   )
                 )
             & 
-      )
-      ( save
-      =   
-        .   lst
-          $ (!arg,path$((!arg:~|all) ".bra"),NEW)
       )
       ( setLang
       =   full YYY A Z
@@ -14110,28 +14090,18 @@ the source code in Bracmat using the command:
 
     !r
 
-This command re-reads the file, renames the previous version from .bra to .bak
-and then saves the source code. Some editors will notice that the text has 
-changed on disk and offer you to reload the source code.
+This command re-reads the file, renames the previous version from toolsprog.bra
+to toolsprog.bak and then saves the source code. Some editors will notice that
+the text has changed on disk and offer you to reload the source code.
 
-To deploy the code on the DK-Clarin JBoss server, copy the file to
-
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
-
-The new code can be hot deployed if there is a possibility to issue commands
-directly to the running shared library Bracmat. Otherwise, the code will be
-read when JBoss is restarted:
-
-    sudo /etc/init.d/JBoss stop
-    sudo /etc/init.d/JBoss start
-
-If it is possible to issue commands to Bracmat, functions and tables can be
-redefined at the prompt.
+To change the comment near the start of this file, you need to go to the bottom
+of the file and find the text there. A change made to that text takes effect
+after saving once and pressing !r two times. Remember to escape quotes \" with
+a backslash \\. Comments elsewhere (i.e. text enclosed by braces { and } is NOT
+saved. Use string expressions if you want a comment somewhere.
 
 The following commands can be issued by sending an 'expression' HTTP parameter
-to the 'bracmatevaluator' servlet. They can be made to work from the
-command line by changing the 'path$' function.
+to the 'bracmatevaluator' servlet.
 
 To get started from a file containing all tables called 'alltablesxxx' (replace
 xxx with actual characters in the file name), e.g., alltables.GPL:
@@ -14156,63 +14126,38 @@ exportTables$
 
 This command reads all single file tables from the folder structure and saves
 them to 'alltablesxxx'. The command knows the actual name of the file to write
-to because that name is stored in alltablesxxx as a self-reference and
-therefore known after the last time importTables$alltablesxxx was called.
-In this way, it is possible to change context by reading an 'alltablesyyy'
-that is different from 'alltablesxxx'.
+to because that name is stored in the variable AAA, which is itself stored
+alongside all tables, and is therefore known after the last time 
+importTables$alltablesxxx was called. It is possible to change context by
+reading an 'alltablesyyy' that is different from 'alltablesxxx'.
 
 To export all tables to a different file, do
 
-exportTables$<filename>
+exportTables$\"alltableszzz\"
 
-where <filename> must be a valid file name that starts with 'alltables'.
+where alltableszzz must be a valid file name that starts with 'alltables'.
 
 To do a clean up, removing almost all that is not defined in this file from 
 Bracmat's memory, call the clean function
 
     clean$
     
-To save everything in memory to disk, enter
-
-    save$
-    
-A file called \"all.bra\" is created in the folder
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
-    
-If only a single function foo must be saved, issue the command
-
-    save$foo
-
-If the tables must be saved in separate files, issue
-
-    saveTable$
-    
-If a single table blah must be saved in a file, issue
-
-    saveTable$blah
-
-Changed table files can always be hot deployed by simply copying them to the folder
-    infra.clarin.dk:/srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools
-    devtools.clarin.dk:/usr/local/jboss/server/default/data/tools
+Changes made to table files take immediately effect. It is advised to use the
+admin page to register new tools. Some changes cannot be made using the admin
+page, such as adding a new feature or feature value.
     
 Server:
 Add following line to /etc/httpd/conf.d/proxy_ajp.conf:
     ProxyPass /toolsdata !
 (Restart Apache sudo /etc/init.d/httpd restart)
     
-Make sure bracmat is in JBoss's PATH:
+Make sure bracmat is in JBoss's or Tomcat PATH:
     /usr/lib/libbracmat.so -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1 -> /usr/lib/libbracmat.so.1.0
     /usr/lib/libbracmat.so.1.0
 
-Examples of locations for this file are:?
-    /srv/dkclarin-infra/jboss-4.2.3.GA/server/default/data/tools/toolsProg.bra
-    /usr/local/jboss/server/default/data/tools/toolsProg.bra
-    
-This location is defined in properties.xml, e.g.,
-    <entry key=toolsHome>../server/default/data/tools/</entry>  (relative to bin directory)
-or  <entry key=toolsHome>D:/projects/clarin/dkclarin-services/tools/</entry>
+The conf/properties.xml file has an entry \"toolsHome\". The value of this entry
+is the location of this file, toolsprog.bra.
 }
 
 "

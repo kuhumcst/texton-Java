@@ -1,3 +1,8 @@
+20181018 - Improved comment at start of toolsprog.bra. Removed save$ function
+           since there is no use case for it. Improved importTables$ function
+           so it doesn't end with calling exportTables$, which was harmless,
+           but unnecessary and confusing.
+
 20181017 - Made exporting and importing tables more clear. Use
            exportTables$[<filename>] and importTables$<filename>
 
