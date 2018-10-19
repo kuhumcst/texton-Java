@@ -4674,6 +4674,10 @@ toolsProg=
                       ' ( !toolprop:?A+(?.)+?Z
                         & !A+!Z:?toolprop
                         )
+                    &   whl
+                      ' ( !toolprop:?A+#%*?M+?Z
+                        & !A+!M+!Z:?toolprop
+                        )
                     & ( removeEmptyValues
                       =   a b
                         .     !arg:?a_?b
@@ -4692,7 +4696,7 @@ toolsProg=
                       =   toolpropFacetsSorted Name facets
                         .   0:?toolpropFacetsSorted
                           &   whl
-                            ' ( !arg:(?Name.?facets)+?arg
+                            ' ( !arg:#*(?Name.?facets)+?arg
                               &     (!Name.sort$!facets)
                                   + !toolpropFacetsSorted
                                 : ?toolpropFacetsSorted

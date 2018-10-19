@@ -1,3 +1,5 @@
+20181019 - Fixed erreor in the way toolprop table is factorized before saving.
+
 20181018 - Improved comment at start of toolsprog.bra. Removed save$ function
            since there is no use case for it. Improved importTables$ function
            so it doesn't end with calling exportTables$, which was harmless,
