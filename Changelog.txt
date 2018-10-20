@@ -1,3 +1,8 @@
+20181020 - Fixed percolation of specs if the user did not specify any features,
+           but restricted workflow solutions by specifying a tool with more
+           than one incarnation. (Each incarnation can imply a different set
+           of output specs).
+
 20181019 - Fixed erreor in the way toolprop table is factorized before saving.
 
 20181018 - Improved comment at start of toolsprog.bra. Removed save$ function

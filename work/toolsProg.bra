@@ -11800,28 +11800,39 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & log$(restrA !restr)
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
-                            & (   !pipes:(?.?pipesNN)
-                                & log$"now unfoldTreeN"
-                                & unfoldTreeN$(1.!pipes):?pipesN
-                                & log$"unfoldTreeN done"
-                                & !pipesN:?+[?NNN
-                                & filter$(!pipesN.!parms):?pipesN
-                                & log$(NNN1a !NNN)
-                                & log$"Now percolateForgottenFeatures"
-                                &   percolateForgottenFeatures$!pipesN
-                                  : ?pipesN
-                                & log$"percolateForgottenFeatures done"
-                                & !pipesN:?+[?NNN
-                                & log$(NNN1b !NNN)
-                                & 0:?pipes
+                            & (   0:?newpipes
                                 &   whl
-                                  ' ( !pipesN:(?.?pipe)+?pipesN
-                                    & wantThis$!pipe:?pipe
-                                    & ( !pipe:0
-                                      | !pipes:?+!pipe+?
-                                      | !pipe+!pipes:?pipes
-                                      )
+                                  ' (   !pipes
+                                      : ((?.?):?incarnationpipes)+?pipes
+                                    & "incarnationpipes is (<(user or declared tool) provided output specs> . <sum of unambiguous trees>)"
+                                    & log$"now unfoldTreeN"
+                                    &   unfoldTreeN$(1.!incarnationpipes)
+                                      : ?pipesN
+                                    & "The 1 is the initial stop list, which is formed as a product."
+                                    &   log
+                                      $ ("unfoldTreeN done")
+                                    & "pipesN is (<final stop list> . <user provided output specs> . <unfolded tree>) + ..."
+                                    & "It seems we don't need the final stop list anymore."
+                                    & !pipesN:?+[?NNN
+                                    &   filter$(!pipesN.!parms)
+                                      : ?pipesN
+                                    & log$(NNN1a !NNN)
+                                    & log$"Now percolateForgottenFeatures"
+                                    &   percolateForgottenFeatures$!pipesN
+                                      : ?pipesN
+                                    & log$"percolateForgottenFeatures done"
+                                    & !pipesN:?+[?NNN
+                                    & log$(NNN1b !NNN)
+                                    &   whl
+                                      ' ( !pipesN:(?.?pipe)+?pipesN
+                                        & wantThis$!pipe:?pipe
+                                        & ( !pipe:0
+                                          | !newpipes:?+!pipe+?
+                                          | !pipe+!newpipes:?newpipes
+                                          )
+                                        )
                                     )
+                                & !newpipes:?pipes
                               |   !calls:<10000
                                 & log$("!calls:<10000" !calls)
                                 & unfoldTree$!pipes:?pipes
