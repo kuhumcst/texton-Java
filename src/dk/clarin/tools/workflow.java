@@ -255,94 +255,6 @@ public class workflow implements Runnable
         return body;
         }
 
-    public void sendMail(int status, String name, String string1,String toolErrorMessage,String toolsandfiles,String mail2)
-        throws org.apache.commons.mail.EmailException 
-        {
-/*
-        try
-            { 
-            logger.debug("sendMail("  + status + ", " + name + ", ... , ... , " + mail2 + ")");
-
-            SimpleEmail email = new SimpleEmail();
-            email.setHostName(ToolsProperties.mailServer);
-            email.setFrom(ToolsProperties.mailFrom, ToolsProperties.mailFromName);
-            email.setSmtpPort(Integer.parseInt(ToolsProperties.mailPort));
-            email.setCharset("UTF-8");
-
-            String body = "some body";
-            String subject = "some subject ﷰ";
-            switch(status){
-            case ACCEPT: 
-                subject = "[clarin.dk] Ny data fra integrerede værktøjer";
-                body = "<html><body><p>" 
-                    + "Vi har modtaget dit ønske om at oprette ny data ved hjælp af integrerede værktøjer.<br /><br />\n\n"
-                    + "Når oprettelsen er færdig, vil du modtage en email igen, der bekræfter at "
-                    + "oprettelsen gik godt, samt en liste over URL'er hvor du vil kunne finde dine data<br /><br />\n\n"
-                    + "Du kan ikke svare på denne email. Hvis ovenstående oplysninger ikke er rigtige, "
-                    + "eller du har spørgsmål, kan du henvende dig på mail-adressen admin@clarin.dk<br /><br />\n\n"
-                    + "Venlig hilsen \nclarin.dk</p></body></html>";    
-                break;
-            case WRAPUP:
-                logger.debug("sendMail("  + status + ", " + name + ", " + string1 + ", " + toolErrorMessage + ", " + toolsandfiles + ", " + mail2 + ")");
-                subject = "[clarin.dk]  Samlet output fra integrerede værktøjer - success";
-                body = BracMat.Eval("WRAPUPbody$(" + workflow.quote(toolsandfiles) + ")"); 
-                break;
-            case ERRORUSER: 
-                subject = "[clarin.dk] Integreret værktøj melder fejl";
-                body = "<html><body><p>"
-                    + string1 
-                    + (toolErrorMessage.equals("") ? "" : "<br /><br />\n\nClarin.dk har modtaget denne besked fra værktøjet:<br /><br />\n\n" + toolErrorMessage)
-                    + "<br /><br />\n\n"
-                    + errorInfo(toolsandfiles)
-                    + "<br /><br />\n\nDu kan ikke svare på denne email. Fejlbeskeden er også sendt til systemadministratoren."
-                    + "<br /><br />\n\nVenlig hilsen\nclarin.dk</p></body></html>";
-                break;
-            default: //ERROR
-                subject = "[clarin.dk] Integreret værktøj melder fejl";
-                body = "<html><body><p>"
-                    + string1 
-                    + (toolErrorMessage.equals("") ? "" : "<br /><br />\n\nClarin.dk har modtaget denne besked fra værktøjet:<br /><br />\n\n" + toolErrorMessage)
-                    + "<br /><br />\n\n"
-                    + errorInfo(toolsandfiles)
-                    + "<br /><br />\n\nVenlig hilsen\nclarin.dk</p></body></html>";
-                break;
-                }
-            email.setSubject(subject);
-            email.setMsg(body);
-            email.updateContentType("text/html; charset=UTF-8");
-            email.addTo(mail2,name);
-            email.send();
-            } 
-        catch (org.apache.commons.mail.EmailException m)
-            {
-            logger.error
-                ("[Tools generated org.apache.commons.mail.EmailException] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            //m.printStackTrace();
-            logger.error("{} Error sending email. Message is: {}","Tools", m.getMessage());
-            }
-        catch (Exception e)
-            {//Catch exception if any
-            logger.error
-                ("[Tools generated Exception] mailServer:"  + ToolsProperties.mailServer
-                + ", mailFrom:"         + ToolsProperties.mailFrom
-                + ", mailFromName:"     + ToolsProperties.mailFromName
-                + ", mailPort:"         + Integer.parseInt(ToolsProperties.mailPort)
-                + ", mail2:"            + mail2
-                + ", name:"             + name
-                );
-            logger.error("{} Exception:{}","Tools",e.getMessage());
-            }
-*/
-        }
-
-
-
     public static String escape(String str)
         {
         int len = str.length();
@@ -435,46 +347,6 @@ public class workflow implements Runnable
                 logger.info("processPipeLine aborts");
                 }
             }
-        if(!asynchronous)
-            {
-            /**
-             * mail2$
-             *
-             * Find the mail address associated with a given workflow in the table
-             * jobAbout.table in jboss/server/default/data/tools
-             */
-            String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
-            /**
-             * doneAllJob$
-             *
-             * Do the administration when a workflow has completed.
-             * Affected tables in jboss/server/default/data/tools:
-             *      jobs.table
-             *      CTBs.table
-             *      relations.table
-             *      jobAbout.table
-             * The output from this function (XML) is parsed in function 
-             * sendMail, and lists the items that the user can download from
-             * the staging area.
-             */
-            try
-                {
-                if(!mail2.equals(""))
-                    {
-                    sendMail(WRAPUP
-                        ,"dig"
-                        ,ToolsProperties.baseUrlTools + "/tools/zipresults"
-                        ,""
-                        ,result
-                        ,mail2
-                        );
-                    }
-                }
-            catch (Exception e)
-                {//Catch exception if any
-                logger.warn("Could not send mail to " + mail2 + ". Reason:" + e.getMessage());
-                }
-            }
         }
 
     public static void got200(String result, bracmat BracMat, String filename, String jobID, InputStream input)
@@ -499,10 +371,8 @@ public class workflow implements Runnable
             byte[] buffer = new byte[4096];
             int n = - 1;
             int N = 0;
-            //boolean isBasisText = TEIformat.equals("txtbasis");
             StringWriter outputM = new StringWriter();
             
-//          OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );
             OutputStream outputF = Files.newOutputStream(Paths.get(destdir+FilenameNoMetadata(filename,BracMat)));
 
             boolean isTextual = false;        
@@ -562,8 +432,6 @@ public class workflow implements Runnable
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
                 // Create file plus metadata
-                //FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
-                //BufferedWriter Out = new BufferedWriter(fstream);
                 BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+Filename(filename,BracMat)), StandardCharsets.UTF_8);
                 Out.write(newResource);
                 Out.close();
@@ -581,8 +449,6 @@ public class workflow implements Runnable
              */
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-//            FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename,BracMat));
-//            BufferedWriter Out = new BufferedWriter(fstream);
             BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+FilenameRelations(filename,BracMat)), StandardCharsets.UTF_8);
             Out.write(relations);
             Out.close();
@@ -599,98 +465,41 @@ public class workflow implements Runnable
              * marked 'aborted'.
              * Result (as XML): a list of (JobNr, jobID, toolName, items)
              */
-            /*filelist =*/ BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+            BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
             }
         }                    
 
     public void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
         {
         String filelist;
-        String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
-        try
+        if(code == 202)
             {
-            if(code == 202)
-                {
-                if(!mail2.equals(""))
-                    {
-                    //String toolsdataURL = BracMat.Eval("toolsdataURL$");
-                    sendMail(ACCEPT
-                            ,"dig"
-                            ,""
-                            ,""
-                            ,""
-                            ,mail2
-                            );
-                    }
-                logger.warn("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
-                /**
-                  * waitingJob$
-                  *
-                  * Make a job 'waiting'.
-                  * 
-                  * Input: JobNr and jobID
-                  *
-                  * Affected tables in jboss/server/default/data/tools:
-                  *     jobs.table
-                  */
-                BracMat.Eval("waitingJob$(" + result + "." + jobID + ")"); 
-                //jobs = 0; // No more jobs to process now, quit from loop and wait for result to be sent
-                }
-            else if(code == 0)
-                {
-                //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
-                filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
-                logger.warn("abortJob returns " + filelist);
-                if(!mail2.equals(""))
-                    {
-                    //String toolsdataURL = BracMat.Eval("toolsdataURL$");
-
-                    sendMail(ERROR
-                        ,""
-                        ,"endpoint:" + endpoint + " requestString:" + requestString + " filename:" + filename + " jobID:" + jobID + " postmethod:" + (postmethod ? "y" : "n")
-                        ,"No more jobs to process now, probably the tool is not integrated at all"
-                        ,filelist
-                        ,ToolsProperties.admEmail
-                        );
-                    sendMail(ERRORUSER
-                        ,""
-                        ,"endpoint:" + endpoint
-                        ,"probably the tool is not integrated at all"
-                        ,filelist
-                        ,mail2
-                        );
-                    }
-                logger.warn("Job " + jobID + " cannot open connection to URL " + urlStr);
-                }
-            else
-                {
-                filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
-                logger.warn("abortJob returns " + filelist);
-                if(!mail2.equals(""))
-                    {
-                    //String toolsdataURL = BracMat.Eval("toolsdataURL$");
-                    sendMail(ERROR
-                        ,""
-                        ,"Clarin.dk har modtaget en statuskode " + code + " (" + message + ") fra " + endpoint + ".<br />\n (Request:<br />\n" + requestString + ")<br /><br />\n\n"
-                        ,requestResult
-                        ,filelist
-                        ,ToolsProperties.admEmail
-                        );
-
-                    sendMail(ERRORUSER
-                        ,""
-                        ,"Clarin.dk har modtaget en statuskode som indikerer at der er sket en fejl: " + code + " (" + message + ") fra " + endpoint + ".<br />\n<br /><br />\n\n"
-                        ,requestResult
-                        ,filelist
-                        ,mail2
-                        );
-                    }
-                logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
-                }
+            logger.warn("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
+            /**
+                * waitingJob$
+                *
+                * Make a job 'waiting'.
+                * 
+                * Input: JobNr and jobID
+                *
+                * Affected tables in jboss/server/default/data/tools:
+                *     jobs.table
+                */
+            BracMat.Eval("waitingJob$(" + result + "." + jobID + ")"); 
+            //jobs = 0; // No more jobs to process now, quit from loop and wait for result to be sent
             }
-        catch(org.apache.commons.mail.EmailException e)
+        else if(code == 0)
             {
-            logger.error("EmailException. Reason:" + e.getMessage());
+            //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
+            filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+            logger.warn("abortJob returns " + filelist);
+            logger.warn("Job " + jobID + " cannot open connection to URL " + urlStr);
+            }
+        else
+            {
+            filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+            logger.warn("abortJob returns " + filelist);
+            logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
             }
         }
 
