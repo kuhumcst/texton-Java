@@ -6599,56 +6599,41 @@ toolsProg=
                       (stx.stpd)
                   )
                 : ?SuperSets
+              & log$(goalA !goal)
               &   map
                 $ ( ( 
                     =   feat vals A Z Val
-                      .   !arg:(?feat.?vals)
-                        & !goal:?A (!feat,?Val) ?Z
-                        &   map
-                          $ ( ( 
-                              =   val alts sp
-                                .   !arg:(?val.?alts)
-                                  & (   !Val:!val^?sp
-                                      &   map
-                                        $ ( ( 
-                                            =   
-                                              .         ( !A
-                                                          (!feat,!arg^!sp)
-                                                          !Z
-                                                        )
-                                                      + !goal
-                                                    : ?goal
-                                                  & 
-                                                | 
+                      .     !arg:(?feat.?vals)
+                          & !goal:?A (!feat,?Val) ?Z
+                          &   map
+                            $ ( ( 
+                                =   val alts sp
+                                  .   !arg:(?val.?alts)
+                                    & (   !Val:!val^?sp
+                                        &   map
+                                          $ ( ( 
+                                              =   
+                                                .         ( !A
+                                                            (!feat,!arg^!sp)
+                                                            !Z
+                                                          )
+                                                        + !goal
+                                                      : ?goal
+                                                    & 
+                                                  | 
+                                              )
+                                            . !alts
                                             )
-                                          . !alts
-                                          )
-                                    | 
-                                    )
+                                      | 
+                                      )
+                                )
+                              . !vals
                               )
-                            . !vals
-                            )
+                        | 
                     )
                   . !SuperSets
                   )
               & log$(goal3 !goal)
-              & ( 
-                |       ( 
-                        =   sp A Z
-                          .     !arg:?A (facet,pos^?sp) ?Z
-                              &   !arg
-                                + (!A (facet,spo^!sp) !Z)
-                                + (!A (facet,stp^!sp) !Z)
-                                + (!A (facet,tlp^!sp) !Z)
-                                + (!A (facet,stpl^!sp) !Z)
-                                + (!A (facet,stplo^!sp) !Z)
-                                + (!A (facet,stpd^!sp) !Z)
-                            | !arg
-                        )
-                      $ !goal
-                    : ?goal
-                  & log$(goal2 !goal)
-                )
             )
           & fulfil$(!activeTools.!source.!goal.0.!restriction)
       )
