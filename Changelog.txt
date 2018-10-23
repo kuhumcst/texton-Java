@@ -1,3 +1,12 @@
+20181022 - Removed some stale code having to do with email. (The service does
+           not send or receive emails.) Attempted to obtain wget's power by
+           switching from java.net.HttpURLConnection to org.apache.http's 
+           HttpClient. Since there was no improvement (not able to follow
+           redirects when accessing
+           https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve)
+           I decided to keep java.net.HttpURLConnection. Adapted functionality
+           so user does not see inaccessible input.
+
 20181020 - Fixed percolation of specs if the user did not specify any features,
            but restricted workflow solutions by specifying a tool with more
            than one incarnation. (Each incarnation can imply a different set

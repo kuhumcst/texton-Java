@@ -5165,6 +5165,15 @@ toolsProg=
           & saveTable$Uploads
           & !fname
       )
+      " If something went wrong, e.g. an URL that could not be fetched, call unstore. Called from create.java "
+      ( unstore
+      =   A Z
+        .   log$(unstore !arg)
+          & readTable$Uploads
+          & !Uploads:?A (?.?.?.!arg...) ?Z
+          & !A !Z:?Uploads
+          & saveTable$Uploads
+      )
       ( removePercentEncodings
       =   A g h
         .   @( !arg
@@ -11331,37 +11340,54 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =   formFields presels,directedBy hiddenData Items
               .     !arg
                   : (?formFields.?presels.?directedBy.?hiddenData.?Items)
-                &     !formFields
-                        sourcesAndGoals
-                      $ ( !presels
-                        . !arg
-                        .     !Items
-                            : ? (Item.@(?:"dkclarin:" ?)) ?
-                          & 
+                & (   !Items:
+                    &   str
+                      $ ( 200~~~
+                            toML
+                          $ ( !BodyContainer
+                            $ ( paragraph
+                              $ ( localized
+                                $ ( "No input is specified, or the input is not accessible."
+                                    "Inputtet er ikke specificeret, eller inputtet er ikke tilgængeligt."
+                                  )
+                                )
+                              )
+                            )
                         )
-                      desiredTools$
-                  : ?formFields
-                &   str
-                  $ ( 200~~~
-                        toML
-                      $ ( !BodyContainer
-                        $ ( !formFields:
-                          |   form
-                            $ ( methodName$!directedBy
-                              .   makeHiddenFields$!hiddenData
-                                  (     !directedBy
-                                      : (GoalChoice|)
-                                    & !formFields submit$nextStep
-                                  |   Sources$!presels
-                                        paragraph
-                                      $ ( pickTool$(txt.!Items)
-                                          submit$nextStep
-                                        )
+                  |       !formFields
+                            sourcesAndGoals
+                          $ ( !presels
+                            . !arg
+                            .     !Items
+                                :   ?
+                                    (Item.@(?:"dkclarin:" ?))
+                                    ?
+                              & 
+                            )
+                          desiredTools$
+                      : ?formFields
+                    &   str
+                      $ ( 200~~~
+                            toML
+                          $ ( !BodyContainer
+                            $ ( !formFields:
+                              |   form
+                                $ ( methodName$!directedBy
+                                  .   makeHiddenFields$!hiddenData
+                                      (     !directedBy
+                                          : (GoalChoice|)
+                                        & !formFields submit$nextStep
+                                      |   Sources$!presels
+                                            paragraph
+                                          $ ( pickTool$(txt.!Items)
+                                              submit$nextStep
+                                            )
+                                      )
                                   )
                               )
-                          )
+                            )
                         )
-                    )
+                  )
             )
           & ( errorInMetadata
             =     pattern metadataType
@@ -11803,14 +11829,14 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             & (   0:?newpipes
                                 &   whl
                                   ' (   !pipes
-                                      : ((?.?):?incarnationpipes)+?pipes
+                                      :   ((?.?):?incarnationpipes)
+                                        + ?pipes
                                     & "incarnationpipes is (<(user or declared tool) provided output specs> . <sum of unambiguous trees>)"
                                     & log$"now unfoldTreeN"
                                     &   unfoldTreeN$(1.!incarnationpipes)
                                       : ?pipesN
                                     & "The 1 is the initial stop list, which is formed as a product."
-                                    &   log
-                                      $ ("unfoldTreeN done")
+                                    & log$"unfoldTreeN done"
                                     & "pipesN is (<final stop list> . <user provided output specs> . <unfolded tree>) + ..."
                                     & "It seems we don't need the final stop list anymore."
                                     & !pipesN:?+[?NNN

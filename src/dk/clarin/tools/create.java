@@ -28,6 +28,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.HttpURLConnection;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -50,6 +54,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+/*
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+*/
 
 /**
  * Prepare and run a workflow.
@@ -181,25 +196,86 @@ public class create extends HttpServlet
 		}
 	}
 */	
+/*
+This function is not any better than webPageBinary, and not as powerful
+as wget.
+        private void download(String address) {
+            try {
+                logger.debug("Download: " + address);
+                CloseableHttpClient client = HttpClientBuilder.create().build();
+                HttpGet request = new HttpGet(address);
+                logger.debug("Created request");
+     
+                HttpResponse response = client.execute(request);
+                logger.debug("got response");
+                HttpEntity entity = response.getEntity();
+                logger.debug("got entity");
+     
+                int responseCode = response.getStatusLine().getStatusCode();
+     
+                logger.debug("Request Url: " + request.getURI());
+                logger.debug("Response Code: " + responseCode);
+     
+                InputStream is = entity.getContent();
+     
+                String filePath = "c:\\demo\\file.zip";
+                FileOutputStream fos = new FileOutputStream(new File(filePath));
+     
+                int inByte;
+                while ((inByte = is.read()) != -1) {
+                    fos.write(inByte);
+                }
+     
+                is.close();
+                fos.close();
+     
+                client.close();
+                logger.debug("File Download Completed!!!");
+            } catch (ClientProtocolException e) {
+                logger.error("ClientProtocolException: " + e.getMessage());
+            } catch (UnsupportedOperationException e) {
+                logger.error("UnsupportedOperationException: " + e.getMessage());
+            } catch (IOException e) {
+                logger.error("IOException: " + e.getMessage());
+            }
+        }
+*/
 	private int webPageBinary(String urladdr, File file){
 		try{
+          //The following url is downloaded by wget, which is much better at handling 303's and 302's.
+          //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
+          
 		    logger.debug("urladdr:"+urladdr);
+            HttpURLConnection.setFollowRedirects(true); // defaults to true
+            CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 			URL url = new URL(urladdr);
-			URLConnection urlConnection = url.openConnection();
-
+			HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1");
+            int status = urlConnection.getResponseCode();
+            logger.debug("statusA:{}",status);
+            urlConnection.connect();
+            status = urlConnection.getResponseCode();
+            logger.debug("statusB:{}",status);
             InputStream input = urlConnection.getInputStream();
-            byte[] buffer = new byte[4096];
-            int n = - 1;
-            int N = 0;
-            //OutputStream output = new FileOutputStream( file );
-            OutputStream output = Files.newOutputStream(file.toPath());
-            while ( (n = input.read(buffer)) != -1) 
-            {
-                output.write(buffer, 0, n);
-                N += 1;
-            }
-            output.close();
-            return N;
+            status = urlConnection.getResponseCode();
+            logger.debug("statusC:{}",status);
+            if(status == 200)
+                {
+                byte[] buffer = new byte[4096];
+                int n = - 1;
+                int N = 0;
+                //OutputStream output = new FileOutputStream( file );
+                OutputStream output = Files.newOutputStream(file.toPath());
+                while ( (n = input.read(buffer)) != -1) 
+                    {
+                    output.write(buffer, 0, n);
+                    N += 1;
+                    }
+                output.close();
+                return N;
+                }
+            else
+                return 0;
 		}catch(IOException e){
 		    logger.debug("IOException in webPageBinary");
 			return -1;
@@ -392,7 +468,7 @@ public class create extends HttpServlet
             logger.debug("file size == {}",textLength);
             String ContentType = theMimeType(PercentEncodedURL);
             logger.debug("ContentType == {}",ContentType);
-            if(!ContentType.equals(""))
+            if(textLength > 0 && !ContentType.equals(""))
                 {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
                     return      " (FieldName,"      + workflow.quote("input")
@@ -403,6 +479,7 @@ public class create extends HttpServlet
                               + ".LocalFileName,"   + workflow.quote(LocalFileName)
                               + ")";                
                 }
+            else BracMat.Eval("unstore$("+workflow.quote(LocalFileName)+")");
             }
         return "";
         }
