@@ -6598,6 +6598,8 @@ toolsProg=
                       (lem.sl tl tlp stl stpl stplo)
                       (cls.stplo)
                       (stx.stpd)
+                      (tok.seto stn)
+                      (seg.seto)
                   )
                 : ?SuperSets
               & log$(goalA !goal)
