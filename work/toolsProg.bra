@@ -6504,6 +6504,7 @@ toolsProg=
                 & !accPipelines:~0
             )
           & !arg:(?source.?goal.?restriction.?superset)
+          & log$(superset !superset)
           & readTable$toolprop
           &     ( 
                 =   T F L
@@ -11835,7 +11836,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                               ?
                         & log$FoundWorkflow
-                      |   log$ComputePipelines
+                      |   log$(ComputePipelines !parms)
                         &   Pipelines$!parms
                           : ( ?sources
                             . ?pipes
@@ -11912,6 +11913,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 (     !parms
                                     : ? (desiredtool.?rstr) ?
                                   & (desiredtool.!rstr)
+                                | 
+                                )
+                                (     !parms
+                                    : ? (superset.?rstr) ?
+                                  & (superset.!rstr)
                                 | 
                                 )
                             . !pipes
@@ -12042,7 +12048,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & !hiddenData (batch.!batch):?hiddenData
                 & "Does the user want to decide which tool to use or does she want
-             to let the infrastructure work out a way to reach a set goal?"
+                   to let the infrastructure work out a way to reach a set goal?"
                 & log$(formFields3 !formFields)
                 & (   !directedBy:GoalChoice
                     & :?TOOL
