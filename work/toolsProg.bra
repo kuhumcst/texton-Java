@@ -12215,7 +12215,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !links
             )
           & ( !arg:(?arg.?secs)
-            | @(!arg:? #?arg)&30:?secs
+            | @(!arg:? #?arg)&10:?secs
             )
           & readTable$jobs
           &   toML
