@@ -6219,7 +6219,7 @@ toolsProg=
       )
       ( fp
       =     L
-          , tool source goal restriction
+          , tool source goal restriction superset
           , fulfil memoizedSteps activeTools
         .   0:?memoizedSteps
           & ( fulfil
@@ -6503,7 +6503,7 @@ toolsProg=
                     )
                 & !accPipelines:~0
             )
-          & !arg:(?source.?goal.?restriction)
+          & !arg:(?source.?goal.?restriction.?superset)
           & readTable$toolprop
           &     ( 
                 =   T F L
@@ -6588,6 +6588,67 @@ toolsProg=
                   $ (!activeTools.!restriction)
                 : (?goal.?restriction)
             | 0:?restriction
+            )
+          & log$(goal1 !goal)
+          & ( !superset:
+            |     ( facet
+                  .   (pos.spo stp tlp stpl stplo stpd)
+                      (ner.stn)
+                      (lem.sl tl tlp stl stpl stplo)
+                      (cls.stplo)
+                      (stx.stpd)
+                  )
+                : ?SuperSets
+              &   map
+                $ ( ( 
+                    =   feat vals A Z Val
+                      .   !arg:(?feat.?vals)
+                        & !goal:?A (!feat,?Val) ?Z
+                        &   map
+                          $ ( ( 
+                              =   val alts sp
+                                .   !arg:(?val.?alts)
+                                  & (   !Val:!val^?sp
+                                      &   map
+                                        $ ( ( 
+                                            =   
+                                              .         ( !A
+                                                          (!feat,!arg^!sp)
+                                                          !Z
+                                                        )
+                                                      + !goal
+                                                    : ?goal
+                                                  & 
+                                                | 
+                                            )
+                                          . !alts
+                                          )
+                                    | 
+                                    )
+                              )
+                            . !vals
+                            )
+                    )
+                  . !SuperSets
+                  )
+              & log$(goal3 !goal)
+              & ( 
+                |       ( 
+                        =   sp A Z
+                          .     !arg:?A (facet,pos^?sp) ?Z
+                              &   !arg
+                                + (!A (facet,spo^!sp) !Z)
+                                + (!A (facet,stp^!sp) !Z)
+                                + (!A (facet,tlp^!sp) !Z)
+                                + (!A (facet,stpl^!sp) !Z)
+                                + (!A (facet,stplo^!sp) !Z)
+                                + (!A (facet,stpd^!sp) !Z)
+                            | !arg
+                        )
+                      $ !goal
+                    : ?goal
+                  & log$(goal2 !goal)
+                )
             )
           & fulfil$(!activeTools.!source.!goal.0.!restriction)
       )
@@ -6712,11 +6773,14 @@ toolsProg=
           & ( !arg:? (desiredtool.?restriction) ?
             | :?restriction
             )
+          & ( !arg:? (superset.?superset) ?
+            | :?superset
+            )
           & readTable$features
           & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
           & log$(restriction !restriction)
-          & fp$(!i.!o.!restriction):?FP
+          & fp$(!i.!o.!restriction.!superset):?FP
           & ( !i
             . !FP
             .   (     !FP
@@ -10106,8 +10170,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =     f fs picklists name short servicedTable flds
                 , servicedSourcesTable
                 , description itms itm Types rows
-                , selectServicedGoals table presel L PR
-                , selectServicedSources
+                , table presel L PR selectServicedValues
                 , preselvalsrows items item spec
                 , goalpicklists preselvals presels
                 , srcs fromRepo createArgs
@@ -10144,90 +10207,42 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           (!short.localized$!name.!!table.!preselvals)
                       : ?preselvalsrows
                     )
-                & ( selectServicedSources
-                  =     name table ntable
-                      , tool full abbr rows YYY
-                    .     !arg:(?name.?table)
+                & ( selectServicedValues
+                  =   short table pat
+                    .     !arg:(?short.?table.(=?pat))
                         & readTable$toolprop
                         & readTable$tooladm
-                        & !table:?rows
-                        & :?ntable
-                        &   whl
-                          ' ( !rows:(?full.?abbr.?YYY) ?rows
-                            & (     !toolprop
-                                  :   ?
-                                    + (   ?tool
-                                        &   !tooladm
-                                          :   ?
-                                            + ( ? (ToolID.!tool) ?
-                                              : ? (Inactive.) ?
-                                              )
-                                            + ?
-                                      .   ?
-                                          ( ( !short
-                                            ,   ?
-                                              + ( ?+?*!abbr^?*?+? ?
-                                                . ?
-                                                )
-                                              + ?
-                                            )
-                                          | ( !name
-                                            ,   ?
-                                              + ( ?+?*!abbr^?*?+? ?
-                                                . ?
-                                                )
-                                              + ?
-                                            )
-                                          )
-                                          ?
-                                      )
-                                    + ?
-                                & !ntable (!full.!abbr.!YYY):?ntable
-                              | 
+                        &   map
+                          $ ( ( 
+                              =   tool full abbr YYY
+                                .   !arg:(?full.?abbr.?YYY)
+                                  & (   !( 
+                                         ' ( $toolprop
+                                           :   ?
+                                             + (   ?tool
+                                                 &   $tooladm
+                                                   :   ?
+                                                     + (   ?
+                                                           (ToolID.!tool)
+                                                           ?
+                                                       :   ?
+                                                           (Inactive.)
+                                                           ?
+                                                       )
+                                                     + ?
+                                               .   ?
+                                                   ($short,?+$pat+?)
+                                                   ?
+                                               )
+                                             + ?
+                                           )
+                                         )
+                                      & (!full.!abbr.!YYY)
+                                    | 
+                                    )
                               )
+                            . !table
                             )
-                        & !ntable
-                      | !table
-                  )
-                & ( selectServicedGoals
-                  =     name table ntable
-                      , tool full abbr rows YYY
-                    .     !arg:(?name.?table)
-                        & readTable$toolprop
-                        & readTable$tooladm
-                        & !table:?rows
-                        & :?ntable
-                        &   whl
-                          ' ( !rows:(?full.?abbr.?YYY) ?rows
-                            & (     !toolprop
-                                  :   ?
-                                    + (   ?tool
-                                        &   !tooladm
-                                          :   ?
-                                            + ( ? (ToolID.!tool) ?
-                                              : ? (Inactive.) ?
-                                              )
-                                            + ?
-                                      .   ?
-                                          ( ( !short
-                                            ,   ?
-                                              + (?.?+?*!abbr^?*?+? ?)
-                                              + ?
-                                            )
-                                          | ( !name
-                                            ,   ?
-                                              + (?.?+?*!abbr^?*?+? ?)
-                                              + ?
-                                            )
-                                          )
-                                          ?
-                                      )
-                                    + ?
-                                & !ntable (!full.!abbr.!YYY):?ntable
-                              | 
-                              )
-                            )
-                        & !ntable
                       | !table
                   )
                 & :?picklists:?goalpicklists
@@ -10235,9 +10250,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 &   whl
                   ' (   !PR
                       : (?short.?name.?table.?preselvals) ?PR
-                    &   selectServicedSources$(!name.!table)
+                    &     selectServicedValues
+                        $ ( !short
+                          . !table
+                          . (=?+?*!abbr^?*?+? ?.?)
+                          )
                       : ?servicedSourcesTable
-                    &   selectServicedGoals$(!name.!table)
+                    &     selectServicedValues
+                        $ ( !short
+                          . !table
+                          . (=?.?+?*!abbr^?*?+? ?)
+                          )
                       : ?servicedTable
                     &     !picklists
                             row
@@ -10380,11 +10403,25 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             $ ( "(Hint 2: You can skip these fields and choose a tool instead, see below. In that case, the tool will be the last in the workflow.)"
                                 "(Tip 2: Du kan lade felterne stå tomme, og i stedet vælge et værktøj i rubrikken forneden. I så fald er værktøjet det sidste i arbejdsgangen.)"
                               )
-                        .   Table
-                          $ ( id,goal
-                            . row$(cell$() cell$)
-                            . !goalpicklists
-                            )
+                        .     Table
+                            $ ( id,goal
+                              . row$(cell$() cell$)
+                              . !goalpicklists
+                              )
+                              makeCheckboxFormField
+                            $ (   localized
+                                $ ( "Show workflows for similar goals"
+                                    "Hvis arbejdsgange for lignende mål"
+                                  )
+                              . superset
+                              .   (val.on)
+                                  ( desc
+                                  .   localized
+                                    $ ( "Check this box if your requirements are MINIMAL requirements. For example, if your requirement is to have PoS tags, you may also want to see workflows that produce PoS tags AND lemmas, at the same time."
+                                        "Marker hvis dit mål er minimal, fx hvis du udover PoS tags også godt vil se lemmaer, i kombination med PoS tags."
+                                      )
+                                  )
+                              )
                         )
                   )
             )

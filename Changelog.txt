@@ -1,3 +1,7 @@
+20181023 - Added checkbox to indicate that goal is MINIMAL, i.e. that the user
+           also wants to see similar workflows that deliver more than strictly
+           required.
+
 20181022 - Removed some stale code having to do with email. (The service does
            not send or receive emails.) Attempted to obtain wget's power by
            switching from java.net.HttpURLConnection to org.apache.http's 
