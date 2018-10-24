@@ -170,7 +170,6 @@ toolsProg=
       "Reusable patterns in errorInMetadata function"
       ( ISO639
       = [%( readTable$linguae
-          & log$(ISO639 linguae !linguae)
           & !( 
              ' ( $linguae
                : ( ? (?.$sjt.?) ?
@@ -178,7 +177,6 @@ toolsProg=
                  )
                )
              )
-          & log$MATCH
           )
       )
       ( DATE
