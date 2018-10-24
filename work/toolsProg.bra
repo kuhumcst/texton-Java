@@ -170,6 +170,7 @@ toolsProg=
       "Reusable patterns in errorInMetadata function"
       ( ISO639
       = [%( readTable$linguae
+          & log$(ISO639 linguae !linguae)
           & !( 
              ' ( $linguae
                : ( ? (?.$sjt.?) ?
@@ -177,6 +178,7 @@ toolsProg=
                  )
                )
              )
+          & log$MATCH
           )
       )
       ( DATE
@@ -11207,6 +11209,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     ?inputs
                               & (   !arg:? (!id.?V) ?
                                   & (   !pat:ISO639
+                                      & log$(pat ISO639)
                                       & readTable$linguae
                                       &   !linguae
                                         : ( ? (?.!V.?) ?
@@ -11214,7 +11217,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                               (? !V ?.?V.?)
                                               ?
                                           )
-                                    | 
+                                    | log$NO639MATCH
                                     )
                                   & !metadata (!id.!V):?metadata
                                 | 
