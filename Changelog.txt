@@ -1,3 +1,5 @@
+20181024 - Added tool names after completed steps.
+
 20181023 - Added checkbox to indicate that goal is MINIMAL, i.e. that the user
            also wants to see similar workflows that deliver more than strictly
            required.
