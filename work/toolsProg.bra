@@ -12192,10 +12192,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           ?jobs
                     &   !tooladm
                       :   ?
-                          ( ? (ServiceURL.!ServiceURL) ?
+                        + ( ? (ServiceURL.!ServiceURL) ?
                           : ? (Title.?Title) ?
                           )
-                          ?
+                        + ?
                     &     !links
                             paragraph
                           $ ( str$(!step ":")
@@ -12260,7 +12260,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         $ (   localized
                             $ ("Currently running " "I øjeblikket kører ")
                             !step
-                            " localized$(of af) "
+                            " "
+                            localized$(of af)
+                            " "
                             !n
                             " ("
                             !title
