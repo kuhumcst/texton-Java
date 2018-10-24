@@ -119,6 +119,11 @@ toolsProg=
         (baseUrlTools=)
         (path=)
       )
+      (servicedSources=)
+      (servicedGoals=)
+      (StartClk=)
+      (startclock=.-1*clk$:?StartClk)
+      (clock=.str$("[" jsn$(clk$+!StartClk) "]"))
       ( 2to3col
       =   features specificationTables table specificationTable norm
         .   ( norm
@@ -254,6 +259,7 @@ toolsProg=
         .   path$"log.txt":?logfile
           & (   !arg:NEW
               & put$(,!logfile,NEW)
+              & startclock$
               & 0:?logno
             |   (!logno|0:?logno)
               &     ( :?spc
@@ -268,6 +274,7 @@ toolsProg=
                     )
                     !arg
                 : ?arg
+              & put$(clock$,!logfile,APP)
               &   whl
                 ' ( !arg:%?c ?arg
                   & put$(!c " ",!logfile,APP)
@@ -354,8 +361,7 @@ toolsProg=
             &   get$(path$(!folder !file))
               : ( !file
                 |   ?!file
-                  &   log
-                    $ (str$("No assignment in [" !file "] Result:") !!file)
+                  & log$(str$("No assignment in [" !file "]"))
                 )
             & !!file
           | str$("Cannot read " !arg)&~
@@ -364,17 +370,14 @@ toolsProg=
       =   tabs tab Tables folder gotThis error file
         .     !arg:%@
             & (   !arg:(AAA|where)
-                & (get$(path$!arg)|`~)
+                & (get$(path$!arg):?!arg|`~)
               |   ( !where:(?.?) ?
                   | readTable$where
                   )
                 & !where:? (? !arg ?.?folder) ?
-                &   ( get$(path$(!folder !arg))
-                    | get$(path$(!folder !arg ".table"))
-                    )
-                  : ?gotThis
+                & get$(path$(!folder !arg)):?gotThis
                 & ( !gotThis:@&!!gotThis
-                  | !gotThis
+                  | !gotThis:?!arg
                   )
               )
           | str$("Cannot read " !arg)&~
@@ -423,11 +426,11 @@ toolsProg=
               | Saved !saved
               )
           |   !arg:(?folder.?tab)
-            & lst$(!tab,path$(!folder !tab),NEW)
+            & lst$(!tab,path$(!folder !tab),NEW,RAW)
           |     whl
               ' ( !arg:%?tab ?arg
                 & (   !where:? (? !tab ?.?folder) ?
-                    & lst$(!tab,path$(!folder !tab),NEW)
+                    & lst$(!tab,path$(!folder !tab),NEW,RAW)
                   | 
                   )
                 )
@@ -1594,7 +1597,7 @@ toolsProg=
           , o pat pipe pipes prev flatten sameToolDifferentRoles
           , toolPlumbing "*" simplify translateToHumanLanguage
           , wf wfs workflow workflowlist saveio toolPattern
-          , StartClk enumerateToolsDetail
+          , enumerateToolsDetail
           , abbr reorderedworkflowlist struct weight
         .   !arg:?pipes
           & ( enumerateToolsDetail
@@ -2034,14 +2037,14 @@ toolsProg=
           & "pipes is a unnumbered list sorted on directly on full workflow tree."
           & :?workflowlist
           & 0:?n
-          & -1*clk$:?StartClk
+          & log$enumerateToolsDetail
           &   whl
             ' ( 1+!n:?n:<1000000
               & !pipes:%?pipe+?pipes
               &   (!n.enumerateToolsDetail$!pipe) !workflowlist
                 : ?workflowlist
               )
-          & log$(enumerateToolsDetail jsn$(clk$+!StartClk))
+          & log$enumerateToolsDetailDONE
           & (   !n:<1000000
               & log$("while enumerateToolsDetail:" !n)
             |   log
@@ -3452,6 +3455,7 @@ toolsProg=
           , deleteToolButton UpdateButton PHPbutton
         .   log$(register !arg)
           & clean$
+          & :?servicedSources:?servicedGoals
           & localized$("Save info" "Gem oplysninger"):?storeToolButton
           &   localized$("Replace info" "Erstat oplysninger")
             : ?replaceToolButton
@@ -9634,7 +9638,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , jobIDoffset subjobs Sources sourcesAndGoals
           , directedBy nth unpackIOparms BodyContainer
           , nicify handle checkIOparms PIPE lookForLanguage
-          , precooked-DASISH A wrkflw Z errmsg analysis
+          , precooked-DASISH A wrkflw Z errmsg
           , analyseContentType makeJobStack NoNeedForMetadata
           , ApplyThePipelineToTheInput NoWay TooMany
           , ShowAllPipes ShowOnlyTheCurrentPipe AddMetadata
@@ -10155,7 +10159,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
             )
           & ( sourcesAndGoals
-            =     f fs picklists name short servicedTable flds
+            =       f
+                    fs
+                    picklists
+                    name
+                    short
+                    servicedGoalsTable
+                    flds
                 , servicedSourcesTable
                 , description itms itm Types rows
                 , table presel L PR selectServicedValues
@@ -10163,7 +10173,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 , goalpicklists preselvals presels
                 , srcs fromRepo createArgs
               .   !arg:(?presels.?createArgs.?fromRepo)
+                & log$sourcesAndGoals1
                 & readTable$features
+                & log$sourcesAndGoals2
                 & !features:?fs
                 & :?preselvalsrows
                 & :?items
@@ -10174,6 +10186,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           ?createArgs
                     & !items !item:?items
                     )
+                & log$sourcesAndGoals3
                 &   whl
                   ' ( !fs:%?f+?fs
                     &   !f
@@ -10195,6 +10208,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           (!short.localized$!name.!!table.!preselvals)
                       : ?preselvalsrows
                     )
+                & log$sourcesAndGoals4
                 & ( selectServicedValues
                   =   short table pat
                     .     !arg:(?short.?table.(=?pat))
@@ -10235,21 +10249,34 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & :?picklists:?goalpicklists
                 & !preselvalsrows:?PR
+                & log$sourcesAndGoals5
                 &   whl
                   ' (   !PR
                       : (?short.?name.?table.?preselvals) ?PR
-                    &     selectServicedValues
-                        $ ( !short
-                          . !table
-                          . (=?+?*!abbr^?*?+? ?.?)
-                          )
-                      : ?servicedSourcesTable
-                    &     selectServicedValues
-                        $ ( !short
-                          . !table
-                          . (=?.?+?*!abbr^?*?+? ?)
-                          )
-                      : ?servicedTable
+                    & (   !servicedSources
+                        : ? (!short.?servicedSourcesTable) ?
+                      |       selectServicedValues
+                            $ ( !short
+                              . !table
+                              . (=?+?*!abbr^?*?+? ?.?)
+                              )
+                          : ?servicedSourcesTable
+                        &     (!short.!servicedSourcesTable)
+                              !servicedSources
+                          : ?servicedSources
+                      )
+                    & (   !servicedGoals
+                        : ? (!short.?servicedGoalsTable) ?
+                      |       selectServicedValues
+                            $ ( !short
+                              . !table
+                              . (=?.?+?*!abbr^?*?+? ?)
+                              )
+                          : ?servicedGoalsTable
+                        &     (!short.!servicedGoalsTable)
+                              !servicedGoals
+                          : ?servicedGoals
+                      )
                     &     !picklists
                             row
                           $ ( cell$!name
@@ -10320,6 +10347,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                             )
                       : ?picklists
+                    & log$(picklists !name)
                     &     !goalpicklists
                             row
                           $ ( cell$(str$(!name ":"))
@@ -10328,17 +10356,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 $ ( 
                                   . str$(O !short)
                                   . options
-                                  .   makeOptionList
-                                    $ ( !servicedTable
-                                      .     !short:facet
-                                          & !analysis:~
-                                        | 
-                                      )
+                                  . makeOptionList$(!servicedGoalsTable.)
                                   )
                                 )
                             )
                       : ?goalpicklists
                     )
+                & log$sourcesAndGoals6
                 & (   !fromRepo
                     &     Table
                         $ ( (style,"display:none;") (id,inputs)
@@ -11365,6 +11389,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =   formFields presels,directedBy hiddenData Items
               .     !arg
                   : (?formFields.?presels.?directedBy.?hiddenData.?Items)
+                & log$"We are at the start. Show an input form."
                 & (   !Items:
                     &   str
                       $ ( 200~~~
@@ -11391,6 +11416,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                           desiredTools$
                       : ?formFields
+                    & log$sourcesAndGoalsDONE
                     &   str
                       $ ( 200~~~
                             toML
@@ -12108,16 +12134,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & 0:?tabind
           & ?:?Tool
           & log$NEW
+          & startclock$
           & log$CREATELOGJE
           & !arg:(?parms:?arg.?directedBy)
           & !HTMLbodyContainer:?BodyContainer
           & setLanguageNotPermanently$!arg
-          & ( !arg:? (analysis.?analysis) ?
-            | :?analysis
-            )
           & analyzeInput$!parms:(?parms.?Items.?presels)
+          & log$analyzeInputDONE
           &   checkMail$(!parms.!formFields.!hiddenData.!errors)
             : (?mail2.?formFields.?hiddenData.?errors)
+          & log$checkMailDONE
           & (   !arg:?A (wrkflw.?wrkflw) ?Z
               & (   !Items:
                   &   str
@@ -12131,6 +12157,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   & (     precooked-DASISH$(!wrkflw.!A !Z)
                         : (?arg:?parms.?errmsg)
                       & !errmsg:
+                      & log$computeWorkflow
                       & !computeWorkflow
                     |   str
                       $ (200~~~ toML$(!BodyContainer$(paragraph$!errmsg)))

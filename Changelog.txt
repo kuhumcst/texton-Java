@@ -1,4 +1,7 @@
-20181024 - Added tool names after completed steps.
+20181024 - Added tool names after completed steps. Removed <tablename>= from
+           the start of tables, making code somewhat faster. Also cached 
+           serviced feature values, reducing pause after front page by some
+           seconds.
 
 20181023 - Added checkbox to indicate that goal is MINIMAL, i.e. that the user
            also wants to see similar workflows that deliver more than strictly
