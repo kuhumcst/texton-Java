@@ -11217,6 +11217,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                               (? !V ?.?V.?)
                                               ?
                                           )
+                                      & log$639MATCH
                                     | log$NO639MATCH
                                     )
                                   & !metadata (!id.!V):?metadata
