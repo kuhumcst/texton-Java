@@ -11195,35 +11195,28 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . ?directedBy
                     )
                 & ( retrieveMetadataFromParms
-                  =   metadata metadataType inputs id V pat
-                    .   !arg:(?metadataType.?arg)
-                      & readTable$!metadataType:?Metadata
-                      & :?metadata
-                      &   whl
-                        ' ( !Metadata:? (?,?inputs) ?Metadata
-                          &   whl
-                            ' (   !inputs
-                                :   (?id.?.?.?.?.?.?.?pat.?)
-                                    ?inputs
-                              & (   !arg:? (!id.?V) ?
-                                  & (   !pat:ISO639
-                                      & log$(pat ISO639)
-                                      & readTable$linguae
-                                      &   !linguae
-                                        : ( ? (?.!V.?) ?
-                                          |   ?
-                                              (? !V ?.?V.?)
-                                              ?
-                                          )
-                                      & log$639MATCH
-                                    | log$NO639MATCH
-                                    )
-                                  & !metadata (!id.!V):?metadata
+                  =   metadataType parms
+                    .   !arg:(?metadataType.?parms)
+                      &   map
+                        $ ( ( 
+                            =   inputs
+                              .     !arg:(?,?inputs)
+                                  &   map
+                                    $ ( ( 
+                                        =   id V
+                                          .   !arg:(?id.?)
+                                            & (     !parms
+                                                  : ? (!id.?V) ?
+                                                & (!id.!V)
+                                              | 
+                                              )
+                                        )
+                                      . !inputs
+                                      )
                                 | 
-                                )
-                              )
+                            )
+                          . readTable$!metadataType
                           )
-                      & !metadata
                   )
                 & makeJobStack$!PIPE:?JobStack
                 & ( readTable$jobNr
