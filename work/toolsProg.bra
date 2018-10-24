@@ -12170,7 +12170,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( poll
       =   jobs n step secs steplinks links
         .   ( steplinks
-            =   links jobs file step outp
+            =   links jobs file step outp ServiceURL
               .   !arg:(?arg.?jobs)
                 &   !jobs
                   :   ?
@@ -12188,8 +12188,14 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 &   whl
                   ' (   !jobs
                       :   ?
-                          (!arg.?step done.?.?.?.?file)
+                          (!arg.?step done.?.?ServiceURL.?.?file)
                           ?jobs
+                    &   !tooladm
+                      :   ?
+                          ( ? (ServiceURL.!ServiceURL) ?
+                          : ? (Title.?Title) ?
+                          )
+                          ?
                     &     !links
                             paragraph
                           $ ( str$(!step ":")
@@ -12199,6 +12205,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   )
                                 , !file
                               )
+                              " ("
+                              !Title
+                              ")"
                             )
                       : ?links
                     )
@@ -12220,6 +12229,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             | @(!arg:? #?arg)&10:?secs
             )
           & readTable$jobs
+          & readTable$tooladm
           &   toML
             $ (     !jobs
                   :   ?
@@ -12237,7 +12247,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   ' ( !jobs:? (!arg.?) ?jobs
                     & 1+!n:?n
                     )
-                & readTable$tooladm
                 &   !tooladm
                   :   ?
                     + ( ? (ServiceURL.!serviceurl) ?
@@ -12248,7 +12257,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
                     .   !links
                           paragraph
-                        $ ("pending " !step " of " !n " (" !title ")")
+                        $ (   localized
+                            $ ("Currently running " "I øjeblikket kører ")
+                            !step
+                            " localized$(of af) "
+                            !n
+                            " ("
+                            !title
+                            ")"
+                          )
                           paragraph
                         $ ( str
                           $ (   localized
