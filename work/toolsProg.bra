@@ -375,12 +375,24 @@ toolsProg=
                   | readTable$where
                   )
                 & !where:? (? !arg ?.?folder) ?
+                & log$(readTable !arg from folder !folder)
                 & get$(path$(!folder !arg)):?gotThis
-                & ( !gotThis:@&!!gotThis
+                &   log
+                  $ ( readTableDONE
+                      !arg
+                      from
+                      folder
+                      !folder
+                      gotThis
+                      !gotThis
+                    )
+                & (   !gotThis:@
+                    & out$(indirect !gotThis ISTHIS !!gotThis)
+                    & !!gotThis
                   | !gotThis:?!arg
                   )
               )
-          | str$("Cannot read " !arg)&~
+          | log$("Cannot read " !arg)&~
       )
       ( saveAllTables
       =   tab saved folder
@@ -700,22 +712,6 @@ toolsProg=
             )
           & NEWSPEC
           & !arg^!spec
-      )
-      "
-/**
- * Find the mail address associated with a given workflow in the table
- * jobAbout.table
- *
- * Called from workflow.java
- */"
-      ( mail2
-      =   JobNr
-        .     readTable$jobAbout
-            & @(!arg:? #?JobNr)
-            &   !jobAbout
-              : ? (!JobNr.? (mail2.?arg) ?) ?
-            & !arg
-          | 
       )
       (getLanguage=.)
       ( getOlacLanguage
