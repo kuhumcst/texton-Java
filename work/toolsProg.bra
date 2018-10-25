@@ -377,6 +377,7 @@ toolsProg=
                 & !where:? (? !arg ?.?folder) ?
                 & log$(readTable !arg from folder !folder)
                 & get$(path$(!folder !arg)):?gotThis
+                & log$READ
                 &   log
                   $ ( readTableDONE
                       !arg
