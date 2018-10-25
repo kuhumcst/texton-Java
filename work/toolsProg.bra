@@ -386,7 +386,7 @@ toolsProg=
                       gotThis
                       !gotThis
                     )
-                & (   !gotThis:@
+                & (   !gotThis:@:~:~0
                     & out$(indirect !gotThis ISTHIS !!gotThis)
                     & !!gotThis
                   | !gotThis:?!arg
