@@ -1,3 +1,11 @@
+20181026 - Improved handling of underspecified input (which could be added
+           as input to several steps, since the profile didn't mismatch).
+           Added recognition for "diplom" files, which are files that have
+           tables with 17 columns separated by vertical bars. 
+           This requires Bracmat version 6.3, build 227 (27 August 2018)
+           or newer. (get$<file> did not return an empty string if <file> was
+           zero length.) 
+
 20181024 - Added tool names after completed steps. Removed <tablename>= from
            the start of tables, making code somewhat faster. Also cached 
            serviced feature values, reducing pause after front page by some

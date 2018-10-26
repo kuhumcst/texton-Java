@@ -358,16 +358,11 @@ toolsProg=
       ( readTableFromFolder
       =   tabs tab Tables folder gotThis error file
         .     !arg:(?folder.?file)
-            &   get$(path$(!folder !file))
-              : ( !file
-                |   ?!file
-                  & log$(str$("No assignment in [" !file "]"))
-                )
-            & !!file
+            & get$(path$(!folder !file)):?!file
           | str$("Cannot read " !arg)&~
       )
       ( readTable
-      =   tabs tab Tables folder gotThis error file
+      =   tabs tab Tables folder error file pth
         .     !arg:%@
             & (   !arg:(AAA|where)
                 & (get$(path$!arg):?!arg|`~)
@@ -375,23 +370,7 @@ toolsProg=
                   | readTable$where
                   )
                 & !where:? (? !arg ?.?folder) ?
-                & log$(readTable !arg from folder !folder)
-                & get$(path$(!folder !arg)):?gotThis
-                & log$READ
-                &   log
-                  $ ( readTableDONE
-                      !arg
-                      from
-                      folder
-                      !folder
-                      gotThis
-                      !gotThis
-                    )
-                & (   !gotThis:@:~:~0
-                    & out$(indirect !gotThis ISTHIS !!gotThis)
-                    & !!gotThis
-                  | !gotThis:?!arg
-                  )
+                & get$(path$(!folder !arg)):?!arg
               )
           | log$("Cannot read " !arg)&~
       )
@@ -3489,15 +3468,6 @@ toolsProg=
                   & log$(createBoilerPlate !arg)
                   & "TODO RESET ALL OF urlparm IF TOOL NOT FOUND"
                   & !arg:?urlparm
-                  & ( 
-                    |   "Add parameter for unchecked checkbox if user is logged in.
-                     (Only logged-in users may change the Inactive property.)"
-                      & ( !urlparm:? (nctv.?) ?
-                        |   !urlparm:? (handle.?handle) ?
-                          & (nctv.) !urlparm:?urlparm
-                        | 
-                        )
-                    )
                   &   !urlparm
                     : ? (name.?url-ToolName) ?
                     : ( ? (password.~:?url-password) ?
@@ -6505,7 +6475,6 @@ toolsProg=
                 & !accPipelines:~0
             )
           & !arg:(?source.?goal.?restriction.?superset)
-          & log$(superset !superset)
           & readTable$toolprop
           &     ( 
                 =   T F L
@@ -6528,9 +6497,7 @@ toolsProg=
                 )
               $ !toolprop
             : ?activeTools
-          & log$(goal !goal)
           & (   !goal:
-              & log$emptygoal
               & ( getGoals
                 =     AllFs Inca FS Ios allOs Os O
                     , X A FN a b Y Z
@@ -6591,7 +6558,6 @@ toolsProg=
                 : (?goal.?restriction)
             | 0:?restriction
             )
-          & log$(goal1 !goal)
           & ( !superset:
             |     ( facet
                   .   (pos.spo stp tlp stpl stplo stpd)
@@ -6603,7 +6569,6 @@ toolsProg=
                       (seg.seto)
                   )
                 : ?SuperSets
-              & log$(goalA !goal)
               &   map
                 $ ( ( 
                     =   feat vals A Z Val
@@ -6637,7 +6602,6 @@ toolsProg=
                     )
                   . !SuperSets
                   )
-              & log$(goal3 !goal)
             )
           & fulfil$(!activeTools.!source.!goal.0.!restriction)
       )
@@ -6768,7 +6732,6 @@ toolsProg=
           & readTable$features
           & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
-          & log$(restriction !restriction)
           & fp$(!i.!o.!restriction.!superset):?FP
           & ( !i
             . !FP
@@ -7092,7 +7055,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                           :   ?
                                               (!jobNr.!file.?.?.?.?file)
                                               ?
-                                        | 
+                                        | log$(OOPS !jobNr file !file)
                                         )
                                       & !file
                                     )
@@ -7106,6 +7069,52 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         : ?requestString
                       )
                   )
+              & ( simpleInput
+                =   a b c d e,f g h i j k
+                  .     !arg
+                      : (   ?
+                          + (I.?.?.?+(F.?)+?)
+                          + ?
+                          + (I.?.?.?+(F.?)+?)
+                          + ?
+                        | ?+(F.?)+?
+                        )
+                    |     !arg
+                        :   ?a
+                          + (I.?b+(?c.?d+(?e.?f+(F.?g)+?h)+?i)+?j)
+                          + ?k
+                      &   !a
+                        + (F.!g)
+                        + (I.!b+(!c.!d+(!e.!f+!h)+!i)+!j)
+                        + !k
+                )
+              & ( forceFeed
+                =   requestString item file
+                  .   0:?requestString
+                    & !arg:?items
+                    &   whl
+                      ' ( !items:(Item.%?item ?) ?items
+                        & !Uploads:? (?.!item.?.?file.?) ?
+                        &     !requestString
+                            + ( !files !file:?files
+                              & (F.!file)
+                              )
+                          : ?requestString
+                        )
+                    & !requestString
+                )
+              & ( compatible
+                =   f r v stp rs fv
+                  .   !arg:(?.)
+                    |     !arg
+                        : (?f.(?r,(?v.?stp)|?v) ?rs)
+                      & ( ~(!f:? (!r.?fv) ?)
+                        | !v:!fv
+                        | !v:!fv^?
+                        | !fv:!v^?
+                        )
+                      & compatible$(!f.!rs)
+                )
               &     !newJobs
                     ( !jobNr
                     . !jobID
@@ -7136,26 +7145,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         : ?v
                                       &   Long$!discerningFeature
                                         : ?DiscerningFeature
-                                      & ( compatible
-                                        =   f r v stp rs fv
-                                          .   !arg:(?.)
-                                            |     !arg
-                                                : ( ?f
-                                                  .   ( ?r
-                                                      ,   (?v.?stp)
-                                                        | ?v
-                                                      )
-                                                      ?rs
-                                                  )
-                                              & ( ~( !f
-                                                   : ? (!r.?fv) ?
-                                                   )
-                                                | !v:!fv
-                                                | !v:!fv^?
-                                                | !fv:!v^?
-                                                )
-                                              & compatible$(!f.!rs)
-                                        )
                                       & compatible$(!feats.!In)
                                       &   !In
                                         :   ?
@@ -7168,15 +7157,32 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                             )
                                             ?
                                       & !v:%@?v^?
-                                      & !files !file:?files
-                                      & (   !nfiles:n
+                                      & (   !nfiles:1
+                                          & (     !requestString
+                                                : (   ?
+                                                    + ( I
+                                                      .   ?
+                                                        + ( ?
+                                                          .   ?
+                                                            + (?.?+(F.?)+?)
+                                                            + ?
+                                                          )
+                                                        + ?
+                                                      )
+                                                    + ?
+                                                  | ?+(F.?)+?
+                                                  )
+                                              & 0
+                                            |   !file:?files
+                                              & (F.!file)
+                                            )
+                                        |   !files !file:?files
                                           & ( I
                                             . !discerningFeature
                                             . !v
                                             . F
                                             . !file
                                             )
-                                        | (F.!file)
                                         )
                                     | 0
                                     )
@@ -7188,58 +7194,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     + ?
                                   | ?+(F.?)+?
                                   )
-                              & ( simpleInput
-                                =   a b c d e f g h i j k
-                                  .     !arg
-                                      : (   ?
-                                          + (I.?.?.?+(F.?)+?)
-                                          + ?
-                                          + (I.?.?.?+(F.?)+?)
-                                          + ?
-                                        | ?+(F.?)+?
-                                        )
-                                    |     !arg
-                                        :   ?a
-                                          + ( I
-                                            .   ?b
-                                              + ( ?c
-                                                .   ?d
-                                                  + (?e.?f+(F.?g)+?h)
-                                                  + ?i
-                                                )
-                                              + ?j
-                                            )
-                                          + ?k
-                                      &   !a
-                                        + (F.!g)
-                                        + ( I
-                                          . !b+(!c.!d+(!e.!f+!h)+!i)+!j
-                                          )
-                                        + !k
-                                )
                               &   simpleInput$!requestString
                                 : ?requestString
-                            |   ( forceFeed
-                                =   requestString item file
-                                  .   0:?requestString
-                                    & !arg:?items
-                                    &   whl
-                                      ' (   !items
-                                          : (Item.%?item ?) ?items
-                                        &   !Uploads
-                                          :   ?
-                                              (?.!item.?.?file.?)
-                                              ?
-                                        &     !requestString
-                                            + ( !files !file:?files
-                                              & (F.!file)
-                                              )
-                                          : ?requestString
-                                        )
-                                    & !requestString
-                                )
-                              &   !requestString+forceFeed$!Items
-                                : ?requestString
+                            |   !requestString+forceFeed$!Items
+                              : ?requestString
                             )
                           & !files
                           )
@@ -7336,7 +7294,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 : ?newJobs
               )
           & !jobs !newJobs:?jobs
-          & !jobs
           & saveTable$jobs
           & lst$(jobs,path$jobs,APP)
           & !maxjobID
@@ -7379,94 +7336,100 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( getJobArg
       =     JobNr jobID jobby res A B Res makeList
           , req servurl xmlparms fmt spc
-        .   !arg:(@(?:? #?JobNr).?jobID.?arg)
-          & readTable$jobs
-          & !jobs:? (!JobNr.!jobID.?jobby) ?
-          &   !arg
-            : ( endpoint&!jobby:(?.?arg.?)
-              |   method
-                & !jobby:(?.?arg.?)
-                & readTable$tooladm
-                &   !tooladm
-                  :   ?
-                    + ( ? (ServiceURL.!arg) ?
-                      : ? (PostData.?arg) ?
-                      )
-                    + ?
-                &   (!arg:on&POST|GET)
-                  : ?arg
-              |   requestString
-                & !jobby:(?.?servurl.?req.?)
-                & readTable$tooladm
-                &   !tooladm
-                  :   ?
-                    + ( ? (ServiceURL.!servurl) ?
-                      : ? (XMLparms.?xmlparms) ?
-                      )
-                    + ?
-                & (   !xmlparms:on
-                    & ( makeList
-                      =   X el sub res
-                        .   :?res
-                          &   whl
-                            ' ( !arg:%?X+?arg
-                              &     !res
-                                    (   !X:(?el.?sub)
-                                      & (!el.,makeList$!sub)
-                                    | !X
-                                    )
-                                : ?res
-                              )
-                          & !res
-                      )
-                    & makeList$(parms.!req):?res
-                    & str$!res:?arg
-                  |   ( makeList
-                      =   A B prefix res
-                        .   !arg:(?prefix.?arg)
-                          & :?res
-                          &   whl
-                            ' ( !arg:%?A+?arg
-                              &     !res
-                                    (   !A:(?A.?B)
-                                      &   ( !prefix:
-                                          | (!prefix,!A)
-                                          )
-                                          makeList$(!prefix !A.!B)
-                                    | !prefix:
-                                    | (!prefix,!A)
-                                    )
-                                : ?res
-                              )
-                          & !res
-                      )
-                    & makeList$(.!req):?res
-                    & !res:(?A,?B) ?res
-                    & !A "=" !B:?Res
-                    &   whl
-                      ' ( !res:(?A,?B) ?res
-                        & !Res "&" !A "=" !B:?Res
-                        )
-                    & str$!Res:?arg
-                  )
-              | filename&!jobby:(?.?.?.?arg)
-              |   isText
-                &   !jobby
-                  : (?.?.?+(O.?+(format.?fmt.?spc)+?)+?.?)
-                &   (     !fmt
-                        : ( flat
-                          | csv
-                          | teip5
-                          | txtbasis
-                          | txtann
-                          | rdf
+        .   str
+          $ (   !arg:(@(?:? #?JobNr).?jobID.?arg)
+              & (!jobs|readTable$jobs)
+              & !jobs:? (!JobNr.!jobID.?jobby) ?
+              &   !arg
+                : ( endpoint&!jobby:(?.?arg.?)
+                  |   method
+                    & !jobby:(?.?arg.?)
+                    & readTable$tooladm
+                    &   !tooladm
+                      :   ?
+                        + ( ? (ServiceURL.!arg) ?
+                          : ? (PostData.?arg) ?
                           )
-                      & y
-                    | n
-                    )
-                  : ?arg
-              )
-          & !arg
+                        + ?
+                    &   ( !arg:on&POST
+                        | GET
+                        )
+                      : ?arg
+                  |   requestString
+                    & !jobby:(?.?servurl.?req.?)
+                    & readTable$tooladm
+                    &   !tooladm
+                      :   ?
+                        + ( ? (ServiceURL.!servurl) ?
+                          : ? (XMLparms.?xmlparms) ?
+                          )
+                        + ?
+                    & (   !xmlparms:on
+                        & ( makeList
+                          =   X el sub res
+                            .   :?res
+                              &   whl
+                                ' ( !arg:%?X+?arg
+                                  &     !res
+                                        (   !X:(?el.?sub)
+                                          & (!el.,makeList$!sub)
+                                        | !X
+                                        )
+                                    : ?res
+                                  )
+                              & !res
+                          )
+                        & makeList$(parms.!req):?res
+                        & str$!res:?arg
+                      |   ( makeList
+                          =   A B prefix res
+                            .   !arg:(?prefix.?arg)
+                              & :?res
+                              &   whl
+                                ' ( !arg:%?A+?arg
+                                  &     !res
+                                        (   !A:(?A.?B)
+                                          &   ( !prefix:
+                                              | (!prefix,!A)
+                                              )
+                                                makeList
+                                              $ (!prefix !A.!B)
+                                        | !prefix:
+                                        | (!prefix,!A)
+                                        )
+                                    : ?res
+                                  )
+                              & !res
+                          )
+                        & makeList$(.!req):?res
+                        & !res:(?A,?B) ?res
+                        & !A "=" !B:?Res
+                        &   whl
+                          ' ( !res:(?A,?B) ?res
+                            & !Res "&" !A "=" !B:?Res
+                            )
+                        & str$!Res:?arg
+                      )
+                  | filename&!jobby:(?.?.?.?arg)
+                  |   isText
+                    &   !jobby
+                      : (?.?.?+(O.?+(format.?fmt.?spc)+?)+?.?)
+                    &   (     !fmt
+                            : ( flat
+                              | csv
+                              | teip5
+                              | txtbasis
+                              | txtann
+                              | rdf
+                              )
+                          & y
+                        | n
+                        )
+                      : ?arg
+                  )
+              & !arg
+            | SOMETHINGWRONG
+            )
       )
       "
 /**
@@ -7835,7 +7798,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   log$isTEIoutput
           & readTable$jobs
           & !arg:(@(?:? #?JobNr).?jobID)
-          & log$(str$(JobNr[ !JobNr "]" jobID[ !jobID "]"))
           & (@(!jobID:?jobID " " ?)|)
           & (     !jobs
                 :   ?
@@ -8495,14 +8457,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( ToolTitle
       =   
         .     readTable$tooladm
-            &   !tooladm
-              :   ?
-                + ( ? (ToolID.!arg) ?
-                  : ? (Title.?arg) ?
-                  )
-                + ?
-            & !arg
-          | str$("ToolTitle:" !arg " does not exist.")
+            & (     !tooladm
+                  :   ?
+                    + ( ? (ToolID.!arg) ?
+                      : ? (Title.?arg) ?
+                      )
+                    + ?
+                & !arg
+              | str$("ToolTitle:" !arg " does not exist.")
+              )
+          | str$("ToolTitle:" !arg " tooladm cannot be read.")
       )
       "
 /**
@@ -8709,10 +8673,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & readTable$CTBs
           & readTable$relations
           & readTable$jobAbout
-          & (     !jobAbout
-                : ? (!JobNr.? (human.?workflow) ?) ?
-              & log$(workflow !workflow)
-            | :?workflow&log$(no workflow)
+          & (   !jobAbout
+              : ? (!JobNr.? (human.?workflow) ?) ?
+            | :?workflow
             )
           &   whl
             ' ( :?aborted:?done
@@ -8865,7 +8828,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
           & readTable$Uploads
           & :?Files:?inputs:?results
-          & log$(letter str$!letter)
           &   whl
             ' ( @(!letter:? "file:" ?File ";" ?letter)
               & (@(!File:? "*" ?File)|)
@@ -9133,13 +9095,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 & (dl.,!body)
             )
-          & log$(letter !arg)
           & jobMetaData$!arg:(?metadata.?type)
           & readTable$fileFormats
           & readTable$Uploads
           &   doneAllJobSub$!arg
             : (workflow.,?workflow) (steps.,?steps)
-          & log$(steps !steps)
           & :?resources:?files
           &     toML
               $ ( html
@@ -9655,6 +9615,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & @( !arg
                    : ((%? "/" %?:?ct) ";" ?|?ct)
                    )
+                & ( isDiplom
+                  =   N
+                    .       vap
+                          $ ( ( 
+                              =   N
+                                .     vap$((=.!arg).!arg."|")
+                                    : ? [?N
+                                  & !N
+                              )
+                            . @( get
+                               $ (str$(!DestinationDir !LocalFileName),STR)
+                               )
+                            . \n
+                            )
+                        : ? (~<17:?N) !N !N ?
+                      &   (ambig.una)
+                          (app.unn)
+                          (facet.txt)
+                          (format.dipl)
+                          (period.c13)
+                  )
                 &   !ct
                   : (   application/pdf
                       &     (   !nofonts:true
@@ -9701,21 +9682,25 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     |   ( application/x-download
                         | application/octet-stream
                         )
-                      & @( get$(str$(!DestinationDir !LocalFileName),STR)
-                         : ( ("%PDF" ?|"%pdf" ?)
-                           &     (   !nofonts:true
-                                   & (app.rom)
-                                 | (app.nrm)
-                                 )
-                                 (facet.txt)
-                                 ( format
-                                 .     !nofonts:true
-                                     & img^pdf
-                                   | pdf
-                                 )
-                             : ?R
+                      & ( @(   get
+                             $ (str$(!DestinationDir !LocalFileName),STR)
+                           : ( ("%PDF" ?|"%pdf" ?)
+                             &     (   !nofonts:true
+                                     & (app.rom)
+                                   | (app.nrm)
+                                   )
+                                   (facet.txt)
+                                   ( format
+                                   .     !nofonts:true
+                                       & img^pdf
+                                     | pdf
+                                   )
+                               : ?R
+                             )
                            )
-                         )
+                        | isDiplom$:?R
+                        | :?R
+                        )
                     |   application/msword
                       & @( get$(str$(!DestinationDir !LocalFileName),STR)
                          : (   ? rtf [<10 ?
@@ -9787,9 +9772,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             (format.rtf)
                         : ?R
                     |   text/plain
-                      &     (app.nrm)
-                            (facet.txt)
-                            (format.flat)
+                      &   ( isDiplom$
+                          |   (app.nrm)
+                              (facet.txt)
+                              (format.flat)
+                          )
                         : ?R
                     | text/x-conll&(format.flat):?R
                     |   @( ?
@@ -10156,13 +10143,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
             )
           & ( sourcesAndGoals
-            =       f
-                    fs
-                    picklists
-                    name
-                    short
-                    servicedGoalsTable
-                    flds
+            =     f fs picklists name short
+                , servicedGoalsTable flds
                 , servicedSourcesTable
                 , description itms itm Types rows
                 , table presel L PR selectServicedValues
@@ -10170,9 +10152,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 , goalpicklists preselvals presels
                 , srcs fromRepo createArgs
               .   !arg:(?presels.?createArgs.?fromRepo)
-                & log$sourcesAndGoals1
                 & readTable$features
-                & log$sourcesAndGoals2
                 & !features:?fs
                 & :?preselvalsrows
                 & :?items
@@ -10183,7 +10163,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           ?createArgs
                     & !items !item:?items
                     )
-                & log$sourcesAndGoals3
                 &   whl
                   ' ( !fs:%?f+?fs
                     &   !f
@@ -10205,7 +10184,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           (!short.localized$!name.!!table.!preselvals)
                       : ?preselvalsrows
                     )
-                & log$sourcesAndGoals4
                 & ( selectServicedValues
                   =   short table pat
                     .     !arg:(?short.?table.(=?pat))
@@ -10246,7 +10224,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & :?picklists:?goalpicklists
                 & !preselvalsrows:?PR
-                & log$sourcesAndGoals5
                 &   whl
                   ' (   !PR
                       : (?short.?name.?table.?preselvals) ?PR
@@ -10295,7 +10272,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                     . str$(I !short)
                                                     . options
                                                     .   makeOptionList
-                                                      $ (!table.!presel)
+                                                      $ ( !servicedSourcesTable
+                                                        . !presel
+                                                        )
                                                     )
                                               |   makeSelectFormField
                                                 $ ( 
@@ -10344,7 +10323,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                             )
                       : ?picklists
-                    & log$(picklists !name)
                     &     !goalpicklists
                             row
                           $ ( cell$(str$(!name ":"))
@@ -10359,7 +10337,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                       : ?goalpicklists
                     )
-                & log$sourcesAndGoals6
                 & (   !fromRepo
                     &     Table
                         $ ( (style,"display:none;") (id,inputs)
@@ -10383,7 +10360,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                   |     fieldset
                       $ (   localized
-                          $ ( "Input(s) (Do not change these fields if you aren't sure.)"
+                          $ ( "Input(s) (Do not change these fields if you are not sure.)"
                               "Input(s) (Lav ikke om på værdier medmindre du er fortrolig med filen.)"
                             )
                         .   Table
@@ -10786,16 +10763,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =     formFields metadataForm nth val
                 , directedBy Metadata parms ERR metadataType
               .   !arg:(?metadataType.?nth.?directedBy.?parms.?ERR)
-                &   log
-                  $ ( AddMetadata
-                      !directedBy
-                      metadataType
-                      !metadataType
-                      nth
-                      !nth
-                      ERR
-                      !ERR
-                    )
                 & readTable$!metadataType:?Metadata
                 & :?formFields
                 & ( metadataForm
@@ -11246,7 +11213,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       . !Items
                       )
                   )
-                & log$"readTable$jobAbout"
                 & (readTable$jobAbout|:?jobAbout)
                 &     ( !JobNr
                       .   (mail2.!mail2)
@@ -11258,9 +11224,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       !jobAbout
                   : ?jobAbout
                 & saveTable$jobAbout
-                & log$"saveTable$jobAbout"
                 & getNextJobID$!JobNr:?JobId
-                & log$(JobId !JobId)
                 &   str
                   $ ( 200
                       "~"
@@ -11484,11 +11448,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( MetadataInParms
             =   id Metadata metadataType
-              .   log$InMetadataInParms
-                & !arg:(?metadataType.?arg)
-                & log$(metadataType !metadataType)
+              .   !arg:(?metadataType.?arg)
                 & readTable$!metadataType:?Metadata
-                & log$(opened !metadataType)
                 &   !Metadata
                   :   ?
                       ( ?
@@ -11500,7 +11461,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           ?
                       )
                       ?
-                & log$(found !id)
                 & !arg
             )
           & ( rememberMetadata
@@ -11539,6 +11499,49 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . ?Items
                     . ?mail2
                     )
+                & ( updateUploads
+                  =     A nr Item Path stagingName
+                      , meta feats visibility Z parms
+                    .   !arg:?parms:? (Item.?Item) ?
+                      & readTable$Uploads:?Uploads
+                      & readTable$features:?features
+                      &   !Uploads
+                        :   ?A
+                            ( ?nr
+                            . !Item
+                            . ?Path
+                            . ?stagingName
+                            . ?meta
+                            . ?feats
+                            . ?visibility
+                            )
+                            ?Z
+                      &     !A
+                            ( !nr
+                            . !Item
+                            . !Path
+                            . !stagingName
+                            . !meta
+                            .   map
+                              $ ( ( 
+                                  =   key val
+                                    .       !arg
+                                          : ( @(?:I ?key)
+                                            . ~:?val
+                                            )
+                                        &   !features
+                                          : ?+(? (short.!key) ?)+?
+                                        & (!key.!val)
+                                      | 
+                                  )
+                                . !parms
+                                )
+                            . !visibility
+                            )
+                            !Z
+                        : ?Uploads
+                      & saveTable$Uploads
+                  )
                 & ( signatures
                   =   A prog o i sub
                     .     !arg:(((?,?) ?)*?.?arg)
@@ -11834,6 +11837,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         | !arg
                         )
                   )
+                & updateUploads$!parms
                 & 0:?calls:?allpipes
                 & :?restr
                 & (   (   !directedBy:GoalChoice
@@ -11866,7 +11870,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 )
                               : ?restr
                             )
-                        & log$(restrA !restr)
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
                             & (   0:?newpipes
@@ -11885,13 +11888,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     & !pipesN:?+[?NNN
                                     &   filter$(!pipesN.!parms)
                                       : ?pipesN
-                                    & log$(NNN1a !NNN)
                                     & log$"Now percolateForgottenFeatures"
                                     &   percolateForgottenFeatures$!pipesN
                                       : ?pipesN
                                     & log$"percolateForgottenFeatures done"
                                     & !pipesN:?+[?NNN
-                                    & log$(NNN1b !NNN)
                                     &   whl
                                       ' ( !pipesN:(?.?pipe)+?pipesN
                                         & wantThis$!pipe:?pipe
@@ -11917,10 +11918,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                       )
                     & "We may have succeeded in computing one or more pipelines."
-                    & (   (   !pipes:#:?NNN
-                            & log$(NNN3 !pipes)
+                    & (   ( !pipes:#:?NNN
                           |   !pipes:?+[?NNN
-                            & log$(NNN2 !NNN)
                             & !NNN:>1000
                           )
                         & log$(TooMany !pipes)
@@ -12038,8 +12037,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                       )
                   |   !restr:onlyWithoutRestriction
-                    & log$therearepipes
-                    & log$(parms !parms)
                     & !parms:? (desiredtool.?restriction) ?
                     & log$noway1
                     & NoWay$(!restriction.!calls)
@@ -12069,7 +12066,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !hiddenData (batch.!batch):?hiddenData
                 & "Does the user want to decide which tool to use or does she want
                    to let the infrastructure work out a way to reach a set goal?"
-                & log$(formFields3 !formFields)
                 & (   !directedBy:GoalChoice
                     & :?TOOL
                   |     str
