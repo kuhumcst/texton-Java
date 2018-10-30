@@ -9616,12 +9616,29 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                    : ((%? "/" %?:?ct) ";" ?|?ct)
                    )
                 & ( isDiplom
-                  =   N
-                    .       vap
+                  =   N lang
+                    .   0:?lang
+                      &     vap
                           $ ( ( 
-                              =   N
+                              =   N la
                                 .     vap$((=.!arg).!arg."|")
                                     : ? [?N
+                                    : (   (%@:@(?:? Language ?))
+                                          ( %@
+                                          : @( ?
+                                             :   ?
+                                                 (   ( dan
+                                                     | lat
+                                                     | mlg
+                                                     )
+                                                   : ?la
+                                                 & !la+!lang:?lang
+                                                 )
+                                                 ?
+                                             )
+                                          )
+                                      | ?
+                                      )
                                   & !N
                               )
                             . @( get
@@ -9634,7 +9651,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           (app.unn)
                           (facet.txt)
                           (format.dipl)
+                          (   !lang:#*%@?lang
+                            & ( lang
+                              .   !lang:lat&la
+                                | !lang:dan&da
+                                | !lang:mlg&gml
+                              )
+                          | 
+                          )
                           (period.c13)
+                          (pres.nml)
                   )
                 &   !ct
                   : (   application/pdf
