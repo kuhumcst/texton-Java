@@ -1,3 +1,5 @@
+20181030 - Added spec values to goal. Needs to be tested!
+
 20181026 - Improved handling of underspecified input (which could be added
            as input to several steps, since the profile didn't mismatch).
            Added recognition for "diplom" files, which are files that have

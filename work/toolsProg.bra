@@ -5835,11 +5835,11 @@ toolsProg=
                                             ^ (   ~1:?ispc
                                                 & NEWSPEC
                                                 &   shared$(!gspc.!ispc)
-                                                  : ( ~1
+                                                  : ( ~1: ?ispc
                                                     |   ?
                                                       & !gspc:1
                                                     )
-                                                  : ?ispc
+                                                  
                                               |   ?ispc
                                                 : ( 1
                                                   |   ?
