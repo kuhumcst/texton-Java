@@ -5571,6 +5571,89 @@ toolsProg=
                    )
                )
       )
+      ( unfoldSolutions
+      =   newSolutions solution
+        .   "If a solution has an unresolved ambiguity in som value subspecifucations, these are resolved here.
+             For example, (facet,tlp^(Par+ParMos))"
+          & ( ~&!arg
+            |   ( unfoldSolution
+                =     o O I sub subs
+                    , ni os is nis i tool nosnis nos
+                    , AA A f v a b Z ZZ R E
+                    , e AAA ZZZ B Y M R t S
+                  .   log$(unfoldSolution !arg)
+                    & !arg:(?os.?is)
+                    & 1:?nis
+                    &   whl
+                      ' ( !is:%?i*?is
+                        &     (   !i:(?tool,(?O.?I.?sub))
+                                & unfoldSolution$!sub:?subs
+                                & 0:?ni
+                                &   whl
+                                  ' ( !subs:%?sub+?subs
+                                    & (!tool,(!O.!I.!sub))+!ni:?ni
+                                    )
+                                & !ni
+                              | !i
+                              )
+                            * !nis
+                          : ?nis
+                        )
+                    & 1+!nis+-1:?nis
+                    & ( deexp
+                      =     T outs tools AA A f v
+                          , E Z S ZZ B t M Y H e R
+                        .   0:?T
+                          &   whl
+                            ' ( !arg:(?outs.?tools)+?arg
+                              &     (     !outs
+                                        :   ?AA
+                                          * (   ?A
+                                                (?f,?v^(%+%:?E))
+                                                ?Z
+                                            : ?S
+                                            )
+                                          * ?ZZ
+                                      & !tools:?B*(?t,(!S.?M))*?Y
+                                      & 0:?H
+                                      &   whl
+                                        ' ( !E:%?e+?E
+                                          &     (   !AA
+                                                  * (   !A
+                                                        (!f,!v^!e)
+                                                        !Z
+                                                    : ?R
+                                                    )
+                                                  * !ZZ
+                                                . !B*(!t,(!R.!M))*!Y
+                                                )
+                                              + !H
+                                            : ?H
+                                          )
+                                      & deexp$!H
+                                    | (!outs.!tools)
+                                    )
+                                  + !T
+                                : ?T
+                              )
+                          & !T
+                      )
+                    & 0:?nosnis
+                    &   whl
+                      ' ( !nis:%?is+?nis
+                        & deexp$(!os.!is)+!nosnis:?nosnis
+                        )
+                    & !nosnis
+                )
+              & 0:?newSolutions
+              &   whl
+                ' ( !arg:%?solution+?arg
+                  &   unfoldSolution$!solution+!newSolutions
+                    : ?newSolutions
+                  )
+              & !newSolutions
+            )
+      )
       ( unfoldTreeN
       =     tool ou ou2 inputprop childstuff A Z goal b
           , inputprop feature stop a ret As stp z sp
@@ -5835,11 +5918,10 @@ toolsProg=
                                             ^ (   ~1:?ispc
                                                 & NEWSPEC
                                                 &   shared$(!gspc.!ispc)
-                                                  : ( ~1: ?ispc
+                                                  : ( ~1:?ispc
                                                     |   ?
                                                       & !gspc:1
                                                     )
-                                                  
                                               |   ?ispc
                                                 : ( 1
                                                   |   ?
@@ -6139,52 +6221,61 @@ toolsProg=
             )
       )
       (assert=.!arg)
-      "restrictOutputParms What is this for? Is it needed?"
       ( restrictOutputParms
-      =   pathh toolFeatures outp tool ou prop in
+      =     pathh toolFeatures outp tool ou prop in nou
+          , v e es A f a b Z
         .   !arg:(?pathh.?toolFeatures)
-          & 0:?outp
           &   whl
             ' ( !pathh:(?tool,(?ou.?prop.?in))+?pathh
-              &     !outp
-                  + ( !tool
-                    , (   map
-                        $ ( ( 
-                            =   f vs val nvs i v
-                              .       !arg
-                                    : ( ?f
-                                      ,   %+%:?vs
-                                        &   !toolFeatures
-                                          : ? (!f,?val) ?
-                                      )
-                                  & 0:?nvs
-                                  &   whl
-                                    ' ( !vs:%?v+?vs
-                                      & (     !val
-                                            : ( 0
-                                              |   ?
-                                                + ( (?i.?+?*!v^?*?+?)
-                                                  &   !prop
-                                                    :   ?
-                                                        (!f,?+?*!i^?*?+?)
-                                                        ?
-                                                  )
-                                                + ?
-                                              )
-                                          & !nvs+!v:?nvs
-                                        | 
+              &     map
+                  $ ( ( 
+                      =   f vs val nvs i v e
+                        .       !arg
+                              : ( ?f
+                                ,   ( %+%:?vs
+                                    |   ?v^(%+%:?es)
+                                      & 0:?vs
+                                      &   whl
+                                        ' ( !es:%?e+?es
+                                          & !v^!e+!vs:?vs
+                                          )
+                                    )
+                                  &   !toolFeatures
+                                    : ? (!f,?val) ?
+                                )
+                            & 0:?nvs
+                            &   whl
+                              ' ( !vs:%?v^?e+?vs
+                                & (     !val
+                                      : ( 0
+                                        |   ?
+                                          + ( (?i.?+?*!v^(?+!e+?)*?+?)
+                                            &   !prop
+                                              :   ?
+                                                  (!f,?+?*!i^?*?+?)
+                                                  ?
+                                            )
+                                          + ?
                                         )
-                                      )
-                                  & (!f,!nvs)
-                                | !arg
-                            )
-                          . !ou
-                          )
-                      . !prop
-                      . !in
+                                    & !nvs+!v^!e:?nvs
+                                  | 
+                                  )
+                                )
+                            & (!f,!nvs)
+                          | !arg
                       )
+                    . !ou
                     )
-                : ?outp
+                : ?nou
+              & :?outp
+              &   whl
+                ' ( !nou:?A (?f,%?a+%?b) ?Z
+                  &     !outp
+                        (!tool,(!A (!f,!a) !Z.!prop.!in))
+                    : ?outp
+                  & !A (!f,!b) !Z:?nou
+                  )
+              & !outp (!tool,(!nou.!prop.!in)):?outp
               )
           & !outp
       )
@@ -6204,7 +6295,7 @@ toolsProg=
                 , unfoldGoal restriction
               .   ( fulfilGoalProduct
                   =     goalterm tools forkk goaly
-                      , toolspath tool ltools
+                      , toolspath tool ltools path1
                       , toolFeatures pathh pathfields newGoal infeat
                       , GL feat val memopaths restriction
                       , goal source isfulfilled hasfulfilled
@@ -6332,8 +6423,12 @@ toolsProg=
                                                                    + ( ?
                                                                      , (   ?
                                                                            ( ?
-                                                                           ,   %
-                                                                             + %
+                                                                           ,     %
+                                                                               + %
+                                                                             |   %
+                                                                               ^ ( %
+                                                                                 + %
+                                                                                 )
                                                                            )
                                                                            ?
                                                                        . ?
@@ -6349,15 +6444,22 @@ toolsProg=
                                                                   )
                                                               : ?pathh
                                                             )
-                                                          & (   !toolspath
-                                                              : ?+!pathh+?
-                                                            |       !toolspath
-                                                                  + !pathh
-                                                                : ?toolspath
-                                                              &     !memopaths
-                                                                  + !pathh
-                                                                : ?memopaths
-                                                            )
+                                                          &   whl
+                                                            ' (   !pathh
+                                                                :   %?path1
+                                                                    ?pathh
+                                                              & (   !toolspath
+                                                                  :   ?
+                                                                    + !path1
+                                                                    + ?
+                                                                |       !toolspath
+                                                                      + !path1
+                                                                    : ?toolspath
+                                                                  &     !memopaths
+                                                                      + !path1
+                                                                    : ?memopaths
+                                                                )
+                                                              )
                                                           )
                                                       )
                                                   &   hasfulfilled
@@ -9365,7 +9467,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       (pipeAsXML=.str$(!XMLdeclaration pipeSegmentXML$!arg))
       ( Intersection
-      =   x y f v I e g w V W
+      =   x y f v I e g w V W h
         .   !arg:(?x.?y)
           & :?I
           &   (   !x
@@ -9374,9 +9476,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     ( ?
                     & (   !y:? (!f,@?w^?g:?W) ?
                         & ( !w:~!v
-                          | !e:1&!g:~1
+                          |   !e:~1
+                            & !g:~1
+                            & !e:~!g
                           )
-                      | (!f,!V) !I:?I
+                      |   (   (!e:~1|!g:~1)
+                            & !e*!g:%?h^?
+                          | 1:?h
+                          )
+                        & (!f,!v^!h) !I:?I
                       )
                     & ~
                     )
@@ -9389,9 +9497,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     ( ?
                     & (   !x:? (!f,@?w^?g:?W) ?
                         & ( !w:~!v
-                          | !e:1&!g:~1
+                          |   !e:~1
+                            & !g:~1
+                            & !e:~!g
                           )
-                      | (!f,!V) !I:?I
+                      |   (   (!e:~1|!g:~1)
+                            & !e*!g:%?h^?
+                          | 1:?h
+                          )
+                        & (!f,!v^!h):?V
+                        & (!I:? !V ?|!V !I:?I)
                       )
                     & ~
                     )
@@ -9402,35 +9517,42 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & !I
       )
       ( supplement
-      =   f v NF OF
+      =   f v NF OF e A Z
         .   !arg:(?NF.?OF)
           & (   !OF
               :   ?
-                  (?f,?v)
+                  (?f,%?v^?e)
                   ( ?
-                  & ~(!NF:? (!f,?) ?)
-                  & (!f,!v) !NF:?NF
+                  & (   ~(!NF:? (!f,?) ?)
+                      & (!f,!v^!e) !NF:?NF
+                    |   !e:~1
+                      & !NF:?A (!f,!v^?) ?Z
+                      & !A (!f,!v^!e) !Z:?NF
+                    )
                   & ~
                   )
             | sort$!NF
             )
       )
       ( percolateForgottenFeatures
-      =     pipes F nnn update
+      =     pipes F nnn updateOFwithNF
           , FeatureList Results pipe1 pipe2 pipe3
           , fromMethods fromResultMethod fromTool
           , toMethods toResultMethod toTool
-        .   ( update
-            =   OF NF f v A Z
+        .   ( updateOFwithNF
+            =   OF NF f v A Z e E ParMos
               .   !arg:(?OF.?NF)
                 & (   !NF
                     :   ?
-                        (?f,?v)
+                        (?f,@?v^?e)
                         ( ?
-                        & ( !OF:? (!f,!v) ?
+                        & (   !OF:?A (!f,!v^?E) ?Z
+                            & ( (!e:!E|!E:~1)
+                              | !A (!f,!v^!e) !Z:?OF
+                              )
                           |   !OF:?A (!f,?) ?Z
-                            & !A (!f,!v) !Z:?OF
-                          | (!f,!v) !OF:?OF
+                            & !A (!f,!v^!e) !Z:?OF
+                          | (!f,!v^!e) !OF:?OF
                           )
                         & ~
                         )
@@ -9441,51 +9563,130 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =   OF NF
               .   !arg:(?arg.?OF)
                 & !arg:(@?,~(?.?)) ?:?NF
-                & (supplement$(!NF.!OF).update$(!OF.!NF))
+                & (supplement$(!NF.!OF).updateOFwithNF$(!OF.!NF))
+            )
+          & ( outs
+            =   R F
+              .   1:?R
+                &   whl
+                  ' ( !arg:(?,(?F.?))*?arg
+                    & !F*!R:?R
+                    )
+                & !R
+            )
+          & ( POSi
+            =   e
+              .   !arg:?*(? (facet,pos^?e) ?)*?
+                & !e
+            )
+          & (POSm=e.POSi$(outs$!arg))
+          & ( okPOS
+            =   result methods
+              .   !arg:(?result.?methods)
+                & (     !result
+                      : ((?,%@|%@^?) ?)*?
+                    & (     !methods
+                          :   ( ?
+                              , ((?,%@|%@^?) ?.?)
+                              )
+                            * ?
+                        & (   POSm$!methods:?m
+                            & (   POSi$!result:?r
+                                & ( !r:!m
+                                  | log$(BadMatch !r and !m)
+                                  )
+                              |   log
+                                $ ( posMissing
+                                    !result
+                                    methods
+                                    outs$!methods
+                                  )
+                              )
+                          | 
+                          )
+                      | log$(UnexpectedMethodFormat !methods)
+                      )
+                  | log$(UnexpectedResultFormat !result)
+                  )
             )
           & ( Results
-            =   L R NF OF LF RF
+            =   L R OF LF RF
               .   !arg:(?arg.?OF)
                 & (   !arg:%?L*%?R
                     & Results$(!R.!OF):(?R.?RF)
                     & ( FeatureList$(!L.!OF):(?L.?LF)
                       | log$(NoFeatureList !arg)&~
                       )
-                    & Intersection$(!RF.!LF):?NF
-                    & (!L*!R.!NF)
+                    & (!L*!R.Intersection$(!RF.!LF))
                   |   FeatureList$(!arg.!OF):(?L.?LF)
                     & (!L.!LF)
                   )
             )
           & ( fromTool
             =   OF LF RF tool meta output sub
-              .   !arg:(?arg.?OF)
-                & !arg:(?tool,(?output.?meta.?sub))
+              .   !arg:(?tool,(?output.?meta.?sub).?OF)
                 & fromResultMethod$(!sub.!OF):(?sub.?RF)
                 & FeatureList$(!output.!RF):(?output.?LF)
                 & (!tool,(!output.supplement$(!meta.!RF).!sub).!LF)
             )
           & ( fromMethods
-            =   L R NF OF LF RF
+            =   L R OF LF RF
               .   !arg:(?arg.?OF)
                 & (   !arg:%?L*%?R
                     & fromMethods$(!R.!OF):(?R.?RF)
                     & fromTool$(!L.!OF):(?L.?LF)
-                    & Intersection$(!RF.!LF):?NF
-                    & (!L*!R.!NF)
-                  |   fromTool$(!arg.!OF):(?L.?NF)
-                    & (!L.!NF)
+                    & (!L*!R.Intersection$(!RF.!LF))
+                  | fromTool$(!arg.!OF)
                   )
+            )
+          & ( UpdateResultsFromMethods
+            =   results methods nres result
+              .   !arg:(?results.?methods)
+                & 1:?nres
+                &   whl
+                  ' ( !results:%?result*?results
+                    &     (   !methods:?*!result*?
+                            & !result
+                          |   map
+                            $ ( ( 
+                                =   F v e E
+                                  .   !arg:(?F,%@?v^?e)
+                                    & (     !methods
+                                          : ?*(? (!F,!v^?E) ?)*?
+                                        & (   !e:1
+                                            & (!F,!v^!E)
+                                          | (!F,!v^!e)
+                                          )
+                                      | (!F,!v^!e)
+                                      )
+                                )
+                              . !result
+                              )
+                          )
+                        * !nres
+                      : ?nres
+                    )
+                & !nres
             )
           & ( fromResultMethod
             =   results methods OF NF
               .   !arg:(?arg.?OF)
                 & (   !arg:(?results.?methods)
                     & fromMethods$(!methods.!OF):(?methods.?NF)
-                    & Results$(!results.!NF):(?results.?NF)
-                    & ((!results.!methods).!NF)
-                  |   Results$(!arg.!OF):(?results.?NF)
-                    & (!results.!NF)
+                    & (   ~
+                        & "Is this the same as using UpdateResultsFromMethods?"
+                        & ((outs$!methods.!methods).!NF)
+                      |   
+                        & (     UpdateResultsFromMethods
+                              $ (!results.outs$!methods)
+                            : ?results
+                          | 
+                          | Results$(!results.!NF):(?results.?NF)
+                          )
+                        & okPOS$(!results.!methods)
+                        & ((!results.!methods).!NF)
+                      )
+                  | Results$(!arg.!OF)
                   )
             )
           & ( toTool
@@ -9497,15 +9698,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & (!tool,(!output.supplement$(!meta.!LF).!sub).!RF)
             )
           & ( toMethods
-            =   L R NF OF LF RF
+            =   L R OF LF RF
               .   !arg:(?arg.?OF)
                 & (   !arg:%?L*%?R
                     & toMethods$(!R.!OF):(?R.?RF)
                     & toTool$(!L.!OF):(?L.?LF)
-                    & Intersection$(!RF.!LF):?NF
-                    & (!L*!R.!NF)
-                  |   toTool$(!arg.!OF):(?L.?NF)
-                    & (!L.!NF)
+                    & (!L*!R.Intersection$(!RF.!LF))
+                  | toTool$(!arg.!OF)
                   )
             )
           & ( toResultMethod
@@ -9515,26 +9714,33 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & Results$(!results.!OF):(?results.?NF)
                     & toMethods$(!methods.!NF):(?methods.?NF)
                     & ((!results.!methods).!NF)
-                  |   Results$(!arg.!OF):(?results.?NF)
-                    & (!results.!NF)
+                  | Results$(!arg.!OF)
                   )
             )
           & ( validateInputsForEachTool
             =   recr
-              .   "No tool shall have multiple inputs that differ in more than one feature"
+              .   "Every input spec shall be identical to an output
+                   spec of an immediately preceding tool."
                 & ( recr
-                  =   a b A
+                  =   a b A aa
                     .     !arg:%?a*%?b
                         & recr$!a
                         & recr$!b
                       | !arg:(?,(?.?.(?,?) ?))
-                      |   !arg:(?,(?.?.?a.?b))
-                        &   whl
-                          ' ( !a:%?A*?a
-                            & !b:?*(?,(!A.?))*?
-                            )
-                        & !a:1
+                      |   !arg:(?,(?.?.?a:?aa.?b))
                         & recr$!b
+                        & okPOS$(!aa.!b)
+                        &   whl
+                          ' ( !a
+                            :   ( %?A
+                                & !b:?*(?,(!A.?))*?
+                                )
+                              * ?a
+                            )
+                        & ( !a:1
+                          |   log$(mismatch !aa and outs$!b)
+                            & ~
+                          )
                   )
                 & !arg:(?.?arg)
                 & recr$!arg
@@ -11898,6 +12104,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
+                            & log$(NNN !NNN)
                             & (   0:?newpipes
                                 &   whl
                                   ' (   !pipes
@@ -11914,10 +12121,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                     & !pipesN:?+[?NNN
                                     &   filter$(!pipesN.!parms)
                                       : ?pipesN
-                                    & log$"Now percolateForgottenFeatures"
                                     &   percolateForgottenFeatures$!pipesN
                                       : ?pipesN
-                                    & log$"percolateForgottenFeatures done"
                                     & !pipesN:?+[?NNN
                                     &   whl
                                       ' ( !pipesN:(?.?pipe)+?pipesN
@@ -11928,6 +12133,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                           )
                                         )
                                     )
+                                & ( 
+                                  |   unfoldSolutions$!newpipes
+                                    : ?newpipes
+                                  )
                                 & !newpipes:?pipes
                               |   !calls:<10000
                                 & log$("!calls:<10000" !calls)
