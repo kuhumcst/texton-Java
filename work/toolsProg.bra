@@ -1316,6 +1316,7 @@ toolsProg=
                               (? (%@:!featval) ?.?stbl)
                               ?
                         & :?sps
+                        & (!!stbl|readTable$!stbl)
                         &   whl
                           ' ( !spec:%?sp+?spec
                             & NEWSPEC
