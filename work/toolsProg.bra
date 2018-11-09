@@ -2699,7 +2699,7 @@ toolsProg=
                           !style
                     )
                     \r\n
-                    (body.(bgcolor."#C6D8D9"),!body)
+                    (body.(bgcolor."#F2EEE2"),!body)
               )
               \r\n
       )
@@ -9219,7 +9219,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                       )
                       ( body
-                      .   (bgcolor."#FF66FF")
+                      .   (bgcolor."#F2EEE2")
                         ,   (h1.,localized$(Results Resultater))
                             (h2.,Workflow)
                             (p.,!workflow)
