@@ -2662,7 +2662,7 @@ toolsProg=
                       , \r\n (title.,"DK-Clarin: Tools") \r\n !style
                     )
                     \r\n
-                    (body.(bgcolor."#C6D8D9"),!arg)
+                    (body.(bgcolor."#F2EEE2"),!arg)
               )
               \r\n
       )
