@@ -1,5 +1,5 @@
 20181109 - Set background colour to #F2EEE2, which is the same as the front
-           page.
+           page. Improved goal legend.
 
 20181102 - Fixed printing full names of subspecifications.
 

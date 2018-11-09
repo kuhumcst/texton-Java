@@ -10613,14 +10613,25 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                         )
                         fieldset
-                      $ (     localized
-                            $ ( "Your goal (Hint 1: fill out only two or three fields and leave the other fields blank. In general, more filled out fields = fewer candidate workflows.)"
-                                "Dit mål (Tip 1: udfyld nogle få felter og lad de øvrige felter være blank. Generelt gælder: jo flere udfyldte feldter, desto færre foreslåede arbejdsgange.)"
+                      $ (   (strong.,localized$("Your goal" "Dit mål"))
+                            (br.,)
+                            localized$("Fill out only " "Udfyld ")
+                            (strong.,localized$(two to))
+                            localized$(" or " " eller ")
+                            (strong.,localized$(three tre))
+                              localized
+                            $ ( " fields and leave the other fields "
+                                " felter og lad de øvrige felter være "
+                              )
+                            (strong.,localized$(blank blank))
+                              localized
+                            $ ( ". In general, more filled out fields = fewer candidate workflows."
+                                ". Generelt gælder: jo flere udfyldte feldter, desto færre foreslåede arbejdsgange."
                               )
                             (br.,)
                               localized
-                            $ ( "(Hint 2: You can skip these fields and choose a tool instead, see below. In that case, the tool will be the last in the workflow.)"
-                                "(Tip 2: Du kan lade felterne stå tomme, og i stedet vælge et værktøj i rubrikken forneden. I så fald er værktøjet det sidste i arbejdsgangen.)"
+                            $ ( "You can skip these fields and choose a tool instead, see below. In that case, the tool will be the last in the workflow."
+                                "Du kan lade felterne stå tomme, og i stedet vælge et værktøj i rubrikken forneden. I så fald er værktøjet det sidste i arbejdsgangen."
                               )
                         .     Table
                             $ ( id,goal
