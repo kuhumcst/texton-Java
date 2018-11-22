@@ -158,7 +158,7 @@ toolsProg=
                   + ?features
               & norm$!table
               )
-          & out$done
+          & log$done
       )
       ( localized
       =   
@@ -6780,26 +6780,6 @@ toolsProg=
               & !fpipes
             )
       )
-      ( filter2
-      =   L pipes rstr O filteredPipes ipes parms
-        .   !arg:(?pipes.?parms)
-          & ( !parms:? (desiredtool.?rstr) ?
-            | :?rstr
-            )
-          & ( !rstr:&!pipes
-            |   0:?fpipes
-              &   whl
-                ' ( !pipes:(?o.?pipe1)+?pipes
-                  & (   has$(!pipe1.!rstr)
-                      & ( !fpipes:?+(?.!o.!pipe1)+?
-                        | (!o.!pipe1)+!fpipes:?fpipes
-                        )
-                    | 
-                    )
-                  )
-              & !fpipes
-            )
-      )
       ( haz
       =   rstr S T notfound
         .   !arg:(?arg.?rstr)
@@ -9480,12 +9460,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           |   !e:~1
                             & !g:~1
                             & !e:~!g
+                          |   (   (!e:~1|!g:~1)
+                                & !e*!g:%?h^?
+                              | 1:?h
+                              )
+                            & (!f,!v^!h) !I:?I
                           )
-                      |   (   (!e:~1|!g:~1)
-                            & !e*!g:%?h^?
-                          | 1:?h
-                          )
-                        & (!f,!v^!h) !I:?I
+                      | (!f,!v^!e) !I:?I
                       )
                     & ~
                     )
@@ -9501,12 +9482,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           |   !e:~1
                             & !g:~1
                             & !e:~!g
+                          |   (   (!e:~1|!g:~1)
+                                & !e*!g:%?h^?
+                              | 1:?h
+                              )
+                            & (!f,!v^!h):?V
+                            & ( !I:? !V ?
+                              | !V !I:?I
+                              )
                           )
-                      |   (   (!e:~1|!g:~1)
-                            & !e*!g:%?h^?
-                          | 1:?h
-                          )
-                        & (!f,!v^!h):?V
+                      |   (!f,!v^!e):?V
                         & (!I:? !V ?|!V !I:?I)
                       )
                     & ~
@@ -9566,7 +9551,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & !arg:(@?,~(?.?)) ?:?NF
                 & (supplement$(!NF.!OF).updateOFwithNF$(!OF.!NF))
             )
-          & ( outs
+          & ( oUts
             =   R F
               .   1:?R
                 &   whl
@@ -9575,40 +9560,43 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 & !R
             )
-          & ( POSi
-            =   e
-              .   !arg:?*(? (facet,pos^?e) ?)*?
-                & !e
-            )
-          & (POSm=e.POSi$(outs$!arg))
           & ( okPOS
-            =   result methods
-              .   !arg:(?result.?methods)
-                & (     !result
-                      : ((?,%@|%@^?) ?)*?
-                    & (     !methods
-                          :   ( ?
-                              , ((?,%@|%@^?) ?.?)
-                              )
-                            * ?
-                        & (   POSm$!methods:?m
-                            & (   POSi$!result:?r
-                                & ( !r:!m
-                                  | log$(BadMatch !r and !m)
+            =   result methods m r
+              .   
+                |   ( POSi
+                    =   e
+                      .   !arg:?*(? (facet,pos^?e) ?)*?
+                        & !e
+                    )
+                  & (POSm=e.POSi$(oUts$!arg))
+                  & !arg:(?result.?methods)
+                  & (     !result
+                        : ((?,%@|%@^?) ?)*?
+                      & (     !methods
+                            :   ( ?
+                                , ( (?,%@|%@^?) ?
+                                  . ?
                                   )
-                              |   log
-                                $ ( posMissing
-                                    !result
-                                    methods
-                                    outs$!methods
-                                  )
-                              )
-                          | 
-                          )
-                      | log$(UnexpectedMethodFormat !methods)
-                      )
-                  | log$(UnexpectedResultFormat !result)
-                  )
+                                )
+                              * ?
+                          & (   POSm$!methods:?m
+                              & (   POSi$!result:?r
+                                  & ( !r:!m
+                                    | log$(BadMatch !r and !m)
+                                    )
+                                |   log
+                                  $ ( posMissing
+                                      !result
+                                      methods
+                                      oUts$!methods
+                                    )
+                                )
+                            | 
+                            )
+                        | log$(UnexpectedMethodFormat !methods)
+                        )
+                    | log$(UnexpectedResultFormat !result)
+                    )
             )
           & ( Results
             =   L R OF LF RF
@@ -9674,19 +9662,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               .   !arg:(?arg.?OF)
                 & (   !arg:(?results.?methods)
                     & fromMethods$(!methods.!OF):(?methods.?NF)
-                    & (   ~
-                        & "Is this the same as using UpdateResultsFromMethods?"
-                        & ((outs$!methods.!methods).!NF)
-                      |   
-                        & (     UpdateResultsFromMethods
-                              $ (!results.outs$!methods)
-                            : ?results
-                          | 
-                          | Results$(!results.!NF):(?results.?NF)
-                          )
-                        & okPOS$(!results.!methods)
-                        & ((!results.!methods).!NF)
+                    & (     UpdateResultsFromMethods
+                          $ (!results.oUts$!methods)
+                        : ?results
+                      | 
                       )
+                    & okPOS$(!results.!methods)
+                    & ((!results.!methods).!NF)
                   | Results$(!arg.!OF)
                   )
             )
@@ -9723,12 +9705,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               .   "Every input spec shall be identical to an output
                    spec of an immediately preceding tool."
                 & ( recr
-                  =   a b A aa
+                  =   a b A aa t
                     .     !arg:%?a*%?b
                         & recr$!a
                         & recr$!b
-                      | !arg:(?,(?.?.(?,?) ?))
-                      |   !arg:(?,(?.?.?a:?aa.?b))
+                      | !arg:(?t,(?.?.(?,?) ?))
+                      |   !arg:(?t,(?.?.?a:?aa.?b))
                         & recr$!b
                         & okPOS$(!aa.!b)
                         &   whl
@@ -9739,7 +9721,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               * ?a
                             )
                         & ( !a:1
-                          |   log$(mismatch !aa and outs$!b)
+                          |     log
+                              $ ( "In feature bundle"
+                                  !A
+                                  str$(\n "of tool")
+                                  !t
+                                  str$(\n "with input")
+                                  !aa
+                                    str
+                                  $ ( \n
+                                      "mismatch with outputs of preceding tools"
+                                    )
+                                  oUts$!b
+                                )
                             & ~
                           )
                   )
@@ -9804,7 +9798,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , nicify handle checkIOparms PIPE lookForLanguage
           , precooked-DASISH A wrkflw Z errmsg
           , analyseContentType makeJobStack NoNeedForMetadata
-          , ApplyThePipelineToTheInput NoWay TooMany
+          , ApplyThePipelineToTheInput NoWay TooManyOrNone
           , ShowAllPipes ShowOnlyTheCurrentPipe AddMetadata
           , "We are at the start. Show an input form."
           , "We are past the first stage: the user has pressed a button"
@@ -11595,26 +11589,40 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       )
                   )
             )
-          & ( TooMany
+          & ( TooManyOrNone
             =   
-              .   str
-                $ ( 404~~~
-                      toML
-                    $ ( !BodyContainer
-                      $ ( paragraph
-                        $ (   localized
-                            $ ( "There are unmanageable many ("
-                                "Der er uoverskuelig mange ("
+              .     !arg:0
+                  &   str
+                    $ ( 404~~~
+                          toML
+                        $ ( !BodyContainer
+                          $ ( paragraph
+                            $ ( localized
+                              $ ( "There are no workflows leading to your goal. You could try to slacken the specification of your goal."
+                                  "Der er ingen workflows der fører til dit mål. Dan kan prøve at slække på kravene til dit mål."
+                                )
                               )
-                            !arg
-                              localized
-                            $ ( ") possible workflows leading to your goal. Try to specify more details for your goal."
-                                ") mulige workflows der fører til dit mål. Prøv at specificere dit mål nærmere."
-                              )
+                            )
+                          )
+                      )
+                |   str
+                  $ ( 404~~~
+                        toML
+                      $ ( !BodyContainer
+                        $ ( paragraph
+                          $ (   localized
+                              $ ( "There are unmanageable many ("
+                                  "Der er uoverskuelig mange ("
+                                )
+                              !arg
+                                localized
+                              $ ( ") possible workflows leading to your goal. Try to specify more details for your goal."
+                                  ") mulige workflows der fører til dit mål. Prøv at specificere dit mål nærmere."
+                                )
+                            )
                           )
                         )
-                      )
-                  )
+                    )
             )
           & ( "We are at the start. Show an input form."
             =   formFields presels,directedBy hiddenData Items
@@ -12148,50 +12156,34 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
                             & log$(NNN !NNN)
-                            & (   0:?newpipes
+                            & 0:?newpipes
+                            &   whl
+                              ' (   !pipes
+                                  : ((?.?):?incarnationpipes)+?pipes
+                                & "incarnationpipes is (<(user or declared tool) provided output specs> . <sum of unambiguous trees>)"
+                                & log$"now unfoldTreeN"
+                                & log$(incarnationpipes !incarnationpipesy)
+                                &   unfoldTreeN$(1.!incarnationpipes)
+                                  : ?pipesN
+                                & "The 1 is the initial stop list, which is formed as a product."
+                                & log$"unfoldTreeN done"
+                                & "pipesN is (<final stop list> . <user provided output specs> . <unfolded tree>) + ..."
+                                & "It seems we don't need the final stop list anymore."
+                                & !pipesN:?+[?NNN
+                                & filter$(!pipesN.!parms):?pipesN
+                                &   percolateForgottenFeatures$!pipesN
+                                  : ?pipesN
+                                & !pipesN:?+[?NNN
                                 &   whl
-                                  ' (   !pipes
-                                      :   ((?.?):?incarnationpipes)
-                                        + ?pipes
-                                    & "incarnationpipes is (<(user or declared tool) provided output specs> . <sum of unambiguous trees>)"
-                                    & log$"now unfoldTreeN"
-                                    &   unfoldTreeN$(1.!incarnationpipes)
-                                      : ?pipesN
-                                    & "The 1 is the initial stop list, which is formed as a product."
-                                    & log$"unfoldTreeN done"
-                                    & "pipesN is (<final stop list> . <user provided output specs> . <unfolded tree>) + ..."
-                                    & "It seems we don't need the final stop list anymore."
-                                    & !pipesN:?+[?NNN
-                                    &   filter$(!pipesN.!parms)
-                                      : ?pipesN
-                                    &   percolateForgottenFeatures$!pipesN
-                                      : ?pipesN
-                                    & !pipesN:?+[?NNN
-                                    &   whl
-                                      ' ( !pipesN:(?.?pipe)+?pipesN
-                                        & wantThis$!pipe:?pipe
-                                        & ( !pipe:0
-                                          | !newpipes:?+!pipe+?
-                                          | !pipe+!newpipes:?newpipes
-                                          )
-                                        )
+                                  ' ( !pipesN:(?.?pipe)+?pipesN
+                                    & wantThis$!pipe:?pipe
+                                    & ( !pipe:0
+                                      | !newpipes:?+!pipe+?
+                                      | !pipe+!newpipes:?newpipes
+                                      )
                                     )
-                                & ( 
-                                  |   unfoldSolutions$!newpipes
-                                    : ?newpipes
-                                  )
-                                & !newpipes:?pipes
-                              |   !calls:<10000
-                                & log$("!calls:<10000" !calls)
-                                & unfoldTree$!pipes:?pipes
-                                & (   !pipes:#
-                                    & log$TooMany
-                                  |   log$"now filter"
-                                    & filter2$(!pipes.!parms):?pipes
-                                    & log$"filter done"
-                                  )
-                              | log$(calls !calls)&~
-                              )
+                                )
+                            & !newpipes:?pipes
                           | !restr:triviallyFulfilled
                           )
                       )
@@ -12200,8 +12192,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           |   !pipes:?+[?NNN
                             & !NNN:>1000
                           )
-                        & log$(TooMany !pipes)
-                        & TooMany$!NNN
+                        & log$(TooManyOrNone !pipes)
+                        & TooManyOrNone$!NNN
                       |   !Submit:nextStep
                         & log$nextStep
                         &   ShowAllPipes

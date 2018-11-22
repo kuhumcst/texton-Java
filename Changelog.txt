@@ -1,3 +1,5 @@
+20181122 - Fixed Intersection$. Some variables were undefined
+
 20181113 - Better feed back to user when no workflows found.
 
 20181109 - Set background colour to #F2EEE2, which is the same as the front
