@@ -3416,7 +3416,7 @@ toolsProg=
   * Called from register.java
   */"
       ( register
-      =     Metadata featureListing staticFields wrapper
+      =     Metadata featureListing staticFields
           , ToolName ToolVersion FullToolName PassWord password
           , ToolURL ToolPublisher ContentProvider passwordAsHandle
           , ToolCreator InfoAbout ToolDescription mail2
