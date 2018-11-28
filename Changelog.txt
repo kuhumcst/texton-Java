@@ -1,3 +1,10 @@
+20181128 - Exclude workflows with two or more steps that use the same tool
+           with only minor differences: the same feature values, but different
+           subspecifications of (some of) those values. For example, one step
+           with tokeniser X that follows the Penn Treebank convention of
+           splitting aren't isn't we'll in are n't is n't and we 'll, and one
+           step with tokeniser X that does not follow those conventions.
+
 20181122 - Fixed Intersection$. Some variables were undefined
 
 20181113 - Better feed back to user when no workflows found.
