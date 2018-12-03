@@ -104,16 +104,14 @@
         <p>
             <small>
             This service is a workflow management system (WMS) that not only executes workflows, but also composes workflows from building blocks. 
-            Each building block encapsulates a Natural Language Processing tool, which thereby becomes integrated.
+            Each building block encapsulates a Natural Language Processing tool.
             </small>
         </p>
         <p class="indent">
             <small>
-            Quite often the WMS finds it can compose many workflows that all lead to your goal.
-            In such cases the WMS asks you to choose one of those workflows.
-            It is also possible that your goal is not within reach of the currently integrated tools.
-            The WMS will quickly tell you if that is the case.
-            In general, the more detail you add to your goal, the fewer solutions the WMS will find.
+            The WMS may compose many workflows that all lead to your goal.
+            It will then ask you to choose one of the proposed workflows.
+            In general, the more detail you add to your goal, the fewer solutions the WMS will find, even zero.
             </small>
         </p>
         <p class="indent">
@@ -121,7 +119,7 @@
             The original version of the WMS was made during the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project.
             The most recent source code of the WMS is on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
             The WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat</a> programming language, except 
-            for the low level communication with your browser and with the tools (web services in their own right), which is implemented in <a href="https://java.com/">Java</a>.
+            for the communication with your browser and with the tools (web services in their own right), which is implemented in <a href="https://java.com/">Java</a>.
             </small>
         </p>
         <p class="indent">
