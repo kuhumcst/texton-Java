@@ -12,6 +12,8 @@
         input, textarea {
             font-size: 12pt;
         }
+        p {margin: 0}
+        p.indent {text-indent: 20px}
 		body { font-size: 100%; }
 		fieldset {border-style: none;}
 		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
@@ -23,23 +25,25 @@
         /*Striking and Energetic*/
 		.bodycanvas {background-color:#F2EEE2}
 		.fileupload {background-color:#F5CE28}
-		.typein {background-color:#43C0F6}
-		.URLs {background-color:#F81B84}
+		.typein {background-color:#F5CE28}
+		.URLs {background-color:#F5CE28}
+		/*.typein {background-color:#43C0F6}
+		.URLs {background-color:#F81B84}*/
     </style>
     <meta name="description" content="This NLP workflow managment system automatically combines the necessary natural language processing tools to achieve your goal, in a way similar to how a trip planner computes the best route from your current position to your destination. A very advanced application mostly written in the Bracmat programming language." itemprop="description" />
 </head>
 <body class="bodycanvas">
 <!--div  style="margin:0px auto;width:860px;text-align:left;border:1px solid #336699;"-->
 <div  style="margin:0px auto;width:55em;text-align:left;">
-    <h1 class="smallmargin">Text Tonsorium &#128136; <small><small>A salon de beaut&eacute; for Natural Language Processing</small></small></h1>
+    <h1 class="smallmargin">Text Tonsorium <!--&#128136;-->&nbsp;&nbsp;&nbsp; <small><small>A salon de beaut&eacute; for Natural Language Processing</small></small></h1>
     <p>
         Upload your input using the form on this page. On the next page you specify the desired final result -
-        there are several annotation types, file formats, languages and other traits to choose from. Then sit back.
-        Our advanced workflow management system (WMS) selects and orchestrates the NLP tools that are needed to achieve your goal.<br />
+        there are several annotation types, file formats, languages and other traits to choose from.
+        The hard part - picking and orchestrating the Natural Language Processing tools that are needed to achieve your goal - is handled by this service.
     </p>
     <form enctype="multipart/form-data" method="post" action="createByGoalChoice">
         <fieldset class="fileupload">
-            <legend style="font-weight: bold;">Upload file(s)</legend>
+            <legend style="font-weight: bold;">Upload one or more files</legend>
             <table>
                 <tr>
                     <td>
@@ -57,23 +61,21 @@
         </fieldset>
 		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
         <fieldset class="URLs">
-            <legend style="font-weight: bold;">Enter up to three addresses of web pages</legend>
+            <legend style="font-weight: bold;">Enter addresses of web pages</legend>
             <table>
                 <tr>
                     <td>
-                        <span id="item3a">URLs - full addresses, starting with http:// or https://</span>
+                        <span id="item3a">One URL per line, starting with http:// or https://</span>
                     </td>
                     <td width="70%">
-                        <input name="URL" type="text" id="url1" size="50" /><br />
-                        <input name="URL" type="text" id="url2" size="50" /><br />
-                        <input name="URL" type="text" id="url3" size="50" />
+                        <textarea name="URLS" rows="3" cols="80"></textarea>
                     </td>
                 </tr>
             </table>
         </fieldset>
 		<p class="smallmargin"><strong><small>... or ...</small></strong></p>
         <fieldset class="typein">
-            <legend style="font-weight: bold;">Type or cut-and-paste some text</legend>
+            <legend style="font-weight: bold;">Type or copy and paste some text</legend>
             <table>
                 <tr>
                     <td>
@@ -101,10 +103,30 @@
         </table>
         <p>
             <small>
-            In some cases the WMS will tell you that your goal is not within reach of the currently integrated tools.<br />
-            The original version of this web service was made during the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project. The most recent source code of the WMS is on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you also can contact us.
-            Note that most of the WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat programming language</a>.<br />
-            This service is free for single texts and for smaller groups of texts.
+            This service is a workflow management system (WMS) that not only executes workflows, but also composes workflows from building blocks. 
+            Each building block encapsulates a Natural Language Processing tool, which thereby becomes integrated.
+            </small>
+        </p>
+        <p class="indent">
+            <small>
+            Quite often the WMS finds it can compose many workflows that all lead to your goal.
+            In such cases the WMS asks you to choose one of those workflows.
+            It is also possible that your goal is not within reach of the currently integrated tools.
+            The WMS will quickly tell you if that is the case.
+            In general, the more detail you add to your goal, the fewer solutions the WMS will find.
+            </small>
+        </p>
+        <p class="indent">
+            <small>
+            The original version of the WMS was made during the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project.
+            The most recent source code of the WMS is on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
+            The WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat</a> programming language, except 
+            for the low level communication with your browser and with the tools (web services in their own right), which is implemented in <a href="https://java.com/">Java</a>.
+            </small>
+        </p>
+        <p class="indent">
+            <small>
+            This service is free for small amounts of text.
             Do not send sensitive data to this service and use it at your own risk!
             </small>
         </p>
