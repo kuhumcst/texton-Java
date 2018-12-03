@@ -2644,9 +2644,9 @@ toolsProg=
       )
       ( XHTMLbodyContainer
       =   
-        .   "iso8859-1 and not utf-8, because of problematic handling of UTF-8 by JNI
+        .   "iso-8859-1 and not utf-8, because of problematic handling of UTF-8 by JNI
              (Or rather Java, which uses UTF-16 and converts surrogate pairs to 6 bytes of UTF-8 !)"
-          &   ("?"."xml version=\"1.0\" encoding=\"iso8859-1\"")
+          &   ("?"."xml version=\"1.0\" encoding=\"iso-8859-1\"")
               \r\n
               ( "!DOCTYPE"
               . " html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\""
