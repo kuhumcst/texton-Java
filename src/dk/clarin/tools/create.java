@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -557,6 +558,32 @@ as wget.
                     }
 				logger.debug("in Workflow URLargs:"+arg);
                 }
+            else if(parmName.equals("URLS"))
+                {
+				logger.debug("Going to call makeLocalCopyOfRemoteFile A2");
+                for(String val : vals)
+                    {
+                    if(!val.equals(""))
+                        {
+                        int textLength = val.length();
+                        if(textLength > 0)
+							{
+                            try {
+                                String[] splitArray = val.split("\\r?\\n");
+                                for(String line : splitArray)
+                                    {
+                                    arg = arg + makeLocalCopyOfRemoteFile(line);
+                                    }
+                                } 
+                            catch (PatternSyntaxException ex)
+                                {
+                                // 
+                                }
+                            }
+                        }
+                    }
+				logger.debug("in Workflow URLSargs:"+arg);
+                }
             else
                 {
                 for(String val : vals)
@@ -692,6 +719,24 @@ as wget.
         				logger.debug("Going to call makeLocalCopyOfRemoteFile B");
                         arg = arg + makeLocalCopyOfRemoteFile(item.getString());
 						logger.debug("in getParmsAndFiles URLargs is now:"+arg);
+                        }
+                    else if(item.getFieldName().equals("URLS"))
+                        {
+				        logger.debug("Going to call makeLocalCopyOfRemoteFile B2");
+                        String val = item.getString();
+                        try {
+                            String[] splitArray = val.split("\\r?\\n");
+                            for(String line : splitArray)
+                                {
+                                if(!line.equals(""))
+                                    arg = arg + makeLocalCopyOfRemoteFile(line);
+                                }
+                            } 
+                        catch (PatternSyntaxException ex)
+                            {
+                            // 
+                            }
+				        logger.debug("in Workflow URLSargs:"+arg);
                         }
                     else
                         arg = arg + " (" + item.getFieldName() + "." + workflow.quote(item.getString()) + ")";
