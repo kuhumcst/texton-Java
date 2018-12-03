@@ -5590,7 +5590,7 @@ toolsProg=
              Expects that the variable 'sources' is a list of input feature/value pairs. 
              (A single pair can contain more than one value. That is the case if there are more than one inputs.)"
           & !arg:(?stop.?arg)
-          & 1+!calls:?calls:<10000
+          & 1+!calls:?calls:<100000
           & ( @(!calls:? 000)&log$(calls !calls)
             | 
             )
@@ -5598,11 +5598,11 @@ toolsProg=
               & "Multiply each term in unfolded first factor with each term in unfolded remaining factors."
               & 0:?ret
               & unfoldTreeN$(!stop.!A):?Z
-              & !calls:<10000
+              & !calls:<100000
               &   whl
                 ' ( !Z:(?stp.?a)+?Z
                   & unfoldTreeN$(!stop*!stp.!arg):?z
-                  & !calls:<10000
+                  & !calls:<100000
                   & leaveFeat$!a:?af
                   &   whl
                     ' ( !z:(?sp.?b)+?z
@@ -5614,7 +5614,7 @@ toolsProg=
                       )
                   )
               & !ret
-            |   !calls:<10000
+            |   !calls:<100000
               & !arg:%+%
               & (   !stop:?*(!arg.?projectOnto)^?*?
                   & "This removes MANY solutions that assume incompatible input specs."
@@ -5624,7 +5624,7 @@ toolsProg=
                   &   whl
                     ' ( !As:%?A+?As
                       & unfoldTreeN$(!stop.!A):?Z
-                      & !calls:<10000
+                      & !calls:<100000
                       &   whl
                         ' ( !Z:(?stp.?a)+?Z
                           & !ret+((!arg.!a)*!stop.!a):?ret
@@ -5632,17 +5632,17 @@ toolsProg=
                       )
                   & !ret
                 )
-            |   !calls:<10000
+            |   !calls:<100000
               & !arg:(?goal.?childstuff)
               & unfoldTreeN$(!stop.!childstuff):?Z
-              & !calls:<10000
+              & !calls:<100000
               & 0:?ret
               &   whl
                 ' ( !Z:(?stp.?A)+?Z
                   & !ret+(!stp.!goal.!A):?ret
                   )
               & !ret
-            |   !calls:<10000
+            |   !calls:<100000
               &   !arg
                 : ( ?tool
                   , ( ?A (?feature,%+%:?ou) ?Z
@@ -5659,7 +5659,7 @@ toolsProg=
                           . !childstuff
                           )
                       )
-                |   !calls:<10000
+                |   !calls:<100000
                   & !ou:?ou2
                   & 0:?ret
                   &   whl
@@ -5675,10 +5675,10 @@ toolsProg=
                         : ?rt
                       & !ret+!rt:?ret
                       )
-                  & !calls:<10000
+                  & !calls:<100000
                   & !ret
                 )
-            |   !calls:<10000
+            |   !calls:<100000
               & !arg:(?tool,(?ou.?inputprop.?childstuff))
               & unfoldTreeN$(!stop.!childstuff):?Z
               & 0:?ret
@@ -5687,7 +5687,7 @@ toolsProg=
                   & !ret+(!stp.!tool,(!ou.!inputprop.!A)):?ret
                   )
               & !ret
-            | !calls:<10000&(!stop.!arg)
+            | !calls:<100000&(!stop.!arg)
             )
       )
       ( unfoldTree
@@ -11431,70 +11431,71 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               .   !arg:(?restriction.?restr.?calls)
                 &   log
                   $ (restriction !restriction restr !restr calls !calls)
-                & (   !calls:~<10000
-                    &   str
-                      $ ( 404~~~
-                            toML
-                          $ ( !BodyContainer
-                            $ ( paragraph
-                              $ ( localized
-                                $ ( "The computation takes too much time. It may succeed if you narrow your goal."
-                                    "Beregningen tager for lang tid. Måske vil det lykkes hvis du definerer dit mål lidt nærmere."
-                                  )
-                                )
-                              )
-                            )
-                        )
-                  |   !restr:triviallyFulfilled
-                    &   str
-                      $ ( 404~~~
-                            toML
-                          $ ( !BodyContainer
-                            $ (   paragraph
-                                $ ( localized
-                                  $ ( "Your goal is trivially fulfilled. Go back to the previous screen and specify your goal in more detail."
-                                      "Dit mål er allerede opfyldt i inputtet.  Gå tilbage til forrige skærm og specificer dit mål i flere detaljer."
-                                    )
-                                  )
-                                ( !restriction:
-                                |   paragraph
-                                  $ (   localized
-                                      $ ( "You can also choose to not specify your goal at all. In that case the goal will be implicitly defined by the tool that you chose "
-                                          "Alternativt specificerer du dit mål slet ikke. Så bliver målet implicit bestemt af det værktøj du har valgt "
+                & (   !calls:<100000
+                    & (   !restr:triviallyFulfilled
+                        &   str
+                          $ ( 404~~~
+                                toML
+                              $ ( !BodyContainer
+                                $ (   paragraph
+                                    $ ( localized
+                                      $ ( "Your goal is trivially fulfilled. Go back to the previous screen and specify your goal in more detail."
+                                          "Dit mål er allerede opfyldt i inputtet.  Gå tilbage til forrige skærm og specificer dit mål i flere detaljer."
                                         )
-                                      "("
-                                      ToolTitle$!restriction
-                                      ")."
+                                      )
+                                    ( !restriction:
+                                    |   paragraph
+                                      $ (   localized
+                                          $ ( "You can also choose to not specify your goal at all. In that case the goal will be implicitly defined by the tool that you chose "
+                                              "Alternativt specificerer du dit mål slet ikke. Så bliver målet implicit bestemt af det værktøj du har valgt "
+                                            )
+                                          "("
+                                          ToolTitle$!restriction
+                                          ")."
+                                        )
                                     )
+                                  )
                                 )
-                              )
                             )
-                        )
-                  |   !restriction:
-                    &   str
-                      $ ( 404~~~
-                            toML
-                          $ ( !BodyContainer
-                            $ ( paragraph
-                              $ ( localized
-                                $ ( "Your goal cannot be fulfilled with the currently integrated tools."
-                                    "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
+                      |   !restriction:
+                        &   str
+                          $ ( 404~~~
+                                toML
+                              $ ( !BodyContainer
+                                $ ( paragraph
+                                  $ ( localized
+                                    $ ( "Your goal cannot be fulfilled with the currently integrated tools."
+                                        "Dit mål kan ikke opfyldes med de værktøjer der p.t. er integreret i infrastrukturen."
+                                      )
+                                    )
+                                  )
+                                )
+                            )
+                      |   str
+                        $ ( 404~~~
+                              toML
+                            $ ( !BodyContainer
+                              $ ( paragraph
+                                $ (   localized
+                                    $ ( "None of the found workflows involves the tool '"
+                                        "Ingen af de fundne arbejdsgange anvender værktøjet '"
+                                      )
+                                    ToolTitle$!restriction
+                                    "'."
                                   )
                                 )
                               )
-                            )
-                        )
+                          )
+                      )
                   |   str
                     $ ( 404~~~
                           toML
                         $ ( !BodyContainer
                           $ ( paragraph
-                            $ (   localized
-                                $ ( "None of the found workflows involves the tool '"
-                                    "Ingen af de fundne arbejdsgange anvender værktøjet '"
-                                  )
-                                ToolTitle$!restriction
-                                "'."
+                            $ ( localized
+                              $ ( "The computation takes too much time. It may succeed if you narrow your goal."
+                                  "Beregningen tager for lang tid. Måske vil det lykkes hvis du definerer dit mål lidt nærmere."
+                                )
                               )
                             )
                           )
@@ -12039,7 +12040,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   : ((?.?):?incarnationpipes)+?pipes
                                 & "incarnationpipes is (<(user or declared tool) provided output specs> . <sum of unambiguous trees>)"
                                 & log$"now unfoldTreeN"
-                                & log$incarnationpipes
                                 &   unfoldTreeN$(1.!incarnationpipes)
                                   : ?pipesN
                                 & "The 1 is the initial stop list, which is formed as a product."

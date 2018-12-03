@@ -1,4 +1,5 @@
 20181203 - Edited text on front page. Removed restriction to max 3 URLs.
+           Increased max number of 'calls' from 10000 to 100000.
 
 20181128 - Exclude workflows with two or more steps that use the same tool
            with only minor differences: the same feature values, but different
