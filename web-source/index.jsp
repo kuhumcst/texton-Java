@@ -1,11 +1,13 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="da">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>TEXT TONSORIUM - Natural Language Processing toolchains automatically composed and scheduled for you</title>
-    <style>
+    <style type="text/css">
         h1, h2, h3, span, p, td, input, legend, textarea {
             font-family: "Comic Sans MS", cursive, sans-serif;
         }
@@ -30,7 +32,7 @@
 		/*.typein {background-color:#43C0F6}
 		.URLs {background-color:#F81B84}*/
     </style>
-    <meta name="description" content="This NLP workflow managment system automatically combines the necessary natural language processing tools to achieve your goal, in a way similar to how a trip planner computes the best route from your current position to your destination. A very advanced application mostly written in the Bracmat programming language." itemprop="description" />
+    <meta name="description" content="This NLP workflow managment system automatically combines the necessary natural language processing tools to achieve your goal, in a way similar to how a trip planner computes the best route from your current position to your destination. A very advanced application mostly written in the Bracmat programming language." />
 </head>
 <body class="bodycanvas">
 <!--div  style="margin:0px auto;width:860px;text-align:left;border:1px solid #336699;"-->
