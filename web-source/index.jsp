@@ -18,6 +18,7 @@
         p.indent {text-indent: 20px}
 		body { font-size: 100%; }
 		fieldset {border-style: none;}
+        td.textareawide {width:70%}
 		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
         /*Bold Blacks and Vibrant Highlights*/
 		/*.bodycanvas {background-color:#F5F5F5}
@@ -69,7 +70,7 @@
                     <td>
                         <span id="item3a">One URL per line, each starting with http:// <br />or https://</span>
                     </td>
-                    <td width="70%">
+                    <td class="textareawide">
                         <textarea name="URLS" rows="3" cols="80"></textarea>
                     </td>
                 </tr>
@@ -83,7 +84,7 @@
                     <td>
                         <span id="item2a">Text to process:</span>
                     </td>
-                    <td width="70%"><textarea name="text" rows="3" cols="80"></textarea></td>
+                    <td class="textareawide"><textarea name="text" rows="3" cols="80"></textarea></td>
                 </tr>
             </table>
         </fieldset>
@@ -98,7 +99,7 @@
                     <input type="radio" name="UIlanguage" value="en" checked="checked" />English<br />
                     <input type="radio" name="UIlanguage" value="da" />Danish
                 </td>
-				<td width="20%"></td>
+				<td style="width:20%"></td>
 			<td>Next:<input type="hidden" name="action" value="batch" checked="checked" />
         <input type="submit" value="Specify the required result" alt="create annotation, goal directed" /></td>
 			</tr>
