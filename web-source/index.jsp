@@ -65,7 +65,7 @@
             <table>
                 <tr>
                     <td>
-                        <span id="item3a">One URL per line, starting with http:// or https://</span>
+                        <span id="item3a">One URL per line, each starting with http:// <br />or https://</span>
                     </td>
                     <td width="70%">
                         <textarea name="URLS" rows="3" cols="80"></textarea>

@@ -911,12 +911,10 @@ toolsProg=
       =   legend content
         .   !arg:(?legend.?content)
           &   ( fieldset
-              .   (style."padding: 10px;")
+              .   (style."padding: 10px; border-style: none;")
                 ,   ( !legend:
                     | ( legend
-                      .   ( style
-                          . "display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px;"
-                          )
+                      .   
                         , !legend
                       )
                     )
@@ -2265,8 +2263,11 @@ toolsProg=
       ( style
       =   ( style
           .   (type.text/css)
-            ,   \r\n
-                "legend {display: inline-block; padding: 0.2em 0.5em; border:1px solid green; color:green; font-size:90%; text-align:left; }"
+            ,\r\n
+         "h1, h2, h3, span, p, td, input, legend, textarea {font-family: "Comic Sans MS", cursive, sans-serif;}"
+           
+                \r\n
+                "legend {border:none;color:black;background-color:#F5CE28;text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
                 \r\n
                 ".required {color:red; font-size:90%;}"
                 \r\n
@@ -10504,8 +10505,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                   |     fieldset
                       $ (   localized
-                          $ ( "Input(s) (Do not change these fields if you are not sure.)"
-                              "Input(s) (Lav ikke om på værdier medmindre du er fortrolig med filen.)"
+                          $ ( "Input(s). Do not change these fields if you are not sure."
+                              "Input. Lav ikke om på værdierne hvis du ikke er sikker."
                             )
                         .   Table
                           $ ( id,inputs
@@ -11579,11 +11580,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   .   makeHiddenFields$!hiddenData
                                       (     !directedBy
                                           : (GoalChoice|)
-                                        & !formFields submit$nextStep
+                                        & !formFields submit$"next step"
                                       |   Sources$!presels
                                             paragraph
                                           $ ( pickTool$(txt.!Items)
-                                              submit$nextStep
+                                              submit$"next step"
                                             )
                                       )
                                   )
@@ -12072,8 +12073,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                         & log$(TooManyOrNone !pipes)
                         & TooManyOrNone$!NNN
-                      |   !Submit:nextStep
-                        & log$nextStep
+                      |   !Submit:"next step"
+                        & log$"next step"
                         &   ShowAllPipes
                           $ ( !directedBy
                             .   !hiddenData
@@ -13904,7 +13905,7 @@ try {
                   (Olang.)
                   (Operiod.)
                   (Oapp.)
-                  (bsubmit.nextStep)
+                  (bsubmit."next step")
               . GoalChoice
               )
       )
