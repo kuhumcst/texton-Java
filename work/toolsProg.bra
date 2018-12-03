@@ -912,12 +912,7 @@ toolsProg=
         .   !arg:(?legend.?content)
           &   ( fieldset
               .   (style."padding: 10px; border-style: none;")
-                ,   ( !legend:
-                    | ( legend
-                      .   
-                        , !legend
-                      )
-                    )
+                ,   (!legend:|(legend.,!legend))
                     !content
               )
               \r\n
@@ -2263,9 +2258,12 @@ toolsProg=
       ( style
       =   ( style
           .   (type.text/css)
-            ,\r\n
-         "h1, h2, h3, span, p, td, input, legend, textarea {font-family: "Comic Sans MS", cursive, sans-serif;}"
-           
+            ,   \r\n
+                ".bodycanvas {background-color:#F2EEE2}"
+                \r\n
+                "h1, h2, h3, span, p, td, input, legend, textarea {font-family: Comic"
+                Sans
+                "MS, cursive, sans-serif;}"
                 \r\n
                 "legend {border:none;color:black;background-color:#F5CE28;text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
                 \r\n
@@ -2646,7 +2644,8 @@ toolsProg=
       )
       ( XHTMLbodyContainer
       =   
-        .   "iso8859-1 and not utf-8, because of problematic handling of UTF-8 by JNI"
+        .   "iso8859-1 and not utf-8, because of problematic handling of UTF-8 by JNI
+             (Or rather Java, which uses UTF-16 and converts surrogate pairs to 6 bytes of UTF-8 !)"
           &   ("?"."xml version=\"1.0\" encoding=\"iso8859-1\"")
               \r\n
               ( "!DOCTYPE"
@@ -2663,7 +2662,7 @@ toolsProg=
                       , \r\n (title.,"DK-Clarin: Tools") \r\n !style
                     )
                     \r\n
-                    (body.(bgcolor."#F2EEE2"),!arg)
+                    (body.(class.bodycanvas),!arg)
               )
               \r\n
       )
@@ -2700,7 +2699,7 @@ toolsProg=
                           !style
                     )
                     \r\n
-                    (body.(bgcolor."#F2EEE2"),!body)
+                    (body.(class.bodycanvas),!body)
               )
               \r\n
       )
@@ -9107,7 +9106,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             )
                       )
                       ( body
-                      .   (bgcolor."#F2EEE2")
+                      .   (class.bodycanvas)
                         ,   (h1.,localized$(Results Resultater))
                             (h2.,Workflow)
                             (p.,!workflow)

@@ -492,7 +492,7 @@ as wget.
         if(UIlanguage == null)
             UIlanguage = parameters.getPreferredLocale(request,null);
         
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("text/html; charset=iso8859-1");//UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(!BracMat.loaded())
@@ -778,7 +778,7 @@ as wget.
         PrintWriter out = response.getWriter();
 
 
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("text/html; charset=iso8859-1");//UTF-8");
 
         response.setStatus(200);
         /* TODO Add DASISH server
