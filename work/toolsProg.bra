@@ -2145,12 +2145,13 @@ toolsProg=
               (span.,!text)
               \r\n
               ( input
-              .   (tabindex.1+!tabind:?tabind)
-                  (type.password)
-                  (name.!parm)
-                  (value.)
-                  (!desc:|(title.!desc))
-                  (!size:|(size.!size))
+              .     (tabindex.1+!tabind:?tabind)
+                    (type.password)
+                    (name.!parm)
+                    (value.)
+                    (!desc:|(title.!desc))
+                    (!size:|(size.!size))
+                , 
               )
               \r\n
       )
