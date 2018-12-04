@@ -48,7 +48,7 @@ public class update extends HttpServlet
         throws ServletException, IOException 
         {
 
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
