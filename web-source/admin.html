@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="da">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>DKCLARIN</title>
+    <title>TEXT TONSORIUM - Natural Language Processing toolchains automatically composed and scheduled for you</title>
   </head>
   <body style="background-color:#66FFFF">
-    <h1>Automatic Navigation through Language Technology</h1>
-	  <h2>ADMINISTRATION PAGE</h2>
+    <h1>TEXT TONSORIUM</h1>
+	  <h2>Tool Administration</h2>
     
 	<form enctype="application/x-www-form-urlencoded" method="get" action="register">
 		Password:<input type="password" name="passwordAsHandle" value="" alt="password"/>
@@ -19,14 +19,14 @@
 		<input type="submit" value="update tool" alt="Bracmat" />
 	</form>
 
-    <h1>Development area</h1>
-    <h2>Reload script</h2>
+    <h2>Development area</h2>
+    <h3>Reload script</h3>
 	<form enctype="application/x-www-form-urlencoded" method="get" action="reloadScript">
 		Password:<input type="password" name="password" value="" alt="password"/>
 		<input type="submit" value="Bracmat" alt="Bracmat" />
 	</form>
 
-    <h2>Set language</h2>
+    <h3>Set language</h3>
     <p>User interface can be set to Danish or English</p>
 	<form enctype="multipart/form-data" method="get" action="setLanguage">
 		<p>
@@ -39,7 +39,7 @@
 		</p>
 	</form>
 
-    <h2>Stress test</h2>
+    <h3>Stress test</h3>
     <p> Press the "stresstest"-button from several browser windows at the same time. Use different values.</p>
 	<form enctype="multipart/form-data" method="get" action="stresstest">
 		<p>
@@ -49,7 +49,7 @@
 		</p>
 	</form>
 
-    <h2>Evaluate program code</h2>
+    <h3>Evaluate program code</h3>
 	<form enctype="application/x-www-form-urlencoded" method="get" action="bracmatevaluator">
 		<textarea style="font-size: 9pt;" name="expression" rows="10" cols="80">{ Enter Bracmat expression to evaluate
   (Programmers only) }
@@ -60,7 +60,7 @@
 	</form>
 
 
-    <!--h2>Asynchronous requests</h2>
+    <!--h3>Asynchronous requests</!--h3>
     <p>Emulate tool uploading result asynchronously</p>
 	<form enctype="multipart/form-data" method="post" action="upload">
 		<p>
