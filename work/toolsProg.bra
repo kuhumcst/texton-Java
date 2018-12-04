@@ -123,7 +123,13 @@ toolsProg=
       (servicedGoals=)
       (StartClk=)
       (startclock=.-1*clk$:?StartClk)
-      (clock=.str$("[" jsn$(clk$+!StartClk) "]"))
+      ( clock
+      =   
+        .   ( !StartClk:&startclock$
+            | 
+            )
+          & str$("[" jsn$(clk$+!StartClk) "]")
+      )
       ( 2to3col
       =   features specificationTables table specificationTable norm
         .   ( norm
@@ -2811,7 +2817,8 @@ toolsProg=
       ( upload
       =     jobNr jobID jobstatus JOB
           , A Z files toolURL parms file
-        .     !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
+        .     log$(upload !arg)
+            & !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
             & (   readTable$jobs
                 & (     !jobs
                       :   ?A
