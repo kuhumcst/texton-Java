@@ -120,9 +120,9 @@
         <p class="indent">
             <small>
             The original version of the WMS was made during the <a href="https://dkclarin.ku.dk/">DK-Clarin</a> project.
-            The most recent source code of the WMS is on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
+            Find the most recent source code of the WMS on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
             The WMS is written in the <a href="https://github.com/BartJongejan/Bracmat">Bracmat</a> programming language, except 
-            for the communication with your browser and with the tools (web services in their own right), which is implemented in <a href="https://java.com/">Java</a>.
+            for the communication with the user's browser and with the tools (web services in their own right), which is implemented in <a href="https://java.com/">Java</a>.
             </small>
         </p>
         <p class="indent">
