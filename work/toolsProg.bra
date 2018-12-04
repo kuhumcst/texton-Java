@@ -968,12 +968,18 @@ toolsProg=
           &   (span.,!text)
               \r\n
               ( input
-              .   (type.checkbox)
-                  (tabindex.1+!tabind:?tabind)
-                  (name.!parm)
-                  (!state:|(checked.!state))
-                  (!disabled:|(disabled.!disabled))
-                  (!desc:|(title.!desc))
+              .     (type.checkbox)
+                    (tabindex.1+!tabind:?tabind)
+                    (name.!parm)
+                    ( !state:
+                    | ( checked
+                      .   !state:on&checked
+                        | 
+                      )
+                    )
+                    (!disabled:|(disabled.!disabled))
+                    (!desc:|(title.!desc))
+                , 
               )
               \r\n
       )
@@ -1071,10 +1077,11 @@ toolsProg=
           &   (span.,!text)
               \r\n
               ( input
-              .   (type.file)
-                  (name.!parm)
-                  (value.)
-                  (!val:|(accept.trim$!val))
+              .     (type.file)
+                    (name.!parm)
+                    (value.)
+                    (!val:|(accept.trim$!val))
+                , 
               )
               \r\n
       )
@@ -4995,7 +5002,8 @@ toolsProg=
                                   . POST
                                   )
                               )
-                              (p.,!error (br.,) (hr.,))
+                              (p.,!error (br.,))
+                              (hr.,)
                             )
                           )
                     )
