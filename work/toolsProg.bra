@@ -3448,12 +3448,14 @@ toolsProg=
         .   log$(register !arg)
           & clean$
           & :?servicedSources:?servicedGoals
-          & localized$("Save metadata" "Gem oplysninger"):?storeToolButton
+          &   localized$("Save metadata" "Gem oplysninger")
+            : ?storeToolButton
           &   localized$("Replace metadata" "Erstat oplysninger")
             : ?replaceToolButton
           &   localized$("Delete metadata" "Slet oplysninger")
             : ?deleteToolButton
-          & localized$("Show more entry fields" "Vis flere inputfelter"):?UpdateButton
+          &   localized$("Show more entry fields" "Vis flere inputfelter")
+            : ?UpdateButton
           & localized$("PHP wrapper" PHP-kode):?PHPbutton
           & ( createBoilerPlate
             =     ToolName ToolVersion FullToolName
@@ -3788,9 +3790,7 @@ toolsProg=
                       )
                       fieldset
                     $ (   localized
-                        $ ( "Mainly for integrated tools. (Simplified when deposited)"
-                            "Oplysninger for især integrerede værktøjer. (Deponeres i forenklet format.)"
-                          )
+                        $ ("Webservice metadata" Webserviceoplysninger)
                       .     paragraph
                           $ ( staticField
                             $ ( !arg
@@ -4799,7 +4799,9 @@ toolsProg=
                           &   localized
                             $ ("Register a new tool" "Registrer et nyt værktøj")
                         |   localized
-                          $ ("Update tool metadata" "Opdater værktøjsoplysninger")
+                          $ ( "Update tool metadata"
+                              "Opdater værktøjsoplysninger"
+                            )
                     )
                     !formFields
                 : ?formFields
