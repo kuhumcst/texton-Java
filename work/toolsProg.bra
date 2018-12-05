@@ -3110,7 +3110,7 @@ toolsProg=
                               . password
                               . desc
                               .   localized
-                                $ ( "Use this field if you don't own the tool and the owner has given you the password. When you update the tool info, you become the new owner of the tool."
+                                $ ( "Use this field if you don't own the tool and the owner has given you the password. When you update the tool metadata, you become the new owner of the tool."
                                     "Brug feltet hvis du ikke er ejer af værktøjet og du har fået adgangskoden fra ejeren. Når du opdaterer værktøjsoplysningerne bliver du automatisk den nye ejer af værktøjet."
                                   )
                               )
@@ -3448,12 +3448,12 @@ toolsProg=
         .   log$(register !arg)
           & clean$
           & :?servicedSources:?servicedGoals
-          & localized$("Save info" "Gem oplysninger"):?storeToolButton
-          &   localized$("Replace info" "Erstat oplysninger")
+          & localized$("Save metadata" "Gem oplysninger"):?storeToolButton
+          &   localized$("Replace metadata" "Erstat oplysninger")
             : ?replaceToolButton
-          &   localized$("Delete info" "Slet oplysninger")
+          &   localized$("Delete metadata" "Slet oplysninger")
             : ?deleteToolButton
-          & localized$("Update info" "Opdater skærm"):?UpdateButton
+          & localized$("Show more entry fields" "Vis flere inputfelter"):?UpdateButton
           & localized$("PHP wrapper" PHP-kode):?PHPbutton
           & ( createBoilerPlate
             =     ToolName ToolVersion FullToolName
@@ -4799,7 +4799,7 @@ toolsProg=
                           &   localized
                             $ ("Register a new tool" "Registrer et nyt værktøj")
                         |   localized
-                          $ ("Update tool info" "Opdater værktøjsoplysninger")
+                          $ ("Update tool metadata" "Opdater værktøjsoplysninger")
                     )
                     !formFields
                 : ?formFields
@@ -4811,7 +4811,7 @@ toolsProg=
             One of the submit buttons pressed or tool not defined in 
             toolprop.table (i.e. tool is not integrated): use info from request
             string.
-            Otherwise: use info from toolprop.table.
+            Otherwise: use metadata from toolprop.table.
             "
               &   (     !arg
                       :   ?
@@ -4961,7 +4961,7 @@ toolsProg=
                                 & !AA+!ZZ:?tooladm
                                 & saveTable$tooladm
                                 &   str
-                                  $ ( "Deleted administrative info of tool "
+                                  $ ( "Deleted administrative metadata of tool "
                                       !ToolName
                                     )
                               )
