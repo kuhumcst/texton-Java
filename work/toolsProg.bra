@@ -1624,7 +1624,7 @@ toolsProg=
                   & enumerateToolsDetail$!a+enumerateToolsDetail$!b
                 |   !arg:(?o.?i)
                   & enumerateToolsDetail$!i
-                | 
+                | 1
             )
           & ( simplify
             =     WF S dun sortout n f i I
@@ -5554,6 +5554,7 @@ toolsProg=
           | !arg:(?,(?.?.?arg))&!arg
           |   !arg:(?.(?,?):?arg)
             & leaveFeat$!arg
+          | !arg:(@,?) ?
       )
       ( subtract
       =   all org
@@ -5569,7 +5570,7 @@ toolsProg=
               . !all
               )
       )
-      ( compatible
+      ( compatibleFeatureSets
       =   A B C D F V
         .   ~(!arg:%*%)
           |   1:?B
@@ -5621,13 +5622,13 @@ toolsProg=
                 ' ( !Z:(?stp.?a)+?Z
                   & unfoldTreeN$(!stop*!stp.!arg):?z
                   & !calls:<100000
-                  & leaveFeat$!a:?af
+                  & leaveFeat$!a:?af^?
                   &   whl
                     ' ( !z:(?sp.?b)+?z
-                      & leaveFeat$!b:?bf
-                      & (   compatible$(!af*!bf)
+                      & leaveFeat$!b:?bf^?
+                      & (   compatibleFeatureSets$(!af*!bf)
                           & !ret+(!sp.!a*!b):?ret
-                        | 
+                        | log$(NOTCOMPATIBLE !af AND !bf)
                         )
                       )
                   )
@@ -6280,146 +6281,157 @@ toolsProg=
                       & 1:?forkk
                       &   whl
                         ' ( !goalterm:%?goaly*?goalterm
-                          & (   !goaly:?GL
-                              &   whl
-                                ' ( !GL:(?feat,?val^?) ?
-                                  & (   !source
-                                      :   ?
-                                          (!feat,?+?*!val^?*?+? ?)
-                                          ?
-                                    | ~(!source:? (!feat,?) ?)
-                                    )
-                                  & !GL:% ?GL
-                                  )
-                              & !GL:
-                            |     ( !restriction:~0
-                                  | !tools
-                                  )
-                                : ?ltools
-                              & 0:?toolspath
-                              &   whl
-                                ' ( !forkk:~0
-                                  & !ltools:(?tool.?)+?
-                                  & (       isfulfilled
-                                          $ (!source.!goaly.!tool)
-                                        : (?source.?goal.?memopaths)
-                                      &   whl
-                                        ' (!ltools:(!tool.?)+?ltools)
-                                      &     denumerizeSum
-                                          $ (!toolspath+!memopaths)
-                                        : ?toolspath
-                                    |   0:?memopaths
-                                      &   whl
-                                        ' (   !ltools
-                                            : (!tool.?toolFeatures)+?ltools
-                                          & (       removeUnspecifiedFeatures
-                                                  $ !toolFeatures
-                                                : ?toolFeatures
-                                              & !toolFeatures:
-                                            |       matchGoalWithFeatures
-                                                  $ (!goaly.!toolFeatures)
-                                                : (?pathfields.?newGoal)
-                                              & (       fulfil
-                                                      $ ( !tools
-                                                        . !source
-                                                        . !newGoal
-                                                        . !indent+1
-                                                        . 0
-                                                        )
-                                                    : ?pathh
-                                                  &   removeNumFactors$!pathh
-                                                    : ?infeat
-                                                  &     distribute
-                                                      $ (!newGoal.!infeat)
-                                                    : ?IO
-                                                  & 0:?memopaths
-                                                  &   whl
-                                                    ' (   !IO
-                                                        : (?I.?Os)+?IO
-                                                      &   whl
-                                                        ' ( !Os:%?O+?Os
-                                                          &   ( !tool
-                                                              , (   sort
-                                                                  $ ( !pathfields
-                                                                        supplyMissingFields
-                                                                      $ ( !pathfields
-                                                                        . !O
-                                                                        . !toolFeatures
-                                                                        )
-                                                                    )
-                                                                . !I
-                                                                . !O
-                                                                )
-                                                              )
-                                                            : ?pathh
-                                                          & (   assert
-                                                              ' ( !pathh
-                                                                : ~( ?
-                                                                   + ( ?
-                                                                     , (   ?
-                                                                           ( ?
-                                                                           ,     %
-                                                                               + %
-                                                                             |   %
-                                                                               ^ ( %
-                                                                                 + %
-                                                                                 )
-                                                                           )
-                                                                           ?
-                                                                       . ?
-                                                                       . ?
-                                                                       )
-                                                                     )
-                                                                   + ?
-                                                                   )
-                                                                )
-                                                            |     restrictOutputParms
-                                                                $ ( !pathh
-                                                                  . !toolFeatures
-                                                                  )
-                                                              : ?pathh
+                          &     (   !goaly:?GL
+                                  &   whl
+                                    ' ( !GL:(?feat,?val^?) ?
+                                      & (   !source
+                                          :   ?
+                                              (!feat,?+?*!val^?*?+? ?)
+                                              ?
+                                        | ~( !source
+                                           : ? (!feat,?) ?
+                                           )
+                                        )
+                                      & !GL:% ?GL
+                                      )
+                                  & !GL:
+                                  & !source
+                                |     ( !restriction:~0
+                                      | !tools
+                                      )
+                                    : ?ltools
+                                  & 0:?toolspath
+                                  &   whl
+                                    ' ( !forkk:~0
+                                      & !ltools:(?tool.?)+?
+                                      & (       isfulfilled
+                                              $ (!source.!goaly.!tool)
+                                            : (?source.?goal.?memopaths)
+                                          &   whl
+                                            ' ( !ltools
+                                              : (!tool.?)+?ltools
+                                              )
+                                          &     denumerizeSum
+                                              $ (!toolspath+!memopaths)
+                                            : ?toolspath
+                                        |   0:?memopaths
+                                          &   whl
+                                            ' (   !ltools
+                                                :   (!tool.?toolFeatures)
+                                                  + ?ltools
+                                              & (       removeUnspecifiedFeatures
+                                                      $ !toolFeatures
+                                                    : ?toolFeatures
+                                                  & !toolFeatures:
+                                                |       matchGoalWithFeatures
+                                                      $ (!goaly.!toolFeatures)
+                                                    : (?pathfields.?newGoal)
+                                                  & (       fulfil
+                                                          $ ( !tools
+                                                            . !source
+                                                            . !newGoal
+                                                            . !indent+1
+                                                            . 0
                                                             )
+                                                        : ?pathh
+                                                      &     removeNumFactors
+                                                          $ !pathh
+                                                        : ?infeat
+                                                      &     distribute
+                                                          $ (!newGoal.!infeat)
+                                                        : ?IO
+                                                      & 0:?memopaths
+                                                      &   whl
+                                                        ' (   !IO
+                                                            : (?I.?Os)+?IO
                                                           &   whl
-                                                            ' (   !pathh
-                                                                :   %?path1
-                                                                    ?pathh
-                                                              & (   !toolspath
-                                                                  :   ?
-                                                                    + !path1
-                                                                    + ?
-                                                                |       !toolspath
-                                                                      + !path1
-                                                                    : ?toolspath
-                                                                  &     !memopaths
-                                                                      + !path1
-                                                                    : ?memopaths
+                                                            ' (   !Os
+                                                                : %?O+?Os
+                                                              &   ( !tool
+                                                                  , (   sort
+                                                                      $ ( !pathfields
+                                                                            supplyMissingFields
+                                                                          $ ( !pathfields
+                                                                            . !O
+                                                                            . !toolFeatures
+                                                                            )
+                                                                        )
+                                                                    . !I
+                                                                    . !O
+                                                                    )
+                                                                  )
+                                                                : ?pathh
+                                                              & (   assert
+                                                                  ' ( !pathh
+                                                                    : ~( ?
+                                                                       + ( ?
+                                                                         , (   ?
+                                                                               ( ?
+                                                                               ,     %
+                                                                                   + %
+                                                                                 |   %
+                                                                                   ^ ( %
+                                                                                     + %
+                                                                                     )
+                                                                               )
+                                                                               ?
+                                                                           . ?
+                                                                           . ?
+                                                                           )
+                                                                         )
+                                                                       + ?
+                                                                       )
+                                                                    )
+                                                                |     restrictOutputParms
+                                                                    $ ( !pathh
+                                                                      . !toolFeatures
+                                                                      )
+                                                                  : ?pathh
                                                                 )
+                                                              &   whl
+                                                                ' (   !pathh
+                                                                    :   %?path1
+                                                                        ?pathh
+                                                                  & (   !toolspath
+                                                                      :   ?
+                                                                        + !path1
+                                                                        + ?
+                                                                    |       !toolspath
+                                                                          + !path1
+                                                                        : ?toolspath
+                                                                      &     !memopaths
+                                                                          + !path1
+                                                                        : ?memopaths
+                                                                    )
+                                                                  )
                                                               )
                                                           )
-                                                      )
-                                                  &   hasfulfilled
-                                                    $ ( !source
-                                                      . !pathfields
-                                                      . !memopaths
-                                                      )
-                                                  & (   !goaly
-                                                      : !pathfields
-                                                    |   hasfulfilled
-                                                      $ ( !source
-                                                        . !goaly
-                                                        . !memopaths
+                                                      &   hasfulfilled
+                                                        $ ( !source
+                                                          . !pathfields
+                                                          . !memopaths
+                                                          )
+                                                      & (   !goaly
+                                                          : !pathfields
+                                                        |   hasfulfilled
+                                                          $ ( !source
+                                                            . !goaly
+                                                            . !memopaths
+                                                            )
                                                         )
+                                                    | 0:?pathh
                                                     )
-                                                | 0:?pathh
+                                                | FAIL
                                                 )
-                                            | FAIL
-                                            )
-                                          )
-                                    )
-                                  )
-                              & "forkk will become zero if no tools can fulfil goaly!"
-                              & !forkk*!toolspath:?forkk
-                            )
+                                              )
+                                        )
+                                      )
+                                  & "forkk will become zero if no tools can fulfil goaly!"
+                                  & !toolspath
+                                | 1:?goalterm&0
+                                )
+                              * !forkk
+                            : ?forkk
                           )
                       & 1+!forkk+-1
                   )
@@ -9451,9 +9463,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( percolateForgottenFeatures
       =     pipes F nnn updateOFwithNF NN
           , FeatureList Results pipe1 pipe2 pipe3
-          , fromMethods fromResultMethod fromTool
+          , fromMethods fromResultMethod fromToolOrSource
           , toMethods toResultMethod toTool
-          , UpdateResultsFromMethods oUts okPOS
+          , UpdateResultsFromMethods oUts
           , validateInputsForEachTool
         .   ( updateOFwithNF
             =   OF NF f v A Z e E
@@ -9477,8 +9489,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( FeatureList
             =   OF NF
-              .   !arg:(?arg.?OF)
-                & !arg:(@?,~(?.?)) ?:?NF
+              .   !arg:((@?,~(?.?)) ?:?NF.?OF)
                 & (supplement$(!NF.!OF).updateOFwithNF$(!OF.!NF))
             )
           & ( oUts
@@ -9490,72 +9501,32 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 & !R
             )
-          & ( okPOS
-            =   result methods m r
-              .   
-                |   ( POSi
-                    =   e
-                      .   !arg:?*(? (facet,pos^?e) ?)*?
-                        & !e
-                    )
-                  & (POSm=.POSi$(oUts$!arg))
-                  & !arg:(?result.?methods)
-                  & (     !result
-                        : ((?,%@|%@^?) ?)*?
-                      & (     !methods
-                            :   ( ?
-                                , ( (?,%@|%@^?) ?
-                                  . ?
-                                  )
-                                )
-                              * ?
-                          & (   POSm$!methods:?m
-                              & (   POSi$!result:?r
-                                  & ( !r:!m
-                                    | log$(BadMatch !r and !m)
-                                    )
-                                |   log
-                                  $ ( posMissing
-                                      !result
-                                      methods
-                                      oUts$!methods
-                                    )
-                                )
-                            | 
-                            )
-                        | log$(UnexpectedMethodFormat !methods)
-                        )
-                    | log$(UnexpectedResultFormat !result)
-                    )
-            )
           & ( Results
             =   L R OF LF RF
-              .   !arg:(?arg.?OF)
-                & (   !arg:%?L*%?R
-                    & Results$(!R.!OF):(?R.?RF)
-                    & ( FeatureList$(!L.!OF):(?L.?LF)
-                      | log$(NoFeatureList !arg)&~
-                      )
-                    & (!L*!R.Intersection$(!RF.!LF))
-                  |   FeatureList$(!arg.!OF):(?L.?LF)
-                    & (!L.!LF)
-                  )
+              .     !arg:(%?L*%?R.?OF)
+                  & Results$(!R.!OF):(?R.?RF)
+                  & FeatureList$(!L.!OF):(?L.?LF)
+                  & (!L*!R.Intersection$(!RF.!LF))
+                | FeatureList$!arg
             )
-          & ( fromTool
+          & ( fromToolOrSource
             =   OF LF RF tool meta output sub
-              .   !arg:(?tool,(?output.?meta.?sub).?OF)
-                & fromResultMethod$(!sub.!OF):(?sub.?RF)
-                & FeatureList$(!output.!RF):(?output.?LF)
-                & (!tool,(!output.supplement$(!meta.!RF).!sub).!LF)
+              .     !arg:(?tool,(?output.?meta.?sub).?OF)
+                  & fromResultMethod$(!sub.!OF):(?sub.?RF)
+                  & FeatureList$(!output.!RF):(?output.?LF)
+                  & ( !tool,(!output.supplement$(!meta.!RF).!sub)
+                    . !LF
+                    )
+                | FeatureList$!arg
             )
           & ( fromMethods
             =   L R OF LF RF
               .   !arg:(?arg.?OF)
                 & (   !arg:%?L*%?R
                     & fromMethods$(!R.!OF):(?R.?RF)
-                    & fromTool$(!L.!OF):(?L.?LF)
+                    & fromToolOrSource$(!L.!OF):(?L.?LF)
                     & (!L*!R.Intersection$(!RF.!LF))
-                  | fromTool$(!arg.!OF)
+                  | fromToolOrSource$(!arg.!OF)
                   )
             )
           & ( UpdateResultsFromMethods
@@ -9589,26 +9560,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( fromResultMethod
             =   results methods OF NF
-              .   !arg:(?arg.?OF)
-                & (   !arg:(?results.?methods)
-                    & fromMethods$(!methods.!OF):(?methods.?NF)
-                    & (     UpdateResultsFromMethods
-                          $ (!results.oUts$!methods)
-                        : ?results
-                      | 
-                      )
-                    & okPOS$(!results.!methods)
-                    & ((!results.!methods).!NF)
-                  | Results$(!arg.!OF)
-                  )
+              .     !arg:((?results.?methods).?OF)
+                  & fromMethods$(!methods.!OF):(?methods.?NF)
+                  & (   UpdateResultsFromMethods$(!results.oUts$!methods)
+                      : ?results
+                    | 
+                    )
+                  & ((!results.!methods).!NF)
+                | Results$!arg
             )
           & ( toTool
             =   OF LF RF tool meta output sub
               .   !arg:(?arg.?OF)
-                & !arg:(?tool,(?output.?meta.?sub))
-                & FeatureList$(!output.!OF):(?output.?LF)
-                & toResultMethod$(!sub.!LF):(?sub.?RF)
-                & (!tool,(!output.supplement$(!meta.!LF).!sub).!RF)
+                & (   !arg:(?tool,(?output.?meta.?sub))
+                    & FeatureList$(!output.!OF):(?output.?LF)
+                    & toResultMethod$(!sub.!LF):(?sub.?RF)
+                    & ( !tool,(!output.supplement$(!meta.!LF).!sub)
+                      . !RF
+                      )
+                  |   !arg:(|(?,?) ?)
+                    & FeatureList$(!arg.!OF)
+                  )
             )
           & ( toMethods
             =   L R OF LF RF
@@ -9618,6 +9590,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & toTool$(!L.!OF):(?L.?LF)
                     & (!L*!R.Intersection$(!RF.!LF))
                   | toTool$(!arg.!OF)
+                  | !arg:(@,?)&(!arg.!OF)
                   )
             )
           & ( toResultMethod
@@ -9640,13 +9613,14 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & recr$!a
                         & recr$!b
                       | !arg:(?t,(?.?.(?,?) ?))
+                      | !arg:(?,~(?.?)) ?
                       |   !arg:(?t,(?.?.?a:?aa.?b))
                         & recr$!b
-                        & okPOS$(!aa.!b)
                         &   whl
                           ' ( !a
                             :   ( %?A
-                                & !b:?*(?,(!A.?))*?
+                                &   !b
+                                  : (?*(?,(!A.?))*?|?*!A*?)
                                 )
                               * ?a
                             )
@@ -9663,6 +9637,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       "mismatch with outputs of preceding tools"
                                     )
                                   oUts$!b
+                                  arg
+                                  !arg
                                 )
                             & ~
                           )
@@ -9678,7 +9654,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               & fromResultMethod$(!pipe1.):(?pipe2.?F)
               & toResultMethod$(!pipe2.!F):(?pipe3.?)
               & ( !pipe3:0
-                |   validateInputsForEachTool$!pipe3
+                |   (~|validateInputsForEachTool$!pipe3)
                   & (   !pipes:?+(?.!pipe3)+?
                       & log$"pipe3 already added"
                     | (!nnn.!pipe3)+!pipes:?pipes
@@ -11930,15 +11906,22 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           &   whl
                             ' ( !H:%?H1*?H
                               & (     !arg
-                                    :   ?
-                                      * ( ?
-                                        , (   ?O
-                                            &   containedBy$(!H1.!O)
-                                              : ?h1
-                                          . ?
+                                    : (   ?
+                                        * ( ?
+                                          , (   ?O
+                                              &   containedBy$(!H1.!O)
+                                                : ?h1
+                                            . ?
+                                            )
                                           )
-                                        )
-                                      * ?
+                                        * ?
+                                      |   ?
+                                        * ( `%?O
+                                          & ~(!O:(?,(?.?)))
+                                          & containedBy$(!H1.!O):?h1
+                                          )
+                                        * ?
+                                      )
                                   & !h*!h1:?h
                                 | !h*(!H1 problem !arg):?h
                                 )
@@ -11978,17 +11961,30 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           &   whl
                             ' ( !H:%?H1*?H
                               & (     !arg
-                                    :   ?
-                                      * ( ?
-                                        , (   ?O
-                                            &   containedBy$(!H1.!O)
-                                              : ?h1
-                                          . ?
+                                    : (   ?
+                                        * ( ?
+                                          , (   ?O
+                                              &   containedBy$(!H1.!O)
+                                                : ?h1
+                                            . ?
+                                            )
                                           )
-                                        )
-                                      * ?
+                                        * ?
+                                      |   ?
+                                        * ( `%?O
+                                          & ~(!O:(?,(?.?)))
+                                          & containedBy$(!H1.!O):?h1
+                                          )
+                                        * ?
+                                      )
                                   & !h*!h1:?h
-                                | !h*(!H1 problem !arg):?h
+                                |     !h
+                                    * ( !H1
+                                        substproblem
+                                        !arg
+                                        endsubstproblem
+                                      )
+                                  : ?h
                                 )
                               )
                           & (   !h:1&HA!
@@ -12072,7 +12068,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 & !pipesN:?+[?NNN
                                 &   whl
                                   ' ( !pipesN:(?.?pipe)+?pipesN
-                                    & wantThis$!pipe:?pipe
+                                    & ( ~
+                                      | wantThis$!pipe:?pipe
+                                      )
                                     & ( !pipe:0
                                       | !newpipes:?+!pipe+?
                                       | !pipe+!newpipes:?newpipes

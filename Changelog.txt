@@ -1,3 +1,10 @@
+20181206 - It was not possible to have a tool that had input from another tool
+           and that also needed the input given by the user. Either a tool
+           used the input from the user and nothing else, or a tool took input
+           from other tools, and not from th user. This is now fixed. This
+           makes it possible to have a tool that creates output that is
+           identical to the input in all aspects, apart from annotations.
+
 20181203 - Edited text on front page. Removed restriction to max 3 URLs.
            Increased max number of 'calls' from 10000 to 100000. 
            Changed colours and font, and some of the text.
