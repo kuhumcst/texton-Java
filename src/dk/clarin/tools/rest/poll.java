@@ -47,7 +47,7 @@ public class poll extends HttpServlet
     {
     private File destinationDir;
     private bracmat BracMat;
-
+    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
@@ -67,7 +67,6 @@ public class poll extends HttpServlet
         throws ServletException, IOException 
         {
         PrintWriter out = response.getWriter();
-//        logger.info("Calling tools/poll");
         response.setStatus(200);
         if(!BracMat.loaded())
             {

@@ -1,3 +1,12 @@
+20181207 - While yesterday's update made it possible to have a workflow with a
+           step that takes the user's input in addition to input from another
+           tool, today's update also sends all inputs to that step.
+           Also looked at problems with aborting the execution of a workflow in
+           the Windows test setup, which were found to be caused by the Bracmat
+           JNI not being thread safe in Windows. The polling page should not
+           be left open in the browser, as it will bring Tomcat down (in
+           Windows, not in Linux).
+
 20181206 - It was not possible to have a tool that had input from another tool
            and that also needed the input given by the user. Either a tool
            used the input from the user and nothing else, or a tool took input

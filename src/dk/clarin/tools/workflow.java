@@ -334,19 +334,18 @@ public class workflow implements Runnable
                 String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
-				logger.debug("requestStringA:"+requestString);
-                requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
-				logger.debug("requestStringB:"+requestString);
-                code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
+				requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
+				code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
                 if(code == 202)
                     asynchronous = true;
                 }
             if(code != 200 && code != 202)
                 {
                 --jobs;
-                logger.info("processPipeLine aborts");
+                logger.info("processPipeLine aborts. jobs=="+Integer.toString(jobs));
                 }
             }
+        logger.info("processPipeLine returns");
         }
 
     public static void got200(String result, bracmat BracMat, String filename, String jobID, InputStream input)
@@ -625,7 +624,7 @@ public class workflow implements Runnable
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection ();
                     conn.connect();
-
+        
                     // Cast to a HttpURLConnection
                     if(conn instanceof HttpURLConnection)
                         {

@@ -6901,63 +6901,21 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , base post2 val vals JobStack Val item meta In
           , jobIDoffset A OffSet
           , extension ID forceFeed visibility jobNr jobID maxjobID
-          , Short Long DiscerningFeature getDiscerningFeature
+          , Short Long DiscerningFeature getDisFe
           , DATE Tool URL dep discerningFeature
-          , feat in ou spec v nfiles
+          , feat in ou spec v nfiles fileTerm
           , inputs moreinputs firstinput other fh oh
           , compact compatible simpleInput
-        .   "getDiscerningFeature establishes the feature that the given tool
-             has to look for among the input Items, if it needs an item from
-             that list. It is not usefull for steps that only take input from
-             earlier steps."
-          & ( getDiscerningFeature
-            =     prod feats f v discerningFeature
-                , item Tool toolprop toolfeat nfiles
-              .     !arg:(?arg.?Tool.?toolprop)
-                  & 1:?nfiles
-                  & 1:?prod
-                  &   whl
-                    ' ( !arg:? (Item.?item) ?arg
-                      & itemFeats$!item:?feats
-                      &   whl
-                        ' ( !feats:(?f.?v) ?feats
-                          & NEWSPEC
-                          &   !f^(!v:~|1)*!prod
-                            : ?prod
-                          )
-                      )
-                  & NEWSPEC
-                  & ( !prod:?*?discerningFeature^(%+%)*?
-                    |     !prod
-                        :   ?
-                          * ( %?discerningFeature^?
-                            &   !toolprop
-                              :   ?
-                                + ( !Tool
-                                  .   ?
-                                      (!discerningFeature,?toolfeat)
-                                      ?
-                                  )
-                                + ?
-                            )
-                          * ?
-                      & (     !toolfeat
-                            : ?+(?+(%*%|% %)+?.?)+?
-                          & n:?nfiles
-                        | 
-                        )
-                    | :?discerningFeature
-                    )
-                  & (!discerningFeature.!nfiles)
-                | 
+        .   "getDisFe establishes the feature that the given tool has to look
+             for among the input Items, if it needs an item from that list.
+             It is not useful for steps that only take input from earlier
+             steps."
+          & ( getDisFe
+            =   f
+              .     !arg:? (?f,?) ? (!f,?) ?
+                  & (!f.n)
+                | (.1)
             )
-          & 0:?maxjobID
-          & readTable$features
-          & readTable$tooladm
-          & readTable$toolprop
-          &   !arg
-            : (?jobNr.?jobIDoffset.?JobStack.?base.?post2.?Items)
-          & readTable$Uploads
           & ( Short
             =   
               .   (   !features
@@ -7000,16 +6958,65 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   & !arg+!E:?arg
                 | FOUT
             )
-          & :?newJobs
-          & ( readTable$jobs
-            | :?jobs&lst$(jobs,path$jobs,NEW)
-            )
           & ( OffSet
             =   ID
               .   !jobIDoffset:&!arg
                 |   @(!arg:step #?ID)
                   & str$(step !ID+!jobIDoffset)
                 | !arg
+            )
+          & ( simpleInput
+            =   a b c d e,f g h i j k
+              .     !arg
+                  : (   ?
+                      + (I.?.?.?+(F.?)+?)
+                      + ?
+                      + (I.?.?.?+(F.?)+?)
+                      + ?
+                    | ?+(F.?)+?
+                    )
+                |     !arg
+                    :   ?a
+                      + (I.?b+(?c.?d+(?e.?f+(F.?g)+?h)+?i)+?j)
+                      + ?k
+                  & !a+(F.!g)+(I.!b+(!c.!d+(!e.!f+!h)+!i)+!j)+!k
+            )
+          & ( forceFeed
+            =   requestString item file
+              .   0:?requestString
+                & !arg:?items
+                &   whl
+                  ' ( !items:(Item.%?item ?) ?items
+                    & !Uploads:? (?.!item.?.?file.?) ?
+                    &     !requestString
+                        + ( !files !file:?files
+                          & (F.!file)
+                          )
+                      : ?requestString
+                    )
+                & !requestString
+            )
+          & ( compatible
+            =   f r v stp rs fv
+              .   !arg:(?.~(? (?,@) ?))
+                |   !arg:(?f.? (?r,@?v) ?rs)
+                  & ( ~(!f:? (!r.?fv) ?)
+                    | !v:!fv
+                    | !v:!fv^?
+                    | !fv:!v^?
+                    )
+                  & compatible$(!f.!rs)
+            )
+          & 0:?maxjobID
+          & readTable$features
+          & readTable$tooladm
+          & readTable$toolprop
+          &   !arg
+            : (?jobNr.?jobIDoffset.?JobStack.?base.?post2.?Items)
+          & readTable$Uploads
+          & :?newJobs
+          & ( readTable$jobs
+            | :?jobs&lst$(jobs,path$jobs,NEW)
             )
           &   whl
             ' ( !JobStack:(?jobID.?Tool.?ou.?in) ?JobStack
@@ -7027,8 +7034,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 : ?requestString
               & :?dep
               & xml:?extension
-              &   getDiscerningFeature$(!Items.!Tool.!toolprop)
-                : (?discerningFeature.?nfiles)
+              & getDisFe$!in:(?discerningFeature.?nfiles)
               &   whl
                 ' ( !ou:(?feat,%@?val^?spec) ?ou
                   & NEWSPEC
@@ -7072,22 +7078,29 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                using discerningFeature"
                             & 0:?file
                           )
+                      &   ( !file:0
+                          |   !dep (!file,pending):?dep
+                            & ( F
+                              .   (   !newJobs
+                                    :   ?
+                                        (!jobNr.!file.?.?.?.?file)
+                                        ?
+                                  | log$(OOPS !jobNr file !file)
+                                  )
+                                & !file
+                              )
+                          )
+                        : ?fileTerm
                       & NEWSPEC
                       &     !requestString
+                          + ( !nfiles:1&!fileTerm
+                            | 0
+                            )
                           + ( I
                             . Short$!feat
                             . !val
-                            .   ( !file:0
-                                |   !dep (!file,pending):?dep
-                                  & ( F
-                                    .   (   !newJobs
-                                          :   ?
-                                              (!jobNr.!file.?.?.?.?file)
-                                              ?
-                                        | log$(OOPS !jobNr file !file)
-                                        )
-                                      & !file
-                                    )
+                            .   ( !nfiles:n&!fileTerm
+                                | 0
                                 )
                               + (   !spec:1
                                   & NEWSPEC
@@ -7098,125 +7111,65 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         : ?requestString
                       )
                   )
-              & ( simpleInput
-                =   a b c d e,f g h i j k
-                  .     !arg
-                      : (   ?
-                          + (I.?.?.?+(F.?)+?)
-                          + ?
-                          + (I.?.?.?+(F.?)+?)
-                          + ?
-                        | ?+(F.?)+?
-                        )
-                    |     !arg
-                        :   ?a
-                          + (I.?b+(?c.?d+(?e.?f+(F.?g)+?h)+?i)+?j)
-                          + ?k
-                      &   !a
-                        + (F.!g)
-                        + (I.!b+(!c.!d+(!e.!f+!h)+!i)+!j)
-                        + !k
-                )
-              & ( forceFeed
-                =   requestString item file
-                  .   0:?requestString
-                    & !arg:?items
-                    &   whl
-                      ' ( !items:(Item.%?item ?) ?items
-                        & !Uploads:? (?.!item.?.?file.?) ?
-                        &     !requestString
-                            + ( !files !file:?files
-                              & (F.!file)
-                              )
-                          : ?requestString
-                        )
-                    & !requestString
-                )
-              & ( compatible
-                =   f r v stp rs fv
-                  .   !arg:(?.)
-                    |     !arg
-                        : (?f.(?r,(?v.?stp)|?v) ?rs)
-                      & ( ~(!f:? (!r.?fv) ?)
-                        | !v:!fv
-                        | !v:!fv^?
-                        | !fv:!v^?
-                        )
-                      & compatible$(!f.!rs)
-                )
               &     !newJobs
                     ( !jobNr
                     . !jobID
                     .     !dep
                           ( :?files
-                          & !Items:?items
-                          &   whl
-                            ' (   !items
-                                : (Item.%?item ?feats) ?items
-                              &   !Uploads
-                                :   ?
-                                    ( ?
-                                    . !item
-                                    . ?
-                                    . ?file
-                                    . ?meta:? (DATE.?DATE) ?
-                                    . ?feats
-                                    . ?visibility
-                                    )
-                                    ?
-                              &     !requestString
-                                  + (   !discerningFeature:
-                                      & !files !file:?files
-                                      & (F.!file)
-                                    |     !feats
-                                        : ? (!discerningFeature.?v) ?
-                                      &   getShort$(!discerningFeature.!v)
-                                        : ?v
-                                      &   Long$!discerningFeature
-                                        : ?DiscerningFeature
-                                      & compatible$(!feats.!In)
-                                      &   !In
-                                        :   ?
-                                            (   !discerningFeature
-                                              | !DiscerningFeature
-                                            ,   ?+?*!v^?*?+?
-                                              | (?+?*!v^?*?+?.?)
-                                              | ?+?*!v*?+?
-                                              | (?+?*!v*?+?.?)
-                                            )
-                                            ?
-                                      & !v:%@?v^?
-                                      & (   !nfiles:1
-                                          & (     !requestString
-                                                : (   ?
-                                                    + ( I
-                                                      .   ?
-                                                        + ( ?
-                                                          .   ?
-                                                            + (?.?+(F.?)+?)
-                                                            + ?
-                                                          )
-                                                        + ?
-                                                      )
-                                                    + ?
-                                                  | ?+(F.?)+?
-                                                  )
-                                              & 0
-                                            |   !file:?files
-                                              & (F.!file)
-                                            )
-                                        |   !files !file:?files
+                          & ( !requestString:?+(F.?)+?
+                            |   !Items:?items
+                              &   whl
+                                ' (   !items
+                                    : (Item.%?item ?feats) ?items
+                                  &   !Uploads
+                                    :   ?
+                                        ( ?
+                                        . !item
+                                        . ?
+                                        . ?file
+                                        .   ?meta
+                                          : ? (DATE.?DATE) ?
+                                        . ?feats
+                                        . ?visibility
+                                        )
+                                        ?
+                                  &     !requestString
+                                      + (   !discerningFeature:
+                                          & !files !file:?files
+                                          & (F.!file)
+                                        |     !feats
+                                            :   ?
+                                                (!discerningFeature.?v)
+                                                ?
+                                          &     getShort
+                                              $ (!discerningFeature.!v)
+                                            : ?v
+                                          &   Long$!discerningFeature
+                                            : ?DiscerningFeature
+                                          & compatible$(!feats.!In)
+                                          &   !In
+                                            :   ?
+                                                (   !discerningFeature
+                                                  | !DiscerningFeature
+                                                ,   ?+?*!v^?*?+?
+                                                  | (?+?*!v^?*?+?.?)
+                                                  | ?+?*!v*?+?
+                                                  | (?+?*!v*?+?.?)
+                                                )
+                                                ?
+                                          & !v:%@?v^?
+                                          & !files !file:?files
                                           & ( I
                                             . !discerningFeature
                                             . !v
                                             . F
                                             . !file
                                             )
+                                        | 0
                                         )
-                                    | 0
-                                    )
-                                : ?requestString
-                              )
+                                    : ?requestString
+                                  )
+                            )
                           & (     !requestString
                                 : (   ?
                                     + (I.?+(?.?+(?.?+(F.?)+?)+?)+?)
@@ -8496,38 +8449,37 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  * pending jobs that depend on the output from the (now aborted) job.
  * Rather than removing the aborted jobs from the jobs.table list, they are
  * marked 'aborted'.
- * Returns (as XML) a list of (JobNr, jobID, toolName, items)
  *
  * Called from workflow.java
  */"
       ( abortJob
-      =   abort JobNr jobID makeXML list
+      =   abort JobNr jobID makeXML todelete
         .   readTable$jobs
           & log$("abortJob " !arg)
           & !arg:(@(?:? #?JobNr).?jobID)
+          & (!JobNr.!jobID):?todelete
           & ( abort
             =     JobNr jobID jobid2 A Z ZZ a z
-                , list URL tool items
-              .   !arg:(?JobNr.?jobID)
-                & :?list
-                &   whl
-                  ' (   !jobs
-                      :   ?A
-                          ( !JobNr
-                          . !jobID ~aborted
-                          .   ?items
-                            & inputResources$!items:?items
-                          . ?URL&toolName$!URL:?tool
-                          . ?ZZ
-                          )
-                          ?Z
-                    & !list (!JobNr.!jobID.!items.!tool):?list
-                    & log$(going to abort !JobNr !jobID)
-                    &     !A
-                          (!JobNr.!jobID aborted.!items.!URL.!ZZ)
-                          !Z
-                      : ?jobs
-                    )
+                , URL tool items todelete
+              .   !arg:(?JobNr.?jobID) ?todelete
+                & log$(abort !arg)
+                &   !jobs
+                  :   ?A
+                      ( !JobNr
+                      . !jobID ~aborted
+                      .   ?items
+                        &   (inputResources$!items|)
+                          : ?items
+                      . ?URL&toolName$!URL:?tool
+                      . ?ZZ
+                      )
+                      ?Z
+                & log$(going to abort !JobNr !jobID)
+                &     !A
+                      (!JobNr.!jobID aborted.!items.!URL.!ZZ)
+                      !Z
+                  : ?jobs
+                & log$(aborted !JobNr !jobID)
                 &   whl
                   ' (   !jobs
                       :   ?A
@@ -8538,37 +8490,22 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           . ?ZZ
                           )
                           ?Z
+                    & log$(depending !JobNr !jobid2)
                     &     !A
                           (!JobNr.!jobid2.!a !jobID !z.!URL.!ZZ)
                           !Z
                       : ?jobs
-                    & !list abort$(!JobNr.!jobid2):?list
+                    & (!JobNr.!jobid2) !todelete:?todelete
+                    & log$(todelete !todelete)
                     )
-                & !list
+                & log$(delete !todelete)
+                & !todelete
             )
-          & abort$(!JobNr.!jobID):?list
+          &   whl
+            ' ( log$(iterDO !todelete)
+              & abort$!todelete:?todelete
+              )
           & saveTable$jobs
-          & ( makeXML
-            =   Steps
-              .   ( Steps
-                  =   items tool JobNr JobId
-                    .       !arg
-                          :   (?JobNr.@(?:? #?JobId).?items.?tool)
-                              ?arg
-                        &   ( step
-                            .   
-                              ,   (JobNr.,!JobNr)
-                                  (JobId.,!JobId)
-                                  (tool.,!tool)
-                                  (items.,!items)
-                            )
-                            Steps$!arg
-                      | 
-                  )
-                &   ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
-                    (steps.,Steps$!arg)
-            )
-          & toML$(makeXML$!list)
       )
       ( deleteDepending
       =   jobNr jobID a z
@@ -12352,127 +12289,134 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( poll
       =     jobs n step secs steplinks links
           , serviceurl title tooladm
-        .   ( steplinks
-            =   links jobs file step outp ServiceURL
-              .   !arg:(?arg.?jobs)
-                &   !jobs
-                  :   ?
-                      ( (!arg.step1 ?.?file.?.?.?outp) ?
-                      : ?jobs
-                      )
-                &     paragraph
-                    $ ( "input:"
-                        ( a
-                        .   (href.str$(!wwwServer "/tools/data/" !file))
-                          , !file
+        .     ( steplinks
+              =   links jobs file step outp ServiceURL
+                .   !arg:(?arg.?jobs)
+                  &   !jobs
+                    :   ?
+                        (   (!arg.step1 ?.?file.?.?.?outp)
+                            ?
+                        : ?jobs
                         )
-                      )
-                  : ?links
-                &   whl
-                  ' (   !jobs
-                      :   ?
-                          (!arg.?step done.?.?ServiceURL.?.?file)
-                          ?jobs
-                    &   !tooladm
-                      :   ?
-                        + ( ? (ServiceURL.!ServiceURL) ?
-                          : ? (Title.?Title) ?
+                  &     paragraph
+                      $ ( "input:"
+                          ( a
+                          .   (href.str$(!wwwServer "/tools/data/" !file))
+                            , !file
                           )
-                        + ?
-                    &     !links
+                        )
+                    : ?links
+                  &   whl
+                    ' (   !jobs
+                        :   ?
+                            (!arg.?step done.?.?ServiceURL.?.?file)
+                            ?jobs
+                      &   !tooladm
+                        :   ?
+                          + ( ? (ServiceURL.!ServiceURL) ?
+                            : ? (Title.?Title) ?
+                            )
+                          + ?
+                      &     !links
+                              paragraph
+                            $ ( str$(!step ":")
+                                ( a
+                                .   ( href
+                                    . str$(!wwwServer "/tools/data/" !file)
+                                    )
+                                  , !file
+                                )
+                                " ("
+                                !Title
+                                ")"
+                              )
+                        : ?links
+                      )
+                  & ( !links:% %
+                    | !jobs:? (!arg.?) ?
+                    |     !links
                             paragraph
-                          $ ( str$(!step ":")
+                          $ ( "output:"
                               ( a
                               .   ( href
                                   . str$(!wwwServer "/tools/data/" !file)
                                   )
-                                , !file
+                                , !outp
                               )
-                              " ("
-                              !Title
-                              ")"
                             )
                       : ?links
                     )
-                & ( !links:% %
-                  | !jobs:? (!arg.?) ?
-                  |     !links
-                          paragraph
-                        $ ( "output:"
-                            ( a
-                            .   (href.str$(!wwwServer "/tools/data/" !file))
-                              , !outp
-                            )
-                          )
-                    : ?links
-                  )
-                & !links
-            )
-          & ( !arg:(?arg.?secs)
-            | @(!arg:? #?arg)&10:?secs
-            )
-          & readTable$jobs
-          & readTable$tooladm
-          &   toML
-            $ (     !jobs
-                  :   ?
-                      ( !arg
-                      . @?step
-                      . ~(? (?,pending) ?)
-                      . ?serviceurl
-                      . ?
-                      . ?
-                      )
-                      ?
-                & steplinks$(!arg.!jobs):?links
-                & 0:?n
-                &   whl
-                  ' ( !jobs:? (!arg.?) ?jobs
-                    & 1+!n:?n
-                    )
-                &   !tooladm
-                  :   ?
-                    + ( ? (ServiceURL.!serviceurl) ?
-                      : ? (Title.?title) ?
-                      )
-                    + ?
-                &   refreshingXHTMLbodyContainer
-                  $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
-                    .   !links
-                          paragraph
-                        $ (   localized
-                            $ ("Currently running " "I øjeblikket kører ")
-                            !step
-                            " "
-                            localized$(of af)
-                            " "
-                            !n
-                            " ("
-                            !title
-                            ")"
-                          )
-                          paragraph
-                        $ ( str
-                          $ (   localized
-                              $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
-                                  "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
-                                )
-                              !secs
-                              localized$(" seconds." " sekunder.")
-                            )
-                          )
-                    )
-              |   !HTMLbodyContainer
-                $ ( steplinks$(!arg.!jobs)
-                      paragraph
-                    $ ( localized$("Done! " "Færdig! ")
-                        ( a
-                        .   (href.!wwwServer "/tools/zipresults?JobNr=" !arg)
-                          , localized$("Download result" "Download resultat")
-                        )
-                      )
-                  )
+                  & !links
               )
+            & ( !arg:(?arg.?secs)
+              | @(!arg:? #?arg)&10:?secs
+              )
+            & readTable$jobs
+            & readTable$tooladm
+            &   toML
+              $ (     !jobs
+                    :   ?
+                        ( !arg
+                        . @?step
+                        . ~(? (?,pending) ?)
+                        . ?serviceurl
+                        . ?
+                        . ?
+                        )
+                        ?
+                  & steplinks$(!arg.!jobs):?links
+                  & 0:?n
+                  &   whl
+                    ' ( !jobs:? (!arg.?) ?jobs
+                      & 1+!n:?n
+                      )
+                  &   !tooladm
+                    :   ?
+                      + ( ? (ServiceURL.!serviceurl) ?
+                        : ? (Title.?title) ?
+                        )
+                      + ?
+                  &   refreshingXHTMLbodyContainer
+                    $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
+                      .   !links
+                            paragraph
+                          $ (   localized
+                              $ ("Currently running " "I øjeblikket kører ")
+                              !step
+                              " "
+                              localized$(of af)
+                              " "
+                              !n
+                              " ("
+                              !title
+                              ")"
+                            )
+                            paragraph
+                          $ ( str
+                            $ (   localized
+                                $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                                    "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
+                                  )
+                                !secs
+                                localized$(" seconds." " sekunder.")
+                              )
+                            )
+                      )
+                |   !HTMLbodyContainer
+                  $ ( steplinks$(!arg.!jobs)
+                        paragraph
+                      $ ( localized$("Done! " "Færdig! ")
+                          ( a
+                          .   ( href
+                              . !wwwServer "/tools/zipresults?JobNr=" !arg
+                              )
+                            ,   localized
+                              $ ("Download result" "Download resultat")
+                          )
+                        )
+                    )
+                )
+          | "<html>BOOH!</html>"
       )
       ( WRAPUPbody
       =   workflow
