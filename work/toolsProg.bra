@@ -9693,7 +9693,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         : ? (~<17:?N) !N !N ?
                       &   (ambig.una)
                           (app.unn)
-                          (facet.txt)
+                          (facet.tok)
                           (format.dipl)
                           (   !lang:#*%@?lang
                             & ( lang
