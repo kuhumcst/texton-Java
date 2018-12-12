@@ -7063,53 +7063,62 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             & :?dep
                             &   whl
                               ' ( !vals:%?Val*?vals
+                                & log$(Val !Val)
                                 &   !Val
-                                  : ( %@?val^?spec
-                                    .     @?file
-                                        & OffSet$!file:?file
-                                        & !dep (!file,pending):?dep
-                                        &   ( F
-                                            .   (   !newJobs
-                                                  :   ?
-                                                      ( !jobNr
-                                                      . !file
-                                                      . ?
-                                                      . ?
-                                                      . ?
-                                                      . ?file
+                                  : ( ( %@?val^?spec
+                                      .     @?file
+                                          & OffSet$!file:?file
+                                          &   !dep (!file,pending)
+                                            : ?dep
+                                          &   ( F
+                                              .   (   !newJobs
+                                                    :   ?
+                                                        ( !jobNr
+                                                        . !file
+                                                        . ?
+                                                        . ?
+                                                        . ?
+                                                        . ?file
+                                                        )
+                                                        ?
+                                                  |   log
+                                                    $ ( OOPS
+                                                        !jobNr
+                                                        file
+                                                        !file
                                                       )
-                                                      ?
-                                                |   log
-                                                  $ (OOPS !jobNr file !file)
-                                                )
-                                              & !file
-                                            )
-                                          : ?fileTerm
-                                      |   (FiL.?FiLfeats)
-                                        &   !Items
-                                          :   ?
-                                              ( Item
-                                              .   %?item ?feats
-                                                &   !Uploads
-                                                  :   ?
-                                                      ( ?
-                                                      . !item
-                                                      . ?
-                                                      . ?fileitem
-                                                      .   ?meta
-                                                        :   ?
-                                                            (DATE.?DATE)
-                                                            ?
-                                                      .   ?feats
-                                                        &   compatible
-                                                          $ (!feats.!FiLfeats)
-                                                      . ?visibility
-                                                      )
-                                                      ?
+                                                  )
+                                                & !file
                                               )
-                                              ?
-                                        & !dep !fileitem:?dep
-                                        & (F.!fileitem):?fileTerm
+                                            : ?fileTerm
+                                        |   (FiL.?FiLfeats)
+                                          &   !Items
+                                            :   ?
+                                                ( Item
+                                                .   %?item ?feats
+                                                  &   !Uploads
+                                                    :   ?
+                                                        ( ?
+                                                        . !item
+                                                        . ?
+                                                        . ?fileitem
+                                                        .   ?meta
+                                                          :   ?
+                                                              (DATE.?DATE)
+                                                              ?
+                                                        .   ?feats
+                                                          &   compatible
+                                                            $ (!feats.!FiLfeats)
+                                                        . ?visibility
+                                                        )
+                                                        ?
+                                                )
+                                                ?
+                                          & !dep !fileitem:?dep
+                                          & (F.!fileitem):?fileTerm
+                                      )
+                                    |   %@?val^?spec
+                                      & 0:?fileTerm
                                     )
                                 & NEWSPEC
                                 &     !requestString
