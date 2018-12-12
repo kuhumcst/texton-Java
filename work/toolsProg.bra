@@ -6906,6 +6906,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , feat in ou spec v nfiles fileTerm
           , inputs moreinputs firstinput other fh oh
           , compact compatible simpleInput
+          , getDepsAndAddInputsToRequestString
         .   "getDisFe establishes the feature that the given tool has to look
              for among the input Items, if it needs an item from that list.
              It is not useful for steps that only take input from earlier
@@ -6996,6 +6997,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 & !requestString
             )
+          & ( notIncompatible
+            =   feats In
+              .   !arg:(?feats.?In)
+                & ~( !feats
+                   :   ?
+                       (?f.?v)
+                       ( ?
+                       & !In:? (!f,(!v^?.?)) ?
+                       )
+                   )
+            )
           & ( compatible
             =   f r v stp rs fv
               .   !arg:(?.~(? (?,@) ?))
@@ -7006,6 +7018,126 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     | !fv:!v^?
                     )
                   & compatible$(!f.!rs)
+            )
+          & ( addOutputsToRequestString
+            =   ou requestString extension feat val spec
+              .   !arg:(?ou.?requestString)
+                & xml:?extension
+                &   whl
+                  ' ( !ou:(?feat,%@?val^?spec) ?ou
+                    & NEWSPEC
+                    &     !requestString
+                        + ( O
+                          . Short$!feat
+                          . !val
+                          .     !spec:1
+                              & NEWSPEC
+                              & 0
+                            | !spec
+                          )
+                      : ?requestString
+                    & (   !feat:(format|Format)
+                        &   ( !val:flat&txt
+                            |     !val
+                                : ( xm
+                                  | txtbasis
+                                  | txtann
+                                  | teip5
+                                  )
+                              & xml
+                            | !val
+                            )
+                          : ?extension
+                      | 
+                      )
+                    )
+                & (!extension.!requestString)
+            )
+          & ( getDepsAndAddInputsToRequestString
+            =   in nfiles requestString
+              .   !arg:(?in.?nfiles.?requestString)
+                &     map
+                    $ ( ( 
+                        =   feat vals Val spec file val dep
+                          .   !arg:(?feat,?vals)
+                            & :?dep
+                            &   whl
+                              ' ( !vals:%?Val*?vals
+                                &   !Val
+                                  : ( %@?val^?spec
+                                    .     @?file
+                                        & OffSet$!file:?file
+                                        & !dep (!file,pending):?dep
+                                        &   ( F
+                                            .   (   !newJobs
+                                                  :   ?
+                                                      ( !jobNr
+                                                      . !file
+                                                      . ?
+                                                      . ?
+                                                      . ?
+                                                      . ?file
+                                                      )
+                                                      ?
+                                                |   log
+                                                  $ (OOPS !jobNr file !file)
+                                                )
+                                              & !file
+                                            )
+                                          : ?fileTerm
+                                      |   (FiL.?FiLfeats)
+                                        &   !Items
+                                          :   ?
+                                              ( Item
+                                              .   %?item ?feats
+                                                &   !Uploads
+                                                  :   ?
+                                                      ( ?
+                                                      . !item
+                                                      . ?
+                                                      . ?fileitem
+                                                      .   ?meta
+                                                        :   ?
+                                                            (DATE.?DATE)
+                                                            ?
+                                                      .   ?feats
+                                                        &   compatible
+                                                          $ (!feats.!FiLfeats)
+                                                      . ?visibility
+                                                      )
+                                                      ?
+                                              )
+                                              ?
+                                        & !dep !fileitem:?dep
+                                        & (F.!fileitem):?fileTerm
+                                    )
+                                & NEWSPEC
+                                &     !requestString
+                                    + (   !nfiles:1
+                                        & !fileTerm
+                                      | 0
+                                      )
+                                    + ( I
+                                      . Short$!feat
+                                      . !val
+                                      .   (   !nfiles:n
+                                            & !fileTerm
+                                          | 0
+                                          )
+                                        + (   !spec:1
+                                            & NEWSPEC
+                                            & 0
+                                          | (!spec.0)
+                                          )
+                                      )
+                                  : ?requestString
+                                )
+                            & !dep
+                        )
+                      . !in
+                      )
+                  : ?dep
+                & (!dep.!requestString)
             )
           & 0:?maxjobID
           & readTable$features
@@ -7032,85 +7164,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   + (post2.!post2)
                   + (job.str$(!jobNr "-" !jobID))
                 : ?requestString
-              & :?dep
-              & xml:?extension
               & getDisFe$!in:(?discerningFeature.?nfiles)
-              &   whl
-                ' ( !ou:(?feat,%@?val^?spec) ?ou
-                  & NEWSPEC
-                  &     !requestString
-                      + ( O
-                        . Short$!feat
-                        . !val
-                        .     !spec:1
-                            & NEWSPEC
-                            & 0
-                          | !spec
-                        )
-                    : ?requestString
-                  & (   !feat:(format|Format)
-                      &   ( !val:flat&txt
-                          |     !val
-                              : ( xm
-                                | txtbasis
-                                | txtann
-                                | teip5
-                                )
-                            & xml
-                          | !val
-                          )
-                        : ?extension
-                    | 
-                    )
-                  )
+              &   addOutputsToRequestString$(!ou.!requestString)
+                : (?extension.?requestString)
               & !in:?In
-              &   whl
-                ' ( !in:(?feat,?vals) ?in
-                  &   whl
-                    ' ( !vals:%?Val*?vals
-                      &   !Val
-                        : ( ( %@?val^?spec
-                            .   ?file
-                              & OffSet$!file:?file
-                            )
-                          |   %@?val^?spec
-                            & "Take this input from Items,
-                               using discerningFeature"
-                            & 0:?file
-                          )
-                      &   ( !file:0
-                          |   !dep (!file,pending):?dep
-                            & ( F
-                              .   (   !newJobs
-                                    :   ?
-                                        (!jobNr.!file.?.?.?.?file)
-                                        ?
-                                  | log$(OOPS !jobNr file !file)
-                                  )
-                                & !file
-                              )
-                          )
-                        : ?fileTerm
-                      & NEWSPEC
-                      &     !requestString
-                          + ( !nfiles:1&!fileTerm
-                            | 0
-                            )
-                          + ( I
-                            . Short$!feat
-                            . !val
-                            .   ( !nfiles:n&!fileTerm
-                                | 0
-                                )
-                              + (   !spec:1
-                                  & NEWSPEC
-                                  & 0
-                                | (!spec.0)
-                                )
-                            )
-                        : ?requestString
-                      )
-                  )
+              &     getDepsAndAddInputsToRequestString
+                  $ (!in.!nfiles.!requestString)
+                : (?dep.?requestString)
               &     !newJobs
                     ( !jobNr
                     . !jobID
@@ -7146,6 +7206,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                             : ?v
                                           &   Long$!discerningFeature
                                             : ?DiscerningFeature
+                                          & notIncompatible$(!feats.!In)
                                           & compatible$(!feats.!In)
                                           &   !In
                                             :   ?
@@ -11079,16 +11140,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 , in NC makeJobs JobStack
               .   ( makeJobs
                   =     jobLst tool output input A
-                      , inputprop goal getJob makeJob
+                      , inputprop goal makeJob
                     .   ( makeJob
                         =   X
                           .   str$(step (!nr+1:?nr)):?X
                             & (!X.!arg) !blocks:?blocks
-                            & !X
-                        )
-                      & ( getJob
-                        =   X Y
-                          .   !blocks:? (?X.!arg.?Y) ?
                             & !X
                         )
                       & :?jobLst
@@ -11099,19 +11155,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               )
                           & !jobLst
                         |   !arg:(?tool,(?output.?inputprop.?input))
-                          & ( getJob$!arg
+                          & (   !blocks:? (?A.!arg.?) ?
+                              & !A
                             |   makeJob
                               $ ( !arg
                                 . !tool
-                                . makeJobs$!output
+                                . !output
                                 . !inputprop
                                 . makeJobs$!input
                                 )
                             )
                         |   !arg:(?goal.?arg)
                           & makeJobs$!arg
-                        | !arg
+                        | (FiL.!arg)
                         )
+                  )
+                & ( outfeats
+                  =   
+                    .   ( !arg:(FiL.?arg)
+                        | !blocks:? (!arg.?.?.?arg.?) ?
+                        )
+                      & !arg
                   )
                 & :?JobStack
                 & 0:?nr
@@ -11121,6 +11185,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 &   whl
                   ' (   !list
                       : (?jobnr.?.?tool.?ou.?in.?inputs) ?list
+                    & "inputs is a mix of atoms and the features of the input
+                       file, marked with FiL."
                     & :?ins
                     & (     !in
                           :   ?AA
@@ -11129,96 +11195,83 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 : ?in
                               )
                               ?ZZ
+                        & "Multiple inputs"
                         &   whl
                           ' ( !in:%?A*?B ?C
                             &   !inputs
                               :   ?P
                                   `%?jobID
                                   ( ?Q
-                                  &   !blocks
+                                  &   outfeats$!jobID
                                     :   ?
-                                        ( !jobID
-                                        . ?
-                                        . ?
-                                        .   ?outfeats
-                                          :   ?
-                                              ( !feat
-                                              ,   %?val^?
-                                                & !A:!val^?
-                                                &     (!feat,(!A.!jobID))
-                                                      !ins
-                                                  : ?ins
-                                                & !B !C:?in
-                                                & !P !Q:?inputs
-                                              )
-                                              ?
-                                        . ?
+                                        ( !feat
+                                        ,   %?val^?
+                                          & !A:!val^?
+                                          &     (!feat,(!A.!jobID))
+                                                !ins
+                                            : ?ins
+                                          & !B !C:?in
+                                          & !P !Q:?inputs
                                         )
                                         ?
                                   )
                             )
+                        & "'in' has only optional inputs. 1 opt1 opt2 ..."
                         &   whl
                           ' ( !in:%?B %?NC ?C
-                            &   ( !B:1&!NC:
-                                | !B !C
-                                )
-                              : ?in
+                            & !B !C:?in
                             &   !inputs
                               :   ?P
                                 * `%?jobID
                                 * ( ?Q
-                                  &   !blocks
+                                  &   outfeats$!jobID
                                     :   ?
-                                        ( !jobID
-                                        . ?
-                                        . ?
-                                        .   ?
-                                            ( !feat
-                                            ,   %?val^?
-                                              & (   !NC:!val^?
-                                                  &     (!feat,(!NC.!jobID))
-                                                        !ins
-                                                    : ?ins
-                                                | 
-                                                )
-                                              & !P !Q:?inputs
+                                        ( !feat
+                                        ,   %?val^?
+                                          & (   !NC:!val^?
+                                              &     (!feat,(!NC.!jobID))
+                                                    !ins
+                                                : ?ins
+                                            | 
                                             )
-                                            ?
-                                        . ?
+                                          & !P !Q:?inputs
                                         )
                                         ?
                                   )
                             )
-                        & !AA (!feat,!in) !ZZ:?in
-                      |   whl
-                        ' ( !in:?AA (?feat,%?A*? ?) ?ZZ
-                          &   !inputs
-                            :   ?P
-                                `%?jobID
-                                ( ?Q
-                                &   !blocks
-                                  :   ?
-                                      ( !jobID
-                                      . ?
-                                      . ?
-                                      .   ?outfeats
-                                        :   ?
-                                            ( !feat
-                                            ,   %?val^?
-                                              & !A:!val^?
-                                              &     (!feat,(!A.!jobID))
-                                                    !ins
-                                                : ?ins
-                                              &   !AA (!feat,1) !ZZ
-                                                : ?in
-                                              & !P !Q:?inputs
-                                            )
-                                            ?
-                                      . ?
-                                      )
-                                      ?
-                                )
+                        & ( !in:1
+                          | log$(SOOMTHINGROOTEN !in)
                           )
+                        & !AA (!feat,!in) !ZZ:?in
+                      |   "Single input"
+                        & (     !in
+                              :   ?
+                                  (?,%?A*%?B ?C|%?A %?C)
+                                  ?
+                            & log$(SOMTINGROTS !in)
+                          | 
+                          )
+                        &   whl
+                          ' ( !in:?AA (?feat,%?A*? ?) ?ZZ
+                            &   !inputs
+                              :   ?P
+                                  `%?jobID
+                                  ( ?Q
+                                  &   outfeats$!jobID
+                                    :   ?
+                                        ( !feat
+                                        ,   %?val^?
+                                          & !A:!val^?
+                                          &     (!feat,(!A.!jobID))
+                                                !ins
+                                            : ?ins
+                                          &   !AA (!feat,1) !ZZ
+                                            : ?in
+                                          & !P !Q:?inputs
+                                        )
+                                        ?
+                                  )
+                            )
                       )
                     & ( !ins:&!inputs:?ins
                       |   whl
@@ -11274,7 +11327,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & !jobNr+1:?jobNr:?JobNr
                 & saveTable$jobNr
-                & log$(jobNr !jobNr)
                 & (   !batch:on
                     & 0:?jobIDoffset
                     &   whl
@@ -11997,7 +12049,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 & log$"unfoldTreeN done"
                                 & "pipesN is (<final stop list> . <user provided output specs> . <unfolded tree>) + ..."
                                 & "It seems we don't need the final stop list anymore."
-                                & log$PIPESN
                                 & !pipesN:?+[?NNN
                                 & filter$(!pipesN.!parms):?pipesN
                                 &   percolateForgottenFeatures$!pipesN

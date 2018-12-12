@@ -1,3 +1,7 @@
+20181212 - Fixed job queue: find every needed input, also if input is a
+           combination of output(s) from previous steps and input uploaded by
+           the user.
+
 20181211 - Changed facet for diplom input from 'text' to 'token'.
 
 20181207 - While yesterday's update made it possible to have a workflow with a
