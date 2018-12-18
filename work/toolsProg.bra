@@ -2861,8 +2861,7 @@ toolsProg=
                         !jobNr
                         "-"
                         !jobID
-                        " not found in joblist:"
-                        !jobs
+                        " not found in joblist."
                       )
                   )
               |   str
@@ -2907,7 +2906,7 @@ toolsProg=
  * Called from upload.java
  */"
       ( parsemessage
-      = .@(!arg:HTTP-status-code >100 ?arg)&!arg
+      = .@(!arg:HTTP-status-code #>100 ?arg)&!arg
       )
       ( getShort
       =   feat full abbr table YYY
