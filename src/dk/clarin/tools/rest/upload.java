@@ -32,6 +32,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
 
@@ -44,6 +46,7 @@ public class upload extends HttpServlet
     private File tmpDir;
     private bracmat BracMat;
     private File destinationDir;
+    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
 
     public void init(ServletConfig config) throws ServletException 
         {
@@ -61,6 +64,8 @@ public class upload extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
         {
         PrintWriter out = response.getWriter();
+        logger.info("doPost()");
+
         response.setContentType("text/xml");
         response.setStatus(200);
         if(!BracMat.loaded())
@@ -101,12 +106,15 @@ public class upload extends HttpServlet
                     {
                     // We need the job parameter that indirectly tells us what local file name to give to the uploaded file.
                     arg = arg + " (\"" + workflow.escape(item.getFieldName()) + "\".\"" + workflow.escape(item.getString()) + "\")";
+                    logger.debug("arg={}", arg);
                     }
                 else if(item.getName() != "")
                     {
+                    logger.debug("item {}", item.getName());
                     //Handle Uploaded file.
                     if(theFile != null)
                         {
+                        logger.debug("too many", item.getName());
                         response.setStatus(400);
                         /**
                          * getStatusCode$
@@ -159,6 +167,7 @@ public class upload extends HttpServlet
                  *      jobs.table
                  */
                 String LocalFileName = BracMat.Eval("upload$(" + arg + ")");
+                logger.debug("LocalFileName={}", LocalFileName);
                 if(LocalFileName == null)
                     {
                     response.setStatus(404);
@@ -167,6 +176,7 @@ public class upload extends HttpServlet
                     }
                 else if(LocalFileName.startsWith("HTTP-status-code"))
                     {
+                    logger.debug("HTTP-status-code");
                     /**
                      * parseStatusCode$
                      *
@@ -174,6 +184,7 @@ public class upload extends HttpServlet
                      * 'HTTP-status-code'
                      */
                     String statusCode = BracMat.Eval("parseStatusCode$(\"" + workflow.escape(LocalFileName) + "\")");
+                    logger.debug("HTTP-status-code {}",statusCode);
                     response.setStatus(Integer.parseInt(statusCode));
                     /**
                      * parsemessage$
@@ -184,6 +195,7 @@ public class upload extends HttpServlet
                     String messagetext = BracMat.Eval("parsemessage$(\"" + workflow.escape(LocalFileName) + "\")");
                     messagetext = BracMat.Eval("getStatusCode$(\"" + workflow.escape(statusCode) + "\".\"" + workflow.escape(messagetext) + "\")");
                     out.println(messagetext);
+                    logger.debug("messagetext {}",messagetext);
                     }
                 else
                     {
@@ -207,6 +219,7 @@ public class upload extends HttpServlet
                      * Input: <jobNr>-<jobID>
                      */
                     String JobNr = BracMat.Eval("uploadJobNr$(" + arg + ")");
+                    logger.debug("JobNr {}",JobNr);
                     //Runnable runnable = new workflow(JobNr, destinationDir);
                     Runnable runnable = new workflow(JobNr);
                     Thread thread = new Thread(runnable);
@@ -225,12 +238,14 @@ public class upload extends HttpServlet
             }
         catch(FileUploadException ex) 
             {
+            logger.debug("FileUploadException {}",workflow.escape(ex.toString()));
             response.setStatus(500);
             String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: FileUploadException " + workflow.escape(ex.toString()) + "\")");
             out.println(messagetext);
             }
         catch(Exception ex) 
             {
+            logger.debug("Exception {}",workflow.escape(ex.toString()));
             response.setStatus(500);
             String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: Exception " + workflow.escape(ex.toString()) + "\")");
             out.println(messagetext);
