@@ -2894,7 +2894,7 @@ toolsProg=
  */"
       ( parseStatusCode
       =   
-        .   @(!arg:HTTP-status-code (>100:#?arg) ?)
+        .   @(!arg:HTTP-status-code (#>100:?arg) ?)
           & !arg
       )
       "
