@@ -617,32 +617,41 @@ public class workflow implements Runnable
                 else // HTTP GET
                     {
                     // Send data
-                    
+                    logger.debug("GET");
                     if (requestString != null && requestString.length () > 0)
                         {
                         urlStr += "?" + requestString;
                         }
                     URL url = new URL(urlStr);
+                    logger.debug("urlStr="+urlStr);
                     URLConnection conn = url.openConnection ();
                     conn.connect();
+                    logger.debug("connected");
         
                     // Cast to a HttpURLConnection
                     if(conn instanceof HttpURLConnection)
                         {
+                        logger.debug("Cast to HttpURLConnection OK");
                         HttpURLConnection httpConnection = (HttpURLConnection) conn;
+                        logger.debug("hvae HttpURLConnection");
                         code = httpConnection.getResponseCode();
+                        logger.debug("code = "+Integer.toString(code));
                         message = httpConnection.getResponseMessage();
+                        logger.debug("message="+message);
                         BufferedReader rd;
                         StringBuilder sb = new StringBuilder();;
                         //String line;
                         if(code == 200)
                             {
+                            logger.debug("code 200");
                             got200(result, BracMat, filename, jobID, httpConnection.getInputStream());
                             }
                         else
                             {
                             // Get the error response
+                            logger.debug("Get the error response");
                             rd = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+                            logger.debug("have BufferedReader");
                             int nextChar;
                             while(( nextChar = rd.read()) != -1) 
                                 {
@@ -650,13 +659,17 @@ public class workflow implements Runnable
                                 }
                             rd.close();
                             requestResult = sb.toString();
+                            logger.debug("requestResult="+requestResult);
                             didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                            logger.debug("called didnotget200");
                             }
                         }
                     else
                         {
+                        logger.debug("set code = 0");
                         code = 0;
                         didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                        logger.debug("called didnotget200 (2)");
                         }
                     }
                 } 
