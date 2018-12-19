@@ -471,6 +471,7 @@ public class workflow implements Runnable
     public void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
         {
         String filelist;
+        logger.debug("didnotget200.Code="+Integer.toString(code)+", result="+result+", jobID="+jobID);
         if(code == 202)
             {
             logger.warn("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");

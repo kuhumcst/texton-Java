@@ -2851,7 +2851,8 @@ toolsProg=
                             !jobNr
                             "-"
                             !jobID
-                            " is not expecting a result."
+                            " is not expecting a result. Its current status is"
+                            !jobstatus
                           )
                       )
                   |   str
