@@ -652,16 +652,23 @@ public class workflow implements Runnable
                             logger.debug("Get the error response");
                             InputStream error = httpConnection.getErrorStream();
                             logger.debug("got errorStream");
-                            InputStreamReader inputstreamreader = new InputStreamReader(error);
-                            logger.debug("got inputstreamreader");
-                            rd = new BufferedReader(inputstreamreader);
-                            logger.debug("have BufferedReader");
-                            int nextChar;
-                            while(( nextChar = rd.read()) != -1) 
+                            if(error != null)
                                 {
-                                sb.append((char)nextChar);
+                                InputStreamReader inputstreamreader = new InputStreamReader(error);
+                                logger.debug("got inputstreamreader");
+                                rd = new BufferedReader(inputstreamreader);
+                                logger.debug("have BufferedReader");
+                                int nextChar;
+                                while(( nextChar = rd.read()) != -1) 
+                                    {
+                                    sb.append((char)nextChar);
+                                    }
+                                rd.close();
                                 }
-                            rd.close();
+                            else
+                                {
+                                logger.debug("error == null");
+                                }
                             requestResult = sb.toString();
                             logger.debug("requestResult="+requestResult);
                             didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
