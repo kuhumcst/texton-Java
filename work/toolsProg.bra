@@ -2837,9 +2837,16 @@ toolsProg=
                           . ?file
                           )
                           ?Z
-                    & (   !jobstatus:(waiting|starting)
+                    & (     !jobstatus
+                          : (waiting|starting)
                         &     !A
-                              (!jobNr.!jobID done.!files.!toolURL.!parms.!file)
+                              ( !jobNr
+                              . !jobID done
+                              . !files
+                              . !toolURL
+                              . !parms
+                              . !file
+                              )
                               !Z
                           : ?jobs
                         & saveTable$jobs
@@ -7369,8 +7376,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               :   ?A
                   (!arg.@?jobID.~(? (?,pending) ?):?dep.?g)
                   ?Z
-            & !A (!arg.!jobID starting.!dep.!g) !Z:?jobs
-            & saveTable$jobs
+            & ( 
+              |     !A (!arg.!jobID starting.!dep.!g) !Z
+                  : ?jobs
+                & saveTable$jobs
+              )
             & !jobID
           | 
       )
@@ -8166,7 +8176,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               : ?ITEMS
               : ?SPANGRP
               : ?LANGUAGE
-            & !arg:(@(?:? #?JobNr).?%@jobID ?.?SPANGRP.?DATE)
+            &   !arg
+              : (@(?:? #?JobNr).%@?jobID ?.?SPANGRP.?DATE)
             & str$(!DATE "-" !JobNr "-" !jobID):?CTBID
             & (readTable$CTBs|:?CTBs)
             & (mail2$!JobNr:?EMAIL|)
@@ -8267,7 +8278,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               ' (   !jobs
                   :   ?A
                       ( !JobNr
-                      . !jobID (|starting|waiting)
+                      .   !jobID
+                          (|starting|waiting)
                       . ?ZZ:?files
                       . ?toolURL
                       . ?parms
@@ -8383,7 +8395,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               ' (   !jobs
                   :   ?A
                       ( !JobNr
-                      . ?@%jobid2 ?S
+                      . %@?jobid2 ?S
                       . ?a (!jobID,pending) ?z
                       . ?ZZ
                       )
@@ -8717,7 +8729,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           |   done:?done
                             & :?aborted
                           | :?aborted:?done
-                          | starting & :?aborted:?done
+                          |   starting
+                            & :?aborted:?done
                           )
                       .   ?items
                         & ( inputResources$!items:?items
@@ -12420,7 +12433,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               $ (     !jobs
                     :   ?
                         ( !arg
-                        . @%?step (|starting)
+                        . %@?step (|starting)
                         . ~(? (?,pending) ?)
                         . ?serviceurl
                         . ?
@@ -12610,7 +12623,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       & find$(!arg.!parms)
                     )
                   &   !jobstatus
-                    : (|done|waiting|starting)
+                    : ( 
+                      | done
+                      | waiting
+                      | starting
+                      )
                   )
                   ?
             & yes
