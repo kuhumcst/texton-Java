@@ -286,6 +286,7 @@ public class workflow implements Runnable
         int jobs = 10; // Brake (or break) after 10 failed iterations. Then something is possibly wrong
         int code = 0;
         boolean asynchronous = false;
+        logger.debug("processPipeLine("+result+")");
         while(jobs > 0)
             {
             // Jobs are hierarchically structured:
@@ -306,8 +307,8 @@ public class workflow implements Runnable
              *          empty string (if job not found in jobs.table)
              */
             String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
+            logger.debug("getNextJobID returns:"+jobID);
             // Now we have a job that must be launched
-            
             if(jobID.equals(""))
                 jobs = 0; // No more jobs on job list, quit from loop
             else
@@ -335,7 +336,9 @@ public class workflow implements Runnable
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
 				requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
+                logger.debug("sendRequest("+requestString+")");
 				code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
+                logger.debug("sendRequest returns code "+Integer.toString(code));
                 if(code == 202)
                     asynchronous = true;
                 }
