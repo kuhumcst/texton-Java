@@ -650,7 +650,11 @@ public class workflow implements Runnable
                             {
                             // Get the error response
                             logger.debug("Get the error response");
-                            rd = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
+                            InputStream error = httpConnection.getErrorStream();
+                            logger.debug("got errorStream");
+                            InputStreamReader inputstreamreader = new InputStreamReader(error);
+                            logger.debug("got inputstreamreader");
+                            rd = new BufferedReader(inputstreamreader);
                             logger.debug("have BufferedReader");
                             int nextChar;
                             while(( nextChar = rd.read()) != -1) 
