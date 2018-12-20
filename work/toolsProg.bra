@@ -7376,11 +7376,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               :   ?A
                   (!arg.@?jobID.~(? (?,pending) ?):?dep.?g)
                   ?Z
-            & ( ~
+            & ( 
               |     !A (!arg.!jobID starting.!dep.!g) !Z
                   : ?jobs
+                & log$(starting !arg !jobID)
                 & saveTable$jobs
               )
+            & log$(getNextJobID !arg !jobID)
             & !jobID
           | 
       )
