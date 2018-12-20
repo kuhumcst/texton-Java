@@ -12418,6 +12418,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                   & !links
               )
+            & log$(poll !arg)
             & ( !arg:(?JobNr.?secs)
               | @(!arg:? #?JobNr)&10:?secs
               )
