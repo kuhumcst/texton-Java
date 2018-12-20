@@ -7394,7 +7394,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  *      filename        the name to be given to the output
  *      method          POST or GET
  *      requestString   the request string as HTTP-parameters or as XML
- *      isText          y or n
+ *      isXML           y or n
  * Called from workflow.java
  */"
       ( getJobArg
@@ -7475,16 +7475,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & str$!Res:?arg
                       )
                   | filename&!jobby:(?.?.?.?arg)
-                  |   isText
+                  |   isXML
                     &   !jobby
                       : (?.?.?+(O.?+(format.?fmt.?spc)+?)+?.?)
                     &   (     !fmt
-                            : ( flat
-                              | csv
-                              | teip5
+                            : ( teip5
                               | txtbasis
                               | txtann
                               | rdf
+                              | xm
                               )
                           & y
                         | n
@@ -8474,31 +8473,27 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           | 
       )
       ( inputResources
-      =   items n item TITLE
+      =   
         .   readTable$Uploads
-          & :?items
-          &   whl
-            ' ( !arg
-              :   ?
-                  ( %?n
-                  &   !Uploads
-                    :   ?
-                        ( ?
-                        . ?item
-                        . ?
-                        . !n
-                        . ? (TITLE.?TITLE) ?
-                        . ?
-                        . ?
-                        )
-                        ?
-                  &     !items
-                        (item.,(id.,!item) (title.,!TITLE))
-                    : ?items
-                  )
-                  ?arg
+          &   map
+            $ ( ( 
+                =   item TITLE
+                  .       !Uploads
+                        :   ?
+                            ( ?
+                            . ?item
+                            . ?
+                            . !arg
+                            . ? (TITLE.?TITLE) ?
+                            . ?
+                            . ?
+                            )
+                            ?
+                      & (item.,(id.,!item) (title.,!TITLE))
+                    | 
+                )
+              . !arg
               )
-          & !items
       )
       ( toolName
       =   
@@ -8552,8 +8547,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       ( !JobNr
                       . !jobID ~aborted
                       .   ?items
-                        &   (inputResources$!items|)
-                          : ?items
+                        & inputResources$!items:?items
                       . ?URL&toolName$!URL:?tool
                       . ?ZZ
                       )
@@ -8705,7 +8699,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( doneAllJobSub
       =     A Z JobNr JobId filelist filename aborted done
           , letterData items URL tool
-          , XXX
           , I O workflow
         .   readTable$jobs
           & log$("doneAllJob " !arg)
@@ -8722,26 +8715,24 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             ' ( :?aborted:?done
               &   !jobs
                 :   ?A
-                    ( ( !JobNr
-                      .   ?JobId
-                          (   aborted:?aborted
-                            & :?done
-                          |   done:?done
-                            & :?aborted
-                          | :?aborted:?done
-                          |   starting
-                            & :?aborted:?done
-                          )
-                      .   ?items
-                        & ( inputResources$!items:?items
-                          | aborted:!aborted
-                          )
-                      . ?URL&toolName$!URL:?tool
-                      .   ?+(I.?I)+?:?+(O.?O)+?
-                        | ?I&:?I:?O
-                      . ?filename
-                      )
-                    : ?XXX
+                    ( !JobNr
+                    .   %@?JobId
+                        (   aborted:?aborted
+                          & :?done
+                        |   done:?done
+                          & :?aborted
+                        |   ( 
+                            | starting
+                            | waiting
+                            )
+                          & :?aborted:?done
+                        )
+                    .   ?items
+                      & inputResources$!items:?items
+                    . ?URL&toolName$!URL:?tool
+                    .   ?+(I.?I)+?:?+(O.?O)+?
+                      | ?&:?I:?O
+                    . ?filename
                     )
                     ?Z
               & !A !Z:?jobs
@@ -12365,6 +12356,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       ( poll
       =     jobs n step secs steplinks links
           , serviceurl title tooladm
+          , runningParagraphs JobNr
         .     ( steplinks
               =   links jobs file step outp ServiceURL
                 .   !arg:(?arg.?jobs)
@@ -12424,72 +12416,87 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                   & !links
               )
-            & ( !arg:(?arg.?secs)
-              | @(!arg:? #?arg)&10:?secs
+            & ( !arg:(?JobNr.?secs)
+              | @(!arg:? #?JobNr)&10:?secs
               )
             & readTable$jobs
             & readTable$tooladm
-            &   toML
-              $ (     !jobs
-                    :   ?
-                        ( !arg
-                        . %@?step (|starting)
-                        . ~(? (?,pending) ?)
-                        . ?serviceurl
-                        . ?
-                        . ?
-                        )
-                        ?
-                  & steplinks$(!arg.!jobs):?links
-                  & 0:?n
-                  &   whl
-                    ' ( !jobs:? (!arg.?) ?jobs
-                      & 1+!n:?n
-                      )
-                  &   !tooladm
-                    :   ?
-                      + ( ? (ServiceURL.!serviceurl) ?
-                        : ? (Title.?title) ?
-                        )
-                      + ?
-                  &   refreshingXHTMLbodyContainer
-                    $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !arg)
-                      .   !links
-                            paragraph
-                          $ (   localized
-                              $ ("Currently running " "I øjeblikket kører ")
-                              !step
-                              " "
-                              localized$(of af)
-                              " "
-                              !n
-                              " ("
-                              !title
-                              ")"
-                            )
-                            paragraph
-                          $ ( str
-                            $ (   localized
-                                $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
-                                    "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
-                                  )
-                                !secs
-                                localized$(" seconds." " sekunder.")
-                              )
-                            )
-                      )
-                |   !HTMLbodyContainer
-                  $ ( steplinks$(!arg.!jobs)
-                        paragraph
-                      $ ( localized$("Done! " "Færdig! ")
-                          ( a
-                          .   ( href
-                              . !wwwServer "/tools/zipresults?JobNr=" !arg
-                              )
-                            ,   localized
-                              $ ("Download result" "Download resultat")
+            & steplinks$(!JobNr.!jobs):?links
+            &     ( 
+                  =   jobs n JobNr
+                    .   0:?n
+                      & !arg:(?jobs.?JobNr)
+                      &   whl
+                        ' ( !jobs:? (!JobNr.?) ?jobs
+                          & 1+!n:?n
                           )
-                        )
+                      & !n
+                  )
+                $ (!jobs.!JobNr)
+              : ?n
+            &     map
+                $ ( ( 
+                    =   serviceurl title step
+                      .       !arg
+                            : ( !JobNr
+                              . %@?step (|starting)
+                              . ~(? (?,pending) ?)
+                              . ?serviceurl
+                              . ?
+                              . ?
+                              )
+                          &   !tooladm
+                            :   ?
+                              + ( ? (ServiceURL.!serviceurl) ?
+                                : ? (Title.?title) ?
+                                )
+                              + ?
+                          &   paragraph
+                            $ (   localized
+                                $ ("Currently running " "I øjeblikket kører ")
+                                !step
+                                " "
+                                localized$(of af)
+                                " "
+                                !n
+                                " ("
+                                !title
+                                ")"
+                              )
+                        | 
+                    )
+                  . !jobs
+                  )
+              : ?runningParagraphs
+            &   toML
+              $ (   !runningParagraphs:
+                  &   !HTMLbodyContainer
+                    $ ( !links
+                          paragraph
+                        $ ( localized$("Done! " "Færdig! ")
+                            ( a
+                            .   ( href
+                                . !wwwServer "/tools/zipresults?JobNr=" !JobNr
+                                )
+                              ,   localized
+                                $ ("Download result" "Download resultat")
+                            )
+                          )
+                      )
+                |   refreshingXHTMLbodyContainer
+                  $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !JobNr)
+                    .   !links
+                        !runningParagraphs
+                          paragraph
+                        $ ( str
+                          $ (   localized
+                              $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                                  "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
+                                )
+                              !secs
+                              localized$(" seconds." " sekunder.")
+                            )
+                          )
                     )
                 )
           | "<html>BOOH!</html>"

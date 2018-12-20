@@ -377,10 +377,10 @@ public class workflow implements Runnable
             
             OutputStream outputF = Files.newOutputStream(Paths.get(destdir+FilenameNoMetadata(filename,BracMat)));
 
-            boolean isTextual = false;        
-            String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
-            if(textable.equals("y"))
-                isTextual = true;
+            boolean isXML = false;        
+            String isXMLyn = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isXML)");
+            if(isXMLyn.equals("y"))
+                isXML = true;
                     
             while((n = input.read(buffer)) != -1)
                 {
@@ -388,7 +388,7 @@ public class workflow implements Runnable
                     {
                     N = N + n;
                     outputF.write(buffer, 0, n);
-                    if(isTextual)
+                    if(isXML)
                         {
                         String toWrite = new String(buffer,0,n);
                         try {
