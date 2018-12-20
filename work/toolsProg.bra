@@ -7369,14 +7369,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  * Called from create.java and workflow.java
  */"
       ( getNextJobID
-      =   A Z jobID dep g
-        .     @(!arg:? #?arg)
+      =   A Z jobID dep g test
+        .     log$(getNextJobID !arg)
+            & !arg:(?arg.?test)
+            & @(!arg:? #?arg)
             & readTable$jobs
             &   !jobs
               :   ?A
                   (!arg.@?jobID.~(? (?,pending) ?):?dep.?g)
                   ?Z
-            & ( 
+            & ( !test:justtesting
               |     !A (!arg.!jobID starting.!dep.!g) !Z
                   : ?jobs
                 & log$(starting !arg !jobID)
