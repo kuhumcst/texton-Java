@@ -396,7 +396,7 @@ as wget.
              * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
              *          empty string (if job not found in jobs.table)
              */
-            String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
+            String jobID = BracMat.Eval("getNextJobID$(" + result + ".justtesting)");
             if(jobID.equals(""))
                 {
                 out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");

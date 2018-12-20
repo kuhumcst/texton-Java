@@ -306,7 +306,7 @@ public class workflow implements Runnable
              * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
              *          empty string (if job not found in jobs.table)
              */
-            String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
+            String jobID = BracMat.Eval("getNextJobID$(" + result + ".)");
             logger.debug("getNextJobID returns:"+jobID);
             // Now we have a job that must be launched
             if(jobID.equals(""))
