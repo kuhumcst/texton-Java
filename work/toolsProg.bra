@@ -12631,7 +12631,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                   &   !jobstatus
                     : ( 
-                      | done
                       | waiting
                       | starting
                       )
@@ -12722,7 +12721,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       =     jobNr jobID jobstatus files toolURL parms file
           , A Z a z F
           , Path feats item meta nr stagingName visibility
-        .   log$(cleanJobs !arg)
+        .   log$(cleanup !arg)
           & readTable$Uploads
           & readTable$jobs
           & readTable$CTBs
