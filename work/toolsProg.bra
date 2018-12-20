@@ -7376,7 +7376,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               :   ?A
                   (!arg.@?jobID.~(? (?,pending) ?):?dep.?g)
                   ?Z
-            & ( 
+            & ( ~
               |     !A (!arg.!jobID starting.!dep.!g) !Z
                   : ?jobs
                 & saveTable$jobs
@@ -12439,7 +12439,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     =   serviceurl title step
                       .       !arg
                             : ( !JobNr
-                              . %@?step (|starting)
+                              . %@?step (starting|waiting)
                               . ~(? (?,pending) ?)
                               . ?serviceurl
                               . ?
@@ -12630,10 +12630,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       & find$(!arg.!parms)
                     )
                   &   !jobstatus
-                    : ( 
-                      | waiting
-                      | starting
-                      )
+                    : (|waiting|starting)
                   )
                   ?
             & yes
