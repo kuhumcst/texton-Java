@@ -25,6 +25,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -40,7 +41,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.InvalidPathException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.zip.*;
@@ -99,7 +102,49 @@ public class workflow implements Runnable
             return "";
             }
         }
-        
+
+    static public String readFileAsString(String filePath)
+        {
+        String ret = "";
+        try
+            {
+            FileReader filereader = new FileReader(filePath);
+            BufferedReader reader = new BufferedReader(filereader);
+            char[] buf = new char[1024];
+            int numRead = 0;
+            StringBuffer fileData = new StringBuffer();
+            try
+                {
+                while((numRead = reader.read(buf)) != -1)
+                    {
+                    fileData.append(buf, 0, numRead);
+                    }
+                }
+            catch(IOException e)
+                {
+                logger.error("readFileAsString:IOException {}",e.getMessage());
+                }
+            finally
+                {
+                ret = fileData.toString();
+                try
+                    {
+                    reader.close();
+                    }
+                catch(IOException e)
+                    {
+                    logger.error("readFileAsString:IOException {}",e.getMessage());
+                    }
+                }
+            }
+        catch(FileNotFoundException e)
+            {
+            logger.error("readFileAsString:FileNotFoundException {}",e.getMessage());
+            ret = "";
+            }
+        return ret;
+        }
+
     static public void zip(String path,String name,ZipOutputStream out)
         {
         try
@@ -351,7 +396,7 @@ public class workflow implements Runnable
         logger.info("processPipeLine returns");
         }
 
-    public static void got200(String result, bracmat BracMat, String filename, String jobID, InputStream input)
+    public static String writeStream(String result, bracmat BracMat, String filename, String jobID, InputStream input)
         {
         /**
          * toolsdata$
@@ -360,51 +405,75 @@ public class workflow implements Runnable
          * The input can be a file name: this name is appended to the returned value.
          */
         String destdir = BracMat.Eval("toolsdata$");
-        /**
-         * toolsdataURL$
-         *
-         * Return the full URL to Tool's staging area.
-         * The input can be a file name: this name is appended to the returned value.
-         */
+        Path path = null;
         try
             {
-            String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
-            
-            byte[] buffer = new byte[4096];
-            int n = - 1;
-            int N = 0;
-            StringWriter outputM = new StringWriter();
-            
-            OutputStream outputF = Files.newOutputStream(Paths.get(destdir+FilenameNoMetadata(filename,BracMat)));
-
-            boolean isXML = false;        
-            String isXMLyn = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isXML)");
-            if(isXMLyn.equals("y"))
-                isXML = true;
-                    
-            while((n = input.read(buffer)) != -1)
+            path = Paths.get(destdir+/*FilenameNoMetadata(*/filename/*,BracMat)*/);
+            /**
+             * toolsdataURL$
+             *
+             * Return the full URL to Tool's staging area.
+             * The input can be a file name: this name is appended to the returned value.
+             */
+            try
                 {
-                if (n > 0)
+                byte[] buffer = new byte[4096];
+                int n = - 1;
+                OutputStream outputF = Files.newOutputStream(path);
+                while((n = input.read(buffer)) != -1)
                     {
-                    N = N + n;
-                    outputF.write(buffer, 0, n);
-                    if(isXML)
+                    if (n > 0)
                         {
-                        String toWrite = new String(buffer,0,n);
-                        try {
-                            outputM.write(toWrite);
-                            }
-                        catch (Exception e)
-                            {
-                            logger.error("Could not write to StringWriter. Reason:" + e.getMessage());
-                            }
+                        outputF.write(buffer, 0, n);
                         }
                     }
+                outputF.close();
                 }
-            outputF.close();   
-                
-            String requestResult = outputM.toString();
-                
+            catch (Exception e)
+                {//Catch exception if any
+                logger.error("Could not write result to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
+                BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+                }
+            }
+        catch(InvalidPathException e)
+            {//Catch exception if any
+            logger.error("Could not find path to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
+            BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+            }
+        if(path != null)
+            return path.toString();
+        else
+            return "";
+        }                    
+    /**
+     * Check whether the new data is TEI data. If that is the case, a new 
+     * that adds metadata to the new data.
+     * Another task is to create relation files, telling how the new data
+     * is related to previously created data or to the input.
+     * result   - a string that ends with a Job number (JobNr).
+     * jobID    - identifies the step in the current Job.
+     * path     - Complete path to te new data, including the file name.
+     */
+    public static void gotToolOutputData(String result, String jobID, bracmat BracMat, String path)
+        {
+        logger.debug("path="+path);
+        try
+            {
+            String destdir = BracMat.Eval("toolsdata$");
+            String requestResult;
+            boolean isTEI = false;
+            String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
+            if(TEIformat.equals(""))
+                {
+                isTEI = false;
+                requestResult = "";
+                }
+            else
+                {
+                isTEI = true;
+                requestResult = readFileAsString(path);
+                }
+
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String date = sdf.format(cal.getTime());
@@ -426,7 +495,7 @@ public class workflow implements Runnable
              * TEIDKCLARIN_ANNO
              */
             String newResource;
-            if(TEIformat.equals(""))
+            if(isTEI == false)
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               ".."               + quote(date) + ")"); 
                 }
@@ -434,9 +503,9 @@ public class workflow implements Runnable
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
                 // Create file plus metadata
-                BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+Filename(filename,BracMat)), StandardCharsets.UTF_8);
-                Out.write(newResource);
-                Out.close();
+                BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/Filename(path,BracMat)), StandardCharsets.UTF_8);
+                bufferedWriter.write(newResource);
+                bufferedWriter.close();
                 }
             /**
              * relationFile$
@@ -451,9 +520,9 @@ public class workflow implements Runnable
              */
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-            BufferedWriter Out = Files.newBufferedWriter(Paths.get(destdir+FilenameRelations(filename,BracMat)), StandardCharsets.UTF_8);
-            Out.write(relations);
-            Out.close();
+            BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/FilenameRelations(path,BracMat)), StandardCharsets.UTF_8);
+            bufferedWriter.write(relations);
+            bufferedWriter.close();
             }
         catch (Exception e)
             {//Catch exception if any
@@ -471,7 +540,7 @@ public class workflow implements Runnable
             }
         }                    
 
-    public void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
+    public void didnotget200(int code,String result, bracmat BracMat, String jobID)
         {
         String filelist;
         logger.debug("didnotget200.Code="+Integer.toString(code)+", result="+result+", jobID="+jobID);
@@ -496,7 +565,7 @@ public class workflow implements Runnable
             //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
             filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
             logger.warn("abortJob returns " + filelist);
-            logger.warn("Job " + jobID + " cannot open connection to URL " + urlStr);
+            logger.warn("Job " + jobID + " cannot open connection to URL ");
             }
         else
             {
@@ -528,7 +597,6 @@ public class workflow implements Runnable
             try
                 {
                 // Construct data
-                String requestResult = "";
                 String urlStr = endpoint;
                 if(postmethod) // HTTP POST
                     {
@@ -584,7 +652,9 @@ public class workflow implements Runnable
                             
                             if(code == 200)
                                 {
-                                got200(result, BracMat, filename, jobID, urlc.getInputStream());
+                                String path = writeStream(result, BracMat, filename, jobID, urlc.getInputStream());
+                                if(!path.equals(""))
+                                    gotToolOutputData(result, jobID, BracMat, path);
                                 }
                             else
                                 {
@@ -594,7 +664,6 @@ public class workflow implements Runnable
                                     Reader reader = new InputStreamReader(in);
                                     pipe(reader, output);
                                     reader.close();
-                                    requestResult = output.toString();
                                     } 
                                 catch (IOException e)
                                     {
@@ -606,14 +675,14 @@ public class workflow implements Runnable
                                         in.close();
                                     }
                                 message = urlc.getResponseMessage();
-                                didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                                didnotget200(code,result,BracMat,jobID);
                                 }                            
                             urlc.disconnect();
                             }
                         else
                             {
                             code = 0;
-                            didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                            didnotget200(code,result,BracMat,jobID);
                             }
                         }
                     }
@@ -647,7 +716,9 @@ public class workflow implements Runnable
                         if(code == 200)
                             {
                             logger.debug("code 200");
-                            got200(result, BracMat, filename, jobID, httpConnection.getInputStream());
+                            String path = writeStream(result, BracMat, filename, jobID, httpConnection.getInputStream());
+                            if(!path.equals(""))
+                                gotToolOutputData(result, jobID, BracMat, path);
                             }
                         else
                             {
@@ -672,9 +743,7 @@ public class workflow implements Runnable
                                 {
                                 logger.debug("error == null");
                                 }
-                            requestResult = sb.toString();
-                            logger.debug("requestResult="+requestResult);
-                            didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                            didnotget200(code,result,BracMat,jobID);
                             logger.debug("called didnotget200");
                             }
                         }
@@ -682,7 +751,7 @@ public class workflow implements Runnable
                         {
                         logger.debug("set code = 0");
                         code = 0;
-                        didnotget200(code,result,endpoint,requestString,BracMat,filename,jobID,postmethod,urlStr,message,requestResult);
+                        didnotget200(code,result,BracMat,jobID);
                         logger.debug("called didnotget200 (2)");
                         }
                     }

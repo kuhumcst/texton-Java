@@ -1,3 +1,10 @@
+20181221 - Fixed asynchronous processing. If a tool returns status code 202,
+           the WMS starts the next job step. When the tool post the result
+           with status code 201, the WMS starts a new thread to process the
+           pipeline. Thus every time an asynchronous tool is called, an
+           additional thread is added.
+           Fixed the output listing.
+
 20181212 - Fixed job queue: find every needed input, also if input is a
            combination of output(s) from previous steps and input uploaded by
            the user.

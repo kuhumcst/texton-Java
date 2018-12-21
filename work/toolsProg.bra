@@ -2790,6 +2790,12 @@ toolsProg=
           & !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
           & !jobNr
       )
+      ( uploadJobID
+      =   jobID jobNr
+        .   "analyze the job parameter. It tells to which job the sent file belongs."
+          & !arg:? (job.@(?:?jobNr "-" ?jobID)) ?
+          & !jobID
+      )
       "
 /**
  * upload
@@ -7070,7 +7076,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             & :?dep
                             &   whl
                               ' ( !vals:%?Val*?vals
-                                & log$(Val !Val)
                                 &   !Val
                                   : ( ( %@?val^?spec
                                       .     @?file
@@ -7479,20 +7484,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & str$!Res:?arg
                       )
                   | filename&!jobby:(?.?.?.?arg)
-                  |   isXML
-                    &   !jobby
-                      : (?.?.?+(O.?+(format.?fmt.?spc)+?)+?.?)
-                    &   (     !fmt
-                            : ( teip5
-                              | txtbasis
-                              | txtann
-                              | rdf
-                              | xm
-                              )
-                          & y
-                        | n
-                        )
-                      : ?arg
                   )
               & !arg
             | SOMETHINGWRONG
@@ -8817,7 +8808,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   (output.,menneskesprog$!O)
                                   ( format
                                   .   
-                                    ,     !O:?+(format.?format.0)+?
+                                    ,       !O
+                                          : ?+(format.?format.?)+?
                                         & !format
                                       | 
                                   )
@@ -11382,7 +11374,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       !jobAbout
                   : ?jobAbout
                 & saveTable$jobAbout
-                & getNextJobID$!JobNr:?JobId
+                & getNextJobID$(!JobNr.justtesting):?JobId
                 &   str
                   $ ( 200
                       "~"
@@ -11407,7 +11399,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             )
           & ( canConsumeMetadata
             =   a b
-              .   !arg:(?,txtbasis|txtann)
+              .   !arg:(?,txtbasis^?|txtann^?)
                 |   !arg:?a_?b
                   & ( canConsumeMetadata$!a
                     | canConsumeMetadata$!b
@@ -12362,26 +12354,61 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , serviceurl title tooladm
           , runningParagraphs JobNr
         .     ( steplinks
-              =   links jobs file step outp ServiceURL
-                .   !arg:(?arg.?jobs)
+              =     links jobs file step outp ServiceURL JobNr
+                  , seenInputs
+                .   !arg:(?JobNr.?jobs)
                   &   !jobs
                     :   ?
-                        (   (!arg.step1 ?.?file.?.?.?outp)
+                        (   (!JobNr.step1 ?.?file.?.?.?outp)
                             ?
                         : ?jobs
                         )
-                  &     paragraph
-                      $ ( "input:"
-                          ( a
-                          .   (href.str$(!wwwServer "/tools/data/" !file))
-                            , !file
+                  & :?seenInputs
+                  &     map
+                      $ ( ( 
+                          =   files
+                            .   !arg:(!JobNr.?.?files.?.?.?)
+                              &   map
+                                $ ( ( 
+                                    =   
+                                      .       !Uploads
+                                            : ? (?.?.?.!arg.?) ?
+                                          & (   !seenInputs:? !arg ?
+                                              & 
+                                            |     !arg !seenInputs
+                                                : ?seenInputs
+                                              &   paragraph
+                                                $ ( "input:"
+                                                    ( a
+                                                    .   ( href
+                                                        .   str
+                                                          $ ( !wwwServer
+                                                              "/tools/data/"
+                                                              !arg
+                                                            )
+                                                        )
+                                                      , !arg
+                                                    )
+                                                  )
+                                            )
+                                        | 
+                                    )
+                                  . !files
+                                  )
                           )
+                        . !jobs
                         )
                     : ?links
                   &   whl
                     ' (   !jobs
                         :   ?
-                            (!arg.?step done.?.?ServiceURL.?.?file)
+                            ( !JobNr
+                            . ?step done
+                            . ?
+                            . ?ServiceURL
+                            . ?
+                            . ?file
+                            )
                             ?jobs
                       &   !tooladm
                         :   ?
@@ -12405,7 +12432,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         : ?links
                       )
                   & ( !links:% %
-                    | !jobs:? (!arg.?) ?
+                    | !jobs:? (!JobNr.?) ?
                     |     !links
                             paragraph
                           $ ( "output:"
@@ -12426,6 +12453,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
             & readTable$jobs
             & readTable$tooladm
+            & readTable$Uploads
             & steplinks$(!JobNr.!jobs):?links
             &     ( 
                   =   jobs n JobNr
