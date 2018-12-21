@@ -157,6 +157,7 @@ public class upload extends HttpServlet
                  *
                  * Status codes:
                  *      200     ok
+                 *      201     Created
                  *      400     'job' parameter does not contain hyphen '-' or
                  *              'job' parameter missing altogether.
                  *      404     Job is not expecting a result (job is not waiting)
@@ -219,7 +220,9 @@ public class upload extends HttpServlet
                      * Input: <jobNr>-<jobID>
                      */
                     String JobNr = BracMat.Eval("uploadJobNr$(" + arg + ")");
-                    logger.debug("JobNr {}",JobNr);
+                    String JobID = BracMat.Eval("uploadJobID$(" + arg + ")");
+                    logger.debug("JobNr {} JobID {}",JobNr,JobID);
+                    workflow.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
                     //Runnable runnable = new workflow(JobNr, destinationDir);
                     Runnable runnable = new workflow(JobNr);
                     Thread thread = new Thread(runnable);
