@@ -9112,11 +9112,14 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & (dl.,!body)
             )
           &   ( 
-              =   zippedresults
+              =   zippedresults zipfile
                 .   ( readTable$zippedresults
                     | :?zippedresults
                     )
-                  & str$(!arg ".zip") !zippedresults:?zippedresults
+                  & str$(!arg ".zip"):?zipfile
+                  & ( !zippedresults:? !zipfile ?
+                    | !zipfile !zippedresults:?zippedresults
+                    )
                   & saveTable$zippedresults
               )
             $ !arg
