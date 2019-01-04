@@ -114,6 +114,7 @@ public class ToolsProperties
             documentRoot           = prop.getProperty("documentRoot");
             String toolsHome       = prop.getProperty("toolsHome");
             String bracmatCode     = prop.getProperty("toolsProg");
+            deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");
             bootBracmat            =  "get$\"" 
                                     + toolsHome 
                                     + bracmatCode 
@@ -128,10 +129,11 @@ public class ToolsProperties
                                     + "\":?documentRoot)&(\""
                                     + wwwServer
                                     + "\":?wwwServer)&(\""
+                                    + deleteAfterMillisec
+                                    + "\":?deleteAfterMillisec)&(\""
                                     + stagingArea
                                     + "\":?stagingArea)&ok|fail"
                                     ;
-            deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");
             acceptedWorkflowStarter= prop.getProperty("accepted-workflow-starter");
             tempdir                = prop.getProperty("tempdir");
             password               = prop.getProperty("password");

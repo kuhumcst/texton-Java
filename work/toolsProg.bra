@@ -114,6 +114,8 @@ toolsProg=
         (toolshome=)
         (documentRoot=)
         (wwwServer=)
+        (deleteAfterMillisec=)
+        86400000
         (stagingArea=)
         (repoServiceUrl=)
         (baseUrlTools=)
@@ -8686,17 +8688,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
           | log$CannotReadjobAbout&(.)
       )
-      ( jobMetaDataAsHTML
-      =   html type
-        .   jobMetaData$!arg:(?html.?type)
-          & toML$!html
-      )
       ( doneAllJobSub
       =     A Z JobNr JobId filelist filename aborted done
           , letterData items URL tool
           , I O workflow
         .   readTable$jobs
-          & log$("doneAllJob " !arg)
+          & log$("doneAllJobSub " !arg)
           & :?filelist
           & @(!arg:? #?JobNr)
           & readTable$CTBs
@@ -8820,17 +8817,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                 & (workflow.,!workflow) (steps.,Steps$!arg)
             )
           & letterData$!filelist
-      )
-      ( doneAllJob
-      =   abc
-        .   log$(doneAllJob !arg)
-          & doneAllJobSub$!arg:?abc
-          &   str
-            $ ( toML
-              $ ( ("?"."xml version=\"1.0\" encoding=\"UTF-8\"")
-                  (body.,!abc)
-                )
-              )
       )
       ( filenameWithoutXMLextension
       =   base
@@ -9125,6 +9111,15 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 & (dl.,!body)
             )
+          &   ( 
+              =   zippedresults
+                .   ( readTable$zippedresults
+                    | :?zippedresults
+                    )
+                  & str$(!arg ".zip") !zippedresults:?zippedresults
+                  & saveTable$zippedresults
+              )
+            $ !arg
           & jobMetaData$!arg:(?metadata.?type)
           & readTable$fileFormats
           & readTable$Uploads
@@ -12454,6 +12449,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             & readTable$jobs
             & readTable$tooladm
             & readTable$Uploads
+            &   div$(!deleteAfterMillisec*86400000^-1*24.1)
+              : ?hours
             & steplinks$(!JobNr.!jobs):?links
             &     ( 
                   =   jobs n JobNr
@@ -12536,7 +12533,43 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           )
                     )
                 )
-          | "<html>BOOH!</html>"
+          |     ( 
+                =   zippedresults zipfile
+                  .   readTable$zippedresults
+                    & str$(!arg ".zip"):?zipfile
+                    & !zippedresults:? !zipfile ?
+                )
+              $ !JobNr
+            &   !HTMLbodyContainer
+              $ ( paragraph
+                $ ( ( a
+                    .   (href.!wwwServer "/tools/zipresults?JobNr=" !JobNr)
+                      , localized$("Download result. " "Download resultat. ")
+                    )
+                      localized
+                    $ (   str
+                        $ ( " The zipped results are kept for no more than "
+                            !hours
+                            " hours! "
+                          )
+                          str
+                        $ ( " De zippede resultater bliver bevaret is højst "
+                            !hours
+                            " timer!"
+                          )
+                      )
+                  )
+                )
+          |   !HTMLbodyContainer
+            $ ( paragraph
+              $ ( localized
+                $ (   str
+                    $ ("The results have been deleted after " !hours " hours. ")
+                      str
+                    $ ("Resultaterne er blevet slettet efter " !hours " timer. ")
+                  )
+                )
+              )
       )
       ( WRAPUPbody
       =   workflow
@@ -12704,38 +12737,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             & saveTable$jobAbout
             & no
       )
-      ( deleteDependingJobs
-      =     A Z jobNr
-          , a file files jobID jobstatus parms toolURL z
-        .   whl
-          ' (   !jobs
-              :   ?A
-                  ( ?jobNr
-                  . %?jobID ?jobstatus
-                  . ? !arg ?
-                  . ?toolURL
-                  . ?parms
-                  . ?file
-                  )
-                  ?Z
-            & !A !Z:?jobs
-            & deleteDepending$(!jobNr.!jobID)
-            &   whl
-              ' (   !jobs
-                  :   ?a
-                      ( !jobNr
-                      . %?jobID ?jobstatus
-                      . ?files
-                      . ?toolURL
-                      . ?parms
-                      . ?file
-                      )
-                      ?z
-                & !a !z:?jobs
-                & deleteDepending$(!jobNr.!jobID)
-                )
-            )
-      )
       "
 /**
  * cleanup
@@ -12753,50 +12754,118 @@ the Items list as input. Step descriptions in the JobStack can look like this:
  */"
       ( cleanup
       =     jobNr jobID jobstatus files toolURL parms file
-          , A Z a z F
+          , A Z a z F deleteDependingJobs existingFiles
           , Path feats item meta nr stagingName visibility
-        .   log$(cleanup !arg)
+        .   ( deleteDependingJobs
+            =     A Z jobNr jobs
+                , a file files jobID jobstatus parms toolURL z
+              .   !arg:(?arg.?jobs)
+                &   whl
+                  ' (   !jobs
+                      :   ?A
+                          ( ?jobNr
+                          . %?jobID ?jobstatus
+                          . ? !arg ?
+                          . ?toolURL
+                          . ?parms
+                          . ?file
+                          )
+                          ?Z
+                    & deleteDepending$(!jobNr.!jobID)
+                    &     map
+                        $ ( ( 
+                            =   
+                              .       !arg
+                                    : ( !jobNr
+                                      . %?jobID ?jobstatus
+                                      . ?files
+                                      . ?toolURL
+                                      . ?parms
+                                      . ?file
+                                      )
+                                  & deleteDepending$(!jobNr.!jobID)
+                                  & 
+                                | !arg
+                            )
+                          . !A !Z
+                          )
+                      : ?jobs
+                    )
+                & !jobs
+            )
+          & log$(cleanup !arg)
           & readTable$Uploads
           & readTable$jobs
           & readTable$CTBs
           & readTable$relations
           & readTable$jobAbout
-          &   whl
-            ' (   !Uploads
-                :   ?A
-                    ( ( ?nr
-                      . ?item
-                      . ?Path
-                      . ?stagingName
-                      . ?meta
-                      . ?feats
-                      . ?visibility
-                      )
-                    & ~(!arg:? !stagingName ?)
-                    )
-                    ?Z
-              & !A !Z:?Uploads
-              & deleteDependingJobs$!stagingName
+          & !arg:?existingFiles
+          &   ( 
+              =   existingFiles zippedresults
+                .   !arg:?existingFiles
+                  & readTable$zippedresults
+                  &     map
+                      $ ( ( 
+                          =   
+                            .     !existingFiles:? !arg ?
+                                & !arg
+                              | 
+                          )
+                        . !zippedresults
+                        )
+                    : ?zippedresults
+                  & saveTable$zippedresults
               )
-          &   whl
-            ' (   !jobs
-                :   ?A
-                    ( ( ?jobNr
-                      . %?jobID ?jobstatus
-                      . ?files
-                      . ?toolURL
-                      . ?parms
-                      . ?file
-                      )
-                    & (   !files
-                        : ? (%@?F&~(!arg:? !F ?)) ?
-                      | ~(!arg:? !file ?)
-                      )
-                    )
-                    ?Z
-              & !A !Z:?jobs
-              & deleteDepending$(!jobNr.!jobID)
-              )
+            $ !existingFiles
+          &     map
+              $ ( ( 
+                  =   
+                    .     !arg
+                        : ( ?nr
+                          . ?item
+                          . ?Path
+                          . ?stagingName
+                          . ?meta
+                          . ?feats
+                          . ?visibility
+                          )
+                      & (   ~(!existingFiles:? !stagingName ?)
+                          &   deleteDependingJobs$(!stagingName.!jobs)
+                            : ?jobs
+                          & 
+                        | 
+                        )
+                  )
+                . !Uploads
+                )
+            : ?Uploads
+          &     map
+              $ ( ( 
+                  =   
+                    .     !arg
+                        : ( ?jobNr
+                          . %?jobID ?jobstatus
+                          . ?files
+                          . ?toolURL
+                          . ?parms
+                          . ?file
+                          )
+                      & (   (   !files
+                              :   ?
+                                  ( %@?F
+                                  & ~(!existingFiles:? !F ?)
+                                  )
+                                  ?
+                            | ~(!existingFiles:? !file ?)
+                            )
+                          & deleteDepending$(!jobNr.!jobID)
+                          & 
+                        | !arg
+                        )
+                  )
+                . !jobs
+                )
+            : ?jobs
           &   whl
             ' (   !CTBs
                 :   ?a
