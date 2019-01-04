@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
-  * results
+  * zipresults
   *
   * Show links to all results, intermediary or not.
   *
