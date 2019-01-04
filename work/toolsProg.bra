@@ -12348,227 +12348,230 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       =     jobs n step secs steplinks links
           , serviceurl title tooladm
           , runningParagraphs JobNr
-        .     ( steplinks
-              =     links jobs file step outp ServiceURL JobNr
-                  , seenInputs
-                .   !arg:(?JobNr.?jobs)
-                  &   !jobs
-                    :   ?
-                        (   (!JobNr.step1 ?.?file.?.?.?outp)
-                            ?
-                        : ?jobs
-                        )
-                  & :?seenInputs
-                  &     map
-                      $ ( ( 
-                          =   files
-                            .   !arg:(!JobNr.?.?files.?.?.?)
-                              &   map
-                                $ ( ( 
-                                    =   
-                                      .       !Uploads
-                                            : ? (?.?.?.!arg.?) ?
-                                          & (   !seenInputs:? !arg ?
-                                              & 
-                                            |     !arg !seenInputs
-                                                : ?seenInputs
-                                              &   paragraph
-                                                $ ( "input:"
-                                                    ( a
-                                                    .   ( href
-                                                        .   str
-                                                          $ ( !wwwServer
-                                                              "/tools/data/"
-                                                              !arg
-                                                            )
-                                                        )
-                                                      , !arg
-                                                    )
-                                                  )
-                                            )
-                                        | 
-                                    )
-                                  . !files
-                                  )
-                          )
-                        . !jobs
-                        )
-                    : ?links
-                  &   whl
-                    ' (   !jobs
-                        :   ?
-                            ( !JobNr
-                            . ?step done
-                            . ?
-                            . ?ServiceURL
-                            . ?
-                            . ?file
-                            )
-                            ?jobs
-                      &   !tooladm
-                        :   ?
-                          + ( ? (ServiceURL.!ServiceURL) ?
-                            : ? (Title.?Title) ?
-                            )
-                          + ?
-                      &     !links
-                              paragraph
-                            $ ( str$(!step ":")
-                                ( a
-                                .   ( href
-                                    . str$(!wwwServer "/tools/data/" !file)
-                                    )
-                                  , !file
-                                )
-                                " ("
-                                !Title
-                                ")"
-                              )
-                        : ?links
+        .   ( steplinks
+            =     links jobs file step outp ServiceURL JobNr
+                , seenInputs
+              .   !arg:(?JobNr.?jobs)
+                &   !jobs
+                  :   ?
+                      (   (!JobNr.step1 ?.?file.?.?.?outp)
+                          ?
+                      : ?jobs
                       )
-                  & ( !links:% %
-                    | !jobs:? (!JobNr.?) ?
-                    |     !links
+                & :?seenInputs
+                &     map
+                    $ ( ( 
+                        =   files
+                          .   !arg:(!JobNr.?.?files.?.?.?)
+                            &   map
+                              $ ( ( 
+                                  =   
+                                    .       !Uploads
+                                          : ? (?.?.?.!arg.?) ?
+                                        & (   !seenInputs:? !arg ?
+                                            & 
+                                          |     !arg !seenInputs
+                                              : ?seenInputs
+                                            &   paragraph
+                                              $ ( "input:"
+                                                  ( a
+                                                  .   ( href
+                                                      .   str
+                                                        $ ( !wwwServer
+                                                            "/tools/data/"
+                                                            !arg
+                                                          )
+                                                      )
+                                                    , !arg
+                                                  )
+                                                )
+                                          )
+                                      | 
+                                  )
+                                . !files
+                                )
+                        )
+                      . !jobs
+                      )
+                  : ?links
+                &   whl
+                  ' (   !jobs
+                      :   ?
+                          (!JobNr.?step done.?.?ServiceURL.?.?file)
+                          ?jobs
+                    &   !tooladm
+                      :   ?
+                        + ( ? (ServiceURL.!ServiceURL) ?
+                          : ? (Title.?Title) ?
+                          )
+                        + ?
+                    &     !links
                             paragraph
-                          $ ( "output:"
+                          $ ( str$(!step ":")
                               ( a
                               .   ( href
                                   . str$(!wwwServer "/tools/data/" !file)
                                   )
-                                , !outp
+                                , !file
                               )
+                              " ("
+                              !Title
+                              ")"
                             )
                       : ?links
                     )
-                  & !links
-              )
-            & log$(poll !arg)
-            & ( !arg:(?JobNr.?secs)
-              | @(!arg:? #?JobNr)&10:?secs
-              )
-            & readTable$jobs
-            & readTable$tooladm
-            & readTable$Uploads
-            &   div$(!deleteAfterMillisec*86400000^-1*24.1)
-              : ?hours
-            & steplinks$(!JobNr.!jobs):?links
-            &     ( 
-                  =   jobs n JobNr
-                    .   0:?n
-                      & !arg:(?jobs.?JobNr)
-                      &   whl
-                        ' ( !jobs:? (!JobNr.?) ?jobs
-                          & 1+!n:?n
-                          )
-                      & !n
-                  )
-                $ (!jobs.!JobNr)
-              : ?n
-            &     map
-                $ ( ( 
-                    =   serviceurl title step
-                      .       !arg
-                            : ( !JobNr
-                              .   %@?step
-                                  ( 
-                                  | starting
-                                  | waiting
-                                  )
-                              . ~(? (?,pending) ?)
-                              . ?serviceurl
-                              . ?
-                              . ?
-                              )
-                          &   !tooladm
-                            :   ?
-                              + ( ? (ServiceURL.!serviceurl) ?
-                                : ? (Title.?title) ?
-                                )
-                              + ?
-                          &   paragraph
-                            $ (   localized
-                                $ ("Currently running " "I øjeblikket kører ")
-                                !step
-                                " "
-                                localized$(of af)
-                                " "
-                                !n
-                                " ("
-                                !title
-                                ")"
-                              )
-                        | 
-                    )
-                  . !jobs
-                  )
-              : ?runningParagraphs
-            &   toML
-              $ (   !runningParagraphs:
-                  &   !HTMLbodyContainer
-                    $ ( !links
+                & ( !links:% %
+                  | !jobs:? (!JobNr.?) ?
+                  |     !links
                           paragraph
-                        $ ( localized$("Done! " "Færdig! ")
+                        $ ( "output:"
                             ( a
-                            .   ( href
-                                . !wwwServer "/tools/zipresults?JobNr=" !JobNr
-                                )
-                              ,   localized
-                                $ ("Download result" "Download resultat")
+                            .   (href.str$(!wwwServer "/tools/data/" !file))
+                              , !outp
                             )
                           )
+                    : ?links
+                  )
+                & !links
+            )
+          & log$(poll !arg)
+          & ( !arg:(?JobNr.?secs)
+            | @(!arg:? #?JobNr)&10:?secs
+            )
+          & readTable$jobs
+          & readTable$tooladm
+          & readTable$Uploads
+          & div$(!deleteAfterMillisec*86400000^-1*24.1):?hours
+          &   toML
+            $ (   steplinks$(!JobNr.!jobs):?links
+                &     ( 
+                      =   jobs n JobNr
+                        .   0:?n
+                          & !arg:(?jobs.?JobNr)
+                          &   whl
+                            ' ( !jobs:? (!JobNr.?) ?jobs
+                              & 1+!n:?n
+                              )
+                          & !n
                       )
-                |   refreshingXHTMLbodyContainer
-                  $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !JobNr)
-                    .   !links
-                        !runningParagraphs
-                          paragraph
-                        $ ( str
-                          $ (   localized
-                              $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
-                                  "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
-                                )
-                              !secs
-                              localized$(" seconds." " sekunder.")
+                    $ (!jobs.!JobNr)
+                  : ?n
+                &     map
+                    $ ( ( 
+                        =   serviceurl title step
+                          .       !arg
+                                : ( !JobNr
+                                  .   %@?step
+                                      ( 
+                                      | starting
+                                      | waiting
+                                      )
+                                  . ~(? (?,pending) ?)
+                                  . ?serviceurl
+                                  . ?
+                                  . ?
+                                  )
+                              &   !tooladm
+                                :   ?
+                                  + ( ? (ServiceURL.!serviceurl) ?
+                                    : ? (Title.?title) ?
+                                    )
+                                  + ?
+                              &   paragraph
+                                $ (   localized
+                                    $ ( "Currently running "
+                                        "I øjeblikket kører "
+                                      )
+                                    !step
+                                    " "
+                                    localized$(of af)
+                                    " "
+                                    !n
+                                    " ("
+                                    !title
+                                    ")"
+                                  )
+                            | 
+                        )
+                      . !jobs
+                      )
+                  : ?runningParagraphs
+                & (   !runningParagraphs:
+                    &   !HTMLbodyContainer
+                      $ ( !links
+                            paragraph
+                          $ ( localized$("Done! " "Færdig! ")
+                              ( a
+                              .   ( href
+                                  .   !wwwServer
+                                      "/tools/zipresults?JobNr="
+                                      !JobNr
+                                  )
+                                ,   localized
+                                  $ ("Download result" "Download resultat")
+                              )
                             )
-                          )
-                    )
-                )
-          |     ( 
-                =   zippedresults zipfile
-                  .   readTable$zippedresults
-                    & str$(!arg ".zip"):?zipfile
-                    & !zippedresults:? !zipfile ?
-                )
-              $ !JobNr
-            &   !HTMLbodyContainer
-              $ ( paragraph
-                $ ( ( a
-                    .   (href.!wwwServer "/tools/zipresults?JobNr=" !JobNr)
-                      , localized$("Download result. " "Download resultat. ")
-                    )
-                      localized
-                    $ (   str
-                        $ ( " The zipped results are kept for no more than "
-                            !hours
-                            " hours! "
-                          )
-                          str
-                        $ ( " De zippede resultater bliver bevaret is højst "
-                            !hours
-                            " timer!"
-                          )
+                        )
+                  |   refreshingXHTMLbodyContainer
+                    $ ( !secs str$(!wwwServer "/tools/mypoll?job=" !JobNr)
+                      .   !links
+                          !runningParagraphs
+                            paragraph
+                          $ ( str
+                            $ (   localized
+                                $ ( "Reload this page to track the status of your job. Or wait. This page auto-reloads after "
+                                    "Genindlæs denne side hvis du vil følge status på arbejdsgangen. Eller vent. Siden genindlæses automatisk efter "
+                                  )
+                                !secs
+                                localized$(" seconds." " sekunder.")
+                              )
+                            )
                       )
                   )
-                )
-          |   !HTMLbodyContainer
-            $ ( paragraph
-              $ ( localized
-                $ (   str
-                    $ ("The results have been deleted after " !hours " hours. ")
-                      str
-                    $ ("Resultaterne er blevet slettet efter " !hours " timer. ")
+              |   !HTMLbodyContainer
+                $ (     ( 
+                        =   zippedresults zipfile
+                          .   readTable$zippedresults
+                            & str$(!arg ".zip"):?zipfile
+                            & !zippedresults:? !zipfile ?
+                        )
+                      $ !JobNr
+                    &   paragraph
+                      $ ( ( a
+                          .   ( href
+                              . !wwwServer "/tools/zipresults?JobNr=" !JobNr
+                              )
+                            ,   localized
+                              $ ("Download result. " "Download resultat. ")
+                          )
+                            localized
+                          $ (   str
+                              $ ( " The zipped results are kept for no more than "
+                                  !hours
+                                  " hours! "
+                                )
+                                str
+                              $ ( " De zippede resultater bliver bevaret is højst "
+                                  !hours
+                                  " timer!"
+                                )
+                            )
+                        )
+                  |   paragraph
+                    $ ( localized
+                      $ (   str
+                          $ ( "The results have been deleted after "
+                              !hours
+                              " hours. "
+                            )
+                            str
+                          $ ( "Resultaterne er blevet slettet efter "
+                              !hours
+                              " timer. "
+                            )
+                        )
+                      )
                   )
-                )
               )
       )
       ( WRAPUPbody
