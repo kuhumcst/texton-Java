@@ -1,3 +1,12 @@
+20190104 - Added table 'zippedresults' that tells which results are still
+           available. Each time https://cst.dk/tools/mypoll?job=2983 (where
+           2983 is a job number) is called after the job has been finished,
+           the service responds with sending a link to the zipfile with the
+           results. These results are available for 48 hours (see
+           deleteAfterMillisec in properties.xml). After that time, the zipfile
+           is deleted, 'zippedresults' updated, and the response changes to
+           a message saying that the results have been deleted.
+
 20181221 - Fixed asynchronous processing. If a tool returns status code 202,
            the WMS starts the next job step. When the tool post the result
            with status code 201, the WMS starts a new thread to process the
