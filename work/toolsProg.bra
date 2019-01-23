@@ -6717,7 +6717,7 @@ toolsProg=
       =   rstr S
         .   !arg:(?arg.?rstr)
           & ( !arg:?*(!rstr,?)*?
-            |   !arg:(?,(?.?.?.?S))*?arg
+            |   !arg:?*(?,(?.?.?.?S))*?arg
               & (has$(!S.!rstr)|has$(!arg.!rstr))
             )
       )
