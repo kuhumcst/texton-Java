@@ -1,5 +1,7 @@
   (AAA where./)
-  (CTBs jobAbout jobNr jobs relations Uploads zippedresults.job/)
+  ( CTBs jobAbout jobNr jobs relations Uploads zippedresults
+  . job/
+  )
   (   features
       HTTP-status-codes
       ISO639
