@@ -1,3 +1,5 @@
+20190123 - Fixed small problem with tool selection. 
+
 20190104 - Added table 'zippedresults' that tells which results are still
            available. Each time https://cst.dk/tools/mypoll?job=2983 (where
            2983 is a job number) is called after the job has been finished,
