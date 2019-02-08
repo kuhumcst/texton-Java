@@ -7044,6 +7044,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
              for among the input Items, if it needs an item from that list.
              It is not useful for steps that only take input from earlier
              steps."
+          & log$convert2URLs
           & ( getDisFe
             =   f
               .     !arg:? (?f,?) ? (!f,?) ?
@@ -11319,7 +11320,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     & (     !in
                           :   ?AA
                               ( ?feat
-                              ,   (%?A*%?B ?C|%?A*?B %?C)
+                              ,   (%(%?A*%?B) ?C|%(%?A*?B) %?C)
                                 : ?in
                               )
                               ?ZZ
@@ -11374,13 +11375,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       |   "Single input"
                         & (     !in
                               :   ?
-                                  (?,%?A*%?B ?C|%?A %?C)
+                                  (?,%(%?A*%?B) ?C|%?A %?C)
                                   ?
                             & log$(SOMTINGROTS !in)
                           | 
                           )
                         &   whl
-                          ' ( !in:?AA (?feat,%?A*? ?) ?ZZ
+                          ' ( !in:?AA (?feat,%(%?A*?) ?) ?ZZ
                             &   !inputs
                               :   ?P
                                   `%?jobID
@@ -11490,7 +11491,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       !jobAbout
                   : ?jobAbout
                 & saveTable$jobAbout
+                & log$(getNextJobID JobNr !JobNr)
                 & getNextJobID$(!JobNr.justtesting):?JobId
+                & log$(JobId !JobId)
                 &   str
                   $ ( 200
                       "~"
