@@ -2248,7 +2248,7 @@ toolsProg=
                   &   whl
                     ' ( !pairs:(?ins.?outs)+?pairs
                       &   whl
-                        ' ( !ins:(%?in ?)+?ins
+                        ' ( !ins:%(%?in ?)+?ins
                           & ( !iV:?+!in+?
                             | !in+!iV:?iV
                             )
@@ -4637,7 +4637,7 @@ toolsProg=
                 , ToolCreator InfoAbout ToolDescription
                 , ToolExternalURI ToolXMLparms removeEmptyValues
                 , ToolPostData ToolInactive sortFacets
-                , combine denumber ContactEmail
+                , denumber ContactEmail
               .     !arg
                   : ( ?Metadata
                     . ?ToolName
@@ -4715,7 +4715,108 @@ toolsProg=
                           & !arg
                       )
                     & denumber$!toolprop:?toolprop
-                    & ( combine
+                    & ( unfact
+                      =     ToolName F A Z a z f
+                          , O x m T y
+                        .   !arg:(?ToolName.?F)
+                          & (   !F:?A (?f,%?a+%?z) ?Z
+                              &   unfact$(!ToolName.!A (!f,!a) !Z)
+                                + unfact$(!ToolName.!A (!f,!z) !Z)
+                            |   !F:?A (?f,(%?a+%?z.?O)) ?Z
+                              &     unfact
+                                  $ (!ToolName.!A (!f,(!a.!O)) !Z)
+                                +   unfact
+                                  $ (!ToolName.!A (!f,(!z.!O)) !Z)
+                            |   !F:?A (?f,(?O.%?a+%?z)) ?Z
+                              &     unfact
+                                  $ (!ToolName.!A (!f,(!O.!a)) !Z)
+                                +   unfact
+                                  $ (!ToolName.!A (!f,(!O.!z)) !Z)
+                            |     !F
+                                :   ?A
+                                    (?f,(?O.?x*?m^(%?a+%?z)*?y ?T))
+                                    ?Z
+                              &     unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!O.!x*!m^!a*!y !T))
+                                        !Z
+                                    )
+                                +   unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!O.!x*!m^!z*!y !T))
+                                        !Z
+                                    )
+                            |     !F
+                                :   ?A
+                                    (?f,(?x*?m^(%?a+%?z)*?y ?T.?O))
+                                    ?Z
+                              &     unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!x*!m^!a*!y !T.!O))
+                                        !Z
+                                    )
+                                +   unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!x*!m^!z*!y !T.!O))
+                                        !Z
+                                    )
+                            |     !F
+                                :   ?A
+                                    (?f,(%?x ?m^(%?a+%?z) ?T.?O))
+                                    ?Z
+                              &     unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!x !m^!a !T.!O))
+                                        !Z
+                                    )
+                                +   unfact
+                                  $ ( !ToolName
+                                    .   !A
+                                        (!f,(!x !m^!z !T.!O))
+                                        !Z
+                                    )
+                            |     !F
+                                :   ?A
+                                    (?f,(?O.%?x ?m^(%?a+%?z) ?T))
+                                    ?Z
+                              &     unfact
+                                  $ ( !ToolName
+                                    . !A (!f,(!O.!x !m^!a !T)) !Z
+                                    )
+                                +   unfact
+                                  $ ( !ToolName
+                                    . !A (!f,(!O.!x !m^!z !T)) !Z
+                                    )
+                            | !arg
+                            )
+                      )
+                    & ( subset
+                      =   toolprop ToolName Fe A fe subs
+                        .   !arg:(?toolprop.?ToolName)
+                          & !toolprop:?A+(!ToolName.?Fe)+?toolprop
+                          & 0:?subs
+                          &   !whl
+                            ' ( !toolprop:(!ToolName.?fe)+?toolprop
+                              & !subs+(!ToolName.!fe):?subs
+                              )
+                          & ((!ToolName.!Fe)+!subs.!A+!toolprop)
+                      )
+                    &   subset$(!toolprop.!ToolName)
+                      : (?thisToolProp.?otherToolprop)
+                    & ( unfactorize
+                      =   A
+                        .     !arg:%?A+?arg
+                            & unfact$!A+unfactorize$!arg
+                          | 0
+                      )
+                    & unfactorize$!thisToolProp:?thisToolProp
+                    & denumber$!thisToolProp:?thisToolProp
+                    & ( Combine
                       =     A M Z AA ZZ Name Facet val1
                           , Vals1 Vals2 Vals a m z i o i2 o2
                         .     whl
@@ -4723,7 +4824,7 @@ toolsProg=
                                 :   ?A
                                   + (?Name.?val1)
                                   + ?M
-                                  + ( !Name
+                                  + ( ?
                                     .   ?AA
                                         ( (?Facet,?Vals2) ?ZZ
                                         &   !val1
@@ -4731,28 +4832,45 @@ toolsProg=
                                         )
                                     )
                                   + ?Z
-                              & denumber$(!Vals1+!Vals2):?Vals
-                              &   whl
-                                ' (   !Vals
-                                    : ?a+(?i.?o)+?m+(!i.?o2)+?z
-                                  &   !a+(!i.denumber$(!o+!o2))+!m+!z
-                                    : ?Vals
-                                  )
-                              &   whl
-                                ' (   !Vals
-                                    : ?a+(?i.?o)+?m+(?i2.!o)+?z
-                                  &   !a+(denumber$(!i+!i2).!o)+!m+!z
-                                    : ?Vals
-                                  )
                               &     !A
-                                  + (!Name.!AA (!Facet,!Vals) !ZZ)
+                                  + ( !Name
+                                    . !AA (!Facet,!Vals1+!Vals2) !ZZ
+                                    )
                                   + !M
                                   + !Z
                                 : ?arg
                               )
                           & !arg
                       )
-                    & combine$!toolprop:?toolprop
+                    & Combine$!thisToolProp:?thisToolProp
+                    & ( Ocomb
+                      =   a i1 i2 o m z
+                        .     !arg:?a+(?i1.?o)+?m+(?i2.!o)+?z
+                            & Ocomb$(!a+(!i1+!i2.!o)+!m+!z)
+                          | !arg
+                      )
+                    & ( IOcomb
+                      =   a i o1 o2 m z
+                        .     !arg:?a+(?i.?o1)+?m+(!i.?o2)+?z
+                            & IOcomb$(!a+(!i.!o1+!o2)+!m+!z)
+                          | Ocomb$!arg
+                      )
+                    & ( IOFeatComb
+                      =   F vs
+                        .     !arg:(?F,?vs) ?arg
+                            & (!F,IOcomb$!vs) IOFeatComb$!arg
+                          | 
+                      )
+                    & ( IOcombine
+                      =   Name facets
+                        .     !arg:(?Name.?facets)+?arg
+                            & (!Name.IOFeatComb$!facets)+IOcombine$!arg
+                          | 0
+                      )
+                    & IOcombine$!thisToolProp:?thisToolProp
+                    & ( ~&log$DOEHIERIETS
+                      | !thisToolProp+!otherToolprop:?toolprop
+                      )
                     & saveTable$toolprop
                     & (     !tooladm
                           : ?A+(? (ToolID.!ToolName) ?)+?Z
@@ -5295,7 +5413,7 @@ toolsProg=
                   & NEWSPEC
                   &   !gvalues
                     :     ?
-                        + ( (`%?gvalue^?gspc ?gopt)*?zgvalue
+                        + ( %(`%?gvalue^?gspc ?gopt)*?zgvalue
                           &   !svalues
                             :   ?
                               +   ?asvalue
@@ -5317,7 +5435,7 @@ toolsProg=
                                       .     !arg:(?ss.?gs)
                                           &   1
                                             : (!ss|!gs)
-                                        |   !gs:(%?g^?gp ?go)*?gs
+                                        |   !gs:%(%?g^?gp ?go)*?gs
                                           & NEWSPEC
                                           & (   ~(!ss:?*(!g^? ?)*?)
                                               & uni$(!ss.!gs):?tail
@@ -6087,7 +6205,7 @@ toolsProg=
             )
           & (     fct$!vs
                 :   ?
-                  * (%?V+!V^%&!v:? ?*!V^?*? ?)
+                  * %(%?V+!V^%&!v:? ?*!V^?*? ?)
                   * ?
               & '$strictPartOf:(=?partOfFunc)
             | '$partOf:(=?partOfFunc)
@@ -13992,6 +14110,56 @@ try {
                     . ?feats
                     )
                   + ?tools
+              & 1:?tcnt
+              &   whl
+                ' ( !feats:(?,?feat) ?feats
+                  & 0:?fcnt
+                  &   whl
+                    ' ( !feat:(?i.?o)+?feat
+                      & !fcnt+count$!i*count$!o:?fcnt
+                      )
+                  & !tcnt*!fcnt:?tcnt
+                  )
+              & !cnt+!tcnt:?cnt
+              )
+          & !cnt
+      )
+      ( countGraphNodesTool
+      =   count tools feats feat i o cnt tcnt fcnt tool
+        .   "Unfold toolprop. Each subspecification doubles count due to specification.
+             Counts 360 tools that are active (not 'inactive') 20130424"
+          & !arg:?tools
+          & NEWSPEC
+          & ( count
+            =     ret term spcno factor spcs fix opt
+                , Nspc Nopt
+              .   0:?ret
+                &   whl
+                  ' ( !arg:%?term+?arg
+                    & !term:%?fix ?opt
+                    & 1:?spcno
+                    &   whl
+                      ' ( !fix
+                        :     %?
+                            ^ ( ?+[?Nspc
+                              &   !spcno*(!Nspc:~0|1)
+                                : ?spcno
+                              )
+                          * ?fix
+                        )
+                    & 0:?Nopt
+                    &   whl
+                      ' ( !opt:%?^(?+[?Nspc) ?opt
+                        &   (!Nspc:~0|1)+!Nopt
+                          : ?Nopt
+                        )
+                    & !ret+!spcno*2^!Nopt:?ret
+                    )
+                & !ret
+            )
+          & 0:?cnt
+          &   whl
+            ' ( !tools:#?*(?tool.?feats)+?tools
               & 1:?tcnt
               &   whl
                 ' ( !feats:(?,?feat) ?feats
