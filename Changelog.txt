@@ -1,3 +1,5 @@
+20190216 - '&' in local file name is replaced by '_'
+
 20190123 - Fixed small problem with tool selection. 
 
 20190104 - Added table 'zippedresults' that tells which results are still
