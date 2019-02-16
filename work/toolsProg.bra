@@ -11327,7 +11327,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               ?ZZ
                         & "Multiple inputs"
                         &   whl
-                          ' ( !in:%?A*?B ?C
+                          ' ( !in:%(%?A*?B) ?C
                             &   !inputs
                               :   ?P
                                   `%?jobID
