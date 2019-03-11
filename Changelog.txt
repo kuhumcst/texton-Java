@@ -1,3 +1,9 @@
+20190311 - Changed !alts:(%?alt ?opts)+?alts 
+           to      !alts:%(%?alt ?opts)+?alts
+           due to change in bracmat.
+           The old expression captures 0 in alt.
+           The new expression captures values non-empty string <>0.
+
 20190216 - '&' in local file name is replaced by '_'
 
 20190123 - Fixed small problem with tool selection. 

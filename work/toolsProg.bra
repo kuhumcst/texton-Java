@@ -13186,7 +13186,7 @@ catch (SystemExit $e)
             =   alt featF opts rsr rsrc stl style alts
               .   !arg:(?alts.?IO.?featname)
                 &   whl
-                  ' ( !alts:(%?alt ?opts)+?alts
+                  ' ( !alts:%(%?alt ?opts)+?alts
                     & (   !alt:%*%
                         & ( featF
                           = (!IO.!featname.!rsr.F)+!DATA:?DATA
