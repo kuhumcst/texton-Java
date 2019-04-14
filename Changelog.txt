@@ -1,3 +1,4 @@
+20190414 - Fixed <body> inside another <body> 
 20190311 - Changed !alts:(%?alt ?opts)+?alts 
            to      !alts:%(%?alt ?opts)+?alts
            due to change in bracmat.

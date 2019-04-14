@@ -7902,14 +7902,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                   ?
                                             )
                                             ?
+                                        | ? (body.?,?BODYCONTENT) ?
                                         |   ?
-                                            (text.?)
-                                            ?
                                             (body.?)
                                             ?BODYCONTENT
                                             (.body.)
-                                            ?
-                                            (.text.)
                                             ?
                                         )
                                     | 
