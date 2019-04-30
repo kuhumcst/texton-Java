@@ -25,12 +25,17 @@
 		.fileupload {background-color:#EC576b}
 		.URLs {background-color:#4EC5C1}
 		.typein {background-color:#E5E338}*/
-        /*Striking and Energetic*/
+        /*Striking and Energetic
 		.bodycanvas {background-color:#F2EEE2}
 		.fileupload {background-color:#F5CE28}
 		.typein {background-color:#F5CE28}
-		.URLs {background-color:#F5CE28}
-		/*.typein {background-color:#43C0F6}
+		.URLs {background-color:#F5CE28} */
+        /*blue, gradient*/
+        .bodycanvas {background: linear-gradient(#fefefe, #00d2ff33)}
+		.fileupload {background-color:#9ab9ce99}
+		.typein {background-color:#9ab9ce99}
+		.URLs {background-color:#9ab9ce99}
+        /*.typein {background-color:#43C0F6}
 		.URLs {background-color:#F81B84}*/
     </style>
     <meta name="description" content="This NLP workflow managment system automatically combines the necessary natural language processing tools to achieve your goal, in a way similar to how a trip planner computes the best route from your current position to your destination. A very advanced application mostly written in the Bracmat programming language." />
