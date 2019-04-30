@@ -2275,7 +2275,7 @@ toolsProg=
       =   ( style
           .   (type.text/css)
             ,   \r\n
-                ".bodycanvas {background: linear-gradient(#fefefe, #00d2ff33)}"
+                ".bodycanvas {background: linear-gradient(#fefefe, #00d2ff33);background-repeat: no-repeat;}"
                 \r\n
                 "h1, h2, h3, span, p, td, input, legend, textarea {font-family: Comic"
                 Sans
