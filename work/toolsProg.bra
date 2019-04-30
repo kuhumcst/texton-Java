@@ -2275,13 +2275,13 @@ toolsProg=
       =   ( style
           .   (type.text/css)
             ,   \r\n
-                ".bodycanvas {background-color:#F2EEE2}"
+                ".bodycanvas {background: linear-gradient(#fefefe, #00d2ff33)}"
                 \r\n
                 "h1, h2, h3, span, p, td, input, legend, textarea {font-family: Comic"
                 Sans
                 "MS, cursive, sans-serif;}"
                 \r\n
-                "legend {border:none;color:black;background-color:#F5CE28;text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
+                "legend {border:none;color:black;background-color:#9ab9ce99;text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
                 \r\n
                 ".required {color:red; font-size:90%;}"
                 \r\n
