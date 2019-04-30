@@ -1,4 +1,4 @@
-20190430 - Bluish colours.
+20190430 - Bluish colours. Background gradient set to "no-repeat"
 
 20190414 - Fixed <body> inside another <body> 
 
