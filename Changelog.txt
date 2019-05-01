@@ -1,3 +1,5 @@
+20190501 - Adapted title in html headers.
+
 20190430 - Bluish colours. Background gradient set to "no-repeat"
 
 20190414 - Fixed <body> inside another <body> 

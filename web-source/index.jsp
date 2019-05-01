@@ -6,7 +6,7 @@
    xsi:schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>TEXT TONSORIUM - Natural Language Processing toolchains automatically composed and scheduled for you</title>
+    <title>Text Tonsorium - Natural Language Processing toolchains automatically composed and scheduled for you</title>
     <style type="text/css">
         h1, h2, h3, span, p, td, input, legend, textarea {
             font-family: "Comic Sans MS", cursive, sans-serif;

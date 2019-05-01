@@ -109,6 +109,7 @@ toolsProg=
       (logno=0)
       (tabind=0)
       (globval=)
+      (headerTitle="Text Tonsorium - Natural Language Processing toolchains automatically composed and scheduled for you")
       (hiddenData=)
       ( "Set from boot"
         (toolshome=)
@@ -2497,7 +2498,7 @@ toolsProg=
                           , 
                         )
                         \r\n
-                        (title.,"DK-Clarin: Tools")
+                        (title.,!headerTitle)
                         \r\n
                   )
                   \r\n
@@ -2675,7 +2676,7 @@ toolsProg=
                 ,   \r\n
                     ( head
                     .   
-                      , \r\n (title.,"DK-Clarin: Tools") \r\n !style
+                      , \r\n (title.,!headerTitle) \r\n !style
                     )
                     \r\n
                     (body.(class.bodycanvas),!arg)
@@ -2699,7 +2700,7 @@ toolsProg=
                     ( head
                     .   
                       ,   \r\n
-                          (title.,"DK-Clarin: Tools")
+                          (title.,!headerTitle)
                           \r\n
                           ( meta
                           .     (http-equiv.refresh)
