@@ -163,11 +163,12 @@ public class zipresults extends HttpServlet
                     OutputStream zipdest = null;
                     ZipOutputStream zipout = null;
                     boolean hasFiles = false;
+                    String jobzip = job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip";
                     if(letter.startsWith("file:"))
                         {
                         hasFiles = true;
                         //zipdest = new FileOutputStream(localFilePath + job + ".zip");
-                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip"));
+                        zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
 
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         while(letter.startsWith("file:"))
@@ -192,7 +193,7 @@ public class zipresults extends HttpServlet
                         workflow.zipstring("index.html",zipout,letter);
                         zipout.close();
                         }
-                    doGetZip(localFilePath, job + ".zip",response);                            
+                    doGetZip(localFilePath, jobzip,response);                            
                     
                     break;
                     }
