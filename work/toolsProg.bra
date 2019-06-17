@@ -8860,6 +8860,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 : ?filelist
               )
+          & lst$(filelist,path$filelist,NEW)
           & saveTable$jobs
           & saveTable$CTBs
           & saveTable$relations
