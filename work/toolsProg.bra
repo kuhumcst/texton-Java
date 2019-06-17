@@ -12696,7 +12696,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               ". ("
                                 localized
                               $ ( "Re-run the workflow if you want to download both"
-                                  "K&oslash;r igen hvis du vil downloade begge"
+                                  "Kør igen hvis du vil downloade begge"
                                 )
                               ".)"
                             )
