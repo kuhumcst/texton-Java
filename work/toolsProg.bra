@@ -109,7 +109,9 @@ toolsProg=
       (logno=0)
       (tabind=0)
       (globval=)
-      (headerTitle="Text Tonsorium - Natural Language Processing toolchains automatically composed and scheduled for you")
+      ( headerTitle
+      = "Text Tonsorium - Natural Language Processing toolchains automatically composed and scheduled for you"
+      )
       (hiddenData=)
       ( "Set from boot"
         (toolshome=)
@@ -2675,8 +2677,7 @@ toolsProg=
                     (lang.da)
                 ,   \r\n
                     ( head
-                    .   
-                      , \r\n (title.,!headerTitle) \r\n !style
+                    . ,\r\n (title.,!headerTitle) \r\n !style
                     )
                     \r\n
                     (body.(class.bodycanvas),!arg)
@@ -7894,7 +7895,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         ,   ( body
                             .   
                               ,     !BODYCONTENT:~
-                                  & lst$(BODYCONTENT,path$BODYCONTENT,NEW)
+                                  &   lst
+                                    $ (BODYCONTENT,path$BODYCONTENT,NEW)
                                   & (   !BODYCONTENT
                                       : (   ?
                                             ( text
@@ -8857,6 +8859,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . !tool
                     . !I
                     . !O
+                    .     ( !aborted:aborted
+                          |   !Z
+                            : ? (!JobNr.?.? !JobId ?.?) ?
+                          )
+                        & 
+                      | LAST
                     )
                 : ?filelist
               )
@@ -8903,7 +8911,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & ( Steps
                   =     x items tool JobNr JobId
-                      , format I O format
+                      , format I O format stage
                     .       !arg
                           :   ( ?JobNr
                               . @(?:? #?JobId)
@@ -8912,6 +8920,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               . ?tool
                               . ?I
                               . ?O
+                              . ?stage
                               )
                               ?arg
                         &   ( step
@@ -8930,6 +8939,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         & !format
                                       | 
                                   )
+                                  (stage.,!stage)
                             )
                             Steps$!arg
                       | 
@@ -9084,6 +9094,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =     body JobNr JobId filename tool
                 , items I O format id title fil
                 , Href2 Href2nometa Href2relations
+                , stage
               .   :?body
                 &   whl
                   ' (   !arg
@@ -9097,6 +9108,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                 (input.,?I)
                                 (output.,?O)
                                 (format.,?format)
+                                (stage.,?stage)
                           )
                           ?arg
                     &   whl
@@ -9137,6 +9149,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                             ,   str
                                               $ ( localized$("Step " "Trin ")
                                                   !JobId
+                                                  ( !stage:
+                                                  |   localized
+                                                    $ (" (last)" " (sidste)")
+                                                  )
                                                 )
                                           )
                                       )
@@ -10100,7 +10116,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         )
                     | :?R
                     )
-                & ( !R:? (format.json|dipl) ?
+                & (   !R
+                    : ? (format.json|dipl) ?
                   | !R (ambig.una):?R
                   )
                 & log$("analyseContentType returns:" !R)
