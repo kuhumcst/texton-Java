@@ -9076,7 +9076,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
       )
       ( letter
       =     workflow steps resources files inps Steps html
-          , metadata explain type
+          , metadata explain type shortletter
         .   ( inps
             =   a
               .     !arg:%?a ?arg
@@ -9094,122 +9094,150 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             =     body JobNr JobId filename tool
                 , items I O format id title fil
                 , Href2 Href2nometa Href2relations
-                , stage
-              .   :?body
-                &   whl
-                  ' (   !arg
-                      :   ( step
-                          .   
-                            ,   (JobNr.,?JobNr)
-                                (JobId.,?JobId)
-                                (name.,?filename)
-                                (tool.,?tool)
-                                (items.,?items)
-                                (input.,?I)
-                                (output.,?O)
-                                (format.,?format)
-                                (stage.,?stage)
-                          )
-                          ?arg
-                    &   whl
-                      ' (   !items
-                          :   ( item
-                              .   
-                                ,   ? (id.,?id) ?
-                                  : ? (title.,?title) ?
-                              )
-                              ?items
-                        & ( !resources:? !title ?
-                          |   !resources !title:?resources
-                            & ( ~
-                              |     !Uploads
-                                  : ? (?.!title.?.?fil.?) ?
-                                &   !files "file:" !fil "*" !title ";"
-                                  : ?files
-                              | 
-                              )
-                          )
-                        )
-                    &     !body
-                          (   @(!filename:fejl ?)
-                            & log$fejl
-                            &   ( h2
+                , stage steps shortletter
+              .   !arg:(?steps.?shortletter)
+                &     map
+                    $ ( ( 
+                        =   
+                          .     !arg
+                              : ( step
                                 .   
-                                  ,   localized
-                                    $ ( "The following step(s) failed:"
-                                        "Følgende trin fejlede:"
-                                      )
+                                  ,   (JobNr.,?JobNr)
+                                      (JobId.,?JobId)
+                                      (name.,?filename)
+                                      (tool.,?tool)
+                                      (items.,?items)
+                                      (input.,?I)
+                                      (output.,?O)
+                                      (format.,?format)
+                                      (stage.,?stage)
                                 )
-                                ( dl
-                                .   
-                                  ,   ( dt
+                            &   whl
+                              ' (   !items
+                                  :   ( item
                                       .   
-                                        , ( strong
-                                          .   
-                                            ,   str
-                                              $ ( localized$("Step " "Trin ")
-                                                  !JobId
-                                                )
-                                          )
+                                        ,   ? (id.,?id) ?
+                                          : ? (title.,?title) ?
                                       )
-                                      (dd.,!tool)
+                                      ?items
+                                & ( !resources:? !title ?
+                                  |   !resources !title:?resources
+                                    & ( ~
+                                      |     !Uploads
+                                          :   ?
+                                              (?.!title.?.?fil.?)
+                                              ?
+                                        &     !files
+                                              "file:"
+                                              !fil
+                                              "*"
+                                              !title
+                                              ";"
+                                          : ?files
+                                      | 
+                                      )
+                                  )
                                 )
-                          |   Filename$!filename:?Href2
-                            &   FilenameNoMetadata$!filename
-                              : ?Href2nometa
-                            &   FilenameRelations$!filename
-                              : ?Href2relations
-                            &   ( dt
-                                .   
-                                  , ( strong
+                            & (   @(!filename:fejl ?)
+                                & log$fejl
+                                &   ( h2
                                     .   
-                                      ,   str
-                                        $ ( localized$("Step " "Trin ")
-                                            !JobId
-                                            ( !stage:
-                                            |   localized
-                                              $ (" (last)" " (sidste)")
-                                            )
+                                      ,   localized
+                                        $ ( "The following step(s) failed:"
+                                            "Følgende trin fejlede:"
                                           )
                                     )
-                                )
-                                ( dd
-                                .   
-                                  ,     @(!O:? TEI ?)
-                                      & (   !format:txtann
-                                          &     !files
-                                                "file:"
-                                                !Href2
-                                                ";file:"
-                                                !Href2relations
-                                                ";file:"
-                                                !Href2nometa
-                                                ";"
-                                            : ?files
-                                          &   str$(!tool ": ")
-                                              ( a
-                                              .   (href.!Href2)
-                                                ,   localized
-                                                  $ ( "including metadata"
-                                                      "inklusiv metadata"
+                                    ( dl
+                                    .   
+                                      ,   ( dt
+                                          .   
+                                            , ( strong
+                                              .   
+                                                ,   str
+                                                  $ (   localized
+                                                      $ ("Step " "Trin ")
+                                                      !JobId
                                                     )
                                               )
-                                              ","
-                                              ( a
-                                              .   (href.!Href2relations)
-                                                , !relationsfil
+                                          )
+                                          (dd.,!tool)
+                                    )
+                              |   ( !shortletter:~y
+                                  | !stage:LAST
+                                  )
+                                & Filename$!filename:?Href2
+                                &   FilenameNoMetadata$!filename
+                                  : ?Href2nometa
+                                &   FilenameRelations$!filename
+                                  : ?Href2relations
+                                &   ( dt
+                                    .   
+                                      , ( strong
+                                        .   
+                                          ,   str
+                                            $ ( localized$("Step " "Trin ")
+                                                !JobId
+                                                (   !shortletter:y
+                                                  & 
+                                                |   !stage:LAST
+                                                  &   localized
+                                                    $ (" (last)" " (sidste)")
+                                                | 
+                                                )
                                               )
-                                              ", "
-                                              ( a
-                                              .   (href.!Href2nometa)
-                                                ,   localized
-                                                  $ ( "without metadata"
-                                                      "uden metadata"
-                                                    )
-                                              )
+                                        )
+                                    )
+                                    ( dd
+                                    .   
+                                      ,     @(!O:? TEI ?)
+                                          & (   !format:txtann
+                                              &     !files
+                                                    "file:"
+                                                    !Href2
+                                                    ";file:"
+                                                    !Href2relations
+                                                    ";file:"
+                                                    !Href2nometa
+                                                    ";"
+                                                : ?files
+                                              &   str$(!tool ": ")
+                                                  ( a
+                                                  .   (href.!Href2)
+                                                    ,   localized
+                                                      $ ( "including metadata"
+                                                          "inklusiv metadata"
+                                                        )
+                                                  )
+                                                  ","
+                                                  ( a
+                                                  .   (href.!Href2relations)
+                                                    , !relationsfil
+                                                  )
+                                                  ", "
+                                                  ( a
+                                                  .   (href.!Href2nometa)
+                                                    ,   localized
+                                                      $ ( "without metadata"
+                                                          "uden metadata"
+                                                        )
+                                                  )
+                                            |       !files
+                                                    "file:"
+                                                    !Href2
+                                                    "*"
+                                                    !filename
+                                                    ";"
+                                                : ?files
+                                              &   str$(!tool ": ")
+                                                  ( a
+                                                  .   (href.!filename)
+                                                    , basistekst
+                                                  )
+                                                  explain$!format
+                                            )
                                         |       !files
                                                 "file:"
-                                                !Href2
+                                                !Href2nometa
                                                 "*"
                                                 !filename
                                                 ";"
@@ -9217,38 +9245,32 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                           &   str$(!tool ": ")
                                               ( a
                                               .   (href.!filename)
-                                                , basistekst
+                                                , data
                                               )
                                               explain$!format
-                                        )
-                                    |       !files
-                                            "file:"
-                                            !Href2nometa
-                                            "*"
-                                            !filename
-                                            ";"
-                                        : ?files
-                                      &   str$(!tool ": ")
-                                          (a.(href.!filename),data)
-                                          explain$!format
-                                )
-                                ( !I:!O:
-                                | ( dl
-                                  .   
-                                    ,   ( !I:
-                                        | (dt.,Input) (dd.,!I)
-                                        )
-                                        ( !O:
-                                        |   (dt.,Output)
-                                            (dd.,!O)
-                                        )
-                                  )
-                                )
-                          )
-                      : ?body
-                    )
+                                    )
+                                    ( !I:!O:
+                                    | ( dl
+                                      .   
+                                        ,   ( !I:
+                                            |   (dt.,Input)
+                                                (dd.,!I)
+                                            )
+                                            ( !O:
+                                            |   (dt.,Output)
+                                                (dd.,!O)
+                                            )
+                                      )
+                                    )
+                              )
+                        )
+                      . !steps
+                      )
+                  : ?body
                 & (dl.,!body)
             )
+          & !arg:(?arg.?shortletter)
+          & "shortletter: y or n"
           &   ( 
               =   zippedresults zipfile
                 .   ( readTable$zippedresults
@@ -9288,7 +9310,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             (h2.,Workflow)
                             (p.,!workflow)
                             (h2.,localized$(Steps Trin))
-                            (dl.,Steps$!steps)
+                            (dl.,Steps$(!steps.!shortletter))
                             ( h2
                             .   
                               ,   localized

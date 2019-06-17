@@ -146,7 +146,7 @@ public class zipresults extends HttpServlet
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
-                    String letter = BracMat.Eval("letter$(" + job + ")");
+                    String letter = BracMat.Eval("letter$(" + job + ".y)");
                     String readme = BracMat.Eval("readme$(" 
                                                 + job 
                                                 + "." 
