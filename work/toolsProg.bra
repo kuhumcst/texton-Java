@@ -9080,7 +9080,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
         .   ( inps
             =   a
               .     !arg:%?a ?arg
-                  & str$("'" !a "'") (br.,) inps$!arg
+                  &   (a.(href.!a),!a)
+                      (br.,)
+                      inps$!arg
                 | 
             )
           & ( explain
