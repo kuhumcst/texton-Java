@@ -167,7 +167,7 @@ public class zipresults extends HttpServlet
                         {
                         hasFiles = true;
                         //zipdest = new FileOutputStream(localFilePath + job + ".zip");
-                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + ".zip"));
+                        zipdest = Files.newOutputStream(Paths.get(localFilePath + job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip"));
 
                         zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
                         while(letter.startsWith("file:"))
