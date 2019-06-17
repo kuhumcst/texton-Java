@@ -9149,10 +9149,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                             ,   str
                                               $ ( localized$("Step " "Trin ")
                                                   !JobId
-                                                  ( !stage:
-                                                  |   localized
-                                                    $ (" (last)" " (sidste)")
-                                                  )
                                                 )
                                           )
                                       )
@@ -9168,7 +9164,13 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                   , ( strong
                                     .   
                                       ,   str
-                                        $ (localized$("Step " "Trin ") !JobId)
+                                        $ ( localized$("Step " "Trin ")
+                                            !JobId
+                                            ( !stage:
+                                            |   localized
+                                              $ (" (last)" " (sidste)")
+                                            )
+                                          )
                                     )
                                 )
                                 ( dd
