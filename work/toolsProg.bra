@@ -12681,7 +12681,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       "Download alle resultater"
                                     )
                               )
-                              " OR "
+                              localized$(" OR " " ELLER ")
                               ( a
                               .   ( href
                                   .   !wwwServer
