@@ -12681,7 +12681,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       "Download alle resultater"
                                     )
                               )
-                              ". "
+                              " OR "
                               ( a
                               .   ( href
                                   .   !wwwServer
@@ -12693,7 +12693,12 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       "Download slutresultater"
                                     )
                               )
-                              "."
+                              ". ("
+                                localized
+                              $ ( "Re-run the workflow if you want to download both"
+                                  "K&oslash;r igen hvis du vil downloade begge"
+                                )
+                              ".)"
                             )
                         )
                   |   refreshingXHTMLbodyContainer
