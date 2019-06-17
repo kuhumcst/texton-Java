@@ -140,13 +140,16 @@ public class zipresults extends HttpServlet
             Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
             String job;
+            String shortletter="n";
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
+                if(parmName.equals("shortletter"))
+                    shortletter = request.getParameterValues(parmName)[0];
                 if(parmName.equals("JobNr"))
                     {
                     job = request.getParameterValues(parmName)[0];
-                    String letter = BracMat.Eval("letter$(" + job + ".y)");
+                    String letter = BracMat.Eval("letter$(" + job + "."+ shortletter +")");
                     String readme = BracMat.Eval("readme$(" 
                                                 + job 
                                                 + "." 

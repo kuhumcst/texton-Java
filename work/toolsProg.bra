@@ -12675,8 +12675,23 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       !JobNr
                                   )
                                 ,   localized
-                                  $ ("Download result" "Download resultat")
+                                  $ ( "Download all results"
+                                      "Download alle resultater"
+                                    )
                               )
+                              ". "
+                              ( a
+                              .   ( href
+                                  .   !wwwServer
+                                      "/tools/zipresults?shortletter=y&JobNr="
+                                      !JobNr
+                                  )
+                                ,   localized
+                                  $ ( "Download final results"
+                                      "Download slutresultater"
+                                    )
+                              )
+                              "."
                             )
                         )
                   |   refreshingXHTMLbodyContainer
