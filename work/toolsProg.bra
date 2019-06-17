@@ -9247,6 +9247,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & readTable$Uploads
           &   doneAllJobSub$!arg
             : (workflow.,?workflow) (steps.,?steps)
+          & lst$(steps,path$steps,NEW)
           & :?resources:?files
           &     toML
               $ ( html
