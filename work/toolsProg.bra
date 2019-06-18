@@ -8868,7 +8868,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     )
                 : ?filelist
               )
-          & lst$(filelist,path$filelist,NEW)
           & saveTable$jobs
           & saveTable$CTBs
           & saveTable$relations
@@ -9124,18 +9123,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       ?items
                                 & ( !resources:? !title ?
                                   |   !resources !title:?resources
-                                    & ( ~
-                                      |     !Uploads
+                                    & (     !Uploads
                                           :   ?
                                               (?.!title.?.?fil.?)
                                               ?
-                                        &     !files
-                                              "file:"
-                                              !fil
-                                              "*"
-                                              !title
-                                              ";"
-                                          : ?files
+                                        & ( !shortletter:y
+                                          |     !files
+                                                "file:"
+                                                !fil
+                                                "*"
+                                                !title
+                                                ";"
+                                            : ?files
+                                          )
                                       | 
                                       )
                                   )
@@ -9313,12 +9313,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             (p.,!workflow)
                             (h2.,localized$(Steps Trin))
                             (dl.,Steps$(!steps.!shortletter))
-                            ( h2
-                            .   
-                              ,   localized
-                                $ ("Input to the workflow:" "Workflowets input:")
+                            ( !shortletter:y&
+                            |   ( h2
+                                .   
+                                  ,   localized
+                                    $ ( "Input to the workflow:"
+                                        "Workflowets input:"
+                                      )
+                                )
+                                (p.,inps$!resources)
                             )
-                            (p.,inps$!resources)
                             !metadata
                       )
                 )
@@ -12677,8 +12681,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       !JobNr
                                   )
                                 ,   localized
-                                  $ ( "Download all results"
-                                      "Download alle resultater"
+                                  $ ( "Download input and all results"
+                                      "Download input og alle resultater"
                                     )
                               )
                               localized$(" OR " " ELLER ")
