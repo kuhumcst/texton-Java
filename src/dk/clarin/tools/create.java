@@ -817,6 +817,7 @@ as wget.
         
         if(  !request.getRemoteAddr().equals(ToolsProperties.acceptedWorkflowStarter) 
           && !request.getRemoteAddr().equals("127.0.0.1")
+          && !request.getRemoteAddr().equals("localhost")
           )
             {
             logger.info("POST: Request sent from Unauthorized Client!");
