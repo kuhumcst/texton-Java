@@ -7,7 +7,7 @@
     <entry key="mail-from-name">No reply</entry>
     <entry key="mail-port">25</entry>
     <entry key="mail-server">mailgate.sc.ku.dk</entry>
-    <entry key="mail-from">no-reply@127.0.0.0</entry>
+    <entry key="mail-from">no-reply@127.0.0.1</entry>
     <entry key="adm-email">you@to.me</entry>
 
     <!-- eSciDoc core properties -->
