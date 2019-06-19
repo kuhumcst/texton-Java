@@ -7,15 +7,15 @@
     <entry key="mail-from-name">No reply</entry>
     <entry key="mail-port">25</entry>
     <entry key="mail-server">mailgate.sc.ku.dk</entry>
-    <entry key="mail-from">no-reply@127.0.0.0</entry>
+    <entry key="mail-from">no-reply@127.0.0.1</entry>
     <entry key="adm-email">server@to.me</entry>
 
     <!-- eSciDoc core properties -->
-    <entry key="repoServiceUrl">http://127.0.0.0/ir/item/</entry>
+    <entry key="repoServiceUrl">http://127.0.0.1/ir/item/</entry>
     <entry key="admin-user-handle">secret</entry>
 
     <!-- Host names -->
-    <entry key="core-server">http://127.0.0.0</entry>
+    <entry key="core-server">http://127.0.0.1</entry>
     <entry key="www-server">https://cst.dk</entry>
 
     <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
@@ -31,7 +31,8 @@
     <entry key="stagingArea">/tools/data/</entry>
     <entry key="toolsHome">/opt/csttools/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
-    <entry key="tempdir">work/Catalina/localhost/tools</entry>
+    <!-- entry key="tempdir">work/Catalina/localhost/tools</entry -->
+    <entry key="tempdir">/tmp</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <entry key="password">!muq!zif35</entry>
 
