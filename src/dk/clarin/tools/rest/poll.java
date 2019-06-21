@@ -33,9 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Poll status of workflow. E.g. in response to this URL:
- *      https://clarin.dk/tools/poll/3892126799-323
+ *      https://clarin.dk/texton/poll/3892126799-323
  * Directory listings are forbidden, so the URL
- *      https://clarin.dk/tools/poll/
+ *      https://clarin.dk/texton/poll/
  * returns an informational text.
  * Return codes 200 
  *              404 if a directorly listing is attempted or if the file is no
@@ -73,7 +73,7 @@ public class poll extends HttpServlet
             response.setStatus(500);
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
-        // https://clarin.dk/tools/poll?job=12345-678
+        // https://clarin.dk/texton/poll?job=12345-678
         /*Test:*/
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();

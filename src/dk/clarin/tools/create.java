@@ -415,9 +415,9 @@ as wget.
                 out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
                 out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
                 if(UIlanguage != null && UIlanguage.equals("da"))
-                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"" + ToolsProperties.wwwServer + "/tools/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
+                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"" + ToolsProperties.wwwServer + "/texton/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
                 else
-                    out.println("<body><p>You will receive email when there are results. <a href=\"" + ToolsProperties.wwwServer + "/tools/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
+                    out.println("<body><p>You will receive email when there are results. <a href=\"" + ToolsProperties.wwwServer + "/texton/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
                 }
             response.setStatus(202);
 

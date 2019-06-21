@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Return result from Tools. E.g. in response to this URL:
- *      https://clarin.dk/tools/data/3892126799-323-step1.xml
+ *      https://clarin.dk/texton/data/3892126799-323-step1.xml
  * The file is deleted from the staging area after delivery, so results can
  * only be fetched once.
  *      - illegal fetches are less likely, as the real owner of the result
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * A call to the 'keep' function in toolsProg.bra checks that by looking for
  * outstanding jobs that take the result as input.
  * Directory listings are forbidden, so the URL
- *      https://clarin.dk/tools/data/
+ *      https://clarin.dk/texton/data/
  * returns an informational text.
  * Return codes 200 
  *              404 if a directorly listing is attempted or if the file is no
