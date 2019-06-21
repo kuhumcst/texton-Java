@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Called as cron job:
- *      0 5 * * * curl https://clarin.dk/tools/cleanup > /dev/null
+ *      0 5 * * * curl https://clarin.dk/texton/cleanup > /dev/null
  */
 @SuppressWarnings("serial")
 public class cleanup extends HttpServlet 
