@@ -781,6 +781,8 @@ as wget.
         response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);
+        logger.debug("PostWorkflow: {}",workflowRequest);
+
         /* TODO Add DASISH server
         String referer = request.getHeader("referer");
         if(  referer == null
@@ -804,6 +806,7 @@ as wget.
     Method doPost is called if Tools is used to process uploaded files.
      (In contrast to processing files copied from the repository.)
     */
+    /*
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
         {
         List<FileItem> items = parameters.getParmList(request);
@@ -828,5 +831,5 @@ as wget.
         arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out,"");
         }
+    */
     }
-
