@@ -3,19 +3,10 @@
 <properties>
     <comment>Properties for a local system</comment>
 
-    <!-- Email properties -->
-    <entry key="mail-from-name">No reply</entry>
-    <entry key="mail-port">25</entry>
-    <entry key="mail-server">mailgate.sc.ku.dk</entry>
-    <entry key="mail-from">no-reply@127.0.0.1</entry>
-    <entry key="adm-email">you@to.me</entry>
-
     <!-- eSciDoc core properties -->
     <entry key="repoServiceUrl">http://localhost:8080/ir/item/</entry>
-    <entry key="admin-user-handle">secret</entry>
 
     <!-- Host names -->
-    <entry key="core-server">http://localhost:8080</entry>
     <entry key="www-server">http://localhost:8080</entry>
 
     <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
@@ -31,16 +22,13 @@
     <entry key="stagingArea">/tools/work/data/</entry>
     <entry key="toolsHome">C:/gitprojects/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
-    <entry key="tempdir">work/Catalina/localhost/texton</entry>
+    <entry key="tempdir">work/Catalina/localhost/tools</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <entry key="password"></entry>
 
     <!--  86400000 == one day  -->
     <!-- 172800000 == two days -->
     <entry key="deleteAfterMillisec">172800000</entry>
-
-    <!-- The only server that is allowed to start workflows (the web-server) -->
-    <entry key="accepted-workflow-starter">192.12.34.56</entry>
 </properties>
 
 

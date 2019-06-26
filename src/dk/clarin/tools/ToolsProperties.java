@@ -41,19 +41,10 @@ public class ToolsProperties
     * each of these strings should have an entry in properties_*.xml
     **/
 
-    // Email properties
-    public static String mailFromName               = "";
-    public static String mailPort                   = "";
-    public static String mailServer                 = "";
-    public static String mailFrom                   = "";
-    public static String admEmail                   = "";
-
     // eSciDoc core properties
     public static String repoServiceUrl             = "";
-    public static String adminUserHandle            = "";
 
     // Host names
-    public static String coreServer                 = "";
     public static String wwwServer                    = "";
     
     // names used by Tools
@@ -61,7 +52,6 @@ public class ToolsProperties
     public static String documentRoot               = "";
     public static String stagingArea                = "";
     public static String deleteAfterMillisec        = "";
-    public static String acceptedWorkflowStarter    = "";
     public static String tempdir                    = "";
     public static String password                   = "";
 
@@ -88,20 +78,11 @@ public class ToolsProperties
             {
             prop.loadFromXML(fis);
 
-            // Email properties
-            mailFromName           = prop.getProperty("mail-from-name");
-            mailPort               = prop.getProperty("mail-port");
-            mailServer             = prop.getProperty("mail-server");
-            mailFrom               = prop.getProperty("mail-from");
-            admEmail               = prop.getProperty("adm-email");
-
             // eSciDoc core properties
             repoServiceUrl         = prop.getProperty("repoServiceUrl");
-            adminUserHandle        = prop.getProperty("admin-user-handle");
 
             // Host names
             //infraServer            = prop.getProperty("infra-server");
-            coreServer             = prop.getProperty("core-server");
             wwwServer              = prop.getProperty("www-server");
 
             // Host names used by Tools
@@ -134,7 +115,6 @@ public class ToolsProperties
                                     + stagingArea
                                     + "\":?stagingArea)&ok|fail"
                                     ;
-            acceptedWorkflowStarter= prop.getProperty("accepted-workflow-starter");
             tempdir                = prop.getProperty("tempdir");
             password               = prop.getProperty("password");
             fis.close();

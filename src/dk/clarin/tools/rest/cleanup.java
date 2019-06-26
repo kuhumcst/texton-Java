@@ -52,7 +52,6 @@ public class cleanup extends HttpServlet
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         //date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
-        //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);
         destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory()) 
