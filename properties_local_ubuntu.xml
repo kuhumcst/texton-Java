@@ -16,10 +16,10 @@
 
     <!-- Host names -->
     <entry key="core-server">http://127.0.0.1</entry>
-    <entry key="www-server">https://cst.dk</entry>
+    <entry key="www-server">http://130.225.251.141</entry>
 
     <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
-    <entry key="baseUrlTools">https://cst.dk</entry>
+    <entry key="baseUrlTools">http://130.225.251.141</entry>
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
     <!-- Location of staging area 
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
@@ -31,8 +31,8 @@
     <entry key="stagingArea">/texton/data/</entry>
     <entry key="toolsHome">/opt/csttools/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
-    <!-- entry key="tempdir">work/Catalina/localhost/texton</entry -->
-    <entry key="tempdir">/tmp</entry>
+    <entry key="tempdir">work/Catalina/localhost/texton</entry>
+    <!--entry key="tempdir">/tmp</entry-->
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <entry key="password">!muq!zif35</entry>
 
@@ -41,7 +41,7 @@
     <entry key="deleteAfterMillisec">172800000</entry>
 
     <!-- The only server that is allowed to start workflows (the web-server) -->
-    <entry key="accepted-workflow-starter">130.225.201.107</entry>
+    <entry key="accepted-workflow-starter">http://130.225.251.141</entry>
 </properties>
 
 
