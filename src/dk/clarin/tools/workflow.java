@@ -408,13 +408,7 @@ public class workflow implements Runnable
         Path path = null;
         try
             {
-            path = Paths.get(destdir+/*FilenameNoMetadata(*/filename/*,BracMat)*/);
-            /**
-             * toolsdataURL$
-             *
-             * Return the full URL to Tool's staging area.
-             * The input can be a file name: this name is appended to the returned value.
-             */
+            path = Paths.get(destdir+filename);
             try
                 {
                 byte[] buffer = new byte[4096];

@@ -55,17 +55,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-/*
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-*/
 
 /**
  * Prepare and run a workflow.
@@ -109,7 +98,6 @@ public class create extends HttpServlet
     public static final int CONFIRMATION=2; //The results from the tool-workflow are ready to inspect
     public static final int ERROR=3;        //Something went wrong
     private String date;
-    //private String toolsdataURL;
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder builder;// = null;
@@ -135,7 +123,6 @@ public class create extends HttpServlet
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
-        //toolsdataURL = ToolsProperties.baseUrlTools + ToolsProperties.stagingArea;
         super.init(config);
         destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
         if(!destinationDir.isDirectory())
@@ -175,72 +162,7 @@ public class create extends HttpServlet
 			return "error connecting to server.";
 		}
 	}
-/*
-	private String webPage(String urladdr){
-		try{
-			URL url = new URL(urladdr);
-			URLConnection urlConnection = url.openConnection();
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-			StringBuilder contents = new StringBuilder();
-			char[] buffer = new char[4096];
-			int read = 0;
-			do  {
-			    contents.append(buffer,0,read);
-			    read = in.read(buffer);
-			    }
-			while(read >= 0);
-			String Return = contents.toString();
-			return Return;
-		}catch(IOException e){
-			return "error connecting to server.";
-		}
-	}
-*/	
-/*
-This function is not any better than webPageBinary, and not as powerful
-as wget.
-        private void download(String address) {
-            try {
-                logger.debug("Download: " + address);
-                CloseableHttpClient client = HttpClientBuilder.create().build();
-                HttpGet request = new HttpGet(address);
-                logger.debug("Created request");
-     
-                HttpResponse response = client.execute(request);
-                logger.debug("got response");
-                HttpEntity entity = response.getEntity();
-                logger.debug("got entity");
-     
-                int responseCode = response.getStatusLine().getStatusCode();
-     
-                logger.debug("Request Url: " + request.getURI());
-                logger.debug("Response Code: " + responseCode);
-     
-                InputStream is = entity.getContent();
-     
-                String filePath = "c:\\demo\\file.zip";
-                FileOutputStream fos = new FileOutputStream(new File(filePath));
-     
-                int inByte;
-                while ((inByte = is.read()) != -1) {
-                    fos.write(inByte);
-                }
-     
-                is.close();
-                fos.close();
-     
-                client.close();
-                logger.debug("File Download Completed!!!");
-            } catch (ClientProtocolException e) {
-                logger.error("ClientProtocolException: " + e.getMessage());
-            } catch (UnsupportedOperationException e) {
-                logger.error("UnsupportedOperationException: " + e.getMessage());
-            } catch (IOException e) {
-                logger.error("IOException: " + e.getMessage());
-            }
-        }
-*/
 	private int webPageBinary(String urladdr, File file){
 		try{
           //The following url is downloaded by wget, which is much better at handling 303's and 302's.
@@ -430,27 +352,6 @@ as wget.
             }
         }
 
-    /**
-    * Helper function to convert a stream to a xml document
-    * @param xml  The Xml in a stream
-    * @return the xml document 
-    */
-/*    private Document streamToXml(InputStream stream) 
-        {
-        Document doc;
-        try 
-            {
-            // Reading a XML file
-            doc = builder.parse(stream);
-            stream.close();
-            }
-        catch (Exception e) 
-            {
-            return null;
-            }
-        return doc;
-        }
-*/
     private String makeLocalCopyOfRemoteFile(String val)
         {
         if(!val.equals(""))
@@ -625,7 +526,8 @@ as wget.
                 InputStream stderr = null;
                 InputStream stdout = null;
 
-                String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
+                //String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
+                String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
 
                 final Process process = Runtime.getRuntime().exec(command);
                 stdin = process.getOutputStream ();
@@ -658,21 +560,6 @@ as wget.
         return false;
         }
             
-    /**
-    * Timeout for the process to assist workflow
-    * @param delay time in milliseconds
-    */
-/*    private static void wait(int delay)
-        {
-        try {
-            Thread.sleep(delay);
-            } 
-        catch(InterruptedException ex)
-            {
-            logger.error(ex.getMessage());
-            }
-        }
-*/
     public String getParmsAndFiles(List<FileItem> items,HttpServletResponse response,PrintWriter out) throws ServletException
         {        
         if(!BracMat.loaded())
@@ -783,53 +670,8 @@ as wget.
         response.setStatus(200);
         logger.debug("PostWorkflow: {}",workflowRequest);
 
-        /* TODO Add DASISH server
-        String referer = request.getHeader("referer");
-        if(  referer == null
-          || (  !referer.startsWith(ToolsProperties.wwwServer) 
-             && !referer.startsWith(ToolsProperties.wwwServer.replaceFirst("^(https|http)://", "$1://www."))
-             )
-          )
-            {
-            logger.info("POST: Request sent from Unauthorized Client! (referer: {})",referer == null ? "not set" : referer);
-            response.setStatus(403);
-            throw new ServletException("Unauthorized");
-            }
-        */
-        
         String arg  = getParmsAndFiles(items,response,out);
         arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out,workflowRequest);
         }
-
-    /*
-    Method doPost is called if Tools is used to process uploaded files.
-     (In contrast to processing files copied from the repository.)
-    */
-    /*
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-        {
-        List<FileItem> items = parameters.getParmList(request);
-        if(UIlanguage == null)
-            UIlanguage = parameters.getPreferredLocale(request,items);
-        PrintWriter out = response.getWriter();
-        response.setContentType("text/xml");
-
-        response.setStatus(200);
-        // Check if it is the allowed server that tries to start a workflow
-        
-        if(  !request.getRemoteAddr().equals(ToolsProperties.acceptedWorkflowStarter) 
-          && !request.getRemoteAddr().equals("127.0.0.1")
-          && !request.getRemoteAddr().equals("localhost")
-          )
-            {
-            logger.info("POST: Request sent from Unauthorized Client!");
-            response.setStatus(403);
-            throw new ServletException("Unauthorized");
-            }
-        String arg  = getParmsAndFiles(items,response,out);
-        arg = assureArgHasUIlanguage(request,items,arg);
-        createAndProcessPipeLine(response,arg,out,"");
-        }
-    */
     }
