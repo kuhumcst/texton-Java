@@ -72,47 +72,25 @@
         <ivy:retrieve />
     </target>
 
-    <!-- if -Dprod=true is used, copy the production conf file to conf dir -->
-    <target name="is-prod" if="prod">
-        <copy overwrite="true" file="properties_prod.xml" tofile="${conf.dir}/properties.xml"/>
-        <copy overwrite="true" file="ivy_jboss.xml" tofile="ivy.xml"/>
-        <delete file="lib/slf4j-log4j12-1.5.8.jar"/>
-        <delete file="lib/slf4j-api-1.5.8.jar"/>
-    </target>
-
-    <target name="is-dev" if="dev">
-        <copy overwrite="true" file="properties_dev.xml" tofile="${conf.dir}/properties.xml"/>
-        <copy overwrite="true" file="ivy_jboss.xml" tofile="ivy.xml"/>
-        <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
-    </target>
-
-    <target name="is-tomcat" if="tomcat">
+    <target name="is-windows" if="windows">
         <echo message="This is warning message." />
-        <copy overwrite="true" file="properties_local.xml" tofile="${conf.dir}/properties.xml"/>
+        <copy overwrite="true" file="properties_local_windows.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
         <copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
-    <target name="is-tomcatD" if="tomcatD">
-        <echo message="This is warning message." />
-        <copy overwrite="true" file="properties_local-D.xml" tofile="${conf.dir}/properties.xml"/>
-        <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
-        <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
-    </target>
-
-  <target name="is-tomcatU" if="tomcatU">
+  <target name="is-Ubuntu" if="Ubuntu">
     <echo message="This is warning message." />
     <echo message="${env.CATALINA_HOME}" />
-    <copy overwrite="true" file="properties_local_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
+    <copy overwrite="true" file="properties_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
     <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
     <copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
     <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
   </target>
 
   <!-- Set the appropriate environment -->
-    <target name="envir" depends="is-prod, is-dev, is-tomcat, is-tomcatD, is-tomcatU"/>
+    <target name="envir" depends="is-windows, is-Ubuntu"/>
 
     <!--Compile the module, clean first  -->
     <target name="compile" depends="clean, resolve, envir" description="Compiles the whole bundle">
