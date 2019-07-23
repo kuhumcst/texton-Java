@@ -1,3 +1,5 @@
+20190723 - Bring back the toolsUploadURL function.
+
 20190514 - Removed information that orgmode input is unambiguous.
 
 20190501 - Adapted title in html headers.

@@ -254,6 +254,16 @@ toolsProg=
       ( toolsdata
       = .str$(!documentRoot (|!stagingArea) !arg)
       )
+      "
+/**
+ * toolsdataURL
+ *
+ * Return the full URL to Tool's staging area.
+ * The input can be a file name: this name is appended to the returned value.
+ *
+ * Called from workflow.java
+ */"
+      (toolsdataURL=.str$(!baseUrlTools !stagingArea !arg))
       (toolsUploadURL=.str$(!baseUrlTools "/texton/upload" !arg))
       ( log
       =   c spc i logfile
