@@ -9812,8 +9812,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       "mismatch with outputs of preceding tools"
                                     )
                                   oUts$!b
-                                  arg
-                                  !arg
+                                  "arg (suppressed)"
                                 )
                             & ~
                           )
@@ -12204,15 +12203,19 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               ?
                         & log$FoundWorkflow
                       |   log$(ComputePipelines !parms)
-                        &   Pipelines$!parms
-                          : ( ?sources
-                            . ?pipes
-                            .   ( withRestriction
-                                | onlyWithoutRestriction
-                                | triviallyFulfilled
+                        & (     Pipelines$!parms
+                              : ( ?sources
+                                . ?pipes
+                                .   ( withRestriction
+                                    | onlyWithoutRestriction
+                                    | triviallyFulfilled
+                                    )
+                                  : ?restr
                                 )
-                              : ?restr
-                            )
+                            & log$("Pipelines computed restr=[" !restr "]")
+                          |   log$(ComputePipelines failed)
+                            & ~
+                          )
                         & (   !restr:withRestriction
                             & !pipes:?+[?NNN
                             & log$(NNN !NNN)
@@ -12248,6 +12251,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           | !restr:triviallyFulfilled
                           )
                       )
+                    &   log
+                      $ "We may have succeeded in computing one or more pipelines."
                     & "We may have succeeded in computing one or more pipelines."
                     & (   ( !pipes:#:?NNN
                           |   !pipes:?+[?NNN
@@ -12257,21 +12262,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & TooManyOrNone$!NNN
                       |   !Submit:"next step"
                         & log$"next step"
-                        &   ShowAllPipes
-                          $ ( !directedBy
-                            .   !hiddenData
-                                (     !parms
-                                    : ? (desiredtool.?rstr) ?
-                                  & (desiredtool.!rstr)
-                                | 
-                                )
-                                (     !parms
-                                    : ? (superset.?rstr) ?
-                                  & (superset.!rstr)
-                                | 
-                                )
-                            . !pipes
-                            )
+                        & ShowAllPipes$(!directedBy.!hiddenData.!pipes)
                       |     !parms
                           : (   ?
                                 ( bsubmit
@@ -12408,6 +12399,16 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                   )
                 & !errors:
                 & !hiddenData !Items !hid:?hiddenData
+                &     !hiddenData
+                      (   !arg:? (desiredtool.?rstr) ?
+                        & (desiredtool.!rstr)
+                      | 
+                      )
+                      (   !arg:? (superset.?rstr) ?
+                        & (superset.!rstr)
+                      | 
+                      )
+                  : ?hiddenData
                 & unpackIOparms$!parms:?parms
                 & checkIOparms$!parms
                 & readTable$tooladm
@@ -12598,7 +12599,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                           paragraph
                         $ ( "output:"
                             ( a
-                            .   (href.str$(!wwwServer "/texton/data/" !file))
+                            .   ( href
+                                . str$(!wwwServer "/texton/data/" !file)
+                                )
                               , !outp
                             )
                           )
@@ -12808,15 +12811,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                             \n\n
                             ( a
                             .   ( href
-                                .   !wwwServer
-                                    "/texton/zipresults?JobNr="
-                                    !arg
+                                . !wwwServer "/texton/zipresults?JobNr=" !arg
                                 )
                               ,   str
-                                $ ( !wwwServer
-                                    "/texton/zipresults?JobNr="
-                                    !arg
-                                  )
+                                $ (!wwwServer "/texton/zipresults?JobNr=" !arg)
                             )
                             \n\n
                             (br.,)
