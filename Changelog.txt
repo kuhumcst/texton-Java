@@ -1,4 +1,5 @@
 20190815 - Changed response ContentType to "application/xhtml+xml" in several places.
+           Changed & to &amp; in href address.
 
 20190723 - Bring back the toolsUploadURL function.
 
