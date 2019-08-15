@@ -31,9 +31,9 @@
 		.URLs {background-color:#F5CE28} */
         /*blue, gradient*/
         .bodycanvas {background: linear-gradient(#fefefe, #00d2ff33);background-repeat: no-repeat;}
-		.fileupload {background-color:#9ab9ce99}
-		.typein {background-color:#9ab9ce99}
-		.URLs {background-color:#9ab9ce99}
+		.fileupload {background-color:rgba(154,186,206,0.6)}
+		.typein {background-color:rgba(154,186,206,0.6)}
+		.URLs {background-color:rgba(154,186,206,0.6)}
         /*.typein {background-color:#43C0F6}
 		.URLs {background-color:#F81B84}*/
     </style>

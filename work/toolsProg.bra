@@ -2284,7 +2284,7 @@ toolsProg=
                 Sans
                 "MS, cursive, sans-serif;}"
                 \r\n
-                "legend {border:none;color:black;background-color:#9ab9ce99;text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
+                "legend {border:none;color:black;background-color:rgba(154,186,206,0.6);text-align:left;display:block;margin:0;padding:10px;float:left;width:100%;position:relative;font-size:15px; }"
                 \r\n
                 ".required {color:red; font-size:90%;}"
                 \r\n
