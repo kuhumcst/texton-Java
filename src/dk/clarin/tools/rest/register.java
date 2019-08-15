@@ -146,7 +146,9 @@ public class register extends HttpServlet
                 }
             else
                 {
-                response.setContentType("text/html; charset=iso8859-1");//UTF-8");
+//                response.setContentType("text/html; charset=iso8859-1");//UTF-8");
+                response.setContentType("application/xhtml+xml; charset=iso8859-1");//UTF-8");
+
                 response.setStatus(200);
                 out.println(result);
                 }

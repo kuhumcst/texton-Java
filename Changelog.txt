@@ -1,3 +1,5 @@
+20190815 - Changed response ContentType to "application/xhtml+xml" in several places.
+
 20190723 - Bring back the toolsUploadURL function.
 
 20190514 - Removed information that orgmode input is unambiguous.

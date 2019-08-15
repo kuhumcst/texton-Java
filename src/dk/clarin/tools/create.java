@@ -393,7 +393,8 @@ public class create extends HttpServlet
         if(UIlanguage == null)
             UIlanguage = parameters.getPreferredLocale(request,null);
         
-        response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+        //response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+        response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(!BracMat.loaded())
@@ -665,7 +666,8 @@ public class create extends HttpServlet
         PrintWriter out = response.getWriter();
 
 
-        response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+        //response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+        response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);
         logger.debug("PostWorkflow: {}",workflowRequest);
