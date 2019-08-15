@@ -6,11 +6,15 @@
     <!-- eSciDoc core properties -->
     <entry key="repoServiceUrl">http://127.0.0.1/ir/item/</entry>
 
-    <!-- Host names -->
+    <!-- baseUrlTools = Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
+    <!--    
     <entry key="www-server">http://130.225.251.141</entry>
-
-    <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
     <entry key="baseUrlTools">http://130.225.251.141</entry>
+    -->
+    <!---->
+    <entry key="www-server">https://nlpweb01fl.unicph.domain</entry>
+    <entry key="baseUrlTools">https://nlpweb01fl.unicph.domain/</entry>
+    <!---->
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
     <!-- Location of staging area 
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
