@@ -30,7 +30,7 @@
 		.typein {background-color:#F5CE28}
 		.URLs {background-color:#F5CE28} */
         /*blue, gradient*/
-        .bodycanvas {background: linear-gradient(#fefefe, #00d2ff33);background-repeat: no-repeat;}
+        .bodycanvas {background: linear-gradient(rgb(254,254,254), rgba(0,210,255,0.2));background-repeat: no-repeat;}
 		.fileupload {background-color:rgba(154,186,206,0.6)}
 		.typein {background-color:rgba(154,186,206,0.6)}
 		.URLs {background-color:rgba(154,186,206,0.6)}
