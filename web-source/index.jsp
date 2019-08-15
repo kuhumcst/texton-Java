@@ -75,7 +75,7 @@
                         <span id="item3a">One URL per line, each starting with http:// <br />or https://</span>
                     </td>
                     <td class="textareawide">
-                        <textarea name="URLS" rows="3" cols="80"></textarea>
+                        <textarea name="URLS" rows="3" cols="80" style="width:100%"></textarea>
                     </td>
                 </tr>
             </table>
@@ -88,7 +88,7 @@
                     <td>
                         <span id="item2a">Text to process:</span>
                     </td>
-                    <td class="textareawide"><textarea name="text" rows="3" cols="80"></textarea></td>
+                    <td class="textareawide"><textarea name="text" rows="3" cols="80" style="width:100%"></textarea></td>
                 </tr>
             </table>
         </fieldset>
