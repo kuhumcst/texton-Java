@@ -12692,7 +12692,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               ( a
                               .   ( href
                                   .   !wwwServer
-                                      "/texton/zipresults?shortletter=y&JobNr="
+                                      "/texton/zipresults?shortletter=y&amp;JobNr="
                                       !JobNr
                                   )
                                 ,   localized
