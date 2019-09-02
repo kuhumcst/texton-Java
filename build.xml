@@ -99,7 +99,7 @@
   </target>
 
   <!-- Set the appropriate environment -->
-    <target name="envir" depends="is-windows, is-Ubuntu"/>
+    <target name="envir" depends="is-windows, is-Ubuntu, is-textton"/>
 
     <!--Compile the module, clean first  -->
     <target name="compile" depends="clean, resolve, envir" description="Compiles the whole bundle">
