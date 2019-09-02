@@ -12,8 +12,8 @@
     <entry key="baseUrlTools">http://130.225.251.141</entry>
     -->
     <!---->
-    <entry key="www-server">https://nlpweb01fl.unicph.domain</entry>
-    <entry key="baseUrlTools">https://nlpweb01fl.unicph.domain/</entry>
+    <entry key="www-server">https://nlpweb01.nors.ku.dk</entry>
+    <entry key="baseUrlTools">https://nlpweb01.nors.ku.dk/</entry>
     <!---->
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
     <!-- Location of staging area 
