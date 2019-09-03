@@ -5347,8 +5347,9 @@ toolsProg=
                   | ? (span.?) ?
                   )
               & (   !content:?A (span.?M,?N) ?Z
-                  & str$(!A !Z):~
-                  & (span.!M,!A "(" !N ")" !Z)
+                  & trim$(str$(!A !Z)):~
+                  &   " " (span.!M,!A str$("(" !N ")") !Z)
+                    : ?content
                 | 
                 )
               & 255+-10*!indent:?col
@@ -9436,17 +9437,17 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         & NEWSPEC
                         &     !xm
                               (!xm:|", ")
-                                Field
-                              $ ( value
-                                . 
-                                .   getfullvalue$!value
+                              ( span
+                              .   
+                                ,   \r\n
+                                    getfullvalue$!value
                                     (   !spec:1
                                       & NEWSPEC
                                       & 
-                                    |   Field
-                                      $ (spec..getfullspec$(!value.!spec))
+                                    | "(" getfullspec$(!value.!spec) ")"
                                     )
-                                )
+                              )
+                              \r\n
                           : ?xm
                         )
                     & !xml !xm:?xml
