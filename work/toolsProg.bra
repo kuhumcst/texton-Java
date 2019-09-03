@@ -5339,13 +5339,18 @@ toolsProg=
           & \r\n (!name.atts$!attr,\r\n !content \r\n) \r\n
       )
       ( Field
-      =   name content col
+      =   name content col A M N Z
         .   !arg:(?name.?.?content)
           & (     !content
                 : ( ? (input.?) ?
                   | ? (fieldset.?) ?
                   | ? (span.?) ?
                   )
+              & (   !content:?A (span.?M,?N) ?Z
+                  & str$(!A !Z):~
+                  & (span.!M,!A "(" !N ")" !Z)
+                | 
+                )
               & 255+-10*!indent:?col
               & ( fieldset
                 .   ( style
