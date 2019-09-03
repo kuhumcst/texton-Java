@@ -5346,12 +5346,6 @@ toolsProg=
                   | ? (fieldset.?) ?
                   | ? (span.?) ?
                   )
-              & (   !content:?A (span.?M,?N) ?Z
-                  & trim$(str$(!A !Z)):~
-                  &   " " (span.!M,!A str$("(" !N ")") !Z)
-                    : ?content
-                | 
-                )
               & 255+-10*!indent:?col
               & ( fieldset
                 .   ( style
