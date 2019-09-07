@@ -127,7 +127,7 @@ public class parameters
             File tmpDir = new File(ToolsProperties.tempdir);
             if(!tmpDir.isDirectory()) 
                 {
-                throw new ServletException("Trying to set \"" + ToolsProperties.tempdir + "\" as temporary directory, but this is not a valid directory.");
+                throw new ServletException("Trying to set \"" + ToolsProperties.tempdir + "\" as temporary directory, but this is not a valid directory. See `conf/properties.xml.");
                 }
             fileItemFactory.setRepository(tmpDir);
             ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);

@@ -11,8 +11,9 @@
 
     <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
     <entry key="baseUrlTools">http://localhost</entry>
+
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
-    <!-- Location of staging area 
+    <!-- Location of staging area
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
              ProxyPass /toolsdata !
         -->
@@ -22,7 +23,7 @@
     <entry key="stagingArea">/texton/data/</entry>
     <entry key="toolsHome">/opt/texton/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
-    <entry key="tempdir">work/Catalina/localhost/texton</entry>
+    <entry key="tempdir">/opt/texton/DK-ClarinTools/work/tmp</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <entry key="password"></entry>
 

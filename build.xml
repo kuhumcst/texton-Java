@@ -21,7 +21,7 @@
     <!-- Assume that the 'Bracmat' project is in the same folder as the 'DK-ClarinTools' project
          (Clone Bracmat from https://github.com/BartJongejan/Bracmat)
     -->
-    <property name="cstdklib.dir"     value="..\Bracmat\java-JNI\java"/>
+    <property name="cstdklib.dir"     value="..\prog\bracmat\java-JNI\java"/>
     <property name="src.dir"     value="src"/>
     <property name="class.dir"   value="classes"/>
     <property name="javadoc.dir" value="javadoc"/>
