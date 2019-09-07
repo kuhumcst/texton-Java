@@ -17,7 +17,7 @@
     <!-- File appender -->
     <appender name="file" class="org.apache.log4j.RollingFileAppender" >
         <param name="MaxFileSize" value="100MB"/>
-	<param name="File" value="/opt/texton/DK-ClarinTools/work/textonJava.log" />
+	<param name="File" value="/var/log/clarin/texton.log" />
         <param name="MaxBackupIndex" value="4"/>
         <param name="Append" value="true" />
         <layout class="org.apache.log4j.PatternLayout">
