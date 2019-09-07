@@ -13,6 +13,10 @@
     <entry key="baseUrlTools">http://localhost</entry>
 
     <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
+    <!-- Location of staging area
+           remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
+             ProxyPass /toolsdata !
+        -->
     <entry key="documentRoot">/opt/texton/DK-ClarinTools/work/data/</entry>
     <!-- The value of the stagingArea key must also be the name of a service,
            so that all fetches of results by users are under control of the service! -->
