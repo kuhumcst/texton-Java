@@ -89,17 +89,8 @@
     <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
   </target>
 
-  <target name="is-texton" if="texton">
-    <echo message="This is warning message." />
-    <echo message="${env.CATALINA_HOME}" />
-    <copy overwrite="true" file="properties_ubuntu_texton.xml" tofile="${conf.dir}/properties.xml"/>
-    <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-    <copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
-    <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
-  </target>
-
   <!-- Set the appropriate environment -->
-    <target name="envir" depends="is-windows, is-Ubuntu, is-texton"/>
+    <target name="envir" depends="is-windows, is-Ubuntu"/>
 
     <!--Compile the module, clean first  -->
     <target name="compile" depends="clean, resolve, envir" description="Compiles the whole bundle">
