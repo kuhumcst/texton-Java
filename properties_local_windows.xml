@@ -22,7 +22,7 @@
     <entry key="stagingArea">/tools/work/data/</entry>
     <entry key="toolsHome">C:/gitprojects/DK-ClarinTools/work/</entry>
     <entry key="toolsProg">toolsProg.bra</entry>
-    <entry key="tempdir">work/Catalina/localhost/tools</entry>
+    <entry key="tempdir">C:/gitprojects/DK-ClarinTools/work/tmp</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <entry key="password"></entry>
 
