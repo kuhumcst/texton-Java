@@ -17,7 +17,7 @@
         p.indent {text-indent: 20px}
 		body { font-size: 100%; }
 		fieldset {border-style: none;}
-        td.textareawide {width:70%}
+		td.textareawide {width:70%}
 		.smallmargin {margin-top:0.5em; margin-bottom:0.5em;}
         /*Bold Blacks and Vibrant Highlights*/
 		/*.bodycanvas {background-color:#F5F5F5}
@@ -30,7 +30,7 @@
 		.typein {background-color:#F5CE28}
 		.URLs {background-color:#F5CE28} */
         /*blue, gradient*/
-        .bodycanvas {background: linear-gradient(rgb(254,254,254), rgba(0,210,255,0.2));background-repeat: no-repeat;}
+		.bodycanvas {background: linear-gradient(rgb(254,254,254), rgba(0,210,255,0.2));background-repeat: no-repeat;}
 		.fileupload {background-color:rgba(154,186,206,0.6)}
 		.typein {background-color:rgba(154,186,206,0.6)}
 		.URLs {background-color:rgba(154,186,206,0.6)}
