@@ -10136,7 +10136,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                              | "svg+xml"&svg:?spec
                              )
                          )
-                      & (app.rom) (format.img^!spec):?R
+                      & (app.rom) (facet.txt) (format.img^!spec):?R
                     |   @( ?
                          :   audio/
                              ( ( basic
