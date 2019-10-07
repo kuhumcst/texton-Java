@@ -7,4 +7,4 @@ This web application composes workflows from building blocks. Each building bloc
 
 The application may compose many workflows that all lead to the stated goal. In general, the more detailed the goal, the fewer solutions the application will find, even zero.
 
-The original version of the application was made during the DK-Clarin project. The application is written in the Bracmat programming language, except for the communication with the user's browser and with the tools (web services in their own right), which is implemented in Java.
+The original version of the application was made during the [DK-Clarin project](https://dkclarin.ku.dk/). The application is written in the Bracmat programming language, except for the communication with the user's browser and with the tools (web services in their own right), which is implemented in Java.
