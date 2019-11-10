@@ -5737,15 +5737,19 @@ toolsProg=
                   & spotSum$!arg
             )
           & ( eliminate
-            =   term O R T o i W S J P F D
+            =   term O R T o i W S J P F D s
               .   !arg:(?arg.?term)
                 & (   !arg:(?O.?W)
                     & ( !O
                       .     !W:%*%:?S
                           & 1:?R
                           &   whl
-                            ' ( !S:(?T,(?o.?i.?J))*?S
-                              &   !R*(!T,(!o.!i.eliminate$(!J.!term)))
+                            ' ( !S:%?s*?S
+                              &     !R
+                                  * (   !s:(?T,(?o.?i.?J))
+                                      & (!T,(!o.!i.eliminate$(!J.!term)))
+                                    | !s
+                                    )
                                 : ?R
                               )
                           & !R
@@ -6868,8 +6872,7 @@ toolsProg=
           & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
           & (!i.!o.!restriction.!superset):?userInput
-          & (   ~
-              & !recentTasks:? (!userInput.?FP) ?
+          & (   !recentTasks:? (!userInput.?FP) ?
               & (!i.!FP.withRestriction)
             |   fp$!userInput:?FP
               & ( !i
@@ -9612,7 +9615,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       & !NF:?A (!f,!v^?G) ?Z
                       & (   !G:(1|!e)
                           & !A (!f,!v^!e) !Z:?NF
-                        | log$(BOTSINGsupplement !e and !G in !arg)
+                        | 
+                        | log$(COLLISIONsupplement !e and !G in !arg)
                         )
                     )
                   & ~
@@ -9785,20 +9789,22 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               * ?a
                             )
                         & ( !a:1
-                          |     log
-                              $ ( "In feature bundle"
-                                  !A
-                                  str$(\n "of tool")
-                                  !t
-                                  str$(\n "with input")
-                                  !aa
-                                    str
-                                  $ ( \n
-                                      "mismatch with outputs of preceding tools"
-                                    )
-                                  oUts$!b
-                                  "arg (suppressed)"
-                                )
+                          |   ( 
+                              |   log
+                                $ ( "In feature bundle"
+                                    !A
+                                    str$(\n "of tool")
+                                    !t
+                                    str$(\n "with input")
+                                    !aa
+                                      str
+                                    $ ( \n
+                                        "mismatch with outputs of preceding tools"
+                                      )
+                                    oUts$!b
+                                    "arg (suppressed)"
+                                  )
+                              )
                             & ~
                           )
                   )
@@ -9856,7 +9862,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               & !pipesN:?+[?NNN
               & (   !parms:? (desiredtool.?restriction) ?
                   & !restriction:~
-                  & log$(filter !restriction)
                   & filter$(!pipesN.!restriction):?pipesN
                 | 
                 )

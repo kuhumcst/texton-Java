@@ -1,4 +1,5 @@
 20191110 - Added parameter 'parms' to 'prunePipes'.
+           Fixed error in function 'eliminate' that clipped and invalidated solutions.
 
 20190815 - Changed response ContentType to "application/xhtml+xml" in several places.
            Changed & to &amp; in href address.
