@@ -6602,13 +6602,9 @@ toolsProg=
                 & !arg
             )
           & ( fulfil
-            =     tools source goal
-                , sourcePlus
-                , forkk IO I O Os
-                , goals goalterm nnnpathh indent
-                , accPipelines Pipeline
-                , WRONGPIPES OKPIPES
-                , restriction
+            =     tools source goal sourcePlus forkk IO I O Os
+                , goals goalterm nnnpathh indent accPipelines
+                , Pipeline WRONGPIPES OKPIPES restriction
               .   !arg:(?tools.?source.?goal.?indent.?restriction)
                 & "Restrict path length to max 20"
                 & !indent:<20
@@ -6872,7 +6868,8 @@ toolsProg=
           & extractIOfeaturesFromHTTParg$(!features.I.!arg):?i
           & extractIOfeaturesFromHTTParg$(!features.O.!arg):?o
           & (!i.!o.!restriction.!superset):?userInput
-          & (   !recentTasks:? (!userInput.?FP) ?
+          & (   ~
+              & !recentTasks:? (!userInput.?FP) ?
               & (!i.!FP.withRestriction)
             |   fp$!userInput:?FP
               & ( !i
@@ -6882,7 +6879,7 @@ toolsProg=
                           + (?.?fP&haz$(!fP.!restriction))
                           + ?
                       )
-                    & prunePipes$!FP:?FP
+                    & prunePipes$(!FP.!arg):?FP
                     & ( !recentTasks:?recentTasks [3 ?
                       | 
                       )
@@ -9827,9 +9824,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & !pipes
       )
       ( prunePipes
-      =     As Ax NNN Z ax incarnationpipes
-          , newpipes parms pipe pipes pipesN restriction
-        .   !arg:?pipes
+      =     As Ax NNN Z ax incarnationpipes parms
+          , newpipes pipe pipes pipesN restriction
+        .   !arg:(?pipes.?parms)
           & 0:?newpipes
           &   whl
             ' ( !pipes:((?.?):?incarnationpipes)+?pipes
@@ -10136,7 +10133,10 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                              | "svg+xml"&svg:?spec
                              )
                          )
-                      & (app.rom) (facet.txt) (format.img^!spec):?R
+                      &     (app.rom)
+                            (facet.txt)
+                            (format.img^!spec)
+                        : ?R
                     |   @( ?
                          :   audio/
                              ( ( basic
