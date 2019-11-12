@@ -40,7 +40,6 @@ public class cleanup extends HttpServlet
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(cleanup.class);
 
-    private File destinationDir;
     private bracmat BracMat;
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
@@ -53,11 +52,6 @@ public class cleanup extends HttpServlet
         //date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
-        if(!destinationDir.isDirectory()) 
-            {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
-            }
         }
 
     public void doGet(HttpServletRequest request,HttpServletResponse response)
@@ -70,6 +64,12 @@ public class cleanup extends HttpServlet
             {
             response.setStatus(500);
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
+            }
+
+        File destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
+        if(!destinationDir.isDirectory()) 
+            {
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
 
         PrintWriter out = response.getWriter();
