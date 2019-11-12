@@ -29,9 +29,11 @@
       flatFileTypes
       htmlStyles
       imageStyles
+      jsonStyles
       sndStyles
       tagSets
       tokenisationStyles
       vidStyles
   . meta/style/
   )
+
