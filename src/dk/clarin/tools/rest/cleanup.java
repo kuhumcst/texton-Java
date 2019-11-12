@@ -78,7 +78,7 @@ public class cleanup extends HttpServlet
             {
             response.setStatus(404);
             //response.sendError(404,"File " + request.getPathInfo() + " does not exist.");
-            throw new ServletException("File " + request.getPathInfo() + " does not exist.");
+            throw new ServletException("destinationDir " + destinationDir.getPath() + " lists empty String[].");
             }
         else
             {
