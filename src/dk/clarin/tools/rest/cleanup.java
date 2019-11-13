@@ -22,6 +22,7 @@ import dk.clarin.tools.workflow;
 import dk.cst.bracmat;
 import java.io.File;
 import java.io.IOException;
+import java.security.AccessControlException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -73,12 +74,28 @@ public class cleanup extends HttpServlet
             }
 
         PrintWriter out = response.getWriter();
-        String[] chld = destinationDir.list();
+        String[] chld = null;
+        try
+            {
+            chld = destinationDir.list();
+            }
+        catch(java.security.AccessControlException e)
+            {
+            logger.debug("destinationDir.list() causes java.security.AccessControlException, error is: " + e.getMessage());
+            }
+        catch(SecurityException e)
+            {
+            logger.debug("destinationDir.list() causes SecurityException, error is: " + e.getMessage());
+            }
+        catch(Exception e)
+            {
+            logger.debug("destinationDir.list() causes Exception, error is: " + e.getMessage());
+            }
         if(chld == null)
             {
             response.setStatus(404);
             //response.sendError(404,"File " + request.getPathInfo() + " does not exist.");
-            throw new ServletException("destinationDir " + destinationDir.getPath() + " lists empty String[].");
+            throw new ServletException("destinationDir " + destinationDir.getPath() + ": list() returns NULL.");
             }
         else
             {
