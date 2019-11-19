@@ -1,3 +1,6 @@
+20191119 - Added recognition of tab-separated input, with and without
+           interspersed empty lines.
+
 20191110 - Added parameter 'parms' to 'prunePipes'.
            Fixed error in function 'eliminate' that clipped and invalidated solutions.
 
