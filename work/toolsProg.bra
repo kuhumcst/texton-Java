@@ -7471,7 +7471,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
               )
           & !jobs !newJobs:?jobs
           & saveTable$jobs
-          & lst$(jobs,path$jobs,APP)
           & !maxjobID
       )
       "
@@ -7883,8 +7882,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                         ,   ( body
                             .   
                               ,     !BODYCONTENT:~
-                                  &   lst
-                                    $ (BODYCONTENT,path$BODYCONTENT,NEW)
                                   & (   !BODYCONTENT
                                       : (   ?
                                             ( text
@@ -12667,7 +12664,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
             | @(!arg:? #?JobNr)&10:?secs
             )
           & readTable$jobs
-          & lst$(jobs,path$myjobs,NEW)
           & readTable$tooladm
           & readTable$Uploads
           & div$(!deleteAfterMillisec*86400000^-1*24.1):?hours
