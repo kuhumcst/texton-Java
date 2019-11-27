@@ -7281,7 +7281,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           & readTable$Uploads
           & :?newJobs
           & ( readTable$jobs
-            | :?jobs&lst$(jobs,path$jobs,NEW)
+            | :?jobs
             )
           &   whl
             ' ( !JobStack:(?jobID.?Tool.?ou.?in) ?JobStack
