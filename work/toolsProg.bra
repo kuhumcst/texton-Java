@@ -7028,7 +7028,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
           , DATE Tool URL dep discerningFeature
           , feat in ou spec v nfiles fileTerm
           , inputs moreinputs firstinput other fh oh
-          , compact compatible simpleInput
+          , compact compatible simpleInput someinputs
           , getDepsAndAddInputsToRequestString
         .   "getDisFe establishes the feature that the given tool has to look
              for among the input Items, if it needs an item from that list.
@@ -7384,7 +7384,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                       & log$(requestString !requestString)
                       &   str
                         $ ( (     !inputs
-                                : (@(?:step ?),?) ?
+                                : ? (@(?:step ?),?) ?
                               &   !requestString
                                 : (   ?
                                     + (F.@(?:?inputs "-step" #% ?))
@@ -7393,7 +7393,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                       + ( I
                                         .   ?
                                           + ( ?
-                                            .   ?
+                                            .   ?someinputs
                                               + ( ?
                                                 .   ?
                                                   + ( F
@@ -7412,8 +7412,11 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         )
                                       + ?
                                     & log$(firstinput !firstinput)
+                                    & log$(someinputs !someinputs)
                                     & log$(moreinputs !moreinputs)
                                     & :?inputs
+                                    &   !someinputs+!moreinputs
+                                      : ?moreinputs
                                     &   whl
                                       ' (   !moreinputs
                                           :   ?
@@ -7421,7 +7424,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                               .   ?
                                                 + ( F
                                                   . @( ?
-                                                     : ?other "-step" #% ?
+                                                     : ( ?other "-step" #% ?
+                                                       | ?other
+                                                       )
                                                      )
                                                   )
                                                 + ?
