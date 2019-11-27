@@ -7380,8 +7380,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                     . compact$!requestString:?requestString
                     .   "Output from tool:"
                       & @(!jobID:? #?ID)
-                      & log$(inputs !inputs)
-                      & log$(requestString !requestString)
                       &   str
                         $ ( (     !inputs
                                 : ? (@(?:step ?),?) ?
@@ -7411,9 +7409,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                           + ?
                                         )
                                       + ?
-                                    & log$(firstinput !firstinput)
-                                    & log$(someinputs !someinputs)
-                                    & log$(moreinputs !moreinputs)
                                     & :?inputs
                                     &   !someinputs+!moreinputs
                                       : ?moreinputs
@@ -7432,11 +7427,9 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                 + ?
                                               )
                                             + ?moreinputs
-                                        & log$(other !other)
                                         & @( !firstinput
                                            : ?fh [%@(!other:?oh !sjt)
                                            )
-                                        & log$(fh !fh oh !oh)
                                         &     str
                                             $ (   ( !fh:
                                                   | !oh:
@@ -7470,7 +7463,6 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                               )
                                           : ?inputs
                                         )
-                                    & log$(inputs !inputs)
                                   )
                               & !inputs
                             |   ( !inputs:@
