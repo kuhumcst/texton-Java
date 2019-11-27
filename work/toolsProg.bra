@@ -7440,6 +7440,8 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                         &     str
                                             $ (   ( !fh:
                                                   | !oh:
+                                                  |   @(!fh:!oh "-" #?)
+                                                    & :?oh
                                                   )
                                                 & (     !inputs
                                                       : ( 
