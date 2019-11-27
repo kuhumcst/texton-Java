@@ -9968,6 +9968,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                                                  (   ( dan
                                                      | lat
                                                      | mlg
+                                                     | swe
                                                      )
                                                    : ?la
                                                  & !la+!lang:?lang
@@ -9991,6 +9992,7 @@ the Items list as input. Step descriptions in the JobStack can look like this:
                               .   !lang:lat&la
                                 | !lang:dan&da
                                 | !lang:mlg&gml
+                                | !lang:swe&sv
                               )
                           | 
                           )
