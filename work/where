@@ -1,0 +1,39 @@
+  (AAA where./)
+  ( CTBs jobAbout jobNr jobs relations Uploads zippedresults
+  . job/
+  )
+  (   features
+      HTTP-status-codes
+      ISO639
+      licences
+      subtype2facet
+      tooladm
+      toolprop
+      type2facet
+      Workflows
+      UIlanguage
+      TEImetadata
+  . meta/
+  )
+  (   facets
+      fileFormats
+      linguae
+      periods
+      presentations
+      vulticuli
+      ambiguity
+  . meta/feature/
+  )
+  (   annotationStyles
+      basistextStyles
+      flatFileTypes
+      htmlStyles
+      imageStyles
+      jsonStyles
+      sndStyles
+      tagSets
+      tokenisationStyles
+      vidStyles
+  . meta/style/
+  )
+

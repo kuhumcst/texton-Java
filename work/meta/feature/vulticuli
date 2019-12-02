@@ -1,7 +1,0 @@
-  (roman roman.rom.)
-  (blackletter gotisk.got.)
-  (OCR.ocr.)
-  (unnormalised ikke-normaliseret.unn.)
-  (normalised normaliseret.nrm.)
-  ("optimized for software" "bedst for programmer".drty.)
-  ("pretty printed" "nydelig opsætning".prtty.)

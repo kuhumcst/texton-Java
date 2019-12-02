@@ -1,1 +1,0 @@
-In this folder administrative data about jobs is stored.

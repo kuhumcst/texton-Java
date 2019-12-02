@@ -1,7 +1,0 @@
-  (text.txt)
-  (p-splitter.par)
-  (s-splitter.seg)
-  (tokenizer.tok)
-  (pos-tagger.pos)
-  (lemmatizer.lem)
-  (term-tagger.trm)
