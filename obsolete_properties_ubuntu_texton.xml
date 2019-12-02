@@ -1,0 +1,34 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- DEV -->
+<properties>
+    <comment>Properties for a local system</comment>
+
+    <!-- eSciDoc core properties -->
+    <entry key="repoServiceUrl">http://127.0.0.1/ir/item/</entry>
+
+    <!-- Host names -->
+    <entry key="www-server">http://localhost:8080</entry>
+
+    <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
+    <entry key="baseUrlTools">http://localhost</entry>
+    <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
+    <!-- Location of staging area 
+           remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
+             ProxyPass /toolsdata !
+        -->
+    <entry key="documentRoot">/opt/texton/DK-ClarinTools/work/data/</entry>
+    <!-- The value of the stagingArea key must also be the name of a service,
+           so that all fetches of results by users are under control of the service! -->
+    <entry key="stagingArea">/texton/data/</entry>
+    <entry key="toolsHome">/opt/texton/DK-ClarinTools/work/</entry>
+    <entry key="toolsProg">toolsProg.bra</entry>
+    <entry key="tempdir">work/Catalina/localhost/texton</entry>
+    <!-- used for testing and hot reloading of toolsProg.bra -->
+    <entry key="password"></entry>
+
+    <!--  86400000 == one day  -->
+    <!-- 172800000 == two days -->
+    <entry key="deleteAfterMillisec">172800000</entry>
+</properties>
+
+

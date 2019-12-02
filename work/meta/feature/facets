@@ -1,0 +1,46 @@
+  (text "Ingen annotation".txt.)
+  (paragraphs Paragrafsegmenter.par.)
+  (sentences "Sætninger, før tokenisering".sent.)
+  (segments Sætningssegmenter.seg.)
+  (tokens Tokens.tok.)
+  ("name entities" Navne.ner.)
+  ("anonymized named entities".ano.)
+  ("word class" ordklasse.cls.)
+  (PoS-tags PoS-tags.pos.)
+  (lemmas Lemma.lem.)
+  ("noun phrases" "navnefraser (NP)".npr.)
+  ("syntax (dependency structure)" "Syntaks (dependensstruktur)".stx.)
+  ("tagged terms" termer.trm.)
+  (morphemes morfemer.wrdsplt.)
+  ("repeated phrases" gentagelser.rep.)
+  ("N-gram frequencies" "N-gram frekvenser".Ngram.)
+  (keywords.key.)
+  ("multiple word terms" flerordstermer.mwu.)
+  (lexicon leksikon.lex.)
+  ("head movements" hovedbevægelser.headmov.)
+  ("segments,tokens" "Sætningssegmenter,tokens".seto.)
+  ( "segments,tokens,named entities" "Sætningssegmenter,tokens,navne"
+  . stn
+  . 
+  )
+  ("segments,PoS-tags" "Segmenter, PoS-tags".spo.)
+  ("segments,tokens,PoS-tags" "segmenter,tokens,PoS-tags".stp.)
+  ("segments,lemmas" "segmenter,lemmaer".sl.)
+  ("segments,tokens,lemmas" "segmenter,tokens,lemmaer".stl.)
+  ( "segments,tokens,lemmas,PoS-tags" "segmenter,tokens,lemmaer,PoS-tags"
+  . stlp
+  . 
+  )
+  (   "segments,tokens,word class,PoS-tags,lemmas"
+      "segmenter,tokens,ordklasse,PoS-tags,lemmaer"
+  . stopl
+  . 
+  )
+  (   "segments,tokens,PoS-tags,Dependency relations"
+      "segmenter,tokens,PoS-tags,Dependency relations"
+  . stpd
+  . 
+  )
+  ("tokens,PoS-tags" "tokens,PoS-tags".tp.)
+  ("tokens,lemmas" "tokens,lemmaer".tl.)
+  ("tokens,PoS-tags,lemmas" "tokens,PoS-tags,lemmaer".tlp.)

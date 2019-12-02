@@ -1,0 +1,96 @@
+  ( 4303
+  .   (mail2.)
+      ( human
+      .   ( div
+          .   (class.tooltip)
+            ,   "CST's RTFreader"
+                ( span
+                .   (class.tooltiptext)
+                  , "Extracts segments from RTF-file or from plain text. Optionally tokenises."
+                )
+          )
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   "Create pre-tokenized Clarin Base Format text"
+                ( span
+                .   (class.tooltiptext)
+                  , "From a plain segmentized and tokenized text file that uses DEL characters to separate tokens that are written together in the input, create a TEI P5 Clarin Base Format text with attributes S and T for segment and token identification."
+                )
+          )
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   Tokenizer
+                ( span
+                .   (class.tooltiptext)
+                  , "From Clarin Base Format enriched with token and segment attributes, extract tokens and their offset in the input."
+                )
+          )
+          (strong.,":" 3)
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   CST-Lemmatiser
+                ( span
+                .   (class.tooltiptext)
+                  , "Produces the dictionary look-up form (or lemma) for each word, inflected or not, in the input."
+                )
+          )
+          " + "
+          (strong.,3)
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   "TEI P5 anno to Org-mode"
+                ( span
+                .   (class.tooltiptext)
+                  , "Convert TEI P5 stand-off annotation to a two column file in Org-mode format. The first column contains a token, the second contains the annotation: POS-tag, word class, or lemma"
+                )
+          )
+          (br.,)
+      )
+      (userProvidedMetadata.)
+  )
+  ( 4302
+  .   (mail2.)
+      ( human
+      .   ( div
+          .   (class.tooltip)
+            ,   "CST's RTFreader"
+                ( span
+                .   (class.tooltiptext)
+                  , "Extracts segments from RTF-file or from plain text. Optionally tokenises."
+                )
+          )
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   LemPoS
+                ( span
+                .   (class.tooltiptext)
+                  , "Lemmatizes input text and adds PoS-options to each lemma. Output can be ambiguous."
+                )
+          )
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   PruneLemPos
+                ( span
+                .   (class.tooltiptext)
+                  , "Takes text input that has lemma and PoS annotations that are ambiguous. In the output, the ambiguity is dimished by using bigram frequencies."
+                )
+          )
+          " → "
+          ( div
+          .   (class.tooltip)
+            ,   "JSON to ORG-mode converter"
+                ( span
+                .   (class.tooltiptext)
+                  , "Converts JSON output with tokens, lemmas and Part of Speech tags to a three-column ORG-mode table."
+                )
+          )
+          (br.,)
+      )
+      (userProvidedMetadata.)
+  )

@@ -1,0 +1,353 @@
+  0
+  ( 4298
+  . step1 done
+  . text-1
+  . "https://nlpweb01.nors.ku.dk/rtfreader/"
+  .   (F.text-1)
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.flat.0)
+        + (lang.ru.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.plainD.0)
+        + (lang.ru.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4298-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-1-4298-step1.plainD"
+  )
+  ( 4299
+  . step1 done
+  . text-1
+  . "https://nlpweb01.nors.ku.dk/rtfreader/"
+  .   (F.text-1)
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.flat.0)
+        + (lang.ru.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.plainD.0)
+        + (lang.ru.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4299-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-1-4299-step1.plainD"
+  )
+  ( 4300
+  . step1 done
+  . "dvaergekongen-laurin-1.xml"
+  . "https://nlpweb01.nors.ku.dk/teitok/"
+  .   (F."dvaergekongen-laurin-1.xml")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.teip5.0)
+        + (lang.da.0)
+        + (period.c13.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.txtann.0)
+        + (lang.da.0)
+        + (period.c13.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4300-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "dvaergekongen-laurin-1.xml-4300-step1.xml"
+  )
+  ( 4301
+  . step1 done
+  . "jaertegnspostil-2.xml"
+  . "https://nlpweb01.nors.ku.dk/teitok/"
+  .   (F."jaertegnspostil-2.xml")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.teip5.0)
+        + (lang.da.0)
+        + (period.c13.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.txtann.0)
+        + (lang.da.0)
+        + (period.c13.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4301-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "jaertegnspostil-2.xml-4301-step1.xml"
+  )
+  ( 4302
+  . step1 done
+  . text-2
+  . "https://nlpweb01.nors.ku.dk/rtfreader/"
+  .   (F.text-2)
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.flat.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.flat.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4302-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4302-step1.txt"
+  )
+  ( 4302
+  . step2 done
+  . step1
+  . "https://nlpweb01.nors.ku.dk/lempos"
+  .   (F."text-2-4302-step1.txt")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple.0)
+        + (format.flat.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.amb.0)
+        + (app.drty.0)
+        + (facet.stlp.Menotas)
+        + (format.json.nid)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4302-step2)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4302-step2.json"
+  )
+  ( 4302
+  . step3 done
+  . step2
+  . "https://nlpweb01.nors.ku.dk/PruLePo/"
+  .   (F."text-2-4302-step2.json")
+    + ( I
+      .   (ambig.amb.0)
+        + (app.drty.0)
+        + (facet.stlp.Menotas.0)
+        + (format.json.nid.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.pru.0)
+        + (app.drty.0)
+        + (facet.stlp.Menotas)
+        + (format.json.nid)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4302-step3)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4302-step3.json"
+  )
+  ( 4302
+  . step4 done
+  . step3
+  . "https://nlpweb01.nors.ku.dk/json2org"
+  .   (F."text-2-4302-step3.json")
+    + ( I
+      .   (ambig.pru.0)
+        + (app.drty.0)
+        + (facet.stlp.Menotas.0)
+        + (format.json.nid.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.pru.0)
+        + (app.nrm.0)
+        + (facet.tlp.Menotas)
+        + (format.dipl.0)
+        + (lang.nl.0)
+        + (period.c21.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4302-step4)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4302-step4.dipl"
+  )
+  ( 4303
+  . step1 done
+  . text-2
+  . "https://nlpweb01.nors.ku.dk/rtfreader/"
+  .   (F.text-2)
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.txt.0)
+        + (format.flat.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.plainD.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4303-step1)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4303-step1.plainD"
+  )
+  ( 4303
+  . step2 done
+  . step1
+  . "https://nlpweb01.nors.ku.dk/plainD2cbf"
+  .   (F."text-2-4303-step1.plainD")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple.0)
+        + (format.plainD.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple)
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4303-step2)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4303-step2.xml"
+  )
+  ( 4303
+  . step3 done
+  . step2
+  . "https://nlpweb01.nors.ku.dk/tok"
+  .   (F."text-2-4303-step2.xml")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.seto.simple.0)
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.tok.0)
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4303-step3)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4303-step3.xml"
+  )
+  ( 4303
+  . step4 done
+  . step3
+  . "https://nlpweb01.nors.ku.dk/CST-lemma/"
+  .   (F."text-2-4303-step3.xml")
+    + ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.tok.0)
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.lem.0)
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4303-step4)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4303-step4.xml"
+  )
+  ( 4303
+  . step5 done
+  . step3 step4
+  . "https://nlpweb01.nors.ku.dk/tei2org"
+  .   ( I
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + ( facet
+          .   (lem.F."text-2-4303-step4.xml")
+            + (tok.F."text-2-4303-step3.xml")
+          )
+        + (format.txtann.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + ( O
+      .   (ambig.una.0)
+        + (app.nrm.0)
+        + (facet.tl.0)
+        + (format.dipl.0)
+        + (lang.nl.0)
+        + (pres.nml.0)
+      )
+    + (base."https://cst.dk/texton/data/")
+    + (job.4303-step5)
+    + (post2."https://cst.dk/texton/upload")
+  . "text-2-4303-step5.dipl"
+  )

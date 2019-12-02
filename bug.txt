@@ -1,0 +1,371 @@
+Buildfile: /opt/csttools/DK-ClarinTools/build.xml
+
+download-ivy:
+     [echo] installing ivy...
+      [get] Getting: http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.0.0/ivy-2.0.0.jar
+      [get] To: /opt/csttools/DK-ClarinTools/lib/ivy.jar
+      [get] Not modified - so not downloaded
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+Buildfile: /opt/csttools/DK-ClarinTools/build.xml
+
+is-prod:
+
+is-dev:
+
+is-tomcat:
+
+is-tomcatD:
+
+is-tomcatU:
+     [echo] This is warning message.
+     [echo] ${env.CATALINA_HOME}
+     [copy] Copying 1 file to /opt/csttools/DK-ClarinTools/conf
+     [copy] Copying 1 file to /opt/csttools/DK-ClarinTools
+     [copy] Copying 1 file to /opt/csttools/DK-ClarinTools/lib
+   [delete] Deleting: /opt/csttools/DK-ClarinTools/lib/slf4j-log4j12-1.6.4.jar
+   [delete] Deleting: /opt/csttools/DK-ClarinTools/lib/slf4j-api-1.6.4.jar
+
+envir:
+
+clean:
+   [delete] Deleting directory /opt/csttools/DK-ClarinTools/classes
+
+download-ivy:
+
+install-ivy:
+
+resolve:
+[ivy:retrieve] :: Ivy 2.0.0 - 20090108225011 :: http://ant.apache.org/ivy/ ::
+[ivy:retrieve] log4j:WARN No appenders could be found for logger (org.apache.commons.httpclient.HttpClient).
+[ivy:retrieve] log4j:WARN Please initialize the log4j system properly.
+:: loading settings :: file = /opt/csttools/DK-ClarinTools/conf/ivy.settings.xml
+[ivy:retrieve] :: resolving dependencies :: dkclarin#tools;working@ada
+[ivy:retrieve] 	confs: [default]
+[ivy:retrieve] 	found commons-codec#commons-codec;1.4 in central
+[ivy:retrieve] 	found commons-httpclient#commons-httpclient;3.1 in central
+[ivy:retrieve] 	found commons-fileupload#commons-fileupload;1.2.1 in central
+[ivy:retrieve] 	found commons-io#commons-io;1.4 in central
+[ivy:retrieve] 	found commons-logging#commons-logging;1.1.1 in central
+[ivy:retrieve] 	found log4j#log4j;1.2.15 in central
+[ivy:retrieve] 	found org.slf4j#slf4j-api;1.6.4 in central
+[ivy:retrieve] 	found org.slf4j#slf4j-log4j12;1.6.4 in central
+[ivy:retrieve] 	found org.apache.commons#commons-email;1.2 in central
+[ivy:retrieve] 	found com.googlecode.juniversalchardet#juniversalchardet;1.0.3 in central
+[ivy:retrieve] :: resolution report :: resolve 574ms :: artifacts dl 40ms
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   10  |   0   |   0   |   0   ||   10  |   0   |
+	---------------------------------------------------------------------
+[ivy:retrieve] :: retrieving :: dkclarin#tools
+[ivy:retrieve] 	confs: [default]
+[ivy:retrieve] 	2 artifacts copied, 8 already retrieved (34kB/26ms)
+
+compile:
+    [mkdir] Created dir: /opt/csttools/DK-ClarinTools/classes
+    [javac] /opt/csttools/DK-ClarinTools/build.xml:119: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 21 source files to /opt/csttools/DK-ClarinTools/classes
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:291: error: orphaned case
+    [javac]             case ERRORUSER: 
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:311: error: <identifier> expected
+    [javac]             email.setSubject(subject);
+    [javac]                             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:311: error: <identifier> expected
+    [javac]             email.setSubject(subject);
+    [javac]                                     ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:312: error: <identifier> expected
+    [javac]             email.setMsg(body);
+    [javac]                         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:312: error: <identifier> expected
+    [javac]             email.setMsg(body);
+    [javac]                              ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:313: error: <identifier> expected
+    [javac]             email.updateContentType("text/html; charset=UTF-8");
+    [javac]                                    ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:313: error: illegal start of type
+    [javac]             email.updateContentType("text/html; charset=UTF-8");
+    [javac]                                     ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:314: error: <identifier> expected
+    [javac]             email.addTo(mail2,name);
+    [javac]                        ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:314: error: <identifier> expected
+    [javac]             email.addTo(mail2,name);
+    [javac]                              ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:314: error: <identifier> expected
+    [javac]             email.addTo(mail2,name);
+    [javac]                                   ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:315: error: <identifier> expected
+    [javac]             email.send();
+    [javac]                       ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:317: error: class, interface, or enum expected
+    [javac]         catch (org.apache.commons.mail.EmailException m)
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:328: error: class, interface, or enum expected
+    [javac]             logger.error("{} Error sending email. Message is: {}","Tools", m.getMessage());
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:329: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:340: error: class, interface, or enum expected
+    [javac]             logger.error("{} Exception:{}","Tools",e.getMessage());
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:341: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:347: error: class, interface, or enum expected
+    [javac]     public static String escape(String str)
+    [javac]                   ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:350: error: class, interface, or enum expected
+    [javac]         StringBuilder sb = new StringBuilder((3 * len)/ 2); 
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:351: error: class, interface, or enum expected
+    [javac]         for(int i = 0;i < str.length();++i)
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:351: error: class, interface, or enum expected
+    [javac]         for(int i = 0;i < str.length();++i)
+    [javac]                       ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:351: error: class, interface, or enum expected
+    [javac]         for(int i = 0;i < str.length();++i)
+    [javac]                                        ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:356: error: class, interface, or enum expected
+    [javac]                 }
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:358: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:360: error: class, interface, or enum expected
+    [javac]         }
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:362: error: class, interface, or enum expected
+    [javac]     public static String quote(String str)
+    [javac]                   ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:365: error: class, interface, or enum expected
+    [javac]         }
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:367: error: class, interface, or enum expected
+    [javac]     public static String escapedquote(String str)
+    [javac]                   ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:370: error: class, interface, or enum expected
+    [javac]         }
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:376: error: class, interface, or enum expected
+    [javac]         logger.debug("processPipeLine("  + result + ")");
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:377: error: class, interface, or enum expected
+    [javac]         int code = 0;
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:378: error: class, interface, or enum expected
+    [javac]         boolean asynchronous = false;
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:379: error: class, interface, or enum expected
+    [javac]         while(jobs > 0)
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:399: error: class, interface, or enum expected
+    [javac]             String jobID = BracMat.Eval("getNextJobID$(" + result + ")");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:401: error: class, interface, or enum expected
+    [javac]             logger.debug("processPipeLine getNextJobID returns {}",jobID);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:403: error: class, interface, or enum expected
+    [javac]             if(jobID.equals(""))
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:405: error: class, interface, or enum expected
+    [javac]             else
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:421: error: class, interface, or enum expected
+    [javac]                 String endpoint      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".endpoint)");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:424: error: class, interface, or enum expected
+    [javac]                 String requestString = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".requestString)");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:427: error: class, interface, or enum expected
+    [javac]                 String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:428: error: class, interface, or enum expected
+    [javac]                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:429: error: class, interface, or enum expected
+    [javac]                 boolean postmethod = method.equals("POST");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:430: error: class, interface, or enum expected
+    [javac]                 logger.debug("sendRequest("  + result + ", " + endpoint + "," + requestString + ", " + filename + ", " + jobID + ", " + postmethod + ")");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:432: error: class, interface, or enum expected
+    [javac]                 code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:433: error: class, interface, or enum expected
+    [javac]                 if(code == 202)
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:435: error: class, interface, or enum expected
+    [javac]                 logger.debug("processPipeLine has done the job");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:436: error: class, interface, or enum expected
+    [javac]                 }
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:440: error: class, interface, or enum expected
+    [javac]                 logger.info("processPipeLine aborts");
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:441: error: class, interface, or enum expected
+    [javac]                 }
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:444: error: class, interface, or enum expected
+    [javac]         if(!asynchronous)
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:453: error: class, interface, or enum expected
+    [javac]             logger.debug("processPipeLine calls doneAllJob {}", result);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:467: error: class, interface, or enum expected
+    [javac]             logger.debug("processPipeLine calls doneAllJob {} DONE", result);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:487: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:489: error: class, interface, or enum expected
+    [javac]         }
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:491: error: class, interface, or enum expected
+    [javac]     public static void got200(String result, bracmat BracMat, String filename, String jobID, InputStream input)
+    [javac]                   ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:500: error: class, interface, or enum expected
+    [javac]         String destdir = BracMat.Eval("toolsdata$");
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:507: error: class, interface, or enum expected
+    [javac]         try
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:510: error: class, interface, or enum expected
+    [javac]             String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:511: error: class, interface, or enum expected
+    [javac]             logger.debug("TEIformat=" + TEIformat);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:513: error: class, interface, or enum expected
+    [javac]             byte[] buffer = new byte[4096];
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:514: error: class, interface, or enum expected
+    [javac]             int n = - 1;
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:515: error: class, interface, or enum expected
+    [javac]             int N = 0;
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:516: error: class, interface, or enum expected
+    [javac]             boolean isBasisText = TEIformat.equals("txtbasis");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:517: error: class, interface, or enum expected
+    [javac]             StringWriter outputM = new StringWriter();
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:519: error: class, interface, or enum expected
+    [javac]             OutputStream outputF = new FileOutputStream( destdir+FilenameNoMetadata(filename,BracMat) );
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:521: error: class, interface, or enum expected
+    [javac]             boolean isTextual = false;        
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:522: error: class, interface, or enum expected
+    [javac]             String textable = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".isText)");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:523: error: class, interface, or enum expected
+    [javac]             if(textable.equals("y"))
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:525: error: class, interface, or enum expected
+    [javac]             logger.debug("textable:" + (isTextual ? "ja" : "nej"));
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:527: error: class, interface, or enum expected
+    [javac]             while((n = input.read(buffer)) != -1)
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:532: error: class, interface, or enum expected
+    [javac]                     outputF.write(buffer, 0, n);
+    [javac]                     ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:533: error: class, interface, or enum expected
+    [javac]                     if(isTextual)
+    [javac]                     ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:536: error: class, interface, or enum expected
+    [javac]                         try {
+    [javac]                         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:538: error: class, interface, or enum expected
+    [javac]                             }
+    [javac]                             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:542: error: class, interface, or enum expected
+    [javac]                             }
+    [javac]                             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:548: error: class, interface, or enum expected
+    [javac]             String requestResult = outputM.toString();
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:550: error: class, interface, or enum expected
+    [javac]             Calendar cal = Calendar.getInstance();
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:551: error: class, interface, or enum expected
+    [javac]             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:552: error: class, interface, or enum expected
+    [javac]             String date = sdf.format(cal.getTime());
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:553: error: class, interface, or enum expected
+    [javac]             logger.debug("Calling doneJob(" + result + "," + jobID + "," + date + ")");
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:571: error: class, interface, or enum expected
+    [javac]             String newResource;
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:572: error: class, interface, or enum expected
+    [javac]             if(TEIformat.equals(""))
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:575: error: class, interface, or enum expected
+    [javac]                 }
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:580: error: class, interface, or enum expected
+    [javac]                 logger.debug("Going to write {}",destdir+Filename(filename,BracMat));
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:581: error: class, interface, or enum expected
+    [javac]                 FileWriter fstream = new FileWriter(destdir+Filename(filename,BracMat));
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:582: error: class, interface, or enum expected
+    [javac]                 BufferedWriter Out = new BufferedWriter(fstream);
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:583: error: class, interface, or enum expected
+    [javac]                 Out.write(newResource);
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:584: error: class, interface, or enum expected
+    [javac]                 Out.close();
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:585: error: class, interface, or enum expected
+    [javac]                 }
+    [javac]                 ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:599: error: class, interface, or enum expected
+    [javac]             FileWriter fstream = new FileWriter(destdir+FilenameRelations(filename,BracMat));
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:600: error: class, interface, or enum expected
+    [javac]             BufferedWriter Out = new BufferedWriter(fstream);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:601: error: class, interface, or enum expected
+    [javac]             Out.write(relations);
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:602: error: class, interface, or enum expected
+    [javac]             Out.close();
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:603: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:616: error: class, interface, or enum expected
+    [javac]             /*filelist =*/ BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
+    [javac]                            ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:617: error: class, interface, or enum expected
+    [javac]             }
+    [javac]             ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:620: error: class, interface, or enum expected
+    [javac]     public void didnotget200(int code,String result, String endpoint, String requestString, bracmat BracMat, String filename, String jobID, boolean postmethod,String urlStr,String message, String requestResult)
+    [javac]            ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:623: error: class, interface, or enum expected
+    [javac]         String mail2 = BracMat.Eval("mail2$(" + result + ")"); 
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:624: error: class, interface, or enum expected
+    [javac]         logger.debug("Job " + jobID + " has mail2 '" + mail2 + "'");
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:625: error: class, interface, or enum expected
+    [javac]         try
+    [javac]         ^
+    [javac] /opt/csttools/DK-ClarinTools/src/dk/clarin/tools/workflow.java:639: error: class, interface, or enum expected
+    [javac]                     }
+    [javac]                     ^
+    [javac] 100 errors

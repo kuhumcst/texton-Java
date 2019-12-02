@@ -1,0 +1,181 @@
+steps=
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,1)
+        (name.,"470-1.org-4297-step1.plainD")
+        (tool.,"Diplom fetch corrected text")
+        (items.,(item.,(id.,"470.org") (title.,"470.org")))
+        ( input
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=tokens, Format=Org-mode, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens, Format=plain text with ASCII 127 characters, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,plainD)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,2)
+        (name.,"470-1.org-4297-step2.xml")
+        (tool.,"Create pre-tokenized Clarin Base Format text")
+        (items.,)
+        ( input
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens, Format=plain text with ASCII 127 characters, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,3)
+        (name.,"470-1.org-4297-step3.xml")
+        (tool.,Tokenizer)
+        (items.,)
+        ( input
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=tokens, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,4)
+        (name.,"470-1.org-4297-step4.xml")
+        (tool.,CST-Lemmatiser)
+        (items.,)
+        ( input
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=tokens, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=lemmas, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,5)
+        (name.,"470-1.org-4297-step5.dipl")
+        (tool.,"TEI P5 anno to Org-mode")
+        (items.,)
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=tokens,lemmas, Format=Org-mode, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,dipl)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,6)
+        (name.,"470-1.org-4297-step6.xml")
+        (tool.,"Sentence extractor")
+        (items.,)
+        ( input
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=sentences, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,7)
+        (name.,"470-1.org-4297-step7.xml")
+        (tool.,TEIP5-segmenter)
+        (items.,)
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,8)
+        (name.,"470-1.org-4297-step8.xml")
+        (tool.,"Lapos POS tagger")
+        (items.,)
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=PoS-tags, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,9)
+        (name.,"470-1.org-4297-step9.xml")
+        (tool.,"PoS tag translator")
+        (items.,)
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=PoS-tags, Format=TEIP5DKCLARIN_ANNOTATION, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,txtann)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,10)
+        (name.,"470-1.org-4297-step10.dipl")
+        (tool.,"TEI P5 anno to Org-mode")
+        (items.,)
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=tokens,PoS-tags, Format=Org-mode, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,dipl)
+        (stage.,)
+  )
+  ( step
+  .   
+    ,   (JobNr.,4297)
+        (JobId.,11)
+        (name.,"470-1.org-4297-step11.dipl")
+        (tool.,"Diplom annotator")
+        (items.,(item.,(id.,"470.org") (title.,"470.org")))
+        (input.,"Ambiguity=unambiguous, Appearance=unnormalised")
+        ( output
+        .   
+          , "Ambiguity=unambiguous, Appearance=unnormalised, Type of content=segments,tokens,lemmas,PoS-tags, Format=Org-mode, Language=Danish, Historical period=medieval, Presentation=normal"
+        )
+        (format.,dipl)
+        (stage.,LAST)
+  );
