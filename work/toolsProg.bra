@@ -13698,9 +13698,7 @@ try {
 
         if(isset($_REQUEST[$requestParm]))
             {
-            $urlbase = isset($_REQUEST[\"base\"]) ? $_REQUEST[\"base\"] : \""
-                        !baseUrlTools
-                        "/toolsdata/\";
+            $urlbase = isset($_REQUEST[\"base\"]) ? $_REQUEST[\"base\"] : \"http://localhost/toolsdata/\";
 
             $item = $_REQUEST[$requestParm];
             $url = $urlbase . $item;
@@ -14031,7 +14029,7 @@ try {
                                         |   readTable$!sptable
                                           & !!sptable
                                         )
-                                      : ? (?fval.!value) ?
+                                      : ? (?fval.!value.?) ?
                                     & !fval
                                     )
                                     " if true */
