@@ -1,3 +1,8 @@
+20200304 - More memoization in workflow computation, with noticeable speed-up:
+            * (old) fulfillable goal/source/tool combinations (memoized paths)
+            * (new) unfulfillable goal/source/tool combinations
+            * (new) unfulfillable goal/source combinations
+
 20191119 - Added recognition of tab-separated input, with and without
            interspersed empty lines.
 
