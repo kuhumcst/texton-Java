@@ -12,8 +12,8 @@
     <property name="ivy.install.version" value="2.0.0" />
     <property name="ivy.jar.dir" value="${basedir}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-    <property name="central.repo" value="http://repo1.maven.org/maven2" />
-    <property name="jboss.repo" value="http://repository.jboss.org/maven2" />
+    <property name="central.repo" value="https://repo1.maven.org/maven2" />
+    <property name="jboss.repo" value="https://repository.jboss.org/maven2" />
 
 
     <!-- Define folder names -->
@@ -25,7 +25,7 @@
         <property name="bracmatjar.dir" value="../Bracmat/java-JNI/java"/>
     </target>
     <target name="bracmatlocationU" if="Ubuntu">
-        <property name="bracmatjar.dir" value="../prog/bracmat/java-JNI/java"/>
+        <property name="bracmatjar.dir" value="../prog/Bracmat/java-JNI/java"/>
     </target>
 
     <property name="src.dir"     value="src"/>
@@ -84,7 +84,7 @@
         <echo message="This is warning message." />
         <copy overwrite="true" file="properties_local_windows.xml" tofile="${conf.dir}/properties.xml"/>
         <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-        <copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+	<!--<copy overwrite="true" file="${env.CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>-->
         <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
     </target>
 
@@ -93,7 +93,7 @@
     <echo message="${env.CATALINA_HOME}" />
     <copy overwrite="true" file="properties_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
     <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
-    <copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>
+    <!--<copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>-->
     <delete file="${ivy.jar.dir}/slf4j-log4j12-1.5.8.jar"/>
   </target>
 
