@@ -71,7 +71,10 @@ public class register extends HttpServlet
                 arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
             else
+                {
                 logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
+                             passwordAsHandle,ToolsProperties.password);
+                }
                 
             logger.debug("userEmail = {}",userEmail);
 
