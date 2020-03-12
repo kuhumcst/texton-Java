@@ -62,19 +62,16 @@ public class register extends HttpServlet
             if(ToolsProperties.password.equals(""))
                 {
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
-	            arg += " (handle.LOCALMACHINEDUMMY)";
+                arg += " (handle.LOCALMACHINEDUMMY)";
                 }
             else if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
-	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
+                logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
-	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
+                arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
-			else
-				{
-	            logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
-					passwordAsHandle,ToolsProperties.password);
-				}
+            else
+                logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
                 
             logger.debug("userEmail = {}",userEmail);
 
@@ -140,7 +137,8 @@ public class register extends HttpServlet
                 }
             else if(result.startsWith("<?\nheader") || arg.contains("PHP"))
                 { /* php wrapper */
-                response.setContentType("text/plain; charset=iso8859-1");//UTF-8");
+                //response.setContentType("text/plain; charset=iso8859-1");//UTF-8");
+                response.setContentType("text/plain; UTF-8");
                 response.setStatus(200);
                 out.println(result);
                 }
