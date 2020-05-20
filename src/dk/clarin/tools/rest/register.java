@@ -141,7 +141,7 @@ public class register extends HttpServlet
             else if(result.startsWith("<?\nheader") || arg.contains("PHP"))
                 { /* php wrapper */
                 //response.setContentType("text/plain; charset=iso8859-1");//UTF-8");
-                response.setContentType("text/plain; UTF-8");
+                response.setContentType("text/plain; charset=UTF-8");
                 response.setStatus(200);
                 out.println(result);
                 }
