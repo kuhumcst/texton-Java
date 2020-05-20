@@ -18,6 +18,7 @@
 
     <!-- Define folder names -->
     <property name="lib.dir"     value="lib"/>
+    <property name="tomcat.dir"  value="/opt/tomcat/latest/lib"/>
     <!-- Assume that the 'Bracmat' project is in the same folder as the 'DK-ClarinTools' project
          (Clone Bracmat from https://github.com/BartJongejan/Bracmat)
     -->
@@ -25,7 +26,7 @@
         <property name="bracmatjar.dir" value="../Bracmat/java-JNI/java"/>
     </target>
     <target name="bracmatlocationU" if="Ubuntu">
-        <property name="bracmatjar.dir" value="../prog/Bracmat/java-JNI/java"/>
+        <property name="bracmatjar.dir" value="../Bracmat/java-JNI/java"/>
     </target>
 
     <property name="src.dir"     value="src"/>
@@ -41,7 +42,8 @@
     <path id="classpath">
         <fileset dir="${lib.dir}"  includes="**/*.jar"/>
         <fileset dir="${bracmatjar.dir}"  includes="*.jar"/>
-        <fileset dir="${conf.dir}"  includes="**/*.jar"/>
+	<fileset dir="${conf.dir}"  includes="**/*.jar"/>
+	<fileset dir="${tomcat.dir}" includes="servlet-api.jar"/>
     </path>
     </target>
 
