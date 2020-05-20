@@ -528,7 +528,8 @@ public class create extends HttpServlet
                 InputStream stdout = null;
 
                 //String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
-                String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
+                //String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
+                String command = "pdffonts " + pdfFile.getAbsolutePath();
 
                 final Process process = Runtime.getRuntime().exec(command);
                 stdin = process.getOutputStream ();
