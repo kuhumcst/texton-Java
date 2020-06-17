@@ -78,9 +78,15 @@ public class importMetadata extends HttpServlet
              */
 
             String expression = request.getParameter("import");
+            String proddata = request.getParameter("proddata");
+            if(proddata == null)
+                proddata = "";
+            else
+                proddata = "proddata";
+
             if(expression != null && !expression.equals(""))
                 {
-                String result = BracMat.Eval("importTables$("+workflow.quote(expression)+")");
+                String result = BracMat.Eval("importTables$("+workflow.quote(proddata)+"."+workflow.quote(expression)+")");
                 response.setContentType("text/plain");
                 out.println(result);
                 }
