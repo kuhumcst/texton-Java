@@ -44,9 +44,19 @@
         <p>
             <span id="numbr" style="font-weight: bold;">What is the name of the file in which the tables will be written?</span>
             <input name="export" type="text" size="30" id="export" style="vertical-align: middle;" />
-            Include production data <input type="checkbox" id="proddata" name="proddata" value="production data" />
+            Include production metadata <input type="checkbox" id="proddata" name="proddata" value="production data" />
             Password:<input type="password" name="password" value="" alt="password" />
             <input type="submit" value="export" alt="" />
+        </p>
+        <p>
+            If production metadata is not included, then the following tables are empty in the export file: CTBs,
+            jobAbout,
+            jobNr,
+            jobs,
+            relations,
+            Uploads,
+            zippedresults, and
+            jobNr. In in the tooladm table, the field ContactEmail is set to x@x.xxx and the domain in ServiceURL is set to localhost.
         </p>
     </form>
 
@@ -55,9 +65,19 @@
         <p>
             <span id="numbr" style="font-weight: bold;">What is the name of the file from which the tables must be read?</span>
             <input name="import" type="text" size="30" id="import" style="vertical-align: middle;" />
-            Merge current production data into imported tables <input type="checkbox" id="proddata" name="proddata" value="production data" />
+            Also import production metadata (Overwriting/annihilating local production metadata!) <input type="checkbox" id="proddata" name="proddata" value="production data" />
             Password:<input type="password" name="password" value="" alt="password" />
             <input type="submit" value="import" alt="" />
+        </p>
+        <p>
+            Production metadata are data stored in the tables CTBs,
+            jobAbout,
+            jobNr,
+            jobs,
+            relations,
+            Uploads,
+            zippedresults, and
+            jobNr. The fields ContactEmail and ServiceURL in the tooladm table are also production metadata.
         </p>
     </form>
 
