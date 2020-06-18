@@ -18,7 +18,8 @@
 
     <!-- Define folder names -->
     <property name="lib.dir"     value="lib"/>
-    <property name="tomcat.dir"  value="/opt/tomcat/latest/lib"/>
+    <!--property name="tomcat.dir"  value="/opt/tomcat/latest/lib"/-->
+    <property name="tomcat.dir"  value="${CATALINA_HOME}/lib"/>
     <!-- Assume that the 'Bracmat' project is in the same folder as the 'DK-ClarinTools' project
          (Clone Bracmat from https://github.com/BartJongejan/Bracmat)
     -->
@@ -92,7 +93,7 @@
 
   <target name="is-Ubuntu" if="Ubuntu" depends="setClassPath">
     <echo message="This is warning message." />
-    <echo message="${env.CATALINA_HOME}" />
+    <echo message="${CATALINA_HOME}" />
     <copy overwrite="true" file="properties_ubuntu.xml" tofile="${conf.dir}/properties.xml"/>
     <copy overwrite="true" file="ivy_tomcat.xml" tofile="ivy.xml"/>
     <!--<copy overwrite="true" file="${CATALINA_HOME}/${lib.dir}/servlet-api.jar" tofile="${ivy.jar.dir}/servlet-api.jar"/>-->
