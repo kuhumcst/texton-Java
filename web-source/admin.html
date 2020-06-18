@@ -39,6 +39,48 @@
         </p>
     </form>
 
+    <h3>Export metadata tables</h3>
+    <form enctype="multipart/form-data" method="get" action="exportMetadata">
+        <p>
+            <span id="numbr" style="font-weight: bold;">What is the name of the file in which the tables will be written?</span>
+            <input name="export" type="text" size="30" id="export" style="vertical-align: middle;" />
+            Include production metadata <input type="checkbox" id="proddata" name="proddata" value="production data" />
+            Password:<input type="password" name="password" value="" alt="password" />
+            <input type="submit" value="export" alt="" />
+        </p>
+        <p>
+            If production metadata is not included, then the following tables are empty in the export file: CTBs,
+            jobAbout,
+            jobNr,
+            jobs,
+            relations,
+            Uploads,
+            zippedresults, and
+            jobNr. In in the tooladm table, the field ContactEmail is set to x@x.xxx and the domain in ServiceURL is set to localhost.
+        </p>
+    </form>
+
+    <h3>Import metadata tables</h3>
+    <form enctype="multipart/form-data" method="get" action="importMetadata">
+        <p>
+            <span id="numbr" style="font-weight: bold;">What is the name of the file from which the tables must be read?</span>
+            <input name="import" type="text" size="30" id="import" style="vertical-align: middle;" />
+            Also import production metadata (Overwriting/annihilating local production metadata!) <input type="checkbox" id="proddata" name="proddata" value="production data" />
+            Password:<input type="password" name="password" value="" alt="password" />
+            <input type="submit" value="import" alt="" />
+        </p>
+        <p>
+            Production metadata are data stored in the tables CTBs,
+            jobAbout,
+            jobNr,
+            jobs,
+            relations,
+            Uploads,
+            zippedresults, and
+            jobNr. The fields ContactEmail and ServiceURL in the tooladm table are also production metadata.
+        </p>
+    </form>
+
     <h3>Stress test</h3>
     <p> Press the "stresstest"-button from several browser windows at the same time. Use different values.</p>
     <form enctype="multipart/form-data" method="get" action="stresstest">
@@ -60,18 +102,18 @@
     </form>
 
 
-    
+
     <h3>Asynchronous requests</h3>
     <p>Emulate tool uploading result asynchronously</p>
     <form enctype="multipart/form-data" method="post" action="upload">
         <p>
             <input type="file" name="input" value="" size="50" alt="choose a file" /><br />
-            <span id="itemh" style="font-weight: bold;" >Job ID:</span>
+            <span id="itemh" style="font-weight: bold;">Job ID:</span>
             <input name="job" type="text" size="30" id="job" style="vertical-align: middle;" /><br />
             <input type="submit" value="upload" alt="upload result from tool to Tools" />
         </p>
     </form>
-    
+
 
 </body>
 </html>

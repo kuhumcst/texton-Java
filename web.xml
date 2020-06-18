@@ -111,6 +111,24 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>exportMetadata</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.exportMetadata</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>exportMetadata</servlet-name>
+        <url-pattern>/exportMetadata/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>importMetadata</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.importMetadata</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>importMetadata</servlet-name>
+        <url-pattern>/importMetadata/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>stresstest</servlet-name>
         <servlet-class>dk.clarin.tools.rest.stresstest</servlet-class>
     </servlet>
