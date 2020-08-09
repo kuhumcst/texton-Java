@@ -175,13 +175,10 @@ public class create extends HttpServlet
 			HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
             urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1");
             int status = urlConnection.getResponseCode();
-            logger.debug("statusA:{}",status);
             urlConnection.connect();
             status = urlConnection.getResponseCode();
-            logger.debug("statusB:{}",status);
             InputStream input = urlConnection.getInputStream();
             status = urlConnection.getResponseCode();
-            logger.debug("statusC:{}",status);
             if(status == 200)
                 {
                 byte[] buffer = new byte[4096];
@@ -272,7 +269,6 @@ public class create extends HttpServlet
             out.println(output);
             return;
             }
-           
             
         int start = result.indexOf("<?"); // XML-output (XHTML)
         if(start < 0)
@@ -453,16 +449,13 @@ public class create extends HttpServlet
                 }
             else if(parmName.equals("URL"))
                 {
-				logger.debug("Going to call makeLocalCopyOfRemoteFile A");
                 for(String val : vals)
                     {
                     arg = arg + makeLocalCopyOfRemoteFile(val);
                     }
-				logger.debug("in Workflow URLargs:"+arg);
                 }
             else if(parmName.equals("URLS"))
                 {
-				logger.debug("Going to call makeLocalCopyOfRemoteFile A2");
                 for(String val : vals)
                     {
                     if(!val.equals(""))
@@ -484,7 +477,6 @@ public class create extends HttpServlet
                             }
                         }
                     }
-				logger.debug("in Workflow URLSargs:"+arg);
                 }
             else
                 {
@@ -528,7 +520,8 @@ public class create extends HttpServlet
                 InputStream stdout = null;
 
                 //String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
-                String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
+                //String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
+                String command = "pdffonts " + pdfFile.getAbsolutePath();
 
                 final Process process = Runtime.getRuntime().exec(command);
                 stdin = process.getOutputStream ();
@@ -604,13 +597,10 @@ public class create extends HttpServlet
 						}
                     else if(item.getFieldName().equals("URL"))
                         {
-        				logger.debug("Going to call makeLocalCopyOfRemoteFile B");
                         arg = arg + makeLocalCopyOfRemoteFile(item.getString());
-						logger.debug("in getParmsAndFiles URLargs is now:"+arg);
                         }
                     else if(item.getFieldName().equals("URLS"))
                         {
-				        logger.debug("Going to call makeLocalCopyOfRemoteFile B2");
                         String val = item.getString();
                         try {
                             String[] splitArray = val.split("\\r?\\n");
@@ -624,7 +614,6 @@ public class create extends HttpServlet
                             {
                             // 
                             }
-				        logger.debug("in Workflow URLSargs:"+arg);
                         }
                     else
                         arg = arg + " (" + item.getFieldName() + "." + workflow.quote(item.getString()) + ")";
