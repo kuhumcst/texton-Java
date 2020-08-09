@@ -60,9 +60,6 @@
                     <td>
                         <input type="file" name="input" value="" size="50" alt="choose one or more files" multiple="multiple" />
                     </td>
-                    <td>
-                        (Do not mix file formats.)
-                    </td>
                 </tr>
             </table>
         </fieldset>
