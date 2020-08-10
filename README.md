@@ -1,7 +1,7 @@
 DK-ClarinTools
 ==============
 
-Part of the Text Tonsorium.
+Part of the Text Tonsorium, https://github.com/kuhumcst/texton
 
 The Text Tonsorium is a web application that computes candidate tool workflows given input file(s) and the user's requirements regarding the output. Afterwards, the application runs the workflow that the user has selected from the list of candidates.
 
