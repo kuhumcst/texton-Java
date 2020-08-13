@@ -164,5 +164,12 @@
         <url-pattern>/setLanguage/*</url-pattern>
     </servlet-mapping>
 
-
+    <servlet>
+        <servlet-name>help</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.help</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>help</servlet-name>
+	<url-pattern>/help/*</url-pattern>
+    </servlet-mapping>
 </web-app>
