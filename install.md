@@ -1,10 +1,6 @@
 Installation as Tomcat servlet
 ==============================
-This  has been tested with Windows 7 Enterprise and Tomcat 6 and 7, with Windows 8.1 Pro and Tomcat 8 and with Xubuntu 14.04 with Tomcat 7. There are a couple of cotcha's.
-
-Server
-------
-If you install Tomcat on a machine that has no visibility as a web server, you cannot execute any workflows, because each workflow step involves sending a request to a web service that incorporates a tool. Such requests do, however, not include the input data. Instead, the requested web service has to fetch (HTTP GET) the data from the machine where the workflow is executed from. Still, a lot a interesting things can be done with an installation of the workflow engine on a machine that has no webserver status.
+This has been tested with Windows 7 Enterprise and Tomcat 6 and 7, with Windows 8.1 Pro and Tomcat 8 and with Ubuntu 18.04 and 20.04 with Tomcat 7 and 9.
 
 Logging
 -------
