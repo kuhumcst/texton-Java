@@ -107,6 +107,11 @@
         </table>
         <p class="indent">
             <small>
+            Read the <a href="/texton/help">help</a> page for more info about using the Text Tonsorium.
+            </small>
+        </p>
+        <p class="indent">
+            <small>
             Find the most recent source code of the WMS on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
             </small>
         </p>
@@ -116,7 +121,7 @@
             Do not send sensitive data to this service and use it at your own risk!
             </small>
         </p>
-        <p class="indent"><small><a href="https://theestablishment.co/hating-comic-sans-is-ableist-bc4a4de87093/">Comic Sans</a></small></p>
+        <p class="indent"><small>Why <a href="https://theestablishment.co/hating-comic-sans-is-ableist-bc4a4de87093/">Comic Sans</a></small>.</p>
     </form>
 </div>
 </body>
