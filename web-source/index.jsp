@@ -105,19 +105,6 @@
         <input type="submit" value="Specify the required result" alt="create annotation, goal directed" /></td>
 			</tr>
         </table>
-        <p>
-            <small>
-            This service is a workflow management system (WMS) that not only executes workflows, but also composes workflows from building blocks. 
-            Each building block encapsulates a Natural Language Processing tool.
-            </small>
-        </p>
-        <p class="indent">
-            <small>
-            The WMS may compose many workflows that all lead to your goal.
-            It will then ask you to choose one of the proposed workflows.
-            In general, the more detail you add to your goal, the fewer solutions the WMS will find, even zero.
-            </small>
-        </p>
         <p class="indent">
             <small>
             Find the most recent source code of the WMS on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
