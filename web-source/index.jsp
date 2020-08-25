@@ -129,6 +129,7 @@
             Do not send sensitive data to this service and use it at your own risk!
             </small>
         </p>
+        <p class="indent"><small><a href="https://theestablishment.co/hating-comic-sans-is-ableist-bc4a4de87093/">Comic Sans</a></small></p>
     </form>
 </div>
 </body>
