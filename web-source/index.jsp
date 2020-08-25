@@ -112,7 +112,7 @@
         </p>
         <p class="indent">
             <small>
-            Find the most recent source code of the WMS on <a href="https://github.com/kuhumcst/DK-ClarinTools">GitHub</a>, where you can also contact us.
+            Find the most recent source code of the Text Tonsorium on <a href="https://github.com/kuhumcst/texton">GitHub</a>, where you can also contact us.
             </small>
         </p>
         <p class="indent">
