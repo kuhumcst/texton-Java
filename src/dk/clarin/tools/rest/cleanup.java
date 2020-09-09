@@ -99,6 +99,7 @@ public class cleanup extends HttpServlet
             }
         else
             {
+            BracMat.Eval("readJobTables$");
             out.println("Files in staging area:");
             for(String fileName : chld)
                 {
@@ -175,6 +176,7 @@ public class cleanup extends HttpServlet
                     }
                 }
             out.println("END");
+            BracMat.Eval("saveJobTables$");
             }
         chld = destinationDir.list();
         if(chld == null)
