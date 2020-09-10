@@ -92,9 +92,8 @@ public class importMetadata extends HttpServlet
                 }
             else
                 {
-                out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<dkclarin><expressions>");
-                out.println("<expression>NO INPUT</expression>");
-                out.println("</expressions></dkclarin>");
+                response.setContentType("text/plain");
+                out.println("NO INPUT");
                 }
             }
         else

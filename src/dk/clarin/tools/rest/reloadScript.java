@@ -84,9 +84,8 @@ public class reloadScript extends HttpServlet
         if(BracMat.loaded())
             {
             String result = BracMat.Eval("("+ToolsProperties.bootBracmat+")&clean$");
-            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<dkclarin><expressions>");
-            out.println("<expression>" + result + "</expression>");
-            out.println("</expressions></dkclarin>");
+            response.setContentType("text/plain");
+            out.println(result);
             }
         else
             {
