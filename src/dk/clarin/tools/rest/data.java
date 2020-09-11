@@ -150,43 +150,16 @@ public class data extends HttpServlet
                     {
                     in.close();
                     }
-                /**
-                 * keep$
-                 * 
-                 * Check whether a result from a tool in the staging area can be
-                 * deleted.
-                 * 
-                 * Results that for some reason are needed by other tasks must
-                 * be kept. The function looks for outstanding jobs that take
-                 * the argument as input. Argument: file name, may be preceded
-                 * by a slash /19231210291
-                 * 
-                 * NOTICE: If the file need not be kept, the file's name is
-                 * deleted from several tables, so calling keep has side
-                 * effects! Affected tables in jboss/server/default/data/tools:
-                 * jobs.table Uploads.table CTBs.table relations.table
-                 * jobAbout.table
-                 */
-                /* 2016.06.22 We decided not to delete results from the server 
-                   immediately after they have been fetched by the user.
-                   The cleanup service will delete the data.
-                   
-                String svar = BracMat.Eval("keep$("+workflow.quote(request.getPathInfo()) + ")");
-                logger.info(svar + " " + request.getPathInfo());
-                if(svar.equals("no"))
-                    {
-                    boolean success = f.delete();
-                    if (success)
-                        {
-                        logger.info(fileName + ": deleted");
-                        }
-                    else
-                        {
-                        logger.info(fileName + ": deletion failed");
-                        }
-                    }
-                logger.info("doGet:deleted {}{}",destinationDir,request.getPathInfo());              // /blablah/de/blah
-                */
+                }
+            catch (java.nio.file.NoSuchFileException e)
+                {
+                response.setContentType("text/html; charset=UTF-8");
+                response.setStatus(404);
+                PrintWriter out = response.getWriter();
+                String name = request.getPathInfo();
+                if(name.charAt(0) == '/')
+                    name = name.substring(1);
+                out.println("File " + name + " is no longer accessible.");
                 }
             catch (FileNotFoundException e)
                 {
