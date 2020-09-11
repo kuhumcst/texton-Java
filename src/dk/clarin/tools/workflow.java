@@ -192,17 +192,6 @@ public class workflow implements Runnable
     static public String Filename(String name,bracmat BracMat)
         {
         return BracMat.Eval("Filename$(" + workflow.quote(name) + ")"); 
-        /*
-        String filenameWithoutXMLextension = name;
-        int lastdot = name.lastIndexOf('.');
-        if(lastdot > 0)
-            {
-            String extension = name.substring(lastdot);
-            filenameWithoutXMLextension = filenameWithoutXMLextension.substring(0,filenameWithoutXMLextension.lastIndexOf(extension));
-            return filenameWithoutXMLextension + ".withmetadata.xml";
-            }
-        return filenameWithoutXMLextension + ".withmetadata.xml";
-        */
         }
 
     static public String FilenameNoMetadata(String name,bracmat BracMat)
@@ -213,17 +202,6 @@ public class workflow implements Runnable
     static public String FilenameRelations(String name,bracmat BracMat)
         {
         return BracMat.Eval("FilenameRelations$(" + workflow.quote(name) + ")"); 
-        /*
-        String filenameWithoutXMLextension = name;
-        int lastdot = name.lastIndexOf('.');
-        if(lastdot > 0)
-            {
-            String extension = name.substring(lastdot);
-            filenameWithoutXMLextension = filenameWithoutXMLextension.substring(0,filenameWithoutXMLextension.lastIndexOf(extension));
-            return filenameWithoutXMLextension + ".relations.csv";
-            }
-        return filenameWithoutXMLextension + ".relations.csv";
-        */
         }
 
     public static String getCharacterDataFromElement(Element e) 
