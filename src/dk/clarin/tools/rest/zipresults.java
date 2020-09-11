@@ -139,64 +139,64 @@ public class zipresults extends HttpServlet
             @SuppressWarnings("unchecked")
             Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-            String job;
-            String shortletter="n";
+            String shortletter="";
+            String job = "";
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
                 if(parmName.equals("shortletter"))
                     shortletter = request.getParameterValues(parmName)[0];
-                if(parmName.equals("JobNr"))
-                    {
+                else if(parmName.equals("JobNr"))
                     job = request.getParameterValues(parmName)[0];
-                    String letter = BracMat.Eval("letter$(" + job + "."+ shortletter +")");
-                    String readme = BracMat.Eval("readme$(" 
-                                                + job 
-                                                + "." 
-                                                + workflow.quote(date) 
-                                                + "." 
-                                                + workflow.quote(letter) 
-                                                + ")");
-                    String localFilePath = ToolsProperties.documentRoot;
+                }
+            if(!job.equals(""))
+                {
+                String letter = BracMat.Eval("letter$(" + job + "."+ shortletter +")");
+                String readme = BracMat.Eval("readme$(" 
+                                            + job 
+                                            + "." 
+                                            + workflow.quote(date) 
+                                            + "." 
+                                            + workflow.quote(letter) 
+                                            + ")"
+                                            );
+                String localFilePath = ToolsProperties.documentRoot;
                     
-                    //FileOutputStream zipdest = null;
-                    OutputStream zipdest = null;
-                    ZipOutputStream zipout = null;
-                    boolean hasFiles = false;
-                    String jobzip = job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip";
-                    if(letter.startsWith("file:"))
-                        {
-                        hasFiles = true;
-                        //zipdest = new FileOutputStream(localFilePath + job + ".zip");
-                        zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
+                //FileOutputStream zipdest = null;
+                OutputStream zipdest = null;
+                ZipOutputStream zipout = null;
+                boolean hasFiles = false;
+                String jobzip = job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip";
+                if(letter.startsWith("file:"))
+                    {
+                    hasFiles = true;
+                    //zipdest = new FileOutputStream(localFilePath + job + ".zip");
+                    zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
 
-                        zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                        while(letter.startsWith("file:"))
+                    zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
+                    while(letter.startsWith("file:"))
+                        {
+                        int end = letter.indexOf(';');
+                        String filename = letter.substring(5,end);
+                        String zipname = filename;
+                        int zipnameStart = filename.indexOf('*');
+                        if(zipnameStart > 0)
                             {
-                            int end = letter.indexOf(';');
-                            String filename = letter.substring(5,end);
-                            String zipname = filename;
-                            int zipnameStart = filename.indexOf('*');
-                            if(zipnameStart > 0)
-                                {
-                                zipname = filename.substring(zipnameStart+1);
-                                filename = filename.substring(0,zipnameStart);
-                                }
-                            workflow.zip(localFilePath + filename,zipname,zipout);
-                            letter = letter.substring(end+1);
+                            zipname = filename.substring(zipnameStart+1);
+                            filename = filename.substring(0,zipnameStart);
                             }
+                        workflow.zip(localFilePath + filename,zipname,zipout);
+                        letter = letter.substring(end+1);
                         }
-
-                    if(hasFiles)
-                        {
-                        workflow.zipstring("readme.txt",zipout,readme);
-                        workflow.zipstring("index.html",zipout,letter);
-                        zipout.close();
-                        }
-                    doGetZip(localFilePath, jobzip,response);                            
-                    
-                    break;
                     }
+
+                if(hasFiles)
+                    {
+                    workflow.zipstring("readme.txt",zipout,readme);
+                    workflow.zipstring("index.html",zipout,letter);
+                    zipout.close();
+                    }
+                doGetZip(localFilePath, jobzip,response);                            
                 }
             }
         else
