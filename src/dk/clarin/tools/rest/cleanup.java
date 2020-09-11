@@ -20,6 +20,7 @@ package dk.clarin.tools.rest;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
 import dk.cst.bracmat;
+import java.util.Enumeration;
 import java.io.File;
 import java.io.IOException;
 import java.security.AccessControlException;
@@ -99,6 +100,16 @@ public class cleanup extends HttpServlet
             }
         else
             {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
+
+            String jobNr = "";
+            for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
+                {
+                String parmName = e.nextElement();
+                if(parmName.equals("JobNr"))
+                    jobNr = request.getParameterValues(parmName)[0];
+                }
             BracMat.Eval("readJobTables$");
             out.println("Files in staging area:");
             for(String fileName : chld)
@@ -119,7 +130,7 @@ public class cleanup extends HttpServlet
                     {
                     out.println("Delete: directory not empty: " + fileName);
                     }
-                else 
+                else if(jobNr.equals(""))
                     {
                     // Get the last modified time
                     long modifiedTime = f.lastModified();
@@ -149,7 +160,7 @@ public class cleanup extends HttpServlet
                              *      relations.table
                              *      jobAbout.table
                              */
-                            String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + ")");
+                            String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + ".)");
                             if(svar.equals("no"))
                                 {
                                 boolean success = f.delete();
@@ -168,11 +179,67 @@ public class cleanup extends HttpServlet
                         else
                             {
                             long count = lifetime / 86400000;
-                            out.println("Delete: file " + fileName + " not older than " + count + " days");
+                            if(count >= 2)
+                                out.println("Delete: file " + fileName + " not older than " + count + " days");
+                            else
+                                {
+                                count = lifetime / 3600000;
+                                if(count >= 3)
+                                    out.println("Delete: file " + fileName + " not older than " + count + " hours");
+                                else
+                                    {
+                                    count = lifetime / 60000;
+                                    if(count >= 5)
+                                        out.println("Delete: file " + fileName + " not older than " + count + " minutes");
+                                    else
+                                        {
+                                        count = lifetime / 1000;
+                                        if(count >= 5)
+                                            out.println("Delete: file " + fileName + " not older than " + count + " seconds");
+                                        else
+                                            out.println("Delete: file " + fileName + " not older than " + lifetime + " milliseconds");
+                                        }
+                                    }
+                                }
                             }
                         }
                     else
                         out.println("Delete: file's modifiedTime == 0 " + fileName);
+                    }
+                else
+                    {
+                    /**
+                        * keep$
+                        *
+                        * Check whether a result from a tool in the staging area can be deleted.
+                        *
+                        * Results that for some reason are needed by other tasks must be kept.
+                        * The function looks for outstanding jobs that take the argument as input.
+                        * Argument: file name, may be preceded by a slash
+                        *      /19231210291
+                        *
+                        * NOTICE: If the file need not be kept, the file's name is deleted from
+                        * several tables, so calling keep has side effects!
+                        * Affected tables in jboss/server/default/data/tools:
+                        *      jobs.table
+                        *      Uploads.table
+                        *      CTBs.table
+                        *      relations.table
+                        *      jobAbout.table
+                        */
+                    String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + "." + workflow.quote(jobNr) + ")");
+                    if(svar.equals("no"))
+                        {
+                        boolean success = f.delete();
+                        if (success)
+                            {
+                            out.println(fileName + ": deleted");
+                            }
+                        else
+                            {
+                            out.println(fileName + ": deletion failed");
+                            }
+                        }
                     }
                 }
             out.println("END");
