@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
@@ -59,14 +60,43 @@ public class help extends HttpServlet
             response.setStatus(500);
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
+        // https://clarin.dk/texton/help?UIlanguage=da
+        /*Test:*/
+        @SuppressWarnings("unchecked")
+        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
+        String UIlanguage = null;
+        String usedonly = "Y";
+        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
+            {
+            String parmName = e.nextElement();
+            String vals[] = request.getParameterValues(parmName);
+            for(int j = 0;j < vals.length;++j)
+                {
+                if(parmName.equals("UIlanguage"))
+                    {
+                    UIlanguage = vals[j];
+                    if(UIlanguage == null || UIlanguage.equals("null"))
+                        {
+                        UIlanguage="";
+                        }
+                    }
+                else if(parmName.equals("usedonly"))
+                    {
+                    usedonly = vals[j];
+                    if(usedonly == null || usedonly.equals("null"))
+                        {
+                        usedonly="j";
+                        }
+                    }
+                }
+            }
 
         PrintWriter out = response.getWriter();
         /**
           * help$
           */
-        BracMat.Eval("help$()");
-	String svar = BracMat.Eval("help$()");
-	out.println(svar);
+        String svar = BracMat.Eval("help$((UIlanguage." + workflow.quote(UIlanguage) + ") (usedonly." + workflow.quote(usedonly) + "))");
+        out.println(svar);
         }
     }
 
