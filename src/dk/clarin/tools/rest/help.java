@@ -91,6 +91,10 @@ public class help extends HttpServlet
                 }
             }
 
+        if(UIlanguage == null || UIlanguage.equals("null"))
+            {
+            UIlanguage="";
+            }
         PrintWriter out = response.getWriter();
         /**
           * help$
