@@ -172,4 +172,13 @@
         <servlet-name>help</servlet-name>
         <url-pattern>/help/*</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>input</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.input</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>input</servlet-name>
+        <url-pattern>/input/*</url-pattern>
+    </servlet-mapping>
 </web-app>
