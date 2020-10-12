@@ -50,23 +50,23 @@ public class parameters
 
     public static String getGETarg(HttpServletRequest request, String name)
         {
-		if(name != null)
-			{
-			@SuppressWarnings("unchecked")
-			Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-			for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-				{
-				String parmName = e.nextElement();
-				String vals[] = request.getParameterValues(parmName);
-				for(String val : vals)
-					{
-					if(name.equals(parmName))
-						{
-						return val;
-						}
-					}
-				}
-			}
+        if(name != null)
+            {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
+            for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
+                {
+                String parmName = e.nextElement();
+                String vals[] = request.getParameterValues(parmName);
+                for(String val : vals)
+                    {
+                    if(name.equals(parmName))
+                        {
+                        return val;
+                        }
+                    }
+                }
+            }
         return null;
         }
 
@@ -75,36 +75,36 @@ public class parameters
         /*
         * Parse the request
         */
-		if(name != null)
-			{
-			@SuppressWarnings("unchecked")
-			boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+        if(name != null)
+            {
+            @SuppressWarnings("unchecked")
+            boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-			logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
+            logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
         
-			if(is_multipart_formData)
-				{
-				try 
-					{
-					Iterator<FileItem> itr = items.iterator();
-					while(itr.hasNext()) 
-						{
-						FileItem item = (FileItem) itr.next();
-						if(item.isFormField()) 
-							{
-							if(name.equals(item.getFieldName()))
-								return item.getString("UTF-8").trim();
-							}
-						}
-					}
-				catch(Exception ex) 
-					{
-					logger.error("uploadHandler.parseRequest Exception");
-					}
-				}
+            if(is_multipart_formData)
+                {
+                try 
+                    {
+                    Iterator<FileItem> itr = items.iterator();
+                    while(itr.hasNext()) 
+                        {
+                        FileItem item = (FileItem) itr.next();
+                        if(item.isFormField()) 
+                            {
+                            if(name.equals(item.getFieldName()))
+                                return item.getString("UTF-8").trim();
+                            }
+                        }
+                    }
+                catch(Exception ex) 
+                    {
+                    logger.error("uploadHandler.parseRequest Exception");
+                    }
+                }
         
-			return getGETarg(request,name);
-			}
+            return getGETarg(request,name);
+            }
         return null;
         }
 
@@ -295,4 +295,4 @@ public class parameters
             UIlanguage = "da";
         return UIlanguage;
         }
-	}
+    }

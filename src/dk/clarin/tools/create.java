@@ -151,28 +151,28 @@ public class create extends HttpServlet
             }
         }
 
-	private String theMimeType(String urladdr){
-		try{
-			URL url = new URL(urladdr);
-			URLConnection urlConnection = url.openConnection();
-		    String mimeType = urlConnection.getContentType();
+    private String theMimeType(String urladdr){
+        try{
+            URL url = new URL(urladdr);
+            URLConnection urlConnection = url.openConnection();
+            String mimeType = urlConnection.getContentType();
             logger.info("mimeType according to getContentType() {} is {}",urladdr,mimeType);
-		    return mimeType;
-		}catch(IOException e){
-			return "error connecting to server.";
-		}
-	}
+            return mimeType;
+        }catch(IOException e){
+            return "error connecting to server.";
+        }
+    }
 
-	private int webPageBinary(String urladdr, File file){
-		try{
+    private int webPageBinary(String urladdr, File file){
+        try{
           //The following url is downloaded by wget, which is much better at handling 303's and 302's.
           //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
           
-		    logger.debug("urladdr:"+urladdr);
+            logger.debug("urladdr:"+urladdr);
             HttpURLConnection.setFollowRedirects(true); // defaults to true
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-			URL url = new URL(urladdr);
-			HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+            URL url = new URL(urladdr);
+            HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
             urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1");
             int status = urlConnection.getResponseCode();
             urlConnection.connect();
@@ -196,12 +196,12 @@ public class create extends HttpServlet
                 }
             else
                 return 0;
-		}catch(IOException e){
-		    logger.debug("IOException in webPageBinary");
-			return -1;
-		}
-	}
-	
+        }catch(IOException e){
+            logger.debug("IOException in webPageBinary");
+            return -1;
+        }
+    }
+    
 
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String workflowRequest)
         {
@@ -429,21 +429,21 @@ public class create extends HttpServlet
                         {
                         int textLength = val.length();
                         if(textLength > 0)
-							{
-							String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
-							File file = new File(destinationDir,LocalFileName);
-							arg = arg + " (FieldName,"      + workflow.quote("text")
-									  + ".Name,"            + workflow.quote("text")
-									  + ".ContentType,"     + workflow.quote("text/plain")
-									  + ".Size,"            + Long.toString(textLength)
-									  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-									  + ".LocalFileName,"   + workflow.quote(LocalFileName)
-									  + ")";
+                            {
+                            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+                            File file = new File(destinationDir,LocalFileName);
+                            arg = arg + " (FieldName,"      + workflow.quote("text")
+                                      + ".Name,"            + workflow.quote("text")
+                                      + ".ContentType,"     + workflow.quote("text/plain")
+                                      + ".Size,"            + Long.toString(textLength)
+                                      + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+                                      + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                                      + ")";
                         
-							PrintWriter outf = new PrintWriter(file);
-							outf.println(val); 
-							outf.close();                       
-							}
+                            PrintWriter outf = new PrintWriter(file);
+                            outf.println(val); 
+                            outf.close();                       
+                            }
                         }
                     }
                 }
@@ -462,7 +462,7 @@ public class create extends HttpServlet
                         {
                         int textLength = val.length();
                         if(textLength > 0)
-							{
+                            {
                             try {
                                 String[] splitArray = val.split("\\r?\\n");
                                 for(String line : splitArray)
@@ -581,20 +581,20 @@ public class create extends HttpServlet
                     if(item.getFieldName().equals("text"))
                         {
                         int textLength = item.getString().length();
-						if(textLength > 0)
-							{
-							String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
-							File file = new File(destinationDir,LocalFileName);
-							arg = arg + " (FieldName,"      + workflow.quote("text")
-									  + ".Name,"            + workflow.quote("text")
-									  + ".ContentType,"     + workflow.quote("text/plain")
-									  + ".Size,"            + Long.toString(textLength)
-									  + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-									  + ".LocalFileName,"   + workflow.quote(LocalFileName)
-									  + ")";
-							item.write(file);
-							}
-						}
+                        if(textLength > 0)
+                            {
+                            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+                            File file = new File(destinationDir,LocalFileName);
+                            arg = arg + " (FieldName,"      + workflow.quote("text")
+                                      + ".Name,"            + workflow.quote("text")
+                                      + ".ContentType,"     + workflow.quote("text/plain")
+                                      + ".Size,"            + Long.toString(textLength)
+                                      + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
+                                      + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                                      + ")";
+                            item.write(file);
+                            }
+                        }
                     else if(item.getFieldName().equals("URL"))
                         {
                         arg = arg + makeLocalCopyOfRemoteFile(item.getString());
