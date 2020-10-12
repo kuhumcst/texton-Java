@@ -64,15 +64,17 @@ public class help extends HttpServlet
         /*Test:*/
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        String UIlanguage = null;
-        String usedonly = "Y";
+        /*String UIlanguage = null;
+        String usedonly = "Y";*/
+        String arg = "";
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-                if(parmName.equals("UIlanguage"))
+                arg = "(" + workflow.quote(parmName) + "." + workflow.quote(vals[j]) + ") " + arg;
+            /*  if(parmName.equals("UIlanguage"))
                     {
                     UIlanguage = vals[j];
                     if(UIlanguage == null || UIlanguage.equals("null"))
@@ -87,19 +89,28 @@ public class help extends HttpServlet
                         {
                         usedonly="j";
                         }
-                    }
+                    }*/
                 }
             }
+<<<<<<< HEAD
+            /*
+        if(UIlanguage == null || UIlanguage.equals("null"))
+            {
+            UIlanguage="";
+            }*/
+=======
 
         if(UIlanguage == null || UIlanguage.equals("null"))
             {
             UIlanguage="";
             }
+>>>>>>> 57fa942892f4fd9b1e17e6222875dd24937b5a8b
         PrintWriter out = response.getWriter();
         /**
           * help$
           */
-        String svar = BracMat.Eval("help$((UIlanguage." + workflow.quote(UIlanguage) + ") (usedonly." + workflow.quote(usedonly) + "))");
+//        String svar = BracMat.Eval("help$((UIlanguage." + workflow.quote(UIlanguage) + ") (usedonly." + workflow.quote(usedonly) + "))");
+        String svar = BracMat.Eval("help$(" + arg + ")");
         out.println(svar);
         }
     }
