@@ -33,9 +33,9 @@ import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
-public class input extends HttpServlet 
+public class entry extends HttpServlet 
     {
-    private static final Logger logger = LoggerFactory.getLogger(input.class);
+    private static final Logger logger = LoggerFactory.getLogger(entry.class);
 
     private bracmat BracMat;
 
@@ -51,7 +51,7 @@ public class input extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        logger.info("Calling texton/input");
+        logger.info("Calling texton/entry");
         response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
         if(!BracMat.loaded())
@@ -59,7 +59,7 @@ public class input extends HttpServlet
             response.setStatus(500);
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
-        // https://clarin.dk/texton/input?UIlanguage=da
+        // https://clarin.dk/texton/entry?UIlanguage=da
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         String arg = "";
@@ -74,9 +74,9 @@ public class input extends HttpServlet
             }
         PrintWriter out = response.getWriter();
         /**
-          * input$
+          * entry$
           */
-        String svar = BracMat.Eval("input$(" + arg + ")");
+        String svar = BracMat.Eval("entry$(" + arg + ")");
         out.println(svar);
         }
     }

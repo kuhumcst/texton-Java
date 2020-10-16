@@ -23,6 +23,7 @@
         <mime-type>application/javascript</mime-type>
     </mime-mapping>
     <welcome-file-list>
+        <welcome-file>entry</welcome-file>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.jspx</welcome-file>
         <welcome-file>index.html</welcome-file>
@@ -174,11 +175,11 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>input</servlet-name>
-        <servlet-class>dk.clarin.tools.rest.input</servlet-class>
+        <servlet-name>entry</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.entry</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>input</servlet-name>
-        <url-pattern>/input/*</url-pattern>
+        <servlet-name>entry</servlet-name>
+        <url-pattern>/entry</url-pattern>
     </servlet-mapping>
 </web-app>
