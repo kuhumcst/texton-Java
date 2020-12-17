@@ -69,11 +69,8 @@ public class zipresults extends HttpServlet
         response.setHeader("Content-Disposition","attachment;filename=\"" + fileName + "\"");
         try
             {
-//          File f = new File(localFilePath+fileName);
             int nLen = 0;
             OutputStream out;
-//          FileInputStream in;
-//          in = new FileInputStream(f);
             InputStream in = Files.newInputStream(Paths.get(localFilePath+fileName));
 
             out = response.getOutputStream();
@@ -89,33 +86,6 @@ public class zipresults extends HttpServlet
                 {
                 in.close();
                 }
-            /**
-             * keep$
-             * 
-             * Check whether a result from a tool in the staging area can be
-             * deleted.
-             * 
-             * Results that for some reason are needed by other tasks must
-             * be kept. The function looks for outstanding jobs that take
-             * the argument as input. Argument: file name, may be preceded
-             * by a slash /19231210291
-             * 
-             * NOTICE: If the file need not be kept, the file's name is
-             * deleted from several tables, so calling keep has side
-             * effects! Affected tables in jboss/server/default/data/tools:
-             * jobs.table Uploads.table CTBs.table relations.table
-             * jobAbout.table
-             */
-            /* 2016.06.22 We decided not to delete results from the server 
-               immediately after they have been fetched by the user.
-               The cleanup service will delete the data.
-            
-            String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + ")");
-            if(svar.equals("no"))
-                {
-                boolean success = f.delete();
-                }
-            */
             }
         catch (FileNotFoundException e)
             {
@@ -126,7 +96,6 @@ public class zipresults extends HttpServlet
                 fileName = fileName.substring(1);
             out.println("File " + fileName + " is no longer accessible.");
             }
-            
         }
 
     public void doPost(HttpServletRequest request,HttpServletResponse response)
@@ -162,7 +131,6 @@ public class zipresults extends HttpServlet
                                             );
                 String localFilePath = ToolsProperties.documentRoot;
                     
-                //FileOutputStream zipdest = null;
                 OutputStream zipdest = null;
                 ZipOutputStream zipout = null;
                 boolean hasFiles = false;
@@ -170,7 +138,6 @@ public class zipresults extends HttpServlet
                 if(letter.startsWith("file:"))
                     {
                     hasFiles = true;
-                    //zipdest = new FileOutputStream(localFilePath + job + ".zip");
                     zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
 
                     zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
