@@ -46,6 +46,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class zipresults extends HttpServlet 
     {
+    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+
     private String date;
     private bracmat BracMat;
 
@@ -152,6 +154,7 @@ public class zipresults extends HttpServlet
                             zipname = filename.substring(zipnameStart+1);
                             filename = filename.substring(0,zipnameStart);
                             }
+                        logger.debug("workflowzip("+localFilePath + filename+","+zipname+")");        
                         workflow.zip(localFilePath + filename,zipname,zipout);
                         letter = letter.substring(end+1);
                         }
