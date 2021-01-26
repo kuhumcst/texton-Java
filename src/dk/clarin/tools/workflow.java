@@ -358,9 +358,9 @@ public class workflow implements Runnable
                 String filename      = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".filename)"); 
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
-				requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
+                requestString = BracMat.Eval("percentEncodeURL$("+workflow.quote(requestString) + ")");
                 logger.debug("sendRequest("+requestString+")");
-				code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
+                code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
                 logger.debug("sendRequest returns code "+Integer.toString(code));
                 if(code == 202)
                     asynchronous = true;
@@ -431,24 +431,13 @@ public class workflow implements Runnable
         logger.debug("path="+path);
         try
             {
-            String destdir = BracMat.Eval("toolsdata$");
-            String requestResult;
-            boolean isTEI = false;
-            String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
-            if(TEIformat.equals(""))
-                {
-                isTEI = false;
-                requestResult = "";
-                }
-            else
-                {
-                isTEI = true;
-                requestResult = readFileAsString(path);
-                }
-
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String date = sdf.format(cal.getTime());
+
+            String destdir = BracMat.Eval("toolsdata$");
+            String newResource;
+            String TEIformat = BracMat.Eval("isTEIoutput$(" + result + "." + jobID + ")");
             /**
              * doneJob$
              *
@@ -466,19 +455,29 @@ public class workflow implements Runnable
              * Notice that this function currently only can generate output of type 
              * TEIDKCLARIN_ANNO
              */
-            String newResource;
-            if(isTEI == false)
+            if(TEIformat.equals(""))
                 {
                 newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               ".."               + quote(date) + ")"); 
                 }
             else
                 {
-                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")"); 
+                //String requestResult = readFileAsString(path);
+                logger.debug("result="+result);
+                logger.debug("jobID="+jobID);
+                logger.debug("date="+date);
+                //logger.debug("requestResult="+requestResult);
+                //String toEval =            "doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")";
+                String toEval =            "doneJob$(" + result + "." + jobID + "." + quote(path) + "." + quote(date) + ")";
+                logger.debug(toEval);
+                newResource = BracMat.Eval(toEval); 
+                logger.debug("doneJob-result");
+                logger.debug(newResource);
                 // Create file plus metadata
-                BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/Filename(path,BracMat)), StandardCharsets.UTF_8);
-                bufferedWriter.write(newResource);
-                bufferedWriter.close();
+                //BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/Filename(path,BracMat)), StandardCharsets.UTF_8);
+                //bufferedWriter.write(newResource);
+                //bufferedWriter.close();
                 }
+
             /**
              * relationFile$
              *
