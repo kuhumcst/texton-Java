@@ -59,9 +59,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /**
  * Prepare and run a workflow.
  * Functions as a wizard, taking input from various stages.
- * The function handles two scenarios:
- *      create a resource by choice of goal ('kunde')
- *      create a resource by choice of tool ('stenhugger')
+ * The function creates a resource by choice of goal
  * Arguments:
  *      - http parameters
  *      - directedBy=  GoalChoice (default) 
@@ -206,43 +204,30 @@ public class create extends HttpServlet
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String workflowRequest)
         {
         String result;
-        if(workflowRequest.equals(""))
-            {
-            /**
-             * create$
-             *
-             * Prepare and run a workflow.
-             * Functions as a wizard, taking input from various stages.
-             * The function handles two scenarios:
-             *      create a resource by choice of goal ('kunde')
-             *      create a resource by choice of tool ('stenhugger')
-             * Arguments:
-             *      - http parameters
-             *      - directedBy=  GoalChoice (default) 
-             * http parameters:
-             *      mail2=<address>
-             *      action=batch | batch=on | batch=off
-             *      TOOL=<toolname>
-             *      bsubmit=nextStep|prev<N>|next<N>|Submit|"View details"
-             *      (item=<itemid>)+
-             *      (Item=<itemid>)+
-             *      I<feature>=<featurevalue>
-             *      O<feature>=<featurevalue>
-             * itemid's are of the form dkclarin:188028
-             * features are (currently): facet, format and lang
-             * feature values are complex strings consisting of a feature value and,
-             * optionally, a specialisation of the feature values, separated from the
-             * former by a caret.
-             */
-            result = BracMat.Eval("create$(" + arg + ".)");
-            }
-        else
-            {
-            /*
-            workflowRequest = GoalChoice
+        /**
+            * create$
+            *
+            * Prepare and run a workflow.
+            * Functions as a wizard, taking input from various stages.
+            * The function creates a resource by choice of goal
+            * Arguments:
+            *      - http parameters
+            * http parameters:
+            *      mail2=<address>
+            *      action=batch | batch=on | batch=off
+            *      TOOL=<toolname>
+            *      bsubmit=nextStep|prev<N>|next<N>|Submit|"View details"
+            *      (item=<itemid>)+
+            *      (Item=<itemid>)+
+            *      I<feature>=<featurevalue>
+            *      O<feature>=<featurevalue>
+            * itemid's are of the form dkclarin:188028
+            * features are (currently): facet, format and lang
+            * feature values are complex strings consisting of a feature value and,
+            * optionally, a specialisation of the feature values, separated from the
+            * former by a caret.
             */
-            result = BracMat.Eval("create" + workflowRequest + "$(" + arg + ")");
-            }
+        result = BracMat.Eval("create$(" + arg + ")");
         if(result == null || result.equals(""))
             {
             response.setStatus(404);
