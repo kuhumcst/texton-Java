@@ -67,7 +67,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  *      mail2=<address>
  *      action=batch | batch=on | batch=off
  *      TOOL=<toolname>
- *      bsubmit=nextStep|prev<N>|next<N>|Submit|View"
+ *      bsubmit="next step"|"Submit"|"View details"
       "details
  *      (item=<itemid>)+
  *      (Item=<itemid>)+
@@ -216,7 +216,7 @@ public class create extends HttpServlet
             *      mail2=<address>
             *      action=batch | batch=on | batch=off
             *      TOOL=<toolname>
-            *      bsubmit=nextStep|prev<N>|next<N>|Submit|"View details"
+            *      bsubmit="next step"|"Submit"|"View details"
             *      (item=<itemid>)+
             *      (Item=<itemid>)+
             *      I<feature>=<featurevalue>
@@ -310,7 +310,6 @@ public class create extends HttpServlet
             else
                 {
                 // Asynkron håndtering:
-//                Runnable runnable = new workflow(result, destinationDir);
                 Runnable runnable = new workflow(result);
                 Thread thread = new Thread(runnable);
                 thread.start();
