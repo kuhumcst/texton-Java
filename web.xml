@@ -58,6 +58,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>showworkflows</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.showworkflows</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>showworkflows</servlet-name>
+        <url-pattern>/showworkflows/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>data</servlet-name>
         <servlet-class>dk.clarin.tools.rest.data</servlet-class>
     </servlet>
