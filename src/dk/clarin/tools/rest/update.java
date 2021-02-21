@@ -47,7 +47,6 @@ public class update extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-
         response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
         response.setStatus(200);
         PrintWriter out = response.getWriter();
@@ -71,15 +70,15 @@ public class update extends HttpServlet
             logger.debug("getGETarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
             if(passwordAsHandle != null && passwordAsHandle.equals(ToolsProperties.password))
                 {
-	            logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
+                logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getGETarg(request,"mail2");
-	            arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
+                arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
                 }
-			else
-				{
-	            logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
-					passwordAsHandle,ToolsProperties.password);
-				}
+            else
+                {
+                logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
+                passwordAsHandle,ToolsProperties.password);
+                }
                 
             logger.debug("userEmail = {}",userEmail);
 
