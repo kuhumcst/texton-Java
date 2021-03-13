@@ -224,9 +224,14 @@ public class upload extends HttpServlet
                     String JobID = BracMat.Eval("uploadJobID$(" + arg + ")");
                     logger.debug("JobNr {} JobID {}",JobNr,JobID);
                     util.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
-                    Runnable runnable = new workflow(JobNr);
-                    Thread thread = new Thread(runnable);
-                    thread.start();
+                    String result;
+                    result = BracMat.Eval("goodRunningThreads$");
+                    if(result.equals("y"))
+                        {
+                        Runnable runnable = new workflow(JobNr);
+                        Thread thread = new Thread(runnable);
+                        thread.start();
+                        }
                     response.setStatus(201);
                     String messagetext = BracMat.Eval("getStatusCode$(\"201\".\"\")");
                     out.println(messagetext);

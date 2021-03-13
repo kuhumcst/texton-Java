@@ -212,17 +212,22 @@ public class compute extends HttpServlet
         String StatusJobNrJobIdResponse[] = result.split("~", 4);
         if(StatusJobNrJobIdResponse.length == 4)
             { // toolsProg.bra: chosenworkflow.ApplyThePipelineToTheInput
-            String Status = StatusJobNrJobIdResponse[0];
-            String JobNr  = StatusJobNrJobIdResponse[1];
-            String JobId  = StatusJobNrJobIdResponse[2];
-            String output = StatusJobNrJobIdResponse[3];
-            response.setStatus(Integer.parseInt(Status));
-            if(!JobId.equals("")) // empty JobId means: there is nothing to do, goal is already fulfilled
+            String result;
+            result = BracMat.Eval("goodRunningThreads$");
+            if(result.equals("y"))
                 {
-                // Asynkron håndtering:
-                Runnable runnable = new workflow(JobNr); // start the workflow in a new thread.
-                Thread thread = new Thread(runnable);
-                thread.start();
+                String Status = StatusJobNrJobIdResponse[0];
+                String JobNr  = StatusJobNrJobIdResponse[1];
+                String JobId  = StatusJobNrJobIdResponse[2];
+                String output = StatusJobNrJobIdResponse[3];
+                response.setStatus(Integer.parseInt(Status));
+                if(!JobId.equals("")) // empty JobId means: there is nothing to do, goal is already fulfilled
+                    {
+                    // Asynkron håndtering:
+                    Runnable runnable = new workflow(JobNr); // start the workflow in a new thread.
+                    Thread thread = new Thread(runnable);
+                    thread.start();
+                    }
                 }
             out.println(output); // poll until workflow is finished, page set to reload every N seconds
             }
