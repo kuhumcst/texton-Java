@@ -48,14 +48,14 @@ import java.util.zip.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
 public class workflow implements Runnable 
     {
-    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+//    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
 
     private bracmat BracMat;
     private String result;
@@ -95,13 +95,13 @@ public class workflow implements Runnable
                 }
             catch (Exception e)
                 {//Catch exception if any
-                logger.error("Could not write result to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
+                //logger.error("Could not write result to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
                 BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
                 }
             }
         catch(InvalidPathException e)
             {//Catch exception if any
-            logger.error("Could not find path to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
+            //logger.error("Could not find path to file. Aborting job " + jobID + ". Reason:" + e.getMessage());
             BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
             }
         if(path != null)
@@ -113,10 +113,10 @@ public class workflow implements Runnable
     private void didnotget200(int code,String result, bracmat BracMat, String jobID)
         {
         String filelist;
-        logger.debug("didnotget200.Code="+Integer.toString(code)+", result="+result+", jobID="+jobID);
+        //logger.debug("didnotget200.Code="+Integer.toString(code)+", result="+result+", jobID="+jobID);
         if(code == 202)
             {
-            logger.warn("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
+            //logger.warn("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
             /**
                 * waitingJob$
                 *
@@ -134,14 +134,14 @@ public class workflow implements Runnable
             {
             //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
             filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
-            logger.warn("abortJob returns " + filelist);
-            logger.warn("Job " + jobID + " cannot open connection to URL ");
+            //logger.warn("abortJob returns " + filelist);
+            //logger.warn("Job " + jobID + " cannot open connection to URL ");
             }
         else
             {
             filelist = BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
-            logger.warn("abortJob returns " + filelist);
-            logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
+            //logger.warn("abortJob returns " + filelist);
+            //logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
             }
         }
 
@@ -273,33 +273,33 @@ public class workflow implements Runnable
                 else // HTTP GET
                     {
                     // Send data
-                    logger.debug("GET");
+                    //logger.debug("GET");
                     if (requestString != null && requestString.length () > 0)
                         {
                         urlStr += "?" + requestString;
                         }
                     URL url = new URL(urlStr);
-                    logger.debug("urlStr="+urlStr);
+                    //logger.debug("urlStr="+urlStr);
                     URLConnection conn = url.openConnection ();
                     conn.connect();
-                    logger.debug("connected");
+                    //logger.debug("connected");
         
                     // Cast to a HttpURLConnection
                     if(conn instanceof HttpURLConnection)
                         {
-                        logger.debug("Cast to HttpURLConnection OK");
+                        //logger.debug("Cast to HttpURLConnection OK");
                         HttpURLConnection httpConnection = (HttpURLConnection) conn;
-                        logger.debug("hvae HttpURLConnection");
+                        //logger.debug("hvae HttpURLConnection");
                         code = httpConnection.getResponseCode();
-                        logger.debug("code = "+Integer.toString(code));
+                        //logger.debug("code = "+Integer.toString(code));
                         message = httpConnection.getResponseMessage();
-                        logger.debug("message="+message);
+                        //logger.debug("message="+message);
                         BufferedReader rd;
                         StringBuilder sb = new StringBuilder();;
                         //String line;
                         if(code == 200)
                             {
-                            logger.debug("code 200");
+                            //logger.debug("code 200");
                             String path = writeStream(result, BracMat, filename, jobID, httpConnection.getInputStream());
                             if(!path.equals(""))
                                 util.gotToolOutputData(result, jobID, BracMat, path);
@@ -307,15 +307,15 @@ public class workflow implements Runnable
                         else
                             {
                             // Get the error response
-                            logger.debug("Get the error response");
+                            //logger.debug("Get the error response");
                             InputStream error = httpConnection.getErrorStream();
-                            logger.debug("got errorStream");
+                            //logger.debug("got errorStream");
                             if(error != null)
                                 {
                                 InputStreamReader inputstreamreader = new InputStreamReader(error);
-                                logger.debug("got inputstreamreader");
+                                //logger.debug("got inputstreamreader");
                                 rd = new BufferedReader(inputstreamreader);
-                                logger.debug("have BufferedReader");
+                                //logger.debug("have BufferedReader");
                                 int nextChar;
                                 while(( nextChar = rd.read()) != -1) 
                                     {
@@ -325,32 +325,32 @@ public class workflow implements Runnable
                                 }
                             else
                                 {
-                                logger.debug("error == null");
+                                //logger.debug("error == null");
                                 }
                             didnotget200(code,result,BracMat,jobID);
-                            logger.debug("called didnotget200");
+                            //logger.debug("called didnotget200");
                             }
                         }
                     else
                         {
-                        logger.debug("set code = 0");
+                        //logger.debug("set code = 0");
                         code = 0;
                         didnotget200(code,result,BracMat,jobID);
-                        logger.debug("called didnotget200 (2)");
+                        //logger.debug("called didnotget200 (2)");
                         }
                     }
                 } 
             catch (Exception e)
                 {
                 //jobs = 0; // No more jobs to process now, probably the tool is not reachable
-                logger.warn("Job " + jobID + " aborted. Reason:" + e.getMessage());
+                //logger.warn("Job " + jobID + " aborted. Reason:" + e.getMessage());
                 /*filelist =*/ BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
                 }
             }
         else
             {
             //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
-            logger.warn("Job " + jobID + " aborted. Endpoint must start with 'http://' or 'https://'. (" + endpoint + ")");
+            //logger.warn("Job " + jobID + " aborted. Endpoint must start with 'http://' or 'https://'. (" + endpoint + ")");
             /*filelist =*/ BracMat.Eval("abortJob$(" + result + "." + jobID + ")"); 
             }
         return code;
@@ -361,7 +361,7 @@ public class workflow implements Runnable
         int jobs = 10; // Brake (or break) after 10 failed iterations. Then something is possibly wrong
         int code = 0;
         boolean asynchronous = false;
-        logger.debug("processPipeLine("+result+")");
+        //logger.debug("processPipeLine("+result+")");
         while(jobs > 0 && BracMat.Eval("goodRunningThreads$").equals("y"))
             {
             // Jobs are hierarchically structured:
@@ -381,7 +381,7 @@ public class workflow implements Runnable
              *          empty string (if job not found in jobs.table)
              */
             String jobID = BracMat.Eval("getNextJobID$(" + result + ".)"); // second argument (between '.' and ')' ) is empty!
-            logger.debug("getNextJobID returns:"+jobID);
+            //logger.debug("getNextJobID returns:"+jobID);
             // Now we have a job that must be launched
             if(jobID.equals(""))
                 jobs = 0; // No more jobs on job list, quit from loop
@@ -410,19 +410,19 @@ public class workflow implements Runnable
                 String method        = BracMat.Eval("getJobArg$(" + result + "." + jobID + ".method)"); 
                 boolean postmethod = method.equals("POST");
                 requestString = BracMat.Eval("percentEncodeURL$("+util.quote(requestString) + ")");
-                logger.debug("sendRequest("+requestString+")");
+                //logger.debug("sendRequest("+requestString+")");
                 code = sendRequest(result, endpoint, requestString, BracMat, filename, jobID, postmethod);
-                logger.debug("sendRequest returns code "+Integer.toString(code));
+                //logger.debug("sendRequest returns code "+Integer.toString(code));
                 if(code == 202)
                     asynchronous = true;
                 }
             if(code != 200 && code != 202)
                 {
                 --jobs;
-                logger.info("processPipeLine aborts. jobs=="+Integer.toString(jobs));
+                //logger.info("processPipeLine aborts. jobs=="+Integer.toString(jobs));
                 }
             }
-        logger.info("processPipeLine returns");
+        //logger.info("processPipeLine returns");
         }
 
     public void run() // because it implements Runnable
