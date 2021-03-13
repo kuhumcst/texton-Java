@@ -43,11 +43,6 @@ public class parameters
         ToolsProperties.readProperties(fis);        
         }
 
-    public static String getReason()
-        {
-        return reason;
-        }
-
     public static String getGETarg(HttpServletRequest request, String name)
         {
         if(name != null)
