@@ -451,9 +451,6 @@ public class workflow implements Runnable
              *      CTBs.table
              *      relations.table
              * Arguments: jobNR, JobID, spangroup with annotation and date. 
-             *
-             * Notice that this function currently only can generate output of type 
-             * TEIDKCLARIN_ANNO
              */
             if(TEIformat.equals(""))
                 {
@@ -461,21 +458,14 @@ public class workflow implements Runnable
                 }
             else
                 {
-                //String requestResult = readFileAsString(path);
                 logger.debug("result="+result);
                 logger.debug("jobID="+jobID);
                 logger.debug("date="+date);
-                //logger.debug("requestResult="+requestResult);
-                //String toEval =            "doneJob$(" + result + "." + jobID + "." + quote(requestResult) + "." + quote(date) + ")";
                 String toEval =            "doneJob$(" + result + "." + jobID + "." + quote(path) + "." + quote(date) + ")";
                 logger.debug(toEval);
                 newResource = BracMat.Eval(toEval); 
                 logger.debug("doneJob-result");
                 logger.debug(newResource);
-                // Create file plus metadata
-                //BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/Filename(path,BracMat)), StandardCharsets.UTF_8);
-                //bufferedWriter.write(newResource);
-                //bufferedWriter.close();
                 }
 
             /**
