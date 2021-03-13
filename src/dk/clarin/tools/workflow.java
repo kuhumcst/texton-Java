@@ -370,7 +370,6 @@ public class workflow implements Runnable
             //     they share the same job number, whereas the Job ID is incremented monotonically.
             //     In this way, many independent pipelines are made into one big pipeline.)
             //    All jobs with the same job number must be performed sequentially, in increasing order of their job id.
-            // getNextJobID looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
             // Each job number represents one pipeline. A pipeline consists of one or more jobs, each with a jobID that is unique within the job.
             /**
              * getNextJobID$
@@ -381,14 +380,14 @@ public class workflow implements Runnable
              * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
              *          empty string (if job not found in jobs.table)
              */
-            String jobID = BracMat.Eval("getNextJobID$(" + result + ".)");
+            String jobID = BracMat.Eval("getNextJobID$(" + result + ".)"); // second argument (between '.' and ')' ) is empty!
             logger.debug("getNextJobID returns:"+jobID);
             // Now we have a job that must be launched
             if(jobID.equals(""))
                 jobs = 0; // No more jobs on job list, quit from loop
             else
                 {
-                // getJobArg looks for the trailing number of the result string, e.g. job number "55" if result is "Submitted55"
+                // getJobArg looks for the trailing number of the result string, e.g. job number "55" if result is "55"
 
                 /**
                  * getJobArg$

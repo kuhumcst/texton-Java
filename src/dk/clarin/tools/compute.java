@@ -225,82 +225,42 @@ public class compute extends HttpServlet
                 thread.start();
                 }
             out.println(output); // poll until workflow is finished, page set to reload every N seconds
-            return;
             }
-            
-        int start = result.indexOf("<?"); // XML-output (XHTML)
-        if(start < 0)
-            start = result.indexOf("<!"); // HTML5-output
-        if(start > 0)
+        else
             {
-            /* Something went wrong, e.g.:
+            int start = result.indexOf("<?"); // XML-output (XHTML)
+            if(start < 0)
+                start = result.indexOf("<!"); // HTML5-output
+            if(start > 0)
+                {
+                /* Something went wrong, e.g.:
             
-            400<!DOCTYPE html>
-            <html>
-            <head>
-             ... PDF-files that only consist of image data cannot be handled by this work flow. ...
+                400<!DOCTYPE html>
+                <html>
+                <head>
+                 ... PDF-files that only consist of image data cannot be handled by this work flow. ...
                 
                 
-            404<!DOCTYPE html>
-            <html>
-            <head>
-             ... Your goal cannot be fulfilled with the currently integrated tools. ...
+                404<!DOCTYPE html>
+                <html>
+                <head>
+                 ... Your goal cannot be fulfilled with the currently integrated tools. ...
                 
-            */
-            //response.setContentType("text/plain; charset=UTF-8");
-            out.println(result.substring(start));
-            try
-                {
-                int status = Integer.parseInt(result.substring(0,start));
-                response.setStatus(status);
+                */
+                out.println(result.substring(start));
+                try
+                    {
+                    int status = Integer.parseInt(result.substring(0,start));
+                    response.setStatus(status);
+                    }
+                catch(NumberFormatException e)
+                    {
+                    response.setStatus(404);
+                    logger.info("NumberFormatException. Could not parse initial integer in {}",result);
+                    }
+                return;
                 }
-            catch(NumberFormatException e)
-                {
-                response.setStatus(404);
-                logger.info("NumberFormatException. Could not parse initial integer in {}",result);
-                }
-            return;
-            }
-      /*  if(result.startsWith("Submitted"))
-            {
-            / **
-             * getNextJobID$
-             *
-             * Given the jobNr of a workflow, return the next job that is not pending 
-             * (=waiting for an another job to produce some of its inputs).
-             * Argument: jobNr
-             * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
-             *          empty string (if job not found in jobs.table)
-             * /
-            String jobID = BracMat.Eval("getNextJobID$(" + result + ".justtesting)");
-            if(jobID.equals(""))
-                {
-                out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-                out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
-                out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
-                out.println("<body><p>Der er ingenting at lave. Gå tilbage med knappen \"Forrige\".</p></body></html>");
-                }
-            else
-                {
-                // Asynkron håndtering:
-                Runnable runnable = new workflow(result);
-                Thread thread = new Thread(runnable);
-                thread.start();
-                out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-                out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
-                out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
-                if(UIlanguage != null && UIlanguage.equals("da"))
-                    out.println("<body><p>Du vil få mail når der er resultater. <a href=\"" + ToolsProperties.wwwServer + "/texton/mypoll?job=" + result + "\">Følg status af job [" + result + "].</a></p></body></html>");
-                else
-                    out.println("<body><p>You will receive email when there are results. <a href=\"" + ToolsProperties.wwwServer + "/texton/mypoll?job=" + result + "\">Follow status of job [" + result + "].</a></p></body></html>");
-                }
-            response.setStatus(202);
 
-            // Synkron håndtering:
-            //processPipeLine(response,result,out);
-            }
-        else*/
-            {
             out.println(result);
             }
         }
