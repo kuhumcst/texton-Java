@@ -18,7 +18,7 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.util.Enumeration;
 import java.io.File;
@@ -160,7 +160,7 @@ public class cleanup extends HttpServlet
                              *      relations.table
                              *      jobAbout.table
                              */
-                            String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + ".)");
+                            String svar = BracMat.Eval("keep$("+util.quote(fileName) + ".)");
                             if(svar.equals("no"))
                                 {
                                 boolean success = f.delete();
@@ -227,7 +227,7 @@ public class cleanup extends HttpServlet
                         *      relations.table
                         *      jobAbout.table
                         */
-                    String svar = BracMat.Eval("keep$("+workflow.quote(fileName) + "." + workflow.quote(jobNr) + ")");
+                    String svar = BracMat.Eval("keep$("+util.quote(fileName) + "." + util.quote(jobNr) + ")");
                     if(svar.equals("no"))
                         {
                         boolean success = f.delete();
@@ -257,7 +257,7 @@ public class cleanup extends HttpServlet
             String arg = "";
             for(String fileName : chld)
                 {
-                arg += " " + workflow.quote(fileName);
+                arg += " " + util.quote(fileName);
                 }
             /**
              * cleanup$

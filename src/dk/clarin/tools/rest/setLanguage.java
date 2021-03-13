@@ -19,7 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -57,11 +57,11 @@ public class setLanguage extends HttpServlet
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
-                arg = arg + " (\"" + workflow.escape(parmName) + "\".";
+                arg = arg + " (\"" + util.escape(parmName) + "\".";
                 String vals[] = request.getParameterValues(parmName);
                 for(String val : vals)
                     {
-                    arg += " \"" + workflow.escape(val) + "\"";
+                    arg += " \"" + util.escape(val) + "\"";
                     }
                 arg += ")";
                 }

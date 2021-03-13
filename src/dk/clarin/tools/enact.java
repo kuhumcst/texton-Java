@@ -19,7 +19,6 @@ package dk.clarin.tools;
 
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.workflow;
-import dk.clarin.tools.util;
 import dk.clarin.tools.parameters;
 import dk.cst.bracmat;
 import java.io.File;
@@ -81,10 +80,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * former by a caret.
  */      
 @SuppressWarnings("serial")
-public class create extends HttpServlet 
+public class enact extends HttpServlet 
     {
     // Static logger object.  
-    private static final Logger logger = LoggerFactory.getLogger(create.class);
+    private static final Logger logger = LoggerFactory.getLogger(enact.class);
 
     private File destinationDir;
     private bracmat BracMat;
@@ -198,10 +197,10 @@ public class create extends HttpServlet
     }
     
 
-    private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out)
+    private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String BracmatFunc)
         {
         String result;
-        result = BracMat.Eval("create$(" + arg + ")");
+        result = BracMat.Eval(BracmatFunc+"$(" + arg + ")");
         if(result == null || result.equals(""))
             {
             response.setStatus(404);
@@ -340,7 +339,7 @@ public class create extends HttpServlet
         return "";
         }
         
-    public void Workflow(HttpServletRequest request,HttpServletResponse response)
+    public void Workflow(HttpServletRequest request,HttpServletResponse response,String BracmatFunc)
         throws ServletException, IOException 
         {
         // Check if it is the allowed server that tries to start a workflow
@@ -387,7 +386,7 @@ public class create extends HttpServlet
                         int textLength = val.length();
                         if(textLength > 0)
                             {
-                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
+                            String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
                             arg = arg + " (FieldName,"      + util.quote("text")
                                       + ".Name,"            + util.quote("text")
@@ -456,7 +455,7 @@ public class create extends HttpServlet
 
         if(OK)
             {
-            createAndProcessPipeLine(response,arg,out);
+            createAndProcessPipeLine(response,arg,out,BracmatFunc);
             }
         }
 
@@ -606,7 +605,7 @@ public class create extends HttpServlet
         }
 
 
-    public void PostWorkflow(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException 
+    public void PostWorkflow(HttpServletRequest request,HttpServletResponse response,String BracmatFunc) throws ServletException, IOException 
         {
         List<FileItem> items = parameters.getParmList(request);
         PrintWriter out = response.getWriter();
@@ -619,6 +618,6 @@ public class create extends HttpServlet
 
         String arg  = getParmsAndFiles(items,response,out);
         arg = assureArgHasUIlanguage(request,items,arg);
-        createAndProcessPipeLine(response,arg,out);
+        createAndProcessPipeLine(response,arg,out,BracmatFunc);
         }
     }

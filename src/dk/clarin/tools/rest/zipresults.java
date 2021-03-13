@@ -19,6 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
+import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,6 +48,8 @@ import org.slf4j.LoggerFactory;
 public class zipresults extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+
+    private static final int BUFFER = 2048;
 
     private String date;
     private bracmat BracMat;
@@ -100,6 +103,50 @@ public class zipresults extends HttpServlet
             }
         }
 
+    static public void zip(String path,String name,ZipOutputStream out)
+        {
+        try
+            {
+            BufferedInputStream origin = null;
+            byte data[] = new byte[BUFFER];
+            //FileInputStream fi = new FileInputStream(path);
+            InputStream fi = Files.newInputStream(Paths.get(path));
+            origin = new BufferedInputStream(fi, BUFFER);
+            ZipEntry entry = new ZipEntry(name);
+            out.putNextEntry(entry);
+            int count;
+            while((count = origin.read(data, 0, BUFFER)) != -1) 
+                {
+                out.write(data, 0, count);
+                }
+            origin.close();
+            }
+        catch(FileNotFoundException e)
+            {
+            logger.error("zip:FileNotFoundException {}",e.getMessage());
+            }            
+        catch(IOException e)
+            {
+            logger.error("zip:IOException {}",e.getMessage());
+            }
+        }
+        
+    static public void zipstring(String name,ZipOutputStream out,String str)
+        {
+        try
+            {
+            byte data[] = str.getBytes();
+            ZipEntry entry = new ZipEntry(name);
+            out.putNextEntry(entry);
+            int count = data.length;
+            out.write(data, 0, count);
+            }
+        catch(IOException e)
+            {
+            logger.error("zipstring:IOException {}",e.getMessage());
+            }
+        }
+
     public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
@@ -126,9 +173,9 @@ public class zipresults extends HttpServlet
                 String readme = BracMat.Eval("readme$(" 
                                             + job 
                                             + "." 
-                                            + workflow.quote(date) 
+                                            + util.quote(date) 
                                             + "." 
-                                            + workflow.quote(letter) 
+                                            + util.quote(letter) 
                                             + ")"
                                             );
                 String localFilePath = ToolsProperties.documentRoot;
@@ -155,15 +202,15 @@ public class zipresults extends HttpServlet
                             filename = filename.substring(0,zipnameStart);
                             }
                         logger.debug("workflowzip("+localFilePath + filename+","+zipname+")");        
-                        workflow.zip(localFilePath + filename,zipname,zipout);
+                        zip(localFilePath + filename,zipname,zipout);
                         letter = letter.substring(end+1);
                         }
                     }
 
                 if(hasFiles)
                     {
-                    workflow.zipstring("readme.txt",zipout,readme);
-                    workflow.zipstring("index.html",zipout,letter);
+                    zipstring("readme.txt",zipout,readme);
+                    zipstring("index.html",zipout,letter);
                     zipout.close();
                     }
                 doGetZip(localFilePath, jobzip,response);                            

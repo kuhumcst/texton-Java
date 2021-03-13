@@ -19,6 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
+import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
 import java.io.*;
 import javax.servlet.ServletException;
@@ -105,7 +106,7 @@ public class upload extends HttpServlet
                 if(item.isFormField()) 
                     {
                     // We need the job parameter that indirectly tells us what local file name to give to the uploaded file.
-                    arg = arg + " (\"" + workflow.escape(item.getFieldName()) + "\".\"" + workflow.escape(item.getString()) + "\")";
+                    arg = arg + " (\"" + util.escape(item.getFieldName()) + "\".\"" + util.escape(item.getString()) + "\")";
                     logger.debug("arg={}", arg);
                     }
                 else if(item.getName() != "")
@@ -172,7 +173,7 @@ public class upload extends HttpServlet
                 if(LocalFileName == null)
                     {
                     response.setStatus(404);
-                    String messagetext = BracMat.Eval("getStatusCode$(\"404\".\"doPost:" + workflow.escape(LocalFileName) + "\")");
+                    String messagetext = BracMat.Eval("getStatusCode$(\"404\".\"doPost:" + util.escape(LocalFileName) + "\")");
                     out.println(messagetext);
                     }
                 else if(LocalFileName.startsWith("HTTP-status-code"))
@@ -184,7 +185,7 @@ public class upload extends HttpServlet
                      * Find the number greater than 100 immediately following the string 
                      * 'HTTP-status-code'
                      */
-                    String statusCode = BracMat.Eval("parseStatusCode$(\"" + workflow.escape(LocalFileName) + "\")");
+                    String statusCode = BracMat.Eval("parseStatusCode$(\"" + util.escape(LocalFileName) + "\")");
                     logger.debug("HTTP-status-code {}",statusCode);
                     response.setStatus(Integer.parseInt(statusCode));
                     /**
@@ -193,8 +194,8 @@ public class upload extends HttpServlet
                      * Find the text following the number greater than 100 immediately following the string 
                      * 'HTTP-status-code'
                      */
-                    String messagetext = BracMat.Eval("parsemessage$(\"" + workflow.escape(LocalFileName) + "\")");
-                    messagetext = BracMat.Eval("getStatusCode$(\"" + workflow.escape(statusCode) + "\".\"" + workflow.escape(messagetext) + "\")");
+                    String messagetext = BracMat.Eval("parsemessage$(\"" + util.escape(LocalFileName) + "\")");
+                    messagetext = BracMat.Eval("getStatusCode$(\"" + util.escape(statusCode) + "\".\"" + util.escape(messagetext) + "\")");
                     out.println(messagetext);
                     logger.debug("messagetext {}",messagetext);
                     }
@@ -208,7 +209,7 @@ public class upload extends HttpServlet
                     catch(Exception ex) 
                         {
                         response.setStatus(500);
-                        String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"Tools cannot save uploaded file to " + workflow.escape(destinationDir + LocalFileName) + "\")");
+                        String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"Tools cannot save uploaded file to " + util.escape(destinationDir + LocalFileName) + "\")");
                         out.println(messagetext);
                         return;
                         }
@@ -222,7 +223,7 @@ public class upload extends HttpServlet
                     String JobNr = BracMat.Eval("uploadJobNr$(" + arg + ")");
                     String JobID = BracMat.Eval("uploadJobID$(" + arg + ")");
                     logger.debug("JobNr {} JobID {}",JobNr,JobID);
-                    workflow.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
+                    util.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
                     //Runnable runnable = new workflow(JobNr, destinationDir);
                     Runnable runnable = new workflow(JobNr);
                     Thread thread = new Thread(runnable);
@@ -241,16 +242,16 @@ public class upload extends HttpServlet
             }
         catch(FileUploadException ex) 
             {
-            logger.debug("FileUploadException {}",workflow.escape(ex.toString()));
+            logger.debug("FileUploadException {}",util.escape(ex.toString()));
             response.setStatus(500);
-            String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: FileUploadException " + workflow.escape(ex.toString()) + "\")");
+            String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: FileUploadException " + util.escape(ex.toString()) + "\")");
             out.println(messagetext);
             }
         catch(Exception ex) 
             {
-            logger.debug("Exception {}",workflow.escape(ex.toString()));
+            logger.debug("Exception {}",util.escape(ex.toString()));
             response.setStatus(500);
-            String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: Exception " + workflow.escape(ex.toString()) + "\")");
+            String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: Exception " + util.escape(ex.toString()) + "\")");
             out.println(messagetext);
             }
         }

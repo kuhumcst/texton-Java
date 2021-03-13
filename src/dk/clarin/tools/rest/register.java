@@ -19,7 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import dk.clarin.tools.parameters;
 import java.io.*;
 import java.util.List;
@@ -68,7 +68,7 @@ public class register extends HttpServlet
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
-                arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
+                arg += " (handle." + util.quote(passwordAsHandle) + ")";
                 }
             else
                 {
@@ -79,7 +79,7 @@ public class register extends HttpServlet
             logger.debug("userEmail = {}",userEmail);
 
             if(userEmail != null && parameters.getPOSTorGETarg(request,items,"contactEmail") == null)
-                arg += " (contactEmail." + workflow.quote(userEmail) + ")";
+                arg += " (contactEmail." + util.quote(userEmail) + ")";
             arg += parameters.getargsBracmatFormat(request,items);
             /**
               * register$

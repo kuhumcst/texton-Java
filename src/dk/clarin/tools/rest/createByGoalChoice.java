@@ -27,24 +27,24 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class createByGoalChoice extends HttpServlet 
     {
-    private dk.clarin.tools.create Create;
+    private dk.clarin.tools.enact Enact;
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
         super.init(config);
-        Create = new dk.clarin.tools.create();
-        Create.init(config);
+        Enact = new dk.clarin.tools.enact();
+        Enact.init(config);
         }
 
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        Create.Workflow(request,response,"GoalChoice");
+        Enact.Workflow(request,response,"createByGoalChoice");
         }
         
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
-        Create.PostWorkflow(request,response,"GoalChoice");
+        Enact.PostWorkflow(request,response,"createByGoalChoice");
         }        
     }
 

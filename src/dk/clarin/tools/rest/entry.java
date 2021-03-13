@@ -18,7 +18,7 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class entry extends HttpServlet
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-                arg = "(" + workflow.quote(parmName) + "." + workflow.quote(vals[j]) + ") " + arg;
+                arg = "(" + util.quote(parmName) + "." + util.quote(vals[j]) + ") " + arg;
                 }
             }
         PrintWriter out = response.getWriter();

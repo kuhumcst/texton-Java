@@ -19,7 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -84,7 +84,7 @@ public class exportMetadata extends HttpServlet
                 proddata = "";
             else
                 proddata = "proddata";
-            String result = BracMat.Eval("exportTables$("+workflow.quote(proddata)+"."+workflow.quote(expression)+")");
+            String result = BracMat.Eval("exportTables$("+util.quote(proddata)+"."+util.quote(expression)+")");
             if(result == null || result.equals(""))
                 {
                 response.setStatus(404);

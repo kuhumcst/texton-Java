@@ -19,6 +19,7 @@ package dk.clarin.tools.rest;
 
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
+import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
 import java.io.*;
@@ -72,7 +73,7 @@ public class update extends HttpServlet
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getGETarg(request,"mail2");
-                arg += " (handle." + workflow.quote(passwordAsHandle) + ")";
+                arg += " (handle." + util.quote(passwordAsHandle) + ")";
                 }
             else
                 {
@@ -83,7 +84,7 @@ public class update extends HttpServlet
             logger.debug("userEmail = {}",userEmail);
 
             if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
-                arg += " (contactEmail." + workflow.quote(userEmail) + ")";
+                arg += " (contactEmail." + util.quote(userEmail) + ")";
             arg += parameters.getAllGETArgsBracmatFormat(request);
 
             String result = BracMat.Eval("update$(" + arg + ")");

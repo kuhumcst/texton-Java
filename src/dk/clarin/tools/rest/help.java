@@ -18,7 +18,7 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class help extends HttpServlet
             String vals[] = request.getParameterValues(parmName);
             for(int j = 0;j < vals.length;++j)
                 {
-                arg = "(" + workflow.quote(parmName) + "." + workflow.quote(vals[j]) + ") " + arg;
+                arg = "(" + util.quote(parmName) + "." + util.quote(vals[j]) + ") " + arg;
             /*  if(parmName.equals("UIlanguage"))
                     {
                     UIlanguage = vals[j];
@@ -102,7 +102,7 @@ public class help extends HttpServlet
         /**
           * help$
           */
-//        String svar = BracMat.Eval("help$((UIlanguage." + workflow.quote(UIlanguage) + ") (usedonly." + workflow.quote(usedonly) + "))");
+//        String svar = BracMat.Eval("help$((UIlanguage." + util.quote(UIlanguage) + ") (usedonly." + util.quote(usedonly) + "))");
         String svar = BracMat.Eval("help$(" + arg + ")");
         out.println(svar);
         }

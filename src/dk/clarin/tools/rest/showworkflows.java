@@ -27,24 +27,24 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class showworkflows extends HttpServlet 
     {
-    private dk.clarin.tools.workflowlist WorkflowList;
+    private dk.clarin.tools.enact Enact;
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
         super.init(config);
-        WorkflowList = new dk.clarin.tools.workflowlist();
-        WorkflowList.init(config);
+        Enact = new dk.clarin.tools.enact();
+        Enact.init(config);
         }
 
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        WorkflowList.Workflow(request,response);
+        Enact.Workflow(request,response,"showworkflows");
         }
         
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
-        WorkflowList.PostWorkflow(request,response);
+        Enact.PostWorkflow(request,response,"showworkflows");
         }        
     }
 

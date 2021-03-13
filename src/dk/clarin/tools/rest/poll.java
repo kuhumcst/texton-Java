@@ -18,7 +18,7 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
+import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class poll extends HttpServlet
     {
     private File destinationDir;
     private bracmat BracMat;
-    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+    private static final Logger logger = LoggerFactory.getLogger(poll.class);
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
@@ -109,7 +109,7 @@ public class poll extends HttpServlet
 //            response.setContentType("text/html; charset=UTF-8");
             response.setContentType("application/xhtml+xml; charset=UTF-8");
 
-            String svar = BracMat.Eval("poll$("+workflow.quote(job) + ")");
+            String svar = BracMat.Eval("poll$("+util.quote(job) + ")");
             out.println(svar);            
             }
         }

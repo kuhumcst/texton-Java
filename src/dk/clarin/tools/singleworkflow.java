@@ -92,9 +92,6 @@ public class singleworkflow extends HttpServlet
     /// The user's preferred interface language
     private String UIlanguage;// = null;
 
-    public static final int ACCEPT=1;       //We have accepted your request for applying tools to resources.
-    public static final int CONFIRMATION=2; //The results from the tool-workflow are ready to inspect
-    public static final int ERROR=3;        //Something went wrong
     private String date;
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -182,7 +179,6 @@ public class singleworkflow extends HttpServlet
                 byte[] buffer = new byte[4096];
                 int n = - 1;
                 int N = 0;
-                //OutputStream output = new FileOutputStream( file );
                 OutputStream output = Files.newOutputStream(file.toPath());
                 while ( (n = input.read(buffer)) != -1) 
                     {
@@ -204,29 +200,6 @@ public class singleworkflow extends HttpServlet
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out)
         {
         String result;
-        /**
-            * create$
-            *
-            * Prepare and run a workflow.
-            * Functions as a wizard, taking input from various stages.
-            * The function creates a resource by choice of goal
-            * Arguments:
-            *      - http parameters
-            * http parameters:
-            *      mail2=<address>
-            *      action=batch | batch=on | batch=off
-            *      TOOL=<toolname>
-            *      bsubmit="next step"|"Submit"|"View details"
-            *      (item=<itemid>)+
-            *      (Item=<itemid>)+
-            *      I<feature>=<featurevalue>
-            *      O<feature>=<featurevalue>
-            * itemid's are of the form dkclarin:188028
-            * features are (currently): facet, format and lang
-            * feature values are complex strings consisting of a feature value and,
-            * optionally, a specialisation of the feature values, separated from the
-            * former by a caret.
-            */
         result = BracMat.Eval("singleworkflow$(" + arg + ")");
         if(result == null || result.equals(""))
             {
@@ -338,8 +311,8 @@ public class singleworkflow extends HttpServlet
             {
             logger.debug("val == {}",val);
 
-            String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+workflow.quote(val) + ")");
-            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote(val) + "." + workflow.quote(date) + ")");
+            String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+util.quote(val) + ")");
+            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
 
             logger.debug("LocalFileName == {}",LocalFileName);
             logger.debug("PercentEncodedURL == {}",PercentEncodedURL);
@@ -353,15 +326,15 @@ public class singleworkflow extends HttpServlet
             if(textLength > 0 && !ContentType.equals(""))
                 {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    return      " (FieldName,"      + workflow.quote("input")
-                              + ".Name,"            + workflow.quote(PercentEncodedURL)
-                              + ".ContentType,"     + workflow.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                    return      " (FieldName,"      + util.quote("input")
+                              + ".Name,"            + util.quote(PercentEncodedURL)
+                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
                               + ".Size,"            + Long.toString(textLength)
-                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                              + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                              + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                              + ".LocalFileName,"   + util.quote(LocalFileName)
                               + ")";                
                 }
-            else BracMat.Eval("unstore$("+workflow.quote(LocalFileName)+")");
+            else BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
             }
         return "";
         }
@@ -385,7 +358,7 @@ public class singleworkflow extends HttpServlet
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-        String arg = "(method.GET) (DATE." + workflow.quote(date) + ")";
+        String arg = "(method.GET) (DATE." + util.quote(date) + ")";
         boolean OK = true;
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
@@ -398,8 +371,8 @@ public class singleworkflow extends HttpServlet
                     if(!val.equals(""))
                         {
                         userEmail = null;
-                        arg = arg + " (" + workflow.quote(parmName) + ".";
-                        arg += " " + workflow.quote(val);
+                        arg = arg + " (" + util.quote(parmName) + ".";
+                        arg += " " + util.quote(val);
                         arg += ")";
                         }
                     }
@@ -413,14 +386,14 @@ public class singleworkflow extends HttpServlet
                         int textLength = val.length();
                         if(textLength > 0)
                             {
-                            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + workflow.quote("text")
-                                      + ".Name,"            + workflow.quote("text")
-                                      + ".ContentType,"     + workflow.quote("text/plain")
+                            arg = arg + " (FieldName,"      + util.quote("text")
+                                      + ".Name,"            + util.quote("text")
+                                      + ".ContentType,"     + util.quote("text/plain")
                                       + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                      + ".LocalFileName,"   + util.quote(LocalFileName)
                                       + ")";
                         
                             PrintWriter outf = new PrintWriter(file);
@@ -465,16 +438,16 @@ public class singleworkflow extends HttpServlet
                 {
                 for(String val : vals)
                     {
-                    arg = arg + " (" + workflow.quote(parmName) + ".";
-                    arg += " " + workflow.quote(val);
+                    arg = arg + " (" + util.quote(parmName) + ".";
+                    arg += " " + util.quote(val);
                     arg += ")";
                     }
                 }
             }
         if(userEmail != null)
             {
-            arg = arg + " (" + workflow.quote("mail2") + ".";
-            arg += " " + workflow.quote(userEmail);
+            arg = arg + " (" + util.quote("mail2") + ".";
+            arg += " " + util.quote(userEmail);
             arg += ")";
             }
 
@@ -545,7 +518,7 @@ public class singleworkflow extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
 
-        String arg = "(method.POST) (DATE." + workflow.quote(date) + ")";
+        String arg = "(method.POST) (DATE." + util.quote(date) + ")";
 
         try 
             {
@@ -566,14 +539,14 @@ public class singleworkflow extends HttpServlet
                         int textLength = item.getString().length();
                         if(textLength > 0)
                             {
-                            String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote("text") + "." + workflow.quote(date) + ")");
+                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + workflow.quote("text")
-                                      + ".Name,"            + workflow.quote("text")
-                                      + ".ContentType,"     + workflow.quote("text/plain")
+                            arg = arg + " (FieldName,"      + util.quote("text")
+                                      + ".Name,"            + util.quote("text")
+                                      + ".ContentType,"     + util.quote("text/plain")
                                       + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                      + ".LocalFileName,"   + util.quote(LocalFileName)
                                       + ")";
                             item.write(file);
                             }
@@ -599,12 +572,12 @@ public class singleworkflow extends HttpServlet
                             }
                         }
                     else
-                        arg = arg + " (" + item.getFieldName() + "." + workflow.quote(item.getString()) + ")";
+                        arg = arg + " (" + item.getFieldName() + "." + util.quote(item.getString()) + ")";
                     }
                 else if(item.getName() != "")
                     {
                     //Handle Uploaded files.
-                    String LocalFileName = BracMat.Eval("storeUpload$("+workflow.quote(item.getName()) + "." + workflow.quote(date) + ")");
+                    String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getName()) + "." + util.quote(date) + ")");
                     /*
                     * Write file to the ultimate location.
                     */
@@ -613,12 +586,12 @@ public class singleworkflow extends HttpServlet
 
                     String ContentType = item.getContentType();
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    arg = arg + " (FieldName,"      + workflow.quote(item.getFieldName())
-                              + ".Name,"            + workflow.quote(item.getName())
-                              + ".ContentType,"     + workflow.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                    arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
+                              + ".Name,"            + util.quote(item.getName())
+                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
                               + ".Size,"            + Long.toString(item.getSize())
-                              + ".DestinationDir,"  + workflow.quote(ToolsProperties.documentRoot)
-                              + ".LocalFileName,"   + workflow.quote(LocalFileName)
+                              + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                              + ".LocalFileName,"   + util.quote(LocalFileName)
                               + ")";
                     }
                 }
@@ -642,6 +615,7 @@ public class singleworkflow extends HttpServlet
         response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);
+
         String arg  = getParmsAndFiles(items,response,out);
         arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out);

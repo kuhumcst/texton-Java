@@ -153,11 +153,11 @@ public class parameters
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
-            arg = arg + " (" + workflow.quote(parmName) + ".";
+            arg = arg + " (" + util.quote(parmName) + ".";
             String vals[] = request.getParameterValues(parmName);
             for(String val : vals)
                 {
-                arg += " " + workflow.quote(val);
+                arg += " " + util.quote(val);
                 }
             arg += ")";
             }
@@ -187,7 +187,7 @@ public class parameters
                     FileItem item = (FileItem) itr.next();
                     if(item.isFormField()) 
                         {
-                        arg = arg + " (" + workflow.quote(item.getFieldName()) + "." + workflow.quote(item.getString("UTF-8").trim()) + ")";
+                        arg = arg + " (" + util.quote(item.getFieldName()) + "." + util.quote(item.getString("UTF-8").trim()) + ")";
                         }
                     }
                 }
@@ -200,11 +200,11 @@ public class parameters
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
-            arg = arg + " (" + workflow.quote(parmName) + ".";
+            arg = arg + " (" + util.quote(parmName) + ".";
             String vals[] = request.getParameterValues(parmName);
             for(String val : vals)
                 {
-                arg += " " + workflow.quote(val);
+                arg += " " + util.quote(val);
                 }
             arg += ")";
             }
