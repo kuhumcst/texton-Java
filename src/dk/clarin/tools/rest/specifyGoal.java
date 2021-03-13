@@ -25,7 +25,7 @@ import java.io.IOException;
 
 
 @SuppressWarnings("serial")
-public class createByGoalChoice extends HttpServlet 
+public class specifyGoal extends HttpServlet 
     {
     private dk.clarin.tools.compute Compute;
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
@@ -38,13 +38,13 @@ public class createByGoalChoice extends HttpServlet
     public void doGet(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        Compute.Workflow(request,response,"createByGoalChoice");
+        Compute.Workflow(request,response,"specifyGoal");
         }
         
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
-        Compute.PostWorkflow(request,response,"createByGoalChoice");
+        Compute.PostWorkflow(request,response,"specifyGoal");
         }        
     }
 
