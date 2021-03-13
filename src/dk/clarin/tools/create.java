@@ -182,7 +182,6 @@ public class create extends HttpServlet
                 byte[] buffer = new byte[4096];
                 int n = - 1;
                 int N = 0;
-                //OutputStream output = new FileOutputStream( file );
                 OutputStream output = Files.newOutputStream(file.toPath());
                 while ( (n = input.read(buffer)) != -1) 
                     {
