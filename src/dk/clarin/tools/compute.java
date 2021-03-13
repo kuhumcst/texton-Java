@@ -80,10 +80,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * former by a caret.
  */      
 @SuppressWarnings("serial")
-public class enact extends HttpServlet 
+public class compute extends HttpServlet 
     {
     // Static logger object.  
-    private static final Logger logger = LoggerFactory.getLogger(enact.class);
+    private static final Logger logger = LoggerFactory.getLogger(compute.class);
 
     private File destinationDir;
     private bracmat BracMat;
