@@ -20,7 +20,6 @@ package dk.clarin.tools.rest;
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
-import dk.clarin.tools.workflow;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.*;
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class zipresults extends HttpServlet 
     {
-    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+    private static final Logger logger = LoggerFactory.getLogger(zipresults.class);
 
     private static final int BUFFER = 2048;
 

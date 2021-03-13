@@ -47,7 +47,7 @@ public class upload extends HttpServlet
     private File tmpDir;
     private bracmat BracMat;
     private File destinationDir;
-    private static final Logger logger = LoggerFactory.getLogger(workflow.class);
+    private static final Logger logger = LoggerFactory.getLogger(upload.class);
 
     public void init(ServletConfig config) throws ServletException 
         {
@@ -55,10 +55,10 @@ public class upload extends HttpServlet
         ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
+        destinationDir = new File(ToolsProperties.documentRoot);
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
         }
 
@@ -224,7 +224,6 @@ public class upload extends HttpServlet
                     String JobID = BracMat.Eval("uploadJobID$(" + arg + ")");
                     logger.debug("JobNr {} JobID {}",JobNr,JobID);
                     util.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
-                    //Runnable runnable = new workflow(JobNr, destinationDir);
                     Runnable runnable = new workflow(JobNr);
                     Thread thread = new Thread(runnable);
                     thread.start();

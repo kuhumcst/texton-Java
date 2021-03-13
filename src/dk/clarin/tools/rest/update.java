@@ -20,7 +20,6 @@ package dk.clarin.tools.rest;
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
-import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
 import java.io.*;
 import javax.servlet.ServletConfig;

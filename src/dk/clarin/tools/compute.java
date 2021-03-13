@@ -200,6 +200,7 @@ public class compute extends HttpServlet
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String BracmatFunc)
         {
         String result;
+        // BracmatFunc == specifyGoal | showworkflows | chosenworkflow
         result = BracMat.Eval(BracmatFunc+"$(" + arg + ")");
         if(result == null || result.equals(""))
             {
@@ -210,21 +211,20 @@ public class compute extends HttpServlet
 
         String StatusJobNrJobIdResponse[] = result.split("~", 4);
         if(StatusJobNrJobIdResponse.length == 4)
-            {
+            { // toolsProg.bra: chosenworkflow.ApplyThePipelineToTheInput
             String Status = StatusJobNrJobIdResponse[0];
             String JobNr  = StatusJobNrJobIdResponse[1];
             String JobId  = StatusJobNrJobIdResponse[2];
             String output = StatusJobNrJobIdResponse[3];
             response.setStatus(Integer.parseInt(Status));
-            if(!JobId.equals(""))
+            if(!JobId.equals("")) // empty JobId means: there is nothing to do, goal is already fulfilled
                 {
                 // Asynkron håndtering:
-                //Runnable runnable = new workflow(JobNr, destinationDir);
-                Runnable runnable = new workflow(JobNr);
+                Runnable runnable = new workflow(JobNr); // start the workflow in a new thread.
                 Thread thread = new Thread(runnable);
                 thread.start();
                 }
-            out.println(output);
+            out.println(output); // poll until workflow is finished, page set to reload every N seconds
             return;
             }
             
@@ -261,9 +261,9 @@ public class compute extends HttpServlet
                 }
             return;
             }
-        if(result.startsWith("Submitted"))
+      /*  if(result.startsWith("Submitted"))
             {
-            /**
+            / **
              * getNextJobID$
              *
              * Given the jobNr of a workflow, return the next job that is not pending 
@@ -271,14 +271,14 @@ public class compute extends HttpServlet
              * Argument: jobNr
              * Returns: jobID (if job found in jobs.table in jboss/server/default/data/tools)
              *          empty string (if job not found in jobs.table)
-             */
+             * /
             String jobID = BracMat.Eval("getNextJobID$(" + result + ".justtesting)");
             if(jobID.equals(""))
                 {
                 out.println("<?xml version=\"1.0\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
                 out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">");
                 out.println("<head><title>DK-Clarin: Tools</title><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /></head>");
-                out.println("<body><p>Der er intet at lave. Gå tilbage med knappen \"Forrige\".</p></body></html>");
+                out.println("<body><p>Der er ingenting at lave. Gå tilbage med knappen \"Forrige\".</p></body></html>");
                 }
             else
                 {
@@ -299,7 +299,7 @@ public class compute extends HttpServlet
             // Synkron håndtering:
             //processPipeLine(response,result,out);
             }
-        else
+        else*/
             {
             out.println(result);
             }
