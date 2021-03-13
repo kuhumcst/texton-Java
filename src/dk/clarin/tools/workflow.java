@@ -362,7 +362,7 @@ public class workflow implements Runnable
         int code = 0;
         boolean asynchronous = false;
         logger.debug("processPipeLine("+result+")");
-        while(jobs > 0)
+        while(jobs > 0 && BracMat.Eval("goodRunningThreads$").equals("y"))
             {
             // Jobs are hierarchically structured:
             //    All jobs with the same job number belong together. They constitute a pipeline.
