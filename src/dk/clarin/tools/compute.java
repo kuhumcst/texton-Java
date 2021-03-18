@@ -146,22 +146,33 @@ public class compute extends HttpServlet
             }
         }
 
-    private String theMimeType(String urladdr){
+    private String theMimeType(String urladdr)
+        {
         try{
             URL url = new URL(urladdr);
             URLConnection urlConnection = url.openConnection();
             String mimeType = urlConnection.getContentType();
             logger.info("mimeType according to getContentType() {} is {}",urladdr,mimeType);
             return mimeType;
-        }catch(IOException e){
-            return "error connecting to server.";
+            }
+        catch(java.net.SocketTimeoutException e) 
+            {
+            logger.error("SocketTimeoutException in theMimeType: {}",e.getMessage());
+            return "";        
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in theMimeType: {}",e.getMessage());
+            return "";
+            }
         }
-    }
 
-    private int webPageBinary(String urladdr, File file){
-        try{
-          //The following url is downloaded by wget, which is much better at handling 303's and 302's.
-          //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
+    private int webPageBinary(String urladdr, File file)
+        {
+        try
+            {
+            //The following url is downloaded by wget, which is much better at handling 303's and 302's.
+            //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
           
             logger.debug("urladdr:"+urladdr);
             HttpURLConnection.setFollowRedirects(true); // defaults to true
@@ -190,11 +201,18 @@ public class compute extends HttpServlet
                 }
             else
                 return 0;
-        }catch(IOException e){
-            logger.debug("IOException in webPageBinary");
+            }
+        catch(java.net.SocketTimeoutException e) 
+            {
+            logger.error("SocketTimeoutException in webPageBinary: {}",e.getMessage());
+            return -1;        
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
             return -1;
+            }
         }
-    }
     
 
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String BracmatFunc)
@@ -259,7 +277,7 @@ public class compute extends HttpServlet
                 catch(NumberFormatException e)
                     {
                     response.setStatus(404);
-                    logger.info("NumberFormatException. Could not parse initial integer in {}",result);
+                    logger.warn("NumberFormatException. Could not parse initial integer in {}. Message: {}",result,e.getMessage());
                     }
                 return;
                 }

@@ -29,13 +29,13 @@
 
     <!-- This classes local logger -->
     <logger name="dk.clarin.tools">
-        <level value="debug"/>
+        <level value="warn"/>
         <appender-ref ref="file" />
     </logger>
 
     <!-- This classes local logger -->
     <logger name="dk.clarin.tools.rest">
-        <level value="debug"/>
+        <level value="warn"/>
         <appender-ref ref="console" />
     </logger>
 
