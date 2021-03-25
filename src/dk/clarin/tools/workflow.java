@@ -113,7 +113,7 @@ public class workflow implements Runnable
     private void didnotget200(int code,String JobNR, bracmat BracMat, String jobID)
         {
         String filelist;
-        logger.warning("didnotget200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
+        logger.warn("didnotget200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
         if(code == 202)
             {
             //logger.info("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
