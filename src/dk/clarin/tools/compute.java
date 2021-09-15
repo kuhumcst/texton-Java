@@ -218,7 +218,7 @@ public class compute extends HttpServlet
     private void createAndProcessPipeLine(HttpServletResponse response,String arg,PrintWriter out,String BracmatFunc)
         {
         String result;
-        // BracmatFunc == specifyGoal | showworkflows | chosenworkflow
+        // BracmatFunc == specifyGoal | showworkflows | chosenworkflow | helpMeSpecify
         result = BracMat.Eval(BracmatFunc+"$(" + arg + ")");
         if(result == null || result.equals(""))
             {
