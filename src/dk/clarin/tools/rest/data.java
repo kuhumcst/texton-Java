@@ -1,3 +1,17 @@
+/**
+ * Return result from Tools. E.g. in response to this URL:
+ *      https://clarin.dk/texton/data/3892126799-323-step1.xml
+ * A call to the 'keep' function in toolsProg.bra checks that by looking for
+ * outstanding jobs that take the result as input.
+ * Directory listings are forbidden, so the URL
+ *      https://clarin.dk/texton/data/
+ * returns an informational text.
+ * Return codes 200 
+ *              404 if a directorly listing is attempted or if the file is no
+ *                  longer accessible.
+ *              500 if Bracmat could not be loaded
+ */
+
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
@@ -15,30 +29,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
- * Return result from Tools. E.g. in response to this URL:
- *      https://clarin.dk/texton/data/3892126799-323-step1.xml
- * The file is deleted from the staging area after delivery, so results can
- * only be fetched once.
- *      - illegal fetches are less likely, as the real owner of the result
- *        will notice this
- *      - sharing of results is the owner's responsibility and cannot be done
- *        by sharing the URL
- *      - results don't use diskspace in the staging area once fetched.
- * Results that for some reason are needed by other tasks are not deleted.
- * A call to the 'keep' function in toolsProg.bra checks that by looking for
- * outstanding jobs that take the result as input.
- * Directory listings are forbidden, so the URL
- *      https://clarin.dk/texton/data/
- * returns an informational text.
- * Return codes 200 
- *              404 if a directorly listing is attempted or if the file is no
- *                  longer accessible.
- *              500 if Bracmat could not be loaded
- */
 @SuppressWarnings("serial")
 public class data extends HttpServlet 
     {
+    private static final Logger logger = LoggerFactory.getLogger(data.class);
     private File destinationDir;
     private bracmat BracMat;
 
@@ -89,84 +83,127 @@ public class data extends HttpServlet
         else
             {
             response.setContentType("text/plain");
+            String name = request.getPathInfo();
             try
                 {
                 // With ContentType("text/xml") the md5 checksum for the sender isn't the same as for the receiver.
                 // (If sent as ContentType("text/plain"), an XML-file doesn't look nice in the receiver's browser.)
-                if(request.getPathInfo().endsWith(".xml"))
+                if(name.endsWith(".xml"))
                     response.setContentType("text/xml");
-                else if(request.getPathInfo().endsWith(".csv"))
+                else if(name.endsWith(".csv"))
                     response.setContentType("text/csv");
-                else if(request.getPathInfo().endsWith(".htm"))
+                else if(name.endsWith(".htm"))
                     response.setContentType("text/html");
-                else if(request.getPathInfo().endsWith(".html"))
+                else if(name.endsWith(".html"))
                     response.setContentType("text/html");
-                else if(request.getPathInfo().endsWith(".docx"))
+                else if(name.endsWith(".docx"))
                     response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-                else if(request.getPathInfo().endsWith(".ppt"))
+                else if(name.endsWith(".ppt"))
                     response.setContentType("application/application/vnd.ms-powerpoint");
-                else if(request.getPathInfo().endsWith(".pptx"))
+                else if(name.endsWith(".pptx"))
                     response.setContentType("application/application/vnd.openxmlformats-officedocument.presentationml.presentation");
-                else if(request.getPathInfo().endsWith(".odp"))
+                else if(name.endsWith(".odp"))
                     response.setContentType("application/vnd.oasis.opendocument.presentation");
-                else if(request.getPathInfo().endsWith(".ods"))
+                else if(name.endsWith(".ods"))
                     response.setContentType("application/vnd.oasis.opendocument.spreadsheet");
-                else if(request.getPathInfo().endsWith(".odt"))
+                else if(name.endsWith(".odt"))
                     response.setContentType("application/vnd.oasis.opendocument.text");
-                else if(request.getPathInfo().endsWith(".json"))
+                else if(name.endsWith(".json"))
                     response.setContentType("application/json");
-                else if(request.getPathInfo().endsWith(".rtf"))
+                else if(name.endsWith(".rtf"))
                     response.setContentType("application/rtf");
-                else if(request.getPathInfo().endsWith(".zip"))
+                else if(name.endsWith(".zip"))
                     response.setContentType("application/zip");
-                else if(request.getPathInfo().endsWith(".doc"))
+                else if(name.endsWith(".doc"))
                     response.setContentType("application/msword");
-                else if(request.getPathInfo().endsWith(".pdf"))
+                else if(name.endsWith(".pdf"))
                     response.setContentType("application/pdf");
-                else if(request.getPathInfo().endsWith(".xhtml"))
+                else if(name.endsWith(".xhtml"))
                     response.setContentType("application/xhtml+xml");
-                else if(request.getPathInfo().endsWith(".wav"))
+                else if(name.endsWith(".wav"))
                     response.setContentType("audio/wav");                    
                 else
                     response.setContentType("text/plain; charset=UTF-8");
     
-                String fileName = destinationDir + request.getPathInfo();
-                File f = new File(fileName);
-                int nLen = 0;
-                OutputStream out;
-                //FileInputStream in;
-                //in = new FileInputStream(f);
-                InputStream in = Files.newInputStream(f.toPath());
-                out = response.getOutputStream();
-                byte[] bBuf = new byte[1024];
-                try
-                    {
-                    while ((nLen = in.read(bBuf, 0, 1024)) != -1)
+                String fileName = destinationDir + name;
+                try {
+                    File f = new File(fileName);
+                    int nLen = 0;
+                    OutputStream outstrm;
+                    try {
+                        InputStream in = Files.newInputStream(f.toPath());
+                        outstrm = response.getOutputStream();
+                        byte[] bBuf = new byte[1024];
+                        try
+                            {
+                            while ((nLen = in.read(bBuf, 0, 1024)) != -1)
+                                {
+                                outstrm.write(bBuf, 0, nLen);
+                                }
+                            }
+                        finally
+                            {
+                            in.close();
+                            }
+                        }
+                    catch (IllegalArgumentException e)
                         {
-                        out.write(bBuf, 0, nLen);
+                        logger.error("An invalid combination of options is specified. (fileName=" + fileName + ") Reason:" + e.getMessage());
+                        response.setContentType("text/html; charset=UTF-8");
+                        response.setStatus(404);
+                        PrintWriter out = response.getWriter();
+                        out.println("IllegalArgumentException:" + e.getMessage());
+                        }
+                    catch (UnsupportedOperationException e)
+                        {
+                        logger.error("An unsupported option is specified. (fileName=" + fileName + ") Reason:" + e.getMessage());
+                        response.setContentType("text/html; charset=UTF-8");
+                        response.setStatus(404);
+                        PrintWriter out = response.getWriter();
+                        out.println("UnsupportedOperationException:" + e.getMessage());
+                        }
+                    catch (IOException e)
+                        {
+                        logger.error("An I/O error occurs. (fileName=" + fileName + ") Reason:" + e.getMessage());
+                        response.setContentType("text/html; charset=UTF-8");
+                        response.setStatus(404);
+                        PrintWriter out = response.getWriter();
+                        out.println("IOException:" + e.getMessage());
+                        }
+                    catch (SecurityException e)
+                        {
+                        logger.error("In the case of the default provider, and a security manager is installed, the checkRead method is invoked to check read access to the file. (fileName=" + fileName + ") Reason:" + e.getMessage());
+                        response.setContentType("text/html; charset=UTF-8");
+                        response.setStatus(404);
+                        PrintWriter out = response.getWriter();
+                        out.println("SecurityException:" + e.getMessage());
                         }
                     }
-                finally
+                catch (NullPointerException e)
                     {
-                    in.close();
+                    logger.error("NullPointerException. (fileName=" + fileName + ") Reason:" + e.getMessage());
+                    response.setContentType("text/html; charset=UTF-8");
+                    response.setStatus(404);
+                    PrintWriter out = response.getWriter();
+                    out.println("The pathname argument (variable 'fileName') is null.");
                     }
                 }
             catch (java.nio.file.NoSuchFileException e)
                 {
+                logger.error("java.nio.file.NoSuchFileException. Reason:" + e.getMessage());
                 response.setContentType("text/html; charset=UTF-8");
                 response.setStatus(404);
                 PrintWriter out = response.getWriter();
-                String name = request.getPathInfo();
                 if(name.charAt(0) == '/')
                     name = name.substring(1);
                 out.println("File " + name + " is no longer accessible.");
                 }
             catch (FileNotFoundException e)
                 {
+                logger.error("FileNotFoundException. Reason:" + e.getMessage());
                 response.setContentType("text/html; charset=UTF-8");
                 response.setStatus(404);
                 PrintWriter out = response.getWriter();
-                String name = request.getPathInfo();
                 if(name.charAt(0) == '/')
                     name = name.substring(1);
                 out.println("File " + name + " is no longer accessible.");
