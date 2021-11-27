@@ -113,10 +113,8 @@ public class workflow implements Runnable
     private void didnotget200(int code,String JobNR, bracmat BracMat, String jobID)
         {
         String filelist;
-        logger.warn("didnotget200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
         if(code == 202)
             {
-            //logger.info("Got status code 202. Job " + jobID + " is set to wait for asynchronous result.");
             /**
                 * waitingJob$
                 *
@@ -128,20 +126,20 @@ public class workflow implements Runnable
                 *     jobs.table
                 */
             BracMat.Eval("waitingJob$(" + JobNR + "." + jobID + ")"); 
-            //jobs = 0; // No more jobs to process now, quit from loop and wait for result to be sent
-            }
-        else if(code == 0)
-            {
-            //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
-            filelist = BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
-            //logger.info("abortJob returns " + filelist);
-            logger.warn("Job " + jobID + " cannot open connection to URL ");
             }
         else
             {
-            filelist = BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
-            //logger.warn("abortJob returns " + filelist);
-            logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
+            logger.warn("didnotget200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
+            if(code == 0)
+                {
+                filelist = BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
+                logger.warn("Job " + jobID + " cannot open connection to URL ");
+                }
+            else
+                {
+                filelist = BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
+                logger.warn("Got status code [" + code + "]. Job " + jobID + " is aborted.");
+                }
             }
         }
 
@@ -172,7 +170,6 @@ public class workflow implements Runnable
         {        
         int code = 0;
         String message = "";
-        //String filelist;
         if(  endpoint.startsWith("http://") 
           || endpoint.startsWith("https://")
           )
@@ -273,33 +270,24 @@ public class workflow implements Runnable
                 else // HTTP GET
                     {
                     // Send data
-                    //logger.debug("GET");
                     if (requestString != null && requestString.length () > 0)
                         {
                         urlStr += "?" + requestString;
                         }
                     URL url = new URL(urlStr);
-                    //logger.debug("urlStr="+urlStr);
                     URLConnection conn = url.openConnection ();
                     conn.connect();
-                    //logger.debug("connected");
-        
+       
                     // Cast to a HttpURLConnection
                     if(conn instanceof HttpURLConnection)
                         {
-                        //logger.debug("Cast to HttpURLConnection OK");
                         HttpURLConnection httpConnection = (HttpURLConnection) conn;
-                        //logger.debug("hvae HttpURLConnection");
                         code = httpConnection.getResponseCode();
-                        //logger.debug("code = "+Integer.toString(code));
                         message = httpConnection.getResponseMessage();
-                        //logger.debug("message="+message);
                         BufferedReader rd;
                         StringBuilder sb = new StringBuilder();;
-                        //String line;
                         if(code == 200)
                             {
-                            //logger.debug("code 200");
                             String path = writeStream(JobNR, BracMat, filename, jobID, httpConnection.getInputStream());
                             if(!path.equals(""))
                                 util.gotToolOutputData(JobNR, jobID, BracMat, path);
@@ -307,15 +295,11 @@ public class workflow implements Runnable
                         else
                             {
                             // Get the error response
-                            //logger.debug("Get the error response");
                             InputStream error = httpConnection.getErrorStream();
-                            //logger.debug("got errorStream");
                             if(error != null)
                                 {
                                 InputStreamReader inputstreamreader = new InputStreamReader(error);
-                                //logger.debug("got inputstreamreader");
                                 rd = new BufferedReader(inputstreamreader);
-                                //logger.debug("have BufferedReader");
                                 int nextChar;
                                 while(( nextChar = rd.read()) != -1) 
                                     {
@@ -325,33 +309,27 @@ public class workflow implements Runnable
                                 }
                             else
                                 {
-                                //logger.debug("error == null");
                                 }
                             didnotget200(code,JobNR,BracMat,jobID);
-                            //logger.debug("called didnotget200");
                             }
                         }
                     else
                         {
-                        //logger.debug("set code = 0");
                         code = 0;
                         didnotget200(code,JobNR,BracMat,jobID);
-                        //logger.debug("called didnotget200 (2)");
                         }
                     }
                 } 
             catch (Exception e)
                 {
-                //jobs = 0; // No more jobs to process now, probably the tool is not reachable
                 logger.warn("Job " + jobID + " aborted. Reason:" + e.getMessage());
-                /*filelist =*/ BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
+                BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
                 }
             }
         else
             {
-            //jobs = 0; // No more jobs to process now, probably the tool is not integrated at all
             logger.warn("Job " + jobID + " aborted. Endpoint must start with 'http://' or 'https://'. (" + endpoint + ")");
-            /*filelist =*/ BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
+            BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
             }
         return code;
         }
@@ -361,7 +339,6 @@ public class workflow implements Runnable
         int jobs = 10; // Brake (or break) after 10 failed iterations. Then something is possibly wrong
         int code = 0;
         boolean asynchronous = false;
-        //logger.debug("processPipeLine("+JobNR+")");
         while(jobs > 0 && BracMat.Eval("goodRunningThreads$").equals("y"))
             {
             // Jobs are hierarchically structured:
@@ -428,9 +405,7 @@ public class workflow implements Runnable
                     boolean postmethod = method.equals("POST");
                     if(!postmethod)
                         requestString = BracMat.Eval("percentEncodeURL$("+util.quote(requestString) + ")");
-                    //logger.debug("sendRequest("+requestString+")");
                     code = sendRequest(JobNR, endpoint, requestString, BracMat, filename, jobID, postmethod);
-                    //logger.debug("sendRequest returns code "+Integer.toString(code));
                     if(code == 202)
                         asynchronous = true;
                     }
@@ -452,7 +427,6 @@ public class workflow implements Runnable
                     }
                 }
             }
-        //logger.info("processPipeLine returns");
         }
 
     public void run() // because it implements Runnable
