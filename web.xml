@@ -193,6 +193,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>changelog</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.changelog</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>changelog</servlet-name>
+        <url-pattern>/changelog/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>entry</servlet-name>
         <servlet-class>dk.clarin.tools.rest.entry</servlet-class>
     </servlet>
