@@ -59,12 +59,12 @@ public class util
         {
         return "\"" + escape(str) + "\"";
         }
-
+/*
     static private String FilenameRelations(String name,bracmat BracMat)
         {
         return BracMat.Eval("FilenameRelations$(" + util.quote(name) + ")"); 
         }
-
+*/
 
 
     /**
@@ -129,11 +129,13 @@ public class util
              *      relations.table     (for relation type, ctb and ctbid
              *      CTBs.table          (for ContentProvider and CTBID)
              */
+             /*
             String relations = BracMat.Eval("relationFile$(" + result + "." + jobID + ")"); 
             // Create relation file
-            BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(/*destdir+*/FilenameRelations(path,BracMat)), StandardCharsets.UTF_8);
+            BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(FilenameRelations(path,BracMat)), StandardCharsets.UTF_8);
             bufferedWriter.write(relations);
             bufferedWriter.close();
+            */
             }
         catch (Exception e)
             {//Catch exception if any
