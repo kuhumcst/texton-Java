@@ -5,29 +5,11 @@
         <conf name="default" transitive="false"/>
     </configurations>
     <dependencies defaultconf="default">
-        <dependency org="commons-codec" name="commons-codec" rev="1.4"/>
-        <!--dependency org="commons-httpclient" name="commons-httpclient" rev="3.1"/-->
-        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.2.1"/>
-        <dependency org="commons-io" name="commons-io" rev="1.4"/>
-        <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
-	<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-web -->
-	<dependency org="org.apache.logging.log4j" name="log4j-web" rev="2.15.0"/>
-        <!--dependency org="log4j" name="log4j" rev="1.2.15"/>
-        <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.6.2"/>
-        <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.6.2"/-->
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4"/>
-        <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.4" />
+	<dependency org="commons-fileupload" name="commons-fileupload" rev="1.4"/>
+	<dependency org="commons-io" name="commons-io" rev="2.11.0"/>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.32"/>
         <!--dependency org="javax.servlet" name="servlet-api" rev="2.4"
         Copy servlet-api.jar from CATALINA_BASE/lib to ./lib. This is done in build.xml.
         /-->
-        <dependency org="org.apache.commons" name="commons-email" rev="1.2"/>
-        <dependency org="com.googlecode.juniversalchardet" name="juniversalchardet" rev="1.0.3"/>
-        <!--dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.6">
-            <artifact name="httpclient" type="jar" />
-        </dependency>
-        <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.10">
-            <artifact name="httpcore" type="jar" />
-        </dependency-->
-        <exclude org="commons-logging"/>    </dependencies>
+    </dependencies>
 </ivy-module>
