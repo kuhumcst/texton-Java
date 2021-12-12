@@ -370,7 +370,7 @@ public class compute extends HttpServlet
                             String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
                             arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote("text")
+                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
                                       + ".ContentType,"     + util.quote("text/plain")
                                       + ".Size,"            + Long.toString(textLength)
                                       + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
@@ -523,7 +523,7 @@ public class compute extends HttpServlet
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
                             arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote("text")
+                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
                                       + ".ContentType,"     + util.quote("text/plain")
                                       + ".Size,"            + Long.toString(textLength)
                                       + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
