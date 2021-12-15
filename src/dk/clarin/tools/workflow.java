@@ -113,6 +113,7 @@ public class workflow implements Runnable
     private void didnotget200(int code,String JobNR, bracmat BracMat, String jobID)
         {
         String filelist;
+        logger.warn("DIDNOTGET200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
         if(code == 202)
             {
             /**

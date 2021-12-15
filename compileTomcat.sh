@@ -6,7 +6,10 @@ elif [ -d /usr/share/tomcat9/lib ]; then
     CATALINA_HOME=/usr/share/tomcat9
 fi
 export CATALINA_BASE
-export CATALINA_HOME_
+export CATALINA_HOME
+ant clean-all
 ant -Divy=true download-ivy 
 ant -DCATALINA_HOME=${CATALINA_HOME} -DUbuntu=true war
 sudo cp war/texton.war $CATALINA_BASE/webapps
+sudo cp war/texton.war /opt/tomcat/latest/webapps/
+/opt/texton/DK-ClarinTools/work/restart.sh

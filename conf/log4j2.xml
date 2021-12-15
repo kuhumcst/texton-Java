@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration status="DEBUG">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5p - %C{1} - %msg%n"/>
+    </Console>
+    <File name="File" fileName="/opt/texton/DK-ClarinTools/work/textonJava.log" append="true">
+      <PatternLayout>
+        <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5p - %C{1} - %msg%n</Pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+  <Loggers>
+    <!-- This classes local logger -->
+    <Logger name="dk.clarin.tools.rest" level="warn" additivity="true">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <!-- Catch all logger. Set to debug, if external jars fails -->
+    <Root level="debug">
+      <AppenderRef ref="File"/>
+    </Root>
+  </Loggers>
+</Configuration>

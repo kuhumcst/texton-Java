@@ -200,7 +200,10 @@ public class compute extends HttpServlet
                 return N;
                 }
             else
+                {
+                logger.warning("URL {} returns {} in webPageBinary: {}",urladdr,Integer.toString(status));
                 return 0;
+                }
             }
         catch(java.net.SocketTimeoutException e) 
             {

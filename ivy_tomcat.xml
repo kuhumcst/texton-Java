@@ -1,15 +1,15 @@
-
 <ivy-module version="1.0">
-    <info organisation="dkclarin" module="tools"/>
-    <configurations>
-        <conf name="default" transitive="false"/>
-    </configurations>
-    <dependencies defaultconf="default">
-	<dependency org="commons-fileupload" name="commons-fileupload" rev="1.4"/>
-	<dependency org="commons-io" name="commons-io" rev="2.11.0"/>
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.32"/>
-        <!--dependency org="javax.servlet" name="servlet-api" rev="2.4"
-        Copy servlet-api.jar from CATALINA_BASE/lib to ./lib. This is done in build.xml.
-        /-->
-    </dependencies>
+  <info organisation="dkclarin" module="tools"/>
+  <configurations>
+    <conf name="default" transitive="false"/>
+  </configurations>
+  <dependencies defaultconf="default">
+    <dependency org="javax.servlet" name="servlet-api" rev="3.0-alpha-1"/>
+    <dependency org="commons-fileupload" name="commons-fileupload" rev="1.4"/>
+    <dependency org="commons-io" name="commons-io" rev="2.11.0"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="2.0.0-alpha5"/>
+    <dependency org="org.apache.logging.log4j" name="log4j-slf4j18-impl" rev="2.16.0"/>
+    <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.16.0"/>
+    <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.16.0" />
+  </dependencies>
 </ivy-module>
