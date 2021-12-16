@@ -201,7 +201,7 @@ public class compute extends HttpServlet
                 }
             else
                 {
-                logger.warning("URL {} returns {} in webPageBinary: {}",urladdr,Integer.toString(status));
+                logger.warn("URL {} returns {} in webPageBinary: {}",urladdr,Integer.toString(status));
                 return 0;
                 }
             }
