@@ -4,7 +4,7 @@
     <conf name="default" transitive="false"/>
   </configurations>
   <dependencies defaultconf="default">
-    <dependency org="javax.servlet" name="servlet-api" rev="3.0-alpha-1"/>
+    <dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1"/>
     <dependency org="commons-fileupload" name="commons-fileupload" rev="1.4"/>
     <dependency org="commons-io" name="commons-io" rev="2.11.0"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="2.0.0-alpha5"/>
