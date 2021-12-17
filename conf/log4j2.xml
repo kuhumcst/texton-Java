@@ -12,9 +12,11 @@
   </Appenders>
   <Loggers>
     <!-- This classes local logger -->
+    <!--
     <Logger name="dk.clarin.tools.rest" level="warn" additivity="true">
       <AppenderRef ref="Console"/>
     </Logger>
+    -->
     <!-- Catch all logger. Set to debug, if external jars fails -->
     <Root level="debug">
       <AppenderRef ref="File"/>
