@@ -174,7 +174,6 @@ public class compute extends HttpServlet
             //The following url is downloaded by wget, which is much better at handling 303's and 302's.
             //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
           
-            logger.debug("urladdr:"+urladdr);
             HttpURLConnection.setFollowRedirects(true); // defaults to true
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
             URL url = new URL(urladdr);
@@ -293,20 +292,13 @@ public class compute extends HttpServlet
         {
         if(!val.equals(""))
             {
-            logger.debug("val == {}",val);
-
             String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+util.quote(val) + ")");
             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
-
-            logger.debug("LocalFileName == {}",LocalFileName);
-            logger.debug("PercentEncodedURL == {}",PercentEncodedURL);
-
+            
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(PercentEncodedURL,file);
-            logger.debug("file size == {}",textLength);
             String ContentType = theMimeType(PercentEncodedURL);
-            logger.debug("ContentType == {}",ContentType);
             if(textLength > 0 && !ContentType.equals(""))
                 {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
@@ -542,12 +534,10 @@ public class compute extends HttpServlet
                     else if(item.getFieldName().equals("URLS"))
                         {
                         String val = item.getString("UTF-8");
-                        logger.debug("val={}",val);
                         try {
                             String[] splitArray = val.split("\\r?\\n");
                             for(String line : splitArray)
                                 {
-                                logger.debug("line={}",line);
                                 if(!line.equals(""))
                                     arg = arg + makeLocalCopyOfRemoteFile(line);
                                 }
