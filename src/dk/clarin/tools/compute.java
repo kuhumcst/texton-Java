@@ -520,7 +520,7 @@ public class compute extends HttpServlet
                     {
                     if(item.getFieldName().equals("text"))
                         {
-                        int textLength = item.getString().length();
+                        int textLength = item.getString("UTF-8").length();
                         if(textLength > 0)
                             {
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
@@ -537,15 +537,17 @@ public class compute extends HttpServlet
                         }
                     else if(item.getFieldName().equals("URL"))
                         {
-                        arg = arg + makeLocalCopyOfRemoteFile(item.getString());
+                        arg = arg + makeLocalCopyOfRemoteFile(item.getString("UTF-8"));
                         }
                     else if(item.getFieldName().equals("URLS"))
                         {
-                        String val = item.getString();
+                        String val = item.getString("UTF-8");
+                        logger.debug("val={}",val);
                         try {
                             String[] splitArray = val.split("\\r?\\n");
                             for(String line : splitArray)
                                 {
+                                logger.debug("line={}",line);
                                 if(!line.equals(""))
                                     arg = arg + makeLocalCopyOfRemoteFile(line);
                                 }
@@ -556,7 +558,7 @@ public class compute extends HttpServlet
                             }
                         }
                     else
-                        arg = arg + " (" + item.getFieldName() + "." + util.quote(item.getString()) + ")";
+                        arg = arg + " (" + item.getFieldName() + "." + util.quote(item.getString("UTF-8")) + ")";
                     }
                 else if(item.getName() != "")
                     {
