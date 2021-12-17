@@ -15,15 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.
 */
-//package dk.clarin.tools.rest;
-// Make sure that bracmatjni.dll is in java.library.path
-// Compile with
-//      javac bracmatjni.java
-// Create header file with
-//      javah -jni bracmatjni
-// compile and link project D:\projects\Bracmat\vc\bracmatdll\bracmatdll.vcproj
-// Run with
-//      java bracmatjni
 package dk.clarin.tools.rest;
 import dk.clarin.tools.ToolsProperties;
 import dk.cst.bracmat;
@@ -33,14 +24,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("serial")
 public class bracmatevaluator extends HttpServlet 
     {
-/*
     private static final Logger logger = LoggerFactory.getLogger(bracmatevaluator.class);
 
     private bracmat BracMat;
-*/
 
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
         {
@@ -55,11 +47,11 @@ public class bracmatevaluator extends HttpServlet
         {
         response.setContentType("text/xml");
         response.setStatus(200);
-        PrintWriter out = response.getWriter();
         String password = request.getParameter("password");
         if(password == null || !password.equals(ToolsProperties.password))
             {
             response.setStatus(401);
+            PrintWriter out = response.getWriter();
             out.println( "<?xml version=\"1.0\"?>\n"
                         +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
                         +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
@@ -80,19 +72,24 @@ public class bracmatevaluator extends HttpServlet
             String expression = request.getParameter("expression");
             if(expression != null && !expression.equals(""))
                 {
-                response.setContentType("text/plain");
+                response.setContentType("text/html;charset=UTF-8");
+                logger.info("Eval:"+expression);
                 String result = BracMat.Eval(expression);
+                logger.debug("Result:"+result);
+                PrintWriter out = response.getWriter();
                 out.println(result);
                 }
             else
                 {
                 response.setContentType("text/plain");
+                PrintWriter out = response.getWriter();
                 out.println("NO INPUT");
                 }
             }
         else
             {
             response.setStatus(503);
+            PrintWriter out = response.getWriter();
             out.println( "<?xml version=\"1.0\"?>\n"
                         +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
                         +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
