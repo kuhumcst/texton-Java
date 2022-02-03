@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
@@ -40,7 +42,7 @@ public class util
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(util.class);
 
-        public static String escape(String str)
+    public static String escape(String str)
         {
         int len = str.length();
         StringBuilder sb = new StringBuilder((3 * len)/ 2); 
@@ -53,6 +55,28 @@ public class util
             sb.append(str.charAt(i));
             }
         return sb.toString();
+        }
+
+    public static String hexDigest(String str, String digestName)
+        {
+        try 
+            {
+            MessageDigest md = MessageDigest.getInstance(digestName);
+            byte[] digest = md.digest(str.getBytes(StandardCharsets.UTF_8));
+            char[] hex = new char[digest.length * 2];
+            for (int i = 0; i < digest.length; i++) 
+                {
+                hex[2 * i] = "0123456789abcdef".charAt((digest[i] & 0xf0) >> 4);
+                hex[2 * i + 1] = "0123456789abcdef".charAt(digest[i] & 0x0f);
+                }
+            String result = new String(hex);
+            logger.debug("hex=["+result+"]");
+            return result;
+            }
+        catch (NoSuchAlgorithmException e) 
+            {
+            throw new IllegalStateException(e);
+            }
         }
 
     public static String quote(String str)

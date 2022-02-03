@@ -41,9 +41,6 @@ public class ToolsProperties
     * each of these strings should have an entry in properties_*.xml
     **/
 
-    // eSciDoc core properties
-    public static String repoServiceUrl             = "";
-
     // Host names
     public static String wwwServer                    = "";
     
@@ -78,9 +75,6 @@ public class ToolsProperties
             {
             prop.loadFromXML(fis);
 
-            // eSciDoc core properties
-            repoServiceUrl         = prop.getProperty("repoServiceUrl");
-
             // Host names
             //infraServer            = prop.getProperty("infra-server");
             wwwServer              = prop.getProperty("www-server");
@@ -104,8 +98,6 @@ public class ToolsProperties
                                     + "\":?toolshome)&(\"" 
                                     + baseUrlTools
                                     + "\":?baseUrlTools)&(\"" 
-                                    + repoServiceUrl
-                                    + "\":?repoServiceUrl)&(\""
                                     + documentRoot
                                     + "\":?documentRoot)&(\""
                                     + wwwServer

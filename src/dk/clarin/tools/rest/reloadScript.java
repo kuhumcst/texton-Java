@@ -27,6 +27,7 @@
 package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
+import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.*;
 import javax.servlet.ServletException;
@@ -63,7 +64,7 @@ public class reloadScript extends HttpServlet
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         String password = request.getParameter("password");
-        if(password == null || !password.equals(ToolsProperties.password))
+        if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
             {
             response.setStatus(401);
             out.println( "<?xml version=\"1.0\"?>\n"

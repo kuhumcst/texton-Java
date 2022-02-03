@@ -3,9 +3,6 @@
 <properties>
     <comment>Properties for a local system</comment>
 
-    <!-- eSciDoc core properties -->
-    <entry key="repoServiceUrl">http://127.0.0.1/ir/item/</entry>
-
     <!-- Host names -->
     <entry key="www-server">http://localhost:8080</entry>
 
@@ -25,7 +22,8 @@
     <entry key="toolsProg">toolsProg.bra</entry>
     <entry key="tempdir">/opt/texton/BASE/tmp</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
-    <entry key="password"></entry>
+    <!-- zero length password (for local installation)-->
+    <entry key="password">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</entry>
 
     <!--  86400000 == one day  -->
     <!-- 172800000 == two days -->
