@@ -1,3 +1,13 @@
+20220203 - Renamed from DK-ClarinTools to texton-Java
+           Password stored as SHA-256 encoded string. Default password is still
+           empty string, but its SHA-256 encoded equivalent is not.
+
+20210222   Split 'create' in three stages: upload, list workflows, chosen workflow
+
+20200813   Added help page
+
+20200414   Check whether solutions are likely to explode
+
 20200304 - More memoization in workflow computation, with noticeable speed-up:
             * (old) fulfillable goal/source/tool combinations (memoized paths)
             * (new) unfulfillable goal/source/tool combinations

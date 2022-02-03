@@ -68,11 +68,11 @@ How?
    
     For GitHub, follow these steps:
 
-        git clone https://github.com/kuhumcst/DK-ClarinTools.git
-        cd DK-ClarinTools/
+        git clone https://github.com/kuhumcst/texton-Java.git
+        cd texton-Java/
         git clone https://github.com/BartJongejan/Bracmat.git
 
-8. If you plan to let the tools webservice use the 'work' folder (a folder in the DK-ClarinTools) as work folder, then make sure that Tomcat has read and write persmissions in 'work' and its sub-folders.
+8. If you plan to let the tools webservice use the 'BASE' folder as work folder, then make sure that Tomcat has read and write persmissions in 'BASE' and its sub-folders.
 
 9. Compile and link the bracmat JNI (Java Native Interface). Linux users are adviced to follow the steps in compileAndTestJNI.sh. The easiest way for Windows users is to run makeJNI.bat. You may have to edit this script to correct the path to vcvarsall.bat. If you don't want the tools' log file to become /var/log/clarin/tools.log, you must define an environment variable TOOLSLOG with a value that is the full path (including the file name) of the log file. If instead of using the batch file you want to use the Visual Studio IDE, you will build the dll and the jar component of the JNI in separate steps.
 
