@@ -72,12 +72,11 @@ public class update extends HttpServlet
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getGETarg(request,"mail2");
-                arg += " (handle." + util.quote(passwordAsHandle) + ")";
+                arg += " (handle.OK)";
                 }
             else
                 {
-                logger.debug("Password [{}] not ok for activating registered tools. Must be [{}]",
-                passwordAsHandle,ToolsProperties.password);
+                logger.debug("Password not OK for activating registered tools.");
                 }
                 
             logger.debug("userEmail = {}",userEmail);
