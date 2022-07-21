@@ -1,29 +1,33 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <!-- DEV -->
 <properties>
-  <comment>Properties for a local system</comment>
+    <comment>Properties for a local system</comment>
 
-  <!-- baseUrlTools = Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
-  <!---->
-  <entry key="www-server">https://cst.dk</entry>
-  <entry key="baseUrlTools">https://cst.dk</entry>
-  <!---->
-  <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
-  <!-- Location of staging area
+    <!-- Host names -->
+    <entry key="www-server">http://localhost:8080</entry>
+
+    <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
+    <entry key="baseUrlTools">http://localhost</entry>
+
+    <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
+    <!-- Location of staging area
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
              ProxyPass /toolsdata !
         -->
-  <entry key="documentRoot">/opt/texton/BASE/data/</entry>
-  <!-- The value of the stagingArea key must also be the name of a service,
+    <entry key="documentRoot">/opt/texton/BASE/data/</entry>
+    <!-- The value of the stagingArea key must also be the name of a service,
            so that all fetches of results by users are under control of the service! -->
-  <entry key="stagingArea">/texton/data/</entry>
-  <entry key="toolsHome">/opt/texton/BASE/</entry>
-  <entry key="toolsProg">toolsProg.bra</entry>
-  <entry key="tempdir">/opt/texton/BASE/tmp</entry>
-  <!-- used for testing and hot reloading of toolsProg.bra -->
-  <entry key="password">843f967de22b426e275952b428b15e7c6493c775d0ae2dd7b0c0ee262d4a62b8</entry>
-  <!--  86400000 == one day  -->
-  <!-- 172800000 == two days -->
-  <entry key="deleteAfterMillisec">172800000</entry>
+    <entry key="stagingArea">/texton/data/</entry>
+    <entry key="toolsHome">/opt/texton/BASE/</entry>
+    <entry key="toolsProg">toolsProg.bra</entry>
+    <entry key="tempdir">/opt/texton/BASE/tmp</entry>
+    <!-- used for testing and hot reloading of toolsProg.bra -->
+    <!-- zero length password (for local installation)-->
+    <entry key="password">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</entry>
+
+    <!--  86400000 == one day  -->
+    <!-- 172800000 == two days -->
+    <entry key="deleteAfterMillisec">172800000</entry>
 </properties>
+
 
