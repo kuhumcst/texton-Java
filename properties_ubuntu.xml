@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <comment>Properties for a local system</comment>
+    <comment>Properties for nlpkorp01 server</comment>
 
     <!-- Host names -->
     <entry key="www-server">https://alf.hum.ku.dk</entry>
