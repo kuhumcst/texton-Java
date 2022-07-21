@@ -1,7 +1,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <!-- DEV -->
 <properties>
-  <comment>Properties for a local system</comment>
+  <comment>Properties for nlpweb01 server (cst.dk)</comment>
 
   <!-- baseUrlTools = Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
   <!---->
