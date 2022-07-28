@@ -25,9 +25,7 @@ Such a pair can be created in the following way:
 3. Press the `Bracmat' button.
 4. Open a linux terminal, so you can change directory to /opt/texton/BASE
 5. Open the log file for the java part of Text Tonsorium
-```bash```
-$> sudo less textonJava.log
-```
+  $> sudo less textonJava.log
 6. Go to the end of this file and find the log statement that contains the string `XMLprop'. Copy everything between `[' and `]' to the file properties_ubuntu.xml, replacing the two same named elements.
 7. Save properties_ubuntu.xml
 8. Recompile. The resulting .war file can be deployed on the server.
