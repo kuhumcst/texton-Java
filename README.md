@@ -17,4 +17,19 @@ Bracmat.jar is created by running the script compileAndTestJNI.sh in the folder 
 
 The Bracmat script that implements almost all of the workflow management logic of the Text Tonsorium is in the https://github.com/kuhumcst/texton repositorium, in the folder called texton/BASE.
 
-If you want to run Text Tonsorium on anything else but a personal computer, you must set an administrator password in the properties_ubuntu.xml, in the entry element with the attribute `key="password"'. Note that this password must be SHA-256 encoded.
+If you want to run Text Tonsorium on anything else but a personal computer, you must set an administrator password in the properties_ubuntu.xml, in the entry element with the attribute `key="password"' and a 'salt' string in the entry element with the atribute `key="salt"'.
+Such a pair can be created in the following way:
+
+1. On your development machine, go to http://localhost/texton/admin
+2. Enter the password that you want to use on your production system in the password field below the `Evaluate program code' text area field.
+3. Press the `Bracmat' button.
+4. Open a linux terminal, so you can change directory to /opt/texton/BASE
+5. Open the log file for the java part of Text Tonsorium
+```bash```
+$> sudo less textonJava.log
+```
+6. Go to the end of this file and find the log statement that contains the string `XMLprop'. Copy everything between `[' and `]' to the file properties_ubuntu.xml, replacing the two same named elements.
+7. Save properties_ubuntu.xml
+8. Recompile. The resulting .war file can be deployed on the server.
+
+Notice that you also need to replace the fields <entry key="www-server">http://localhost:8080</entry> and <entry key="baseUrlTools">http://localhost</entry> into something that is meaningful for your server. E.g. if Text Tonsorium runs as https://me.nu/texton/, then you should change these fields to <entry key="www-server">https://me.nu</entry> and <entry key="baseUrlTools">https://me.nu</entry>.
