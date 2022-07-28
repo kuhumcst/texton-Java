@@ -49,7 +49,9 @@ public class bracmatevaluator extends HttpServlet
         response.setContentType("text/xml");
         response.setStatus(200);
         String password = request.getParameter("password");
-        if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
+        util.PBKDF2string(password);
+        //if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
+        if(password == null || !util.goodToPass(password,ToolsProperties.password,ToolsProperties.salt))
             {
             response.setStatus(401);
             PrintWriter out = response.getWriter();

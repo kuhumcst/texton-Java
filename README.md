@@ -17,3 +17,4 @@ Bracmat.jar is created by running the script compileAndTestJNI.sh in the folder 
 
 The Bracmat script that implements almost all of the workflow management logic of the Text Tonsorium is in the https://github.com/kuhumcst/texton repositorium, in the folder called texton/BASE.
 
+If you want to run Text Tonsorium on anything else but a personal computer, you must set an administrator password in the properties_ubuntu.xml, in the entry element with the attribute `key="password"'. Note that this password must be SHA-256 encoded.

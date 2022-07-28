@@ -48,7 +48,8 @@ public class importMetadata extends HttpServlet
         PrintWriter out = response.getWriter();
         
         String password = request.getParameter("password");
-        if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
+//        if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
+        if(password == null || !util.goodToPass(password,ToolsProperties.password,ToolsProperties.salt))
             {
             response.setStatus(401);
             out.println( "<?xml version=\"1.0\"?>\n"
