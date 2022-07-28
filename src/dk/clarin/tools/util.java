@@ -20,7 +20,6 @@ package dk.clarin.tools;
 import dk.cst.bracmat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +28,15 @@ import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Properties;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 /**
 * util.java
@@ -41,6 +46,66 @@ public class util
     {
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(util.class);
+
+    public static String PBKDF2string(String password)
+        {
+        String str;
+        str = "";
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        logger.debug("PBKDF2stringpassword=["+password+"]");
+        try
+            {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 512);
+            try
+                {
+                SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+                byte[] hash = factory.generateSecret(spec).getEncoded();
+                String encodedHash = Base64.getEncoder().encodeToString(hash);
+                String encodedSalt = Base64.getEncoder().encodeToString(salt);
+                str = "<entry key=\"password\">" + encodedHash + "</entry><entry key=\"salt\">" + encodedSalt + "</entry>";
+                logger.debug("XMLprop=["+str+"]");
+                //String decoded = new String(Base64.getDecoder().decode(encodedSalt.getBytes()));
+                //logger.debug("decoded:{" + decoded + "}");
+                }
+            catch(InvalidKeySpecException e)
+                {
+                }
+            }
+        catch(NoSuchAlgorithmException e)
+            {
+            }
+        return str;        
+        }
+
+    public static boolean goodToPass(String GivenPassword,String StoredPassword,String StoredSalt)
+        {
+        boolean result;
+        result = false;
+        //logger.debug("GivenPassword["+GivenPassword+"] StoredPassword["+StoredPassword+"] StoredSalt["+StoredSalt+"]");
+        byte[] salt = Base64.getDecoder().decode(StoredSalt);
+        //logger.debug("salt:" + Integer.toString(salt.length));
+        try
+            {
+            KeySpec spec = new PBEKeySpec(GivenPassword.toCharArray(), salt, 65536, 512);
+            try
+                {
+                SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+                byte[] hash = factory.generateSecret(spec).getEncoded();
+                String encodedHash = Base64.getEncoder().encodeToString(hash);
+//                logger.debug("encodedHash={"+encodedHash+"}");
+                result = encodedHash.equals(StoredPassword);
+                }
+            catch(InvalidKeySpecException e)
+                {
+                }
+            }
+        catch(NoSuchAlgorithmException e)
+            {
+            }
+        return result;
+        }
 
     public static String escape(String str)
         {
@@ -56,7 +121,7 @@ public class util
             }
         return sb.toString();
         }
-
+/*
     public static String hexDigest(String str, String digestName)
         {
         try 
@@ -78,7 +143,7 @@ public class util
             throw new IllegalStateException(e);
             }
         }
-
+*/
     public static String quote(String str)
         {
         return "\"" + escape(str) + "\"";

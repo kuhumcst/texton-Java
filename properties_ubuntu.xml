@@ -23,7 +23,14 @@
     <entry key="tempdir">/opt/texton/BASE/tmp</entry>
     <!-- used for testing and hot reloading of toolsProg.bra -->
     <!-- zero length password (for local installation)-->
-    <entry key="password">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</entry>
+    <!--entry key="password">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</entry-->
+  <!--entry key="password">d4sw3cSmRGU2p2asz9xp8y2NcQ5BsMxuDZC5GRkzVHk5W6dMGCtQMRzrS/nr1Kyk5ilQnseRdQQ7CmDyymhwBA==</entry>
+    <entry key="salt">Wwlb4FkWrn0ALhRLu8/FaQ==</entry-->
+  <!--entry key="password">a+vgJtCacjrCzqyxppv7esAOkfMSzAa0a4HI/gNCqevDgpYz1MDKnYiCpvP/D7yPdwWkKiZnRYVCxw8mRHM0RQ==</entry>
+  <entry key="salt">vUXdDgDgkei3YxkxcmJ3dQ==</entry-->
+  <!-- blank: -->
+  <entry key="password">NwVcR+BbQCvo5VNlgsLNGSDIGMJ1bPg7miiCp3Qd2hlykkyV+35sen/hLxW8EHRSOQ3hByuPWBM04LClOIUBow==</entry>
+  <entry key="salt">ValDgj82ejo8WaCC3FFhfQ==</entry>
 
     <!--  86400000 == one day  -->
     <!-- 172800000 == two days -->

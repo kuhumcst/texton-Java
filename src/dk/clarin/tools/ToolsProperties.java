@@ -51,6 +51,7 @@ public class ToolsProperties
     public static String deleteAfterMillisec        = "";
     public static String tempdir                    = "";
     public static String password                   = "";
+    public static String salt                       = "";
 
     public static String bootBracmat                = "";
 
@@ -109,6 +110,7 @@ public class ToolsProperties
                                     ;
             tempdir                = prop.getProperty("tempdir");
             password               = prop.getProperty("password");
+            salt                   = prop.getProperty("salt");
             fis.close();
             } 
         catch (IOException io)

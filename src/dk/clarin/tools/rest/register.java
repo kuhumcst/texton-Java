@@ -64,7 +64,8 @@ public class register extends HttpServlet
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
                 arg += " (handle.LOCALMACHINEDUMMY)";
                 }
-            else if(passwordAsHandle != null && util.hexDigest(passwordAsHandle,"SHA-256").equals(ToolsProperties.password))
+//            else if(passwordAsHandle != null && util.hexDigest(passwordAsHandle,"SHA-256").equals(ToolsProperties.password))
+            else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,ToolsProperties.password,ToolsProperties.salt))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
