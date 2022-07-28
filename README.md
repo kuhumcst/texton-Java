@@ -30,4 +30,4 @@ Such a pair can be created in the following way:
 7. Save properties_ubuntu.xml
 8. Recompile. The resulting .war file can be deployed on the server.
 
-Notice that you also need to replace the fields &lt;entry key="www-server"&gt;http://localhost:8080 &lt;/entry&gt; and &lt;entry key="baseUrlTools"&gt;http://localhost &lt;/entry&gt; into something that is meaningful for your server. E.g. if Text Tonsorium runs as https://me.nu/texton/, then you should change these fields to &lt;entry key="www-server"&gt;https://me.nu&lt;/entry&gt; and &lt;entry key="baseUrlTools"&gt;https://me.nu&lt;/entry&gt;.
+Notice that you also need to replace the fields &lt;entry key="www-server"&gt;http://localhost:8080 &lt;/entry&gt; and &lt;entry key="baseUrlTools"&gt;http://localhost &lt;/entry&gt; into something that is meaningful for your server. E.g. if Text Tonsorium runs as https://me.nu/texton/, then you should change these fields to &lt;entry key="www-server"&gt;https://me.nu &lt;/entry&gt; and &lt;entry key="baseUrlTools"&gt;https://me.nu  &lt;/entry&gt;.
