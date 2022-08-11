@@ -42,12 +42,16 @@ public class bracmatevaluator extends HttpServlet
         super.init(config);
         }
 
+
+/* 20220811 Remove evaluation of general Bracmat expressions. Show Bracmat version instead. */
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
         response.setContentType("text/xml");
         response.setStatus(200);
+        /*
         String password = request.getParameter("password");
         util.PBKDF2string(password);
         //if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
@@ -69,10 +73,12 @@ public class bracmatevaluator extends HttpServlet
                        );
             return;
             }
+            */
         bracmat BracMat = new bracmat(ToolsProperties.bootBracmat);
         if(BracMat.loaded())
             {
-            String expression = request.getParameter("expression");
+//            String expression = request.getParameter("expression");
+            String expression = "!v"; // show Bracmat version
             if(expression != null && !expression.equals(""))
                 {
                 response.setContentType("text/html;charset=UTF-8");
