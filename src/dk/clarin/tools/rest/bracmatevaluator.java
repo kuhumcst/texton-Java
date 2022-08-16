@@ -51,7 +51,6 @@ public class bracmatevaluator extends HttpServlet
         {
         response.setContentType("text/xml");
         response.setStatus(200);
-        /*
         String password = request.getParameter("password");
         util.PBKDF2string(password);
         //if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
@@ -73,7 +72,6 @@ public class bracmatevaluator extends HttpServlet
                        );
             return;
             }
-            */
         bracmat BracMat = new bracmat(ToolsProperties.bootBracmat);
         if(BracMat.loaded())
             {

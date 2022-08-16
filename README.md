@@ -21,7 +21,7 @@ If you want to run Text Tonsorium on anything else but a personal computer, you 
 Such a pair can be created in the following way:
 
 1. On your development machine, go to http://localhost/texton/admin
-2. Enter the password that you want to use on your production system in the password field below the `Evaluate program code' text area field.
+2. Enter the password that you want to use on your production system in the password field below the `Show Bracmat version' heading.
 3. Press the `Bracmat' button.
 4. Open a linux terminal, so you can change directory to /opt/texton/BASE
 5. Open the log file for the java part of Text Tonsorium
