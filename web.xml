@@ -209,4 +209,13 @@
         <servlet-name>entry</servlet-name>
         <url-pattern>/entry</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>usermsg</servlet-name>
+        <servlet-class>dk.clarin.tools.rest.usermsg</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>usermsg</servlet-name>
+        <url-pattern>/usermsg</url-pattern>
+    </servlet-mapping>
 </web-app>
