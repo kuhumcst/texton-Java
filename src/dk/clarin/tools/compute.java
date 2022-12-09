@@ -18,25 +18,40 @@
 package dk.clarin.tools;
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
+import dk.clarin.tools.workflow;
+
 import dk.cst.bracmat;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.HttpURLConnection;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import java.nio.file.Files;
+
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
+
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -44,17 +59,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
+import org.apache.commons.fileupload.FileItem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Prepare and run a workflow.
@@ -82,6 +94,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 @SuppressWarnings("serial")
 public class compute extends HttpServlet 
     {
+
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(compute.class);
 
@@ -97,6 +110,122 @@ public class compute extends HttpServlet
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder builder;// = null;
 
+    // Virus scanning using ClamAV inspired by https://github.com/philvarner/clamavj
+    public static final int CHUNK_SIZE = 2048;
+    private static final byte[] INSTREAM = "zINSTREAM\0".getBytes();
+
+    
+    public boolean scan(byte[] in) throws IOException 
+        {
+        return scan(new ByteArrayInputStream(in));
+        }
+
+    public boolean scan(InputStream in) 
+        {
+        Socket socket = new Socket();
+        
+        try {socket.connect(new InetSocketAddress("localhost", 3310));} 
+        catch (IOException e) {logger.error("could not connect to clamd daemon", e); return false;}
+
+        try {socket.setSoTimeout(60000);} 
+        catch (SocketException e) {logger.error("Could not set socket timeout to " + 60000 + "ms", e);}
+
+        DataOutputStream dos = null;
+        String response = "";
+        try {  
+            try {dos = new DataOutputStream(socket.getOutputStream());}
+            catch (IOException e) {logger.error("could not open socket OutputStream", e); return false;}
+
+            try {dos.write(INSTREAM);} 
+            catch (IOException e) {logger.debug("error writing INSTREAM command", e);return false;}
+
+            int read = CHUNK_SIZE;
+            byte[] buffer = new byte[CHUNK_SIZE];
+            while (read == CHUNK_SIZE) 
+                {
+                try {read = in.read(buffer);}
+                catch (IOException e) {logger.debug("error reading from InputStream", e);return false;}
+        
+                if (read > 0) 
+                    {
+                    try {
+                        dos.writeInt(read);
+                        dos.write(buffer, 0, read);
+                        String input = new String(buffer, 0, read);
+                        logger.debug(input);
+                        }
+                     catch (IOException e) 
+                        {
+                        logger.debug("error writing data to socket", e);
+                        break;
+                        }
+                    }
+                }
+
+            try {
+                dos.writeInt(0);
+                dos.flush();
+                }
+            catch (IOException e) 
+                {
+                logger.debug("error writing zero-length chunk to socket", e);
+                }
+
+            try {
+                read = socket.getInputStream().read(buffer);
+                }
+            catch (IOException e) 
+                {
+                logger.debug("error reading result from socket", e);
+                read = 0;
+                }
+
+            if (read > 0)
+                {
+                response = new String(buffer, 0, read);
+                }
+
+            }
+        finally 
+            {
+            if (dos != null) 
+                try {dos.close();}
+                catch (IOException e) {logger.debug("exception closing DOS", e);}
+            try {socket.close();}
+            catch (IOException e) {logger.debug("exception closing socket", e);}
+            }
+
+        if (logger.isDebugEnabled()) 
+            logger.debug("Response: " + response.trim());
+
+        if ("stream: OK".equals(response.trim()))
+            return true;
+        else
+            return false;
+        }
+
+    public boolean virusfree(String name) 
+        {
+        int byteCount;
+        byte bytes[];
+        File f = new File(destinationDir,name);
+        try               
+            {
+            FileInputStream fis = new FileInputStream(f);
+            bytes = new byte[(int) f.length()];
+            byteCount = fis.read(bytes);
+            String input = new String(bytes, 0, byteCount);
+                    logger.debug(input);
+
+            boolean result;
+            result = scan(bytes);
+            return result;        
+            }
+        catch(Exception e)
+            {
+            return false;
+            }
+        }
 
     public String assureArgHasUIlanguage(HttpServletRequest request,List<FileItem> items, String arg)
         {
@@ -106,7 +235,6 @@ public class compute extends HttpServlet
             if(UIlanguage != null && !UIlanguage.equals(""))
                 arg = "(UIlanguage." + UIlanguage + ") " + arg;
             }
-        
         return arg;
         }        
 
@@ -298,19 +426,33 @@ public class compute extends HttpServlet
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(PercentEncodedURL,file);
-            String ContentType = theMimeType(PercentEncodedURL);
-            if(textLength > 0 && !ContentType.equals(""))
+            logger.debug("Avirusfree "+LocalFileName);
+            if(virusfree(LocalFileName))
                 {
+                String ContentType = theMimeType(PercentEncodedURL);
+                if(textLength > 0 && !ContentType.equals(""))
+                    {
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    return      " (FieldName,"      + util.quote("input")
-                              + ".Name,"            + util.quote(PercentEncodedURL)
-                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
-                              + ".Size,"            + Long.toString(textLength)
-                              + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                              + ".LocalFileName,"   + util.quote(LocalFileName)
-                              + ")";                
+                    return " (FieldName,"      + util.quote("input")
+                         + ".Name,"            + util.quote(PercentEncodedURL)
+                         + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                         + ".Size,"            + Long.toString(textLength)
+                         + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                         + ".LocalFileName,"   + util.quote(LocalFileName)
+                         + ")";                
+                    }
+                else 
+                    {
+                    file.delete();
+                    BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                    }
                 }
-            else BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+            else 
+                {
+                file.delete();
+                logger.debug("Error encountered while uploading file. ");
+                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                }
             }
         return "";
         }
@@ -364,17 +506,25 @@ public class compute extends HttpServlet
                             {
                             String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
-                                      + ".ContentType,"     + util.quote("text/plain")
-                                      + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + util.quote(LocalFileName)
-                                      + ")";
                         
                             PrintWriter outf = new PrintWriter(file);
                             outf.println(val); 
-                            outf.close();                       
+                            outf.close();
+                            if(virusfree(LocalFileName))
+                                {
+                                arg = arg + " (FieldName,"      + util.quote("text")
+                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".ContentType,"     + util.quote("text/plain")
+                                          + ".Size,"            + Long.toString(textLength)
+                                          + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                          + ".LocalFileName,"   + util.quote(LocalFileName)
+                                          + ")";
+                                }
+                            else
+                                {
+                                file.delete();
+                                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                                }
                             }
                         }
                     }
@@ -517,14 +667,22 @@ public class compute extends HttpServlet
                             {
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
-                                      + ".ContentType,"     + util.quote("text/plain")
-                                      + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + util.quote(LocalFileName)
-                                      + ")";
                             item.write(file);
+                            if(virusfree(LocalFileName))
+                                {
+                                arg = arg + " (FieldName,"      + util.quote("text")
+                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".ContentType,"     + util.quote("text/plain")
+                                          + ".Size,"            + Long.toString(textLength)
+                                          + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                          + ".LocalFileName,"   + util.quote(LocalFileName)
+                                          + ")";
+                                }
+                            else
+                                {
+                                file.delete();
+                                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                                }
                             }
                         }
                     else if(item.getFieldName().equals("URL"))
@@ -559,22 +717,29 @@ public class compute extends HttpServlet
                     */
                     File file = new File(destinationDir,LocalFileName);
                     item.write(file);
-
-                    String ContentType = item.getContentType();
-                    boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
-                              + ".Name,"            + util.quote(item.getName())
-                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
-                              + ".Size,"            + Long.toString(item.getSize())
-                              + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                              + ".LocalFileName,"   + util.quote(LocalFileName)
-                              + ")";
+                    if(virusfree(LocalFileName))
+                        {
+                        String ContentType = item.getContentType();
+                        boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
+                        arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
+                                  + ".Name,"            + util.quote(item.getName())
+                                  + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                                  + ".Size,"            + Long.toString(item.getSize())
+                                  + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                  + ".LocalFileName,"   + util.quote(LocalFileName)
+                                  + ")";
+                        }
+                    else
+                        {
+                        file.delete();
+                        BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                        }
                     }
                 }
             }
         catch(Exception ex) 
             {
-            log("Error encountered while uploading file",ex);
+            logger.debug("Error encountered while uploading file. ",ex);
             out.close();
             }
         return arg;
@@ -584,8 +749,8 @@ public class compute extends HttpServlet
     public void PostWorkflow(HttpServletRequest request,HttpServletResponse response,String BracmatFunc) throws ServletException, IOException 
         {
         List<FileItem> items = parameters.getParmList(request);
-        PrintWriter out = response.getWriter();
 
+        PrintWriter out = response.getWriter();
 
         //response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
         response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
