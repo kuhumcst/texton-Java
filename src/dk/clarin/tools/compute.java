@@ -255,7 +255,7 @@ public class compute extends HttpServlet
             return false;
     }
 
-    public boolean virusscan(String name) 
+    public boolean virusfree(String name) 
     {
 
         int byteCount;
@@ -487,8 +487,8 @@ public class compute extends HttpServlet
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(PercentEncodedURL,file);
-            logger.debug("Avirusscan "+LocalFileName);
-            if(true/* virusscan(LocalFileName)*/)
+            logger.debug("Avirusfree "+LocalFileName);
+            if(virusfree(LocalFileName))
                 {
                 String ContentType = theMimeType(PercentEncodedURL);
                 if(textLength > 0 && !ContentType.equals(""))
@@ -502,10 +502,15 @@ public class compute extends HttpServlet
                          + ".LocalFileName,"   + util.quote(LocalFileName)
                          + ")";                
                     }
-                else BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                else 
+                    {
+                    file.delete();
+                    BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                    }
                 }
             else 
                 {
+                file.delete();
                 logger.debug("Error encountered while uploading file. ");
                 BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                 }
@@ -562,28 +567,25 @@ public class compute extends HttpServlet
                             {
                             String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
-                                      + ".ContentType,"     + util.quote("text/plain")
-                                      + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + util.quote(LocalFileName)
-                                      + ")";
                         
                             PrintWriter outf = new PrintWriter(file);
                             outf.println(val); 
-                            outf.close();  
-                            /*
-                            try 
+                            outf.close();
+                            if(virusfree(LocalFileName))
                                 {
-                                virusscan(LocalFileName);
+                                arg = arg + " (FieldName,"      + util.quote("text")
+                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".ContentType,"     + util.quote("text/plain")
+                                          + ".Size,"            + Long.toString(textLength)
+                                          + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                          + ".LocalFileName,"   + util.quote(LocalFileName)
+                                          + ")";
                                 }
-                            catch(Exception ex) 
+                            else
                                 {
-                                logger.debug("Error encountered while uploading file. ",ex);
-                                out.close();
+                                file.delete();
+                                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                                 }
-                                */
                             }
                         }
                     }
@@ -726,15 +728,22 @@ public class compute extends HttpServlet
                             {
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
                             File file = new File(destinationDir,LocalFileName);
-                            arg = arg + " (FieldName,"      + util.quote("text")
-                                      + ".Name,"            + util.quote(LocalFileName/*"text"*/)
-                                      + ".ContentType,"     + util.quote("text/plain")
-                                      + ".Size,"            + Long.toString(textLength)
-                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                                      + ".LocalFileName,"   + util.quote(LocalFileName)
-                                      + ")";
                             item.write(file);
-//                            virusscan(LocalFileName);
+                            if(virusfree(LocalFileName))
+                                {
+                                arg = arg + " (FieldName,"      + util.quote("text")
+                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".ContentType,"     + util.quote("text/plain")
+                                          + ".Size,"            + Long.toString(textLength)
+                                          + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                          + ".LocalFileName,"   + util.quote(LocalFileName)
+                                          + ")";
+                                }
+                            else
+                                {
+                                file.delete();
+                                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                                }
                             }
                         }
                     else if(item.getFieldName().equals("URL"))
@@ -769,16 +778,23 @@ public class compute extends HttpServlet
                     */
                     File file = new File(destinationDir,LocalFileName);
                     item.write(file);
-                    //virusscan(LocalFileName);
-                    String ContentType = item.getContentType();
-                    boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
-                              + ".Name,"            + util.quote(item.getName())
-                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
-                              + ".Size,"            + Long.toString(item.getSize())
-                              + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                              + ".LocalFileName,"   + util.quote(LocalFileName)
-                              + ")";
+                    if(virusfree(LocalFileName))
+                        {
+                        String ContentType = item.getContentType();
+                        boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
+                        arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
+                                  + ".Name,"            + util.quote(item.getName())
+                                  + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                                  + ".Size,"            + Long.toString(item.getSize())
+                                  + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                  + ".LocalFileName,"   + util.quote(LocalFileName)
+                                  + ")";
+                        }
+                    else
+                        {
+                        file.delete();
+                        BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                        }
                     }
                 }
             }
