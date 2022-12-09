@@ -16,10 +16,11 @@
     along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.
 */
 package dk.clarin.tools;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.InetSocketAddress;
 
-import com.philvarner.clamavj.ClamScan;
-import com.philvarner.clamavj.ScanResult;
-import com.philvarner.clamavj.ScanResult.Status;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +31,6 @@ import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
-import static com.philvarner.clamavj.ScanResult.RESPONSE_OK;
 
 
 import dk.clarin.tools.ToolsProperties;
@@ -98,7 +98,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 @SuppressWarnings("serial")
 public class compute extends HttpServlet 
     {
-    private ClamScan scanner;
 
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(compute.class);
@@ -114,8 +113,149 @@ public class compute extends HttpServlet
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder builder;// = null;
+        public static final int CHUNK_SIZE = 2048;
+    private static final byte[] INSTREAM = "zINSTREAM\0".getBytes();
 
-    public boolean test_virus_from_file(String name) 
+    // Virus scanning using ClamAV inspired by https://github.com/philvarner/clamavj
+    /**
+     * virus scan a byte array.
+     */
+    public boolean scan(byte[] in) throws IOException {
+                logger.debug("scan!");
+
+        return scan(new ByteArrayInputStream(in));
+    }
+
+    /**
+     * virus scan an InputStream
+     */
+    public boolean scan(InputStream in) {
+        logger.debug("A");
+        Socket socket = new Socket();
+        logger.debug("B");
+
+        try {
+        logger.debug("C");
+            socket.connect(new InetSocketAddress("localhost", 3310));
+        logger.debug("D");
+        } catch (IOException e) {
+            logger.error("could not connect to clamd server", e);
+            return false;
+        }
+
+        try {
+        logger.debug("E");
+            socket.setSoTimeout(60000);
+        logger.debug("F");
+        } catch (SocketException e) {
+            logger.error("Could not set socket timeout to " + 60000 + "ms", e);
+        }
+
+        DataOutputStream dos = null;
+        String response = "";
+        try {  
+
+            try {
+        logger.debug("G");
+                dos = new DataOutputStream(socket.getOutputStream());
+        logger.debug("H");
+            } catch (IOException e) {
+                logger.error("could not open socket OutputStream", e);
+                return false;
+            }
+
+            try {
+        logger.debug("I");
+                dos.write(INSTREAM);
+        logger.debug("J");
+            } catch (IOException e) {
+                logger.debug("error writing INSTREAM command", e);
+                return false;
+            }
+
+            int read = CHUNK_SIZE;
+            byte[] buffer = new byte[CHUNK_SIZE];
+            while (read == CHUNK_SIZE) {
+                try {
+        logger.debug("K");
+                    read = in.read(buffer);
+        logger.debug("L");
+                } catch (IOException e) {
+                    logger.debug("error reading from InputStream", e);
+                    return false;
+                }
+        logger.debug("M");
+
+                if (read > 0) {
+        logger.debug("N");
+                    try {
+        logger.debug("O");
+                        dos.writeInt(read);
+        logger.debug("P");
+                        dos.write(buffer, 0, read);
+        logger.debug("Q");
+        String input = new String(buffer, 0, read);
+                    logger.debug(input);
+                    } catch (IOException e) {
+                        logger.debug("error writing data to socket", e);
+                        break;
+                    }
+                }
+            }
+
+            try {
+        logger.debug("R");
+                dos.writeInt(0);
+        logger.debug("S");
+                dos.flush();
+        logger.debug("T");
+            } catch (IOException e) {
+                logger.debug("error writing zero-length chunk to socket", e);
+            }
+
+            try {
+        logger.debug("U");
+                read = socket.getInputStream().read(buffer);
+        logger.debug("V");
+            } catch (IOException e) {
+                logger.debug("error reading result from socket", e);
+                read = 0;
+            }
+
+            if (read > 0)
+            {
+        logger.debug("W");
+            response = new String(buffer, 0, read);
+        logger.debug("X");
+            }
+
+        } finally {
+        logger.debug("Y");
+            if (dos != null) try {
+        logger.debug("Z");
+                dos.close();
+        logger.debug("ZA");
+            } catch (IOException e) {
+                logger.debug("exception closing DOS", e);
+            }
+            try {
+        logger.debug("ZB");
+                socket.close();
+        logger.debug("ZC");
+            } catch (IOException e) {
+                logger.debug("exception closing socket", e);
+            }
+        }
+
+        if (logger.isDebugEnabled()) logger.debug("Response: " + response.trim());
+
+        if ("stream: OK".equals(response.trim()))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean virusscan(String name) 
     {
 
         int byteCount;
@@ -137,7 +277,7 @@ public class compute extends HttpServlet
 
             boolean result;
         logger.debug("GG");
-            result = scanner.scan(bytes);
+            result = scan(bytes);
         logger.debug("HH");
             return result;        
             }
@@ -193,7 +333,6 @@ public class compute extends HttpServlet
             {
             logger.error("ParserConfigurationException during creation of DocumentBuilder");
             }
-        scanner = new ClamScan();
         }
 
     private String theMimeType(String urladdr)
@@ -348,8 +487,8 @@ public class compute extends HttpServlet
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(PercentEncodedURL,file);
-            logger.debug("Atest_virus_from_file "+LocalFileName);
-            if(true/* test_virus_from_file(LocalFileName)*/)
+            logger.debug("Avirusscan "+LocalFileName);
+            if(true/* virusscan(LocalFileName)*/)
                 {
                 String ContentType = theMimeType(PercentEncodedURL);
                 if(textLength > 0 && !ContentType.equals(""))
@@ -437,7 +576,7 @@ public class compute extends HttpServlet
                             /*
                             try 
                                 {
-                                test_virus_from_file(LocalFileName);
+                                virusscan(LocalFileName);
                                 }
                             catch(Exception ex) 
                                 {
@@ -595,7 +734,7 @@ public class compute extends HttpServlet
                                       + ".LocalFileName,"   + util.quote(LocalFileName)
                                       + ")";
                             item.write(file);
-//                            test_virus_from_file(LocalFileName);
+//                            virusscan(LocalFileName);
                             }
                         }
                     else if(item.getFieldName().equals("URL"))
@@ -630,7 +769,7 @@ public class compute extends HttpServlet
                     */
                     File file = new File(destinationDir,LocalFileName);
                     item.write(file);
-                    //test_virus_from_file(LocalFileName);
+                    //virusscan(LocalFileName);
                     String ContentType = item.getContentType();
                     boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
                     arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
