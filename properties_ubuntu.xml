@@ -1,21 +1,20 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- DEV -->
 <properties>
-    <comment>Properties for nlpweb01 server</comment>
+  <comment>Properties for nlpweb01 server (cst.dk)</comment>
 
-    <!-- Host names -->
-    <entry key="www-server">https://cst.dk</entry>
-
-    <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
-    <entry key="baseUrlTools">http://localhost:8080</entry>
-    <!--<entry key="baseUrlTools">https://cst.dk</entry>-->
-
-    <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
-    <!-- Location of staging area
+  <!-- baseUrlTools = Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
+  <!---->
+  <entry key="www-server">https://cst.dk</entry>
+  <entry key="baseUrlTools">https://cst.dk</entry>
+  <!---->
+  <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
+  <!-- Location of staging area
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
              ProxyPass /toolsdata !
         -->
-    <entry key="documentRoot">/opt/texton/BASE/data/</entry>
-    <!-- The value of the stagingArea key must also be the name of a service,
+  <entry key="documentRoot">/opt/texton/BASE/data/</entry>
+  <!-- The value of the stagingArea key must also be the name of a service,
            so that all fetches of results by users are under control of the service! -->
     <entry key="stagingArea">/texton/data/</entry>
     <entry key="toolsHome">/opt/texton/BASE/</entry>
@@ -28,3 +27,4 @@
     <!-- 172800000 == two days -->
     <entry key="deleteAfterMillisec">172800000</entry>
 </properties>
+
