@@ -16,43 +16,42 @@
     along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.
 */
 package dk.clarin.tools;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.InetSocketAddress;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-//import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.*;
-
-
 
 import dk.clarin.tools.ToolsProperties;
-import dk.clarin.tools.workflow;
 import dk.clarin.tools.parameters;
+import dk.clarin.tools.workflow;
+
 import dk.cst.bracmat;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.HttpURLConnection;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import java.nio.file.Files;
+
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
+
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -60,17 +59,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
+import org.apache.commons.fileupload.FileItem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Prepare and run a workflow.
@@ -113,179 +109,123 @@ public class compute extends HttpServlet
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder builder;// = null;
-        public static final int CHUNK_SIZE = 2048;
-    private static final byte[] INSTREAM = "zINSTREAM\0".getBytes();
 
     // Virus scanning using ClamAV inspired by https://github.com/philvarner/clamavj
-    /**
-     * virus scan a byte array.
-     */
-    public boolean scan(byte[] in) throws IOException {
-                logger.debug("scan!");
+    public static final int CHUNK_SIZE = 2048;
+    private static final byte[] INSTREAM = "zINSTREAM\0".getBytes();
 
+    
+    public boolean scan(byte[] in) throws IOException 
+        {
         return scan(new ByteArrayInputStream(in));
-    }
+        }
 
-    /**
-     * virus scan an InputStream
-     */
-    public boolean scan(InputStream in) {
-        logger.debug("A");
+    public boolean scan(InputStream in) 
+        {
         Socket socket = new Socket();
-        logger.debug("B");
+        
+        try {socket.connect(new InetSocketAddress("localhost", 3310));} 
+        catch (IOException e) {logger.error("could not connect to clamd daemon", e); return false;}
 
-        try {
-        logger.debug("C");
-            socket.connect(new InetSocketAddress("localhost", 3310));
-        logger.debug("D");
-        } catch (IOException e) {
-            logger.error("could not connect to clamd server", e);
-            return false;
-        }
-
-        try {
-        logger.debug("E");
-            socket.setSoTimeout(60000);
-        logger.debug("F");
-        } catch (SocketException e) {
-            logger.error("Could not set socket timeout to " + 60000 + "ms", e);
-        }
+        try {socket.setSoTimeout(60000);} 
+        catch (SocketException e) {logger.error("Could not set socket timeout to " + 60000 + "ms", e);}
 
         DataOutputStream dos = null;
         String response = "";
         try {  
+            try {dos = new DataOutputStream(socket.getOutputStream());}
+            catch (IOException e) {logger.error("could not open socket OutputStream", e); return false;}
 
-            try {
-        logger.debug("G");
-                dos = new DataOutputStream(socket.getOutputStream());
-        logger.debug("H");
-            } catch (IOException e) {
-                logger.error("could not open socket OutputStream", e);
-                return false;
-            }
-
-            try {
-        logger.debug("I");
-                dos.write(INSTREAM);
-        logger.debug("J");
-            } catch (IOException e) {
-                logger.debug("error writing INSTREAM command", e);
-                return false;
-            }
+            try {dos.write(INSTREAM);} 
+            catch (IOException e) {logger.debug("error writing INSTREAM command", e);return false;}
 
             int read = CHUNK_SIZE;
             byte[] buffer = new byte[CHUNK_SIZE];
-            while (read == CHUNK_SIZE) {
-                try {
-        logger.debug("K");
-                    read = in.read(buffer);
-        logger.debug("L");
-                } catch (IOException e) {
-                    logger.debug("error reading from InputStream", e);
-                    return false;
-                }
-        logger.debug("M");
-
-                if (read > 0) {
-        logger.debug("N");
+            while (read == CHUNK_SIZE) 
+                {
+                try {read = in.read(buffer);}
+                catch (IOException e) {logger.debug("error reading from InputStream", e);return false;}
+        
+                if (read > 0) 
+                    {
                     try {
-        logger.debug("O");
                         dos.writeInt(read);
-        logger.debug("P");
                         dos.write(buffer, 0, read);
-        logger.debug("Q");
-        String input = new String(buffer, 0, read);
-                    logger.debug(input);
-                    } catch (IOException e) {
+                        String input = new String(buffer, 0, read);
+                        logger.debug(input);
+                        }
+                     catch (IOException e) 
+                        {
                         logger.debug("error writing data to socket", e);
                         break;
+                        }
                     }
                 }
-            }
 
             try {
-        logger.debug("R");
                 dos.writeInt(0);
-        logger.debug("S");
                 dos.flush();
-        logger.debug("T");
-            } catch (IOException e) {
+                }
+            catch (IOException e) 
+                {
                 logger.debug("error writing zero-length chunk to socket", e);
-            }
+                }
 
             try {
-        logger.debug("U");
                 read = socket.getInputStream().read(buffer);
-        logger.debug("V");
-            } catch (IOException e) {
+                }
+            catch (IOException e) 
+                {
                 logger.debug("error reading result from socket", e);
                 read = 0;
-            }
+                }
 
             if (read > 0)
+                {
+                response = new String(buffer, 0, read);
+                }
+
+            }
+        finally 
             {
-        logger.debug("W");
-            response = new String(buffer, 0, read);
-        logger.debug("X");
+            if (dos != null) 
+                try {dos.close();}
+                catch (IOException e) {logger.debug("exception closing DOS", e);}
+            try {socket.close();}
+            catch (IOException e) {logger.debug("exception closing socket", e);}
             }
 
-        } finally {
-        logger.debug("Y");
-            if (dos != null) try {
-        logger.debug("Z");
-                dos.close();
-        logger.debug("ZA");
-            } catch (IOException e) {
-                logger.debug("exception closing DOS", e);
-            }
-            try {
-        logger.debug("ZB");
-                socket.close();
-        logger.debug("ZC");
-            } catch (IOException e) {
-                logger.debug("exception closing socket", e);
-            }
-        }
-
-        if (logger.isDebugEnabled()) logger.debug("Response: " + response.trim());
+        if (logger.isDebugEnabled()) 
+            logger.debug("Response: " + response.trim());
 
         if ("stream: OK".equals(response.trim()))
             return true;
         else
             return false;
-    }
+        }
 
     public boolean virusfree(String name) 
-    {
-
+        {
         int byteCount;
         byte bytes[];
-        logger.debug("AA");
         File f = new File(destinationDir,name);
-        logger.debug("BB");
         try               
             {
-        logger.debug("CC");
             FileInputStream fis = new FileInputStream(f);
-        logger.debug("DD");
             bytes = new byte[(int) f.length()];
-        logger.debug("EE");
             byteCount = fis.read(bytes);
-        logger.debug("FF");
-                String input = new String(bytes, 0, byteCount);
+            String input = new String(bytes, 0, byteCount);
                     logger.debug(input);
 
             boolean result;
-        logger.debug("GG");
             result = scan(bytes);
-        logger.debug("HH");
             return result;        
             }
         catch(Exception e)
             {
             return false;
             }
-    }
+        }
 
     public String assureArgHasUIlanguage(HttpServletRequest request,List<FileItem> items, String arg)
         {
@@ -295,7 +235,6 @@ public class compute extends HttpServlet
             if(UIlanguage != null && !UIlanguage.equals(""))
                 arg = "(UIlanguage." + UIlanguage + ") " + arg;
             }
-        
         return arg;
         }        
 
