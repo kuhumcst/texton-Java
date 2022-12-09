@@ -1,30 +1,40 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- DEV -->
 <properties>
-    <comment>Properties for nlpkorp01 server</comment>
+  <comment>Properties for a local system</comment>
 
-    <!-- Host names -->
-    <entry key="www-server">https://alf.hum.ku.dk</entry>
+  <!-- Host names -->
+  <entry key="www-server">http://localhost:8080</entry>
 
-    <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
-    <entry key="baseUrlTools">http://localhost:8080</entry>
-    <!--<entry key="baseUrlTools">https://alf.hum.ku.dk</entry>-->
+  <!-- Host name of infrastructure as made known to integrated tools (to fetch data from or send data to) -->
+  <entry key="baseUrlTools">http://localhost</entry>
 
-    <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
-    <!-- Location of staging area
+  <!-- Host name used to access resources (in combination with serviceUrl and item id) -->
+  <!-- Location of staging area
            remember to edit /etc/httpd/conf.d/proxy_ajp.conf:
              ProxyPass /toolsdata !
         -->
-    <entry key="documentRoot">/opt/texton/BASE/data/</entry>
-    <!-- The value of the stagingArea key must also be the name of a service,
+  <entry key="documentRoot">/opt/texton/BASE/data/</entry>
+  <!-- The value of the stagingArea key must also be the name of a service,
            so that all fetches of results by users are under control of the service! -->
-    <entry key="stagingArea">/texton/data/</entry>
-    <entry key="toolsHome">/opt/texton/BASE/</entry>
-    <entry key="toolsProg">toolsProg.bra</entry>
-    <entry key="tempdir">/opt/texton/BASE/tmp</entry>
-    <!-- used for testing and hot reloading of toolsProg.bra -->
-    <entry key="password">7kWUCCK1k3bJ3aNEeP7y0UZkM29tfa+5+YJmihZ1aEuOCzUoy64VcMm6bU+rntJai7BxNeq2j7sfeqNNfGsrKA==</entry>
-    <entry key="salt">TkJ12+acpaFT8Fv5gkRp2g==</entry>
-    <!--  86400000 == one day  -->
-    <!-- 172800000 == two days -->
-    <entry key="deleteAfterMillisec">172800000</entry>
+  <entry key="stagingArea">/texton/data/</entry>
+  <entry key="toolsHome">/opt/texton/BASE/</entry>
+  <entry key="toolsProg">toolsProg.bra</entry>
+  <entry key="tempdir">/opt/texton/BASE/tmp</entry>
+  <!-- used for testing and hot reloading of toolsProg.bra -->
+  <!-- zero length password (for local installation)-->
+  <!--entry key="password">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</entry-->
+  <!--entry key="password">d4sw3cSmRGU2p2asz9xp8y2NcQ5BsMxuDZC5GRkzVHk5W6dMGCtQMRzrS/nr1Kyk5ilQnseRdQQ7CmDyymhwBA==</entry>
+    <entry key="salt">Wwlb4FkWrn0ALhRLu8/FaQ==</entry-->
+  <!--entry key="password">a+vgJtCacjrCzqyxppv7esAOkfMSzAa0a4HI/gNCqevDgpYz1MDKnYiCpvP/D7yPdwWkKiZnRYVCxw8mRHM0RQ==</entry>
+  <entry key="salt">vUXdDgDgkei3YxkxcmJ3dQ==</entry-->
+  <!-- blank: 
+  <entry key="password">NwVcR+BbQCvo5VNlgsLNGSDIGMJ1bPg7miiCp3Qd2hlykkyV+35sen/hLxW8EHRSOQ3hByuPWBM04LClOIUBow==</entry>
+  <entry key="salt">ValDgj82ejo8WaCC3FFhfQ==</entry>-->
+  <entry key="password">Fq3vdqxIPqrKGMYh0pD+MY64Acgv8zA9Qhye+S7+mVWujVWuEPUZcEvoKGDLs6tsxJyqVnRzOZFkUBwz2QmiWA==</entry>
+  <entry key="salt">CvPAQd7naaqtVD1xJD37eg==</entry>
+
+  <!--  86400000 == one day  -->
+  <!-- 172800000 == two days -->
+  <entry key="deleteAfterMillisec">172800000</entry>
 </properties>
