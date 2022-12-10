@@ -203,7 +203,7 @@ public class parameters
                 }
             arg += ")";
             }
-        logger.debug("arg = [" + arg + "]");
+        //logger.debug("arg = [" + arg + "]"); DON'T DO THIS
         return arg;
         }
 
