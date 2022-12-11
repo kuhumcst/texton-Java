@@ -58,7 +58,7 @@ public class register extends HttpServlet
             String passwordAsHandle = null;
             String arg = "";
             passwordAsHandle = parameters.getPOSTorGETarg(request,items,"passwordAsHandle");
-            logger.debug("getPOSTorGETarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle));
+            //logger.debug("getPOSTorGETarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
             if(ToolsProperties.password.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
                 {
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
@@ -118,7 +118,7 @@ public class register extends HttpServlet
               * register function and the input from the filled-out form is sent to the
               * register function.
               */
-            logger.debug("Calling register$(" + arg + ")");
+            //logger.debug("Calling register$(" + arg + ")"); DON'T DO THIS
             String result = BracMat.Eval("register$(" + arg + ")");
             if(result == null || result.equals(""))
                 {
