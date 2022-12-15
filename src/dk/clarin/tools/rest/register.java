@@ -138,10 +138,15 @@ public class register extends HttpServlet
                 out.println(messagetext);
                 return;
                 }
-            else if(result.startsWith("<?\nheader") || arg.contains("PHP"))
+            else if(result.startsWith("<?\nheader") 
+                   ||result.startsWith("<?PHP\nheader") 
+                   ||result.startsWith("<?php\nheader") 
+                   || arg.contains("PHP") 
+                   || arg.contains("php")
+                   )
                 { /* php wrapper */
                 //response.setContentType("text/plain; charset=iso8859-1");//UTF-8");
-                response.setContentType("text/plain; charset=UTF-8");
+                response.setContentType("text/plain; charset=iso8859-1");
                 response.setStatus(200);
                 out.println(result);
                 }
