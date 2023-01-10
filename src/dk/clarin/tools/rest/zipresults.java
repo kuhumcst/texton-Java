@@ -21,6 +21,7 @@ import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -169,50 +170,87 @@ public class zipresults extends HttpServlet
             if(!job.equals(""))
                 {
                 String letter = BracMat.Eval("letter$(" + job + "."+ shortletter +")");
-                String readme = BracMat.Eval("readme$(" 
-                                            + job 
-                                            + "." 
-                                            + util.quote(date) 
-                                            + "." 
-                                            + util.quote(letter) 
-                                            + ")"
-                                            );
                 String localFilePath = ToolsProperties.documentRoot;
-                    
-                OutputStream zipdest = null;
-                ZipOutputStream zipout = null;
-                boolean hasFiles = false;
-                String jobzip = job + (shortletter.startsWith("y") ? "-final" :"-all") +".zip";
-                if(letter.startsWith("file:"))
+                if(shortletter.startsWith("c"))
                     {
-                    hasFiles = true;
-                    zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
-
-                    zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
-                    while(letter.startsWith("file:"))
+                    if(letter.startsWith("file:"))
                         {
-                        int end = letter.indexOf(';');
-                        String filename = letter.substring(5,end);
-                        String zipname = filename;
-                        int zipnameStart = filename.indexOf('*');
-                        if(zipnameStart > 0)
+                        response.setStatus(200);
+                        response.setContentType("text/plain;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+                        String steps = "";
+                        while(letter.startsWith("file:"))
                             {
-                            zipname = filename.substring(zipnameStart+1);
-                            filename = filename.substring(0,zipnameStart);
+                            int end = letter.indexOf(';');
+                            String filename = letter.substring(5,end);
+                            int zipnameStart = filename.indexOf('*');
+                            if(zipnameStart > 0)
+                                {
+                                filename = filename.substring(0,zipnameStart);
+                                }
+                            String step = "-step";
+                            int stepStart = filename.indexOf(step);
+                            if(stepStart > 0)
+                                {
+                                String endstep = filename.substring(stepStart + step.length());
+                                int dotpos = endstep.indexOf('.');
+                                String stepno = endstep.substring(0,dotpos);
+                                out.println("/* Step " + stepno + " */");
+                                logger.debug("workflowzip("+localFilePath + filename+")"); 
+                                Path fileName = Path.of(localFilePath + filename);
+                                out.println(Files.readString(fileName));
+                                }
+                            letter = letter.substring(end+1);
                             }
-                        logger.debug("workflowzip("+localFilePath + filename+","+zipname+")");        
-                        zip(localFilePath + filename,zipname,zipout);
-                        letter = letter.substring(end+1);
                         }
                     }
-
-                if(hasFiles)
+                else
                     {
-                    zipstring("readme.txt",zipout,readme);
-                    zipstring("index.html",zipout,letter);
-                    zipout.close();
+                    OutputStream zipdest = null;
+                    ZipOutputStream zipout = null;
+                    boolean hasFiles = false;
+                    String readme = BracMat.Eval("readme$(" 
+                                                + job 
+                                                + "." 
+                                                + util.quote(date) 
+                                                + "." 
+                                                + util.quote(letter) 
+                                                + ")"
+                                                );
+
+                    String jobzip = job + (shortletter.startsWith("y") ? "-final" : "-all") +".zip";
+
+                    if(letter.startsWith("file:"))
+                        {
+                        hasFiles = true;
+                        zipdest = Files.newOutputStream(Paths.get(localFilePath + jobzip));
+
+                        zipout = new ZipOutputStream(new BufferedOutputStream(zipdest));
+                        while(letter.startsWith("file:"))
+                            {
+                            int end = letter.indexOf(';');
+                            String filename = letter.substring(5,end);
+                            String zipname = filename;
+                            int zipnameStart = filename.indexOf('*');
+                            if(zipnameStart > 0)
+                                {
+                                zipname = filename.substring(zipnameStart+1);
+                                filename = filename.substring(0,zipnameStart);
+                                }
+                            logger.debug("workflowzip("+localFilePath + filename+","+zipname+")");        
+                            zip(localFilePath + filename,zipname,zipout);
+                            letter = letter.substring(end+1);
+                            }
+                        }
+
+                    if(hasFiles)
+                        {
+                        zipstring("readme.txt",zipout,readme);
+                        zipstring("index.html",zipout,letter);
+                        zipout.close();
+                        }
+                    doGetZip(localFilePath, jobzip,response);
                     }
-                doGetZip(localFilePath, jobzip,response);                            
                 }
             }
         else
