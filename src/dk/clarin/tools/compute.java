@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -125,38 +126,38 @@ public class compute extends HttpServlet
         Socket socket = new Socket();
         
         try {socket.connect(new InetSocketAddress("localhost", 3310));} 
-        catch (IOException e) {logger.error("could not connect to clamd daemon", e); return false;}
+        catch (IOException e) {logger.error("could not connect to clamd daemon {}",e.getMessage()); return false;}
 
         try {socket.setSoTimeout(60000);} 
-        catch (SocketException e) {logger.error("Could not set socket timeout to " + 60000 + "ms", e);}
+        catch (SocketException e) {logger.error("Could not set socket timeout to " + 60000 + "ms {}",e.getMessage());}
 
         DataOutputStream dos = null;
         String response = "";
         try {  
             try {dos = new DataOutputStream(socket.getOutputStream());}
-            catch (IOException e) {logger.error("could not open socket OutputStream", e); return false;}
+            catch (IOException e) {logger.error("could not open socket OutputStream {}",e.getMessage()); return false;}
 
             try {dos.write(INSTREAM);} 
-            catch (IOException e) {logger.debug("error writing INSTREAM command", e);return false;}
+            catch (IOException e) {logger.debug("error writing INSTREAM command {}",e.getMessage());return false;}
 
             int read = CHUNK_SIZE;
             byte[] buffer = new byte[CHUNK_SIZE];
             while (read == CHUNK_SIZE) 
                 {
                 try {read = in.read(buffer);}
-                catch (IOException e) {logger.debug("error reading from InputStream", e);return false;}
+                catch (IOException e) {logger.debug("error reading from InputStream {}",e.getMessage());return false;}
         
                 if (read > 0) 
                     {
                     try {
                         dos.writeInt(read);
                         dos.write(buffer, 0, read);
-                        String input = new String(buffer, 0, read);
-                        logger.debug(input);
+                        /*String input = new String(buffer, 0, read);
+                        logger.debug(input);*/
                         }
                      catch (IOException e) 
                         {
-                        logger.debug("error writing data to socket", e);
+                        logger.debug("error writing data to socket {}",e.getMessage());
                         break;
                         }
                     }
@@ -168,7 +169,7 @@ public class compute extends HttpServlet
                 }
             catch (IOException e) 
                 {
-                logger.debug("error writing zero-length chunk to socket", e);
+                logger.debug("error writing zero-length chunk to socket {}",e.getMessage());
                 }
 
             try {
@@ -176,7 +177,7 @@ public class compute extends HttpServlet
                 }
             catch (IOException e) 
                 {
-                logger.debug("error reading result from socket", e);
+                logger.debug("error reading result from socket {}",e.getMessage());
                 read = 0;
                 }
 
@@ -190,9 +191,9 @@ public class compute extends HttpServlet
             {
             if (dos != null) 
                 try {dos.close();}
-                catch (IOException e) {logger.debug("exception closing DOS", e);}
+                catch (IOException e) {logger.debug("exception closing DOS {}",e.getMessage());}
             try {socket.close();}
-            catch (IOException e) {logger.debug("exception closing socket", e);}
+            catch (IOException e) {logger.debug("exception closing socket {}",e.getMessage());}
             }
 
         if (logger.isDebugEnabled()) 
@@ -208,21 +209,39 @@ public class compute extends HttpServlet
         {
         int byteCount;
         byte bytes[];
+        FileInputStream fis;
+        String input = "";
+        logger.debug("Constructing File {}",name);
         File f = new File(destinationDir,name);
+        logger.debug("Constructed  File {}",name);
         try               
             {
-            FileInputStream fis = new FileInputStream(f);
+            fis = new FileInputStream(f);
+            logger.debug(name + " opened");
+            logger.debug("length: {}",Integer.toString((int) f.length()));
             bytes = new byte[(int) f.length()];
             byteCount = fis.read(bytes);
-            String input = new String(bytes, 0, byteCount);
-                    logger.debug(input);
+            logger.debug("byteCount: {}",Integer.toString(byteCount));
+            input = new String(bytes, 0, byteCount);
+            //logger.debug(input);
 
             boolean result;
             result = scan(bytes);
             return result;        
             }
+        catch(FileNotFoundException e)
+            {
+            logger.debug(name + ": FileNotFoundException {}",e.getMessage());
+            return false;
+            }
+        catch(SecurityException e)
+            {
+            logger.debug(name + ": SecurityException {}",e.getMessage());
+            return false;
+            }
         catch(Exception e)
             {
+            logger.debug(name + ": exception {}",e.getMessage());
             return false;
             }
         }
@@ -270,7 +289,7 @@ public class compute extends HttpServlet
             } 
         catch (javax.xml.parsers.ParserConfigurationException e) 
             {
-            logger.error("ParserConfigurationException during creation of DocumentBuilder");
+            logger.error("ParserConfigurationException during creation of DocumentBuilder {}",e.getMessage());
             }
         }
 
@@ -301,7 +320,7 @@ public class compute extends HttpServlet
             {
             //The following url is downloaded by wget, which is much better at handling 303's and 302's.
             //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
-          
+            logger.debug("webPageBinary({})",urladdr);
             HttpURLConnection.setFollowRedirects(true); // defaults to true
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
             URL url = new URL(urladdr);
@@ -328,7 +347,7 @@ public class compute extends HttpServlet
                 }
             else
                 {
-                logger.warn("URL {} returns {} in webPageBinary: {}",urladdr,Integer.toString(status));
+                logger.warn("URL {} returns {} in webPageBinary",urladdr,Integer.toString(status));
                 return 0;
                 }
             }
@@ -421,37 +440,46 @@ public class compute extends HttpServlet
         if(!val.equals(""))
             {
             String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+util.quote(val) + ")");
+            logger.debug("percentEncodeURL$("+util.quote(val) + ") = " +PercentEncodedURL);
+
             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
             
             File file = new File(destinationDir,LocalFileName);
 
             int textLength = webPageBinary(PercentEncodedURL,file);
-            logger.debug("Avirusfree "+LocalFileName);
-            if(virusfree(LocalFileName))
+            if(textLength > 0)
                 {
-                String ContentType = theMimeType(PercentEncodedURL);
-                if(textLength > 0 && !ContentType.equals(""))
+                logger.debug("Avirusfree "+LocalFileName);
+                if(virusfree(LocalFileName))
                     {
-                    boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                    return " (FieldName,"      + util.quote("input")
-                         + ".Name,"            + util.quote(PercentEncodedURL)
-                         + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
-                         + ".Size,"            + Long.toString(textLength)
-                         + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                         + ".LocalFileName,"   + util.quote(LocalFileName)
-                         + ")";                
+                    String ContentType = theMimeType(PercentEncodedURL);
+                    if(textLength > 0 && !ContentType.equals(""))
+                        {
+                        boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
+                        return " (FieldName,"      + util.quote("input")
+                             + ".Name,"            + util.quote(PercentEncodedURL)
+                             + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                             + ".Size,"            + Long.toString(textLength)
+                             + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                             + ".LocalFileName,"   + util.quote(LocalFileName)
+                             + ")";                
+                        }
+                    else 
+                        {
+                        file.delete();
+                        BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                        }
                     }
                 else 
                     {
                     file.delete();
+                    logger.debug("Error encountered while uploading file. ");
                     BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                     }
                 }
-            else 
+            else
                 {
-                file.delete();
                 logger.debug("Error encountered while uploading file. ");
-                BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                 }
             }
         return "";
@@ -739,7 +767,7 @@ public class compute extends HttpServlet
             }
         catch(Exception ex) 
             {
-            logger.debug("Error encountered while uploading file. ",ex);
+            logger.debug("Error encountered while uploading file. {}",ex.getMessage());
             out.close();
             }
         return arg;
