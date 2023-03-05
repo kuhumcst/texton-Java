@@ -35,13 +35,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import java.lang.IllegalArgumentException;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownServiceException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -314,23 +319,138 @@ public class compute extends HttpServlet
             }
         }
 
-    private int webPageBinary(String urladdr, File file)
+    private int `Binary(String urladdr, File file)
         {
+        URL url;
+        int status;
+        HttpURLConnection urlConnection;
+        InputStream input;
+        logger.debug("webPageBinary({})",urladdr);
         try
             {
             //The following url is downloaded by wget, which is much better at handling 303's and 302's.
             //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
-            logger.debug("webPageBinary({})",urladdr);
+            logger.debug("webPageBinary: setFollowRedirects");
             HttpURLConnection.setFollowRedirects(true); // defaults to true
+            logger.debug("webPageBinary: CookieHandler.setDefault");
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-            URL url = new URL(urladdr);
-            HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1");
-            int status = urlConnection.getResponseCode();
-            urlConnection.connect();
+            logger.debug("webPageBinary: URL url");
+            url = new URL(urladdr); // MalformedURLException
+            }
+        catch(MalformedURLException e)
+            {
+            logger.error("MalformedURLException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: url.openConnection");
+            urlConnection = (HttpURLConnection)url.openConnection(); // IOException
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: setConnectTimeout");
+            urlConnection.setConnectTimeout(15 * 1000); // IllegalArgumentException
+            }
+        catch(IllegalArgumentException e)
+            {
+            logger.error("IllegalArgumentException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: setRequestProperty");
+            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/110.0"); // IllegalStateException, NullPointerException
+            }
+        catch(IllegalStateException e)
+            {
+            logger.error("IllegalStateException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+        catch(NullPointerException e)
+            {
+            logger.error("NullPointerException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }            
+
+        try
+            {
+            logger.debug("webPageBinary: getResponseCode1");
+            status = urlConnection.getResponseCode(); // IOException
+            logger.debug("webPageBinary: status1 {}",Integer.toString(status));
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: connect");
+            urlConnection.connect(); // SocketTimeoutException, IOException
+            }
+        catch(SocketTimeoutException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: getResponseCode2");
             status = urlConnection.getResponseCode();
-            InputStream input = urlConnection.getInputStream();
+            logger.debug("webPageBinary: status2 {}",Integer.toString(status));
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
+            logger.debug("webPageBinary: getInputStream");
+            input = urlConnection.getInputStream(); //     IOException, UnknownServiceException
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+/*        catch(UnknownServiceException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }*/
+
+        try
+            {
+            logger.debug("webPageBinary: getResponseCode3");
             status = urlConnection.getResponseCode();
+            logger.debug("webPageBinary: status3 {}",Integer.toString(status));
+            }
+        catch(IOException e)
+            {
+            logger.error("IOException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+
+        try
+            {
             if(status == 200)
                 {
                 byte[] buffer = new byte[4096];
@@ -440,8 +560,6 @@ public class compute extends HttpServlet
         if(!val.equals(""))
             {
             String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+util.quote(val) + ")");
-            logger.debug("percentEncodeURL$("+util.quote(val) + ") = " +PercentEncodedURL);
-
             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
             
             File file = new File(destinationDir,LocalFileName);
@@ -449,7 +567,7 @@ public class compute extends HttpServlet
             int textLength = webPageBinary(PercentEncodedURL,file);
             if(textLength > 0)
                 {
-                logger.debug("Avirusfree "+LocalFileName);
+                logger.debug("virusfree "+LocalFileName);
                 if(virusfree(LocalFileName))
                     {
                     String ContentType = theMimeType(PercentEncodedURL);
