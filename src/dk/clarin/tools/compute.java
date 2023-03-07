@@ -319,7 +319,7 @@ public class compute extends HttpServlet
             }
         }
 
-    private int Binary(String urladdr, File file)
+    private int webPageBinary(String urladdr, File file)
         {
         URL url;
         int status;
