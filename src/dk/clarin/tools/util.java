@@ -79,8 +79,10 @@ public class util
         return str;        
         }
 
-    public static boolean goodToPass(String GivenPassword,String StoredPassword,String StoredSalt)
+    public static boolean goodToPass(String GivenPassword, bracmat BracMat)
         {
+        String StoredPassword = BracMat.Eval("getProperty$password");
+        String StoredSalt = BracMat.Eval("getProperty$salt");
         boolean result;
         result = false;
         //logger.debug("GivenPassword["+GivenPassword+"] StoredPassword["+StoredPassword+"] StoredSalt["+StoredSalt+"]");
@@ -121,40 +123,11 @@ public class util
             }
         return sb.toString();
         }
-/*
-    public static String hexDigest(String str, String digestName)
-        {
-        try 
-            {
-            MessageDigest md = MessageDigest.getInstance(digestName);
-            byte[] digest = md.digest(str.getBytes(StandardCharsets.UTF_8));
-            char[] hex = new char[digest.length * 2];
-            for (int i = 0; i < digest.length; i++) 
-                {
-                hex[2 * i] = "0123456789abcdef".charAt((digest[i] & 0xf0) >> 4);
-                hex[2 * i + 1] = "0123456789abcdef".charAt(digest[i] & 0x0f);
-                }
-            String result = new String(hex);
-            logger.debug("hex=["+result+"]");
-            return result;
-            }
-        catch (NoSuchAlgorithmException e) 
-            {
-            throw new IllegalStateException(e);
-            }
-        }
-*/
+
     public static String quote(String str)
         {
         return "\"" + escape(str) + "\"";
         }
-/*
-    static private String FilenameRelations(String name,bracmat BracMat)
-        {
-        return BracMat.Eval("FilenameRelations$(" + util.quote(name) + ")"); 
-        }
-*/
-
 
     /**
      * Check whether the new data is TEI data. If that is the case, a new 

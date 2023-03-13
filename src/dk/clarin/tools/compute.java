@@ -324,6 +324,7 @@ public class compute extends HttpServlet
         URL url;
         int status;
         HttpURLConnection urlConnection;
+
         InputStream input;
         logger.debug("webPageBinary({})",urladdr);
         try
@@ -347,6 +348,9 @@ public class compute extends HttpServlet
             {
             logger.debug("webPageBinary: url.openConnection");
             urlConnection = (HttpURLConnection)url.openConnection(); // IOException
+            //logger.debug("webPageBinary: start");
+            //new Thread(new InterruptThread(urlConnection)).start();
+            logger.debug("webPageBinary: DOne");
             }
         catch(IOException e)
             {
@@ -368,7 +372,7 @@ public class compute extends HttpServlet
         try
             {
             logger.debug("webPageBinary: setRequestProperty");
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/110.0"); // IllegalStateException, NullPointerException
+            urlConnection.setRequestProperty("User-Agent", "Mozilla"); // IllegalStateException, NullPointerException
             }
         catch(IllegalStateException e)
             {

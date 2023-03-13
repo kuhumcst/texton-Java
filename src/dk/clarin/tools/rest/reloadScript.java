@@ -64,27 +64,26 @@ public class reloadScript extends HttpServlet
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         String password = request.getParameter("password");
-//        if(password == null || !util.hexDigest(password,"SHA-256").equals(ToolsProperties.password))
-        if(password == null || !util.goodToPass(password,ToolsProperties.password,ToolsProperties.salt))
-            {
-            response.setStatus(401);
-            out.println( "<?xml version=\"1.0\"?>\n"
-                        +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
-                        +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
-                        +"<head>\n" 
-                        +"<title>DK-Clarin: Tools</title>\n" 
-                        +"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n" 
-                        +"</head>\n" 
-                        +"<body>\n" 
-                        +"<h1>401 Unauthorized</h1>\n" 
-                        +"<p>When attempting to evaluate Bracmat code</p>\n" 
-                        +"</body></html>\n"
-                       );
-            return;
-            }
         bracmat BracMat = new bracmat(ToolsProperties.bootBracmat);
         if(BracMat.loaded())
             {
+            if(password == null || !util.goodToPass(password,BracMat))
+                {
+                response.setStatus(401);
+                out.println( "<?xml version=\"1.0\"?>\n"
+                            +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
+                            +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
+                            +"<head>\n" 
+                            +"<title>DK-Clarin: Tools</title>\n" 
+                            +"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n" 
+                            +"</head>\n" 
+                            +"<body>\n" 
+                            +"<h1>401 Unauthorized</h1>\n" 
+                            +"<p>When attempting to evaluate Bracmat code</p>\n" 
+                            +"</body></html>\n"
+                           );
+                return;
+                }
             String result = BracMat.Eval("("+ToolsProperties.bootBracmat+")&clean$");
             response.setContentType("text/plain");
             out.println(result);
