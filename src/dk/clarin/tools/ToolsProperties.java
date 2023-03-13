@@ -42,16 +42,16 @@ public class ToolsProperties
     **/
 
     // Host names
-    public static String wwwServer                    = "";
+    //public static String wwwServer                    = "";
     
     // names used by Tools
-    public static String baseUrlTools               = "";
+    //public static String baseUrlTools               = "";
     public static String documentRoot               = "";
     public static String stagingArea                = "";
     public static String deleteAfterMillisec        = "";
     public static String tempdir                    = "";
-    public static String password                   = "";
-    public static String salt                       = "";
+    //public static String password                   = "";
+    //public static String salt                       = "";
 
     public static String bootBracmat                = "";
 
@@ -78,39 +78,41 @@ public class ToolsProperties
 
             // Host names
             //infraServer            = prop.getProperty("infra-server");
-            wwwServer              = prop.getProperty("www-server");
+            //wwwServer              = prop.getProperty("www-server");  // Set in Bracmat table 'meta/properties'
 
             // Host names used by Tools
-            baseUrlTools           = prop.getProperty("baseUrlTools");
-            stagingArea            = prop.getProperty("stagingArea");
+//            baseUrlTools           = prop.getProperty("baseUrlTools");// Set in Bracmat table 'meta/properties'
+            stagingArea            = prop.getProperty("stagingArea"); // Used in Java code
 
 
 
             // System paths used by Tools
-            documentRoot           = prop.getProperty("documentRoot");
-            String toolsHome       = prop.getProperty("toolsHome");
-            String bracmatCode     = prop.getProperty("toolsProg");
-            deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");
+            documentRoot           = prop.getProperty("documentRoot");  // Used in Java code
+            String toolsHome       = prop.getProperty("toolsHome");     // Used in Java code (here!)
+            String bracmatCode     = prop.getProperty("toolsProg");     // Used in Java code (here!)
+            deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");  // Used in Java code
             bootBracmat            =  "get$\"" 
-                                    + toolsHome 
-                                    + bracmatCode 
+                                    + toolsHome                         // Used in Java code (here!)
+                                    + bracmatCode                       // Used in Java code (here!)
                                     + "\"&!toolsProg&(\""
-                                    + toolsHome
+                                    + toolsHome                         // Used in Java code (here!)
                                     + "\":?toolshome)&(\"" 
-                                    + baseUrlTools
-                                    + "\":?baseUrlTools)&(\"" 
-                                    + documentRoot
+//                                    + baseUrlTools                      // Set in Bracmat table 'meta/properties'
+//                                    + "\":?baseUrlTools)&(\"" 
+                                    + documentRoot                      // Used in Java code
                                     + "\":?documentRoot)&(\""
-                                    + wwwServer
-                                    + "\":?wwwServer)&(\""
-                                    + deleteAfterMillisec
+//                                    + wwwServer                         // Set in Bracmat table 'meta/properties'
+//                                    + "\":?wwwServer)&(\""
+                                    + deleteAfterMillisec               // Used in Java code
                                     + "\":?deleteAfterMillisec)&(\""
-                                    + stagingArea
+                                    + stagingArea                       // Used in Java code
                                     + "\":?stagingArea)&ok|fail"
                                     ;
-            tempdir                = prop.getProperty("tempdir");
-            password               = prop.getProperty("password");
-            salt                   = prop.getProperty("salt");
+            tempdir                = prop.getProperty("tempdir");   // Used in Java code
+            /*
+            password               = prop.getProperty("password");  // Used in Java code, but set in Bracmat table 'meta/properties'
+            salt                   = prop.getProperty("salt");      // Used in Java code, but set in Bracmat table 'meta/properties'
+            */
             fis.close();
             } 
         catch (IOException io)

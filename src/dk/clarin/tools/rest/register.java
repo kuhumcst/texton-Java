@@ -59,13 +59,13 @@ public class register extends HttpServlet
             String arg = "";
             passwordAsHandle = parameters.getPOSTorGETarg(request,items,"passwordAsHandle");
             //logger.debug("getPOSTorGETarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
-            if(ToolsProperties.password.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
+            String StoredPassword = BracMat.Eval("getProperty$password");
+            if(StoredPassword.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
                 {
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
                 arg += " (handle.LOCALMACHINEDUMMY)";
                 }
-//            else if(passwordAsHandle != null && util.hexDigest(passwordAsHandle,"SHA-256").equals(ToolsProperties.password))
-            else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,ToolsProperties.password,ToolsProperties.salt))
+            else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
