@@ -68,8 +68,7 @@ public class update extends HttpServlet
             String arg = "";
             passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
             //logger.debug("getGETarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
-//          if(passwordAsHandle != null && util.hexDigest(passwordAsHandle,"SHA-256").equals(ToolsProperties.password))
-            if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,ToolsProperties.password,ToolsProperties.salt))
+            if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
                 userEmail = parameters.getGETarg(request,"mail2");
