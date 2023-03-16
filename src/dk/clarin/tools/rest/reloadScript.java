@@ -30,10 +30,10 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.*;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Called when a new version of toolsProg.bra is available in 
@@ -49,7 +49,7 @@ public class reloadScript extends HttpServlet
     {
     //private static final Logger logger = LoggerFactory.getLogger(reloadScript.class);
 
-    public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
+    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);    

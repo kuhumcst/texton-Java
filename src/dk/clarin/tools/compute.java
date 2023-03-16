@@ -51,24 +51,30 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
+//import java.util.List;
+import java.util.Collection;
 import java.util.regex.PatternSyntaxException;
 
 import java.text.SimpleDateFormat;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +104,10 @@ import org.slf4j.LoggerFactory;
  * former by a caret.
  */      
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class compute extends HttpServlet 
     {
 
@@ -251,7 +261,7 @@ public class compute extends HttpServlet
             }
         }
 
-    public String assureArgHasUIlanguage(HttpServletRequest request,List<FileItem> items, String arg)
+    public String assureArgHasUIlanguage(HttpServletRequest request,Collection<Part>/*List<FileItem>*/ items, String arg)
         {
         if(!arg.contains("UIlanguage"))
             {
@@ -262,7 +272,7 @@ public class compute extends HttpServlet
         return arg;
         }        
 
-    public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
+    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
@@ -576,7 +586,7 @@ public class compute extends HttpServlet
                     String ContentType = theMimeType(PercentEncodedURL);
                     if(textLength > 0 && !ContentType.equals(""))
                         {
-                        boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
+                        boolean hasNoPDFfonts = PDFhasNoFonts(/*file*/ToolsProperties.documentRoot,ContentType);
                         return " (FieldName,"      + util.quote("input")
                              + ".Name,"            + util.quote(PercentEncodedURL)
                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
@@ -734,7 +744,7 @@ public class compute extends HttpServlet
             }
         }
 
-    public boolean PDFhasNoFonts(File pdfFile,String ContentType)
+    public boolean PDFhasNoFonts(/*File*/String pdfFile,String ContentType)
         {
         if  (  ContentType.equals("application/pdf") 
             || ContentType.equals("application/x-download") 
@@ -752,7 +762,7 @@ public class compute extends HttpServlet
 
                 //String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
                 //String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
-                String command = "pdffonts " + pdfFile.getAbsolutePath();
+                String command = "pdffonts " + pdfFile/*.getAbsolutePath()*/;
 
                 final Process process = Runtime.getRuntime().exec(command);
                 stdin = process.getOutputStream ();
@@ -778,14 +788,14 @@ public class compute extends HttpServlet
                 } 
             catch (Exception e) 
                 {
-                logger.error("cannot analyse: " + pdfFile.getName() + ", error is: " + e.getMessage());
+                logger.error("cannot analyse: " + pdfFile/*.getName()*/ + ", error is: " + e.getMessage());
                 }
             return lasterrline.equals("") && (lastline.endsWith("---------"));
             }
         return false;
         }
             
-    public String getParmsAndFiles(List<FileItem> items,HttpServletResponse response,PrintWriter out) throws ServletException
+    public String getParmsAndFiles(Collection<Part>/*List<FileItem>*/ items,HttpServletResponse response,PrintWriter out) throws ServletException
         {        
         if(!BracMat.loaded())
             {
@@ -800,23 +810,24 @@ public class compute extends HttpServlet
             /*
             * Parse the request
             */
-            Iterator<FileItem> itr = items.iterator();
+            Iterator<Part> itr = items.iterator();
             while(itr.hasNext()) 
                 {
-                FileItem item = itr.next();
+                Part item = itr.next();
                 /*
                 * Handle Form Fields.
                 */
-                if(item.isFormField()) 
+                if(item./*isFormField()*/getSubmittedFileName() == null) 
                     {
-                    if(item.getFieldName().equals("text"))
+                    String fiel = IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
+                    if(item.getName/*getFieldName*/().equals("text"))
                         {
-                        int textLength = item.getString("UTF-8").length();
+                        int textLength = fiel.length();
                         if(textLength > 0)
                             {
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
-                            File file = new File(destinationDir,LocalFileName);
-                            item.write(file);
+                            //File file = new File(destinationDir,LocalFileName);
+                            item.write(ToolsProperties.documentRoot + LocalFileName);
                             if(virusfree(LocalFileName))
                                 {
                                 arg = arg + " (FieldName,"      + util.quote("text")
@@ -829,18 +840,18 @@ public class compute extends HttpServlet
                                 }
                             else
                                 {
-                                file.delete();
+                              //  file.delete();
                                 BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                                 }
                             }
                         }
-                    else if(item.getFieldName().equals("URL"))
+                    else if(item.getName().equals("URL"))
                         {
-                        arg = arg + makeLocalCopyOfRemoteFile(item.getString("UTF-8"));
+                        arg = arg + makeLocalCopyOfRemoteFile(fiel);
                         }
-                    else if(item.getFieldName().equals("URLS"))
+                    else if(item.getName().equals("URLS"))
                         {
-                        String val = item.getString("UTF-8");
+                        String val = fiel;
                         try {
                             String[] splitArray = val.split("\\r?\\n");
                             for(String line : splitArray)
@@ -855,7 +866,7 @@ public class compute extends HttpServlet
                             }
                         }
                     else
-                        arg = arg + " (" + item.getFieldName() + "." + util.quote(item.getString("UTF-8")) + ")";
+                        arg = arg + " (" + item.getName() + "." + util.quote(fiel) + ")";
                     }
                 else if(item.getName() != "")
                     {
@@ -864,13 +875,13 @@ public class compute extends HttpServlet
                     /*
                     * Write file to the ultimate location.
                     */
-                    File file = new File(destinationDir,LocalFileName);
-                    item.write(file);
+                    //File file = new File(destinationDir,LocalFileName);
+                    item.write(ToolsProperties.documentRoot + LocalFileName);
                     if(virusfree(LocalFileName))
                         {
                         String ContentType = item.getContentType();
-                        boolean hasNoPDFfonts = PDFhasNoFonts(file,ContentType);
-                        arg = arg + " (FieldName,"      + util.quote(item.getFieldName())
+                        boolean hasNoPDFfonts = PDFhasNoFonts(/*file*/ToolsProperties.documentRoot + LocalFileName,ContentType);
+                        arg = arg + " (FieldName,"      + util.quote(item.getName()/*getFieldName()*/)
                                   + ".Name,"            + util.quote(item.getName())
                                   + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
                                   + ".Size,"            + Long.toString(item.getSize())
@@ -880,7 +891,7 @@ public class compute extends HttpServlet
                         }
                     else
                         {
-                        file.delete();
+                      //  file.delete();
                         BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                         }
                     }
@@ -897,7 +908,7 @@ public class compute extends HttpServlet
 
     public void PostWorkflow(HttpServletRequest request,HttpServletResponse response,String BracmatFunc) throws ServletException, IOException 
         {
-        List<FileItem> items = parameters.getParmList(request);
+        Collection<Part>/*List<FileItem>*/ items = parameters.getParmList(request);
 
         PrintWriter out = response.getWriter();
 

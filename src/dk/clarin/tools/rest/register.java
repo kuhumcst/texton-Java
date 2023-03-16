@@ -22,17 +22,24 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.clarin.tools.parameters;
 import java.io.*;
-import java.util.List;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import java.util.List;
+import java.util.Collection;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class register extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(register.class);
@@ -53,22 +60,23 @@ public class register extends HttpServlet
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
-            List<FileItem> items = parameters.getParmList(request);
+            //List<FileItem> items = parameters.getParmList(request);
+            Collection<Part> items = parameters.getParmList(request);
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            passwordAsHandle = parameters.getPOSTorGETarg(request,items,"passwordAsHandle");
-            //logger.debug("getPOSTorGETarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
+            passwordAsHandle = parameters.getPOSTarg(request,items,"passwordAsHandle");
+            //logger.debug("getPOSTarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
             String StoredPassword = BracMat.Eval("getProperty$password");
             if(StoredPassword.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
                 {
-                userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
+                userEmail = parameters.getPOSTarg(request,items,"mail2");
                 arg += " (handle.LOCALMACHINEDUMMY)";
                 }
             else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                userEmail = parameters.getPOSTorGETarg(request,items,"mail2");
+                userEmail = parameters.getPOSTarg(request,items,"mail2");
                 arg += " (handle.OK)";
                 }
             else
@@ -78,7 +86,7 @@ public class register extends HttpServlet
                 
             logger.debug("userEmail = {}",userEmail);
 
-            if(userEmail != null && parameters.getPOSTorGETarg(request,items,"contactEmail") == null)
+            if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
             arg += parameters.getargsBracmatFormat(request,items);
             /**

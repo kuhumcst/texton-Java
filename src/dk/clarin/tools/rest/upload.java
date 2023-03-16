@@ -22,11 +22,15 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
 import java.io.*;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.fileupload.FileItem;
@@ -42,6 +46,10 @@ Method where asynchronous webservices can upload their output.
 
 */
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class upload extends HttpServlet
     {
     private File tmpDir;
@@ -94,8 +102,10 @@ public class upload extends HttpServlet
             * Parse the request
             */
             @SuppressWarnings("unchecked")
-            List<FileItem> items = (List<FileItem>)uploadHandler.parseRequest(request);
-            Iterator<FileItem> itr = items.iterator();
+          //List<FileItem> items = (List<FileItem>)uploadHandler.parseRequest(request);
+            Collection<Part> items = request.getParts();
+            //Iterator<FileItem> itr = items.iterator();
+            Iterator<Part> itr = items.iterator();
             FileItem theFile = null;
             while(itr.hasNext()) 
                 {
@@ -244,13 +254,13 @@ public class upload extends HttpServlet
                 out.println(messagetext);
                 }
             }
-        catch(FileUploadException ex) 
+        /*catch(FileUploadException ex) 
             {
             logger.debug("FileUploadException {}",util.escape(ex.toString()));
             response.setStatus(500);
             String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: FileUploadException " + util.escape(ex.toString()) + "\")");
             out.println(messagetext);
-            }
+            }*/
         catch(Exception ex) 
             {
             logger.debug("Exception {}",util.escape(ex.toString()));

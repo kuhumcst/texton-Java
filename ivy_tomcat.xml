@@ -4,8 +4,8 @@
         <conf name="default" transitive="false"/>
     </configurations>
     <dependencies defaultconf="default">
-        <dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1"/>
-        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.4"/>
+        <dependency org="jakarta.servlet" name="jakarta.servlet-api" rev="6.0.0"/>
+        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.5"/>
         <dependency org="commons-io" name="commons-io" rev="2.11.0"/>
         <dependency org="org.slf4j" name="slf4j-api" rev="2.0.0-alpha5"/>
         <dependency org="org.apache.logging.log4j" name="log4j-slf4j18-impl" rev="2.17.1"/>

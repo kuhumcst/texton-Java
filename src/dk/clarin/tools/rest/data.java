@@ -21,10 +21,10 @@ import java.nio.file.Files;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class data extends HttpServlet
     private File destinationDir;
     private bracmat BracMat;
 
-    public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
+    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        

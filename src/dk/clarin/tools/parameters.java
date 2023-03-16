@@ -18,16 +18,22 @@
 package dk.clarin.tools;
 import java.io.File;
 import java.io.InputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+//import java.util.List;
+import java.util.Collection;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 public class parameters
@@ -65,51 +71,51 @@ public class parameters
         return null;
         }
 
-    public static String getPOSTorGETarg(HttpServletRequest request, List<FileItem> items, String name)
+//    public static String getPOSTarg(HttpServletRequest request, List<FileItem> items, String name)
+    public static String getPOSTarg(HttpServletRequest request, Collection<Part> items, String name)
         {
         /*
         * Parse the request
         */
         if(name != null)
             {
-            @SuppressWarnings("unchecked")
-            boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-
-            logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-        
-            if(is_multipart_formData)
+//            @SuppressWarnings("unchecked")
+            //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+            //logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
+            //if(is_multipart_formData)
+            try 
                 {
-                try 
+                Iterator<Part> itr = items.iterator();
+                while(itr.hasNext()) 
                     {
-                    Iterator<FileItem> itr = items.iterator();
-                    while(itr.hasNext()) 
+                    Part item = /*(FileItem)*/ itr.next();
+                    //if(item.isFormField()) 
                         {
-                        FileItem item = (FileItem) itr.next();
-                        if(item.isFormField()) 
+                        if(name.equals(item.getName()/*getFieldName()*/))
                             {
-                            if(name.equals(item.getFieldName()))
-                                return item.getString("UTF-8").trim();
+                            String fiel = IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
+                            return fiel;
+//                            return item.getString("UTF-8").trim();
                             }
                         }
                     }
-                catch(Exception ex) 
-                    {
-                    logger.error("uploadHandler.parseRequest Exception");
-                    }
                 }
-        
-            return getGETarg(request,name);
+            catch(Exception ex) 
+                {
+                logger.error("uploadHandler.parseRequest Exception");
+                }
+            //return getGETarg(request,name);
             }
         return null;
         }
 
     @SuppressWarnings("unchecked")
-    public static List<FileItem> getParmList(HttpServletRequest request) throws ServletException
+    public static Collection<Part> getParmList(HttpServletRequest request) throws ServletException
         {
-        List<FileItem> items = null;
-        boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+        Collection<Part> items = null;
+        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-        if(is_multipart_formData)
+        //if(is_multipart_formData)
             {
             DiskFileItemFactory  fileItemFactory = new DiskFileItemFactory ();
             /*
@@ -128,11 +134,22 @@ public class parameters
             ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
             try 
                 {
-                items = (List<FileItem>)uploadHandler.parseRequest(request);
+            //    items = (List<FileItem>)uploadHandler.parseRequest(request);
+                items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
                 }
-            catch(FileUploadException ex) 
+     /*       catch(FileUploadException ex) 
                 {
                 logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                }*/
+            catch(IOException ex) 
+                {
+                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                return null;
+                }
+            catch(ServletException ex) 
+                {
+                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                return null;
                 }
             }
         return items;
@@ -159,7 +176,8 @@ public class parameters
         return arg;
         }
 
-    public static String getargsBracmatFormat(HttpServletRequest request, List<FileItem> items)
+//    public static String getargsBracmatFormat(HttpServletRequest request, List<FileItem> items)
+    public static String getargsBracmatFormat(HttpServletRequest request, Collection<Part> items)
         {
         String arg = "";
         /*
@@ -168,21 +186,21 @@ public class parameters
 
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-        logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
+        //logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
         
-        if(is_multipart_formData)
+        //if(is_multipart_formData)
             {
             try 
                 {
-                Iterator<FileItem> itr = items.iterator();
+                Iterator<Part> itr = items.iterator();
                 while(itr.hasNext()) 
                     {
-                    FileItem item = (FileItem) itr.next();
-                    if(item.isFormField()) 
+                    Part item = /*(FileItem)*/ itr.next();
+                    //if(item.isFormField()) 
                         {
-                        arg = arg + " (" + util.quote(item.getFieldName()) + "." + util.quote(item.getString("UTF-8").trim()) + ")";
+                        arg = arg + " (" + util.quote(item.getName()/*getFieldName()*/) + "." + util.quote(IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8)/*item.getString("UTF-8")*/.trim()) + ")";
                         }
                     }
                 }
@@ -207,12 +225,12 @@ public class parameters
         return arg;
         }
 
-    public static String getParmFromFormData(HttpServletRequest request,List<FileItem> items,String parm) 
+    public static String getParmFromFormData(HttpServletRequest request,Collection<Part> items,String parm) 
         {
         String value = null;
-        boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
 
-        if(is_multipart_formData)
+        //if(is_multipart_formData)
             {
             if(items == null)
                 {
@@ -229,18 +247,18 @@ public class parameters
                 {
                 try 
                     {
-                    Iterator<FileItem> itr = items.iterator();
+                    Iterator<Part> itr = items.iterator();
                     while(itr.hasNext()) 
                         {
-                        FileItem item = (FileItem) itr.next();
+                        Part item = /*(FileItem)*/ itr.next();
                         /*
                         * Handle Form Fields.
                         */
-                        if(item.isFormField()) 
+                       // if(item.isFormField()) 
                             {
-                            if(item.getFieldName().equals(parm))
+                            if(item.getName()/*getFieldName()*/.equals(parm))
                                 {
-                                value = item.getString();
+                                value = /*item.getString()*/IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
                                 break; // currently not interested in other fields than parm
                                 }
                             }
@@ -281,7 +299,8 @@ public class parameters
         return value;
         }                        
 
-    public static String getPreferredLocale(HttpServletRequest request,List<FileItem> items)
+//    public static String getPreferredLocale(HttpServletRequest request,List<FileItem> items)
+    public static String getPreferredLocale(HttpServletRequest request,Collection<Part> items)
         {
         String UIlanguage = null;
         /* First check whether there is a UIlanguage parameter */

@@ -17,10 +17,10 @@
 */
 package dk.clarin.tools.rest;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 
@@ -28,7 +28,7 @@ import java.io.IOException;
 public class showworkflows extends HttpServlet 
     {
     private dk.clarin.tools.compute Compute;
-    public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException 
+    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
         {
         super.init(config);
         Compute = new dk.clarin.tools.compute();
