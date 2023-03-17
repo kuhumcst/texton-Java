@@ -36,6 +36,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import java.lang.IllegalArgumentException;
+import java.lang.RuntimeException;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -56,15 +57,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
-//import java.util.List;
 import java.util.Collection;
 import java.util.regex.PatternSyntaxException;
 
 import java.text.SimpleDateFormat;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
@@ -73,7 +73,6 @@ import jakarta.servlet.http.Part;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
@@ -153,26 +152,24 @@ public class compute extends HttpServlet
             catch (IOException e) {logger.error("could not open socket OutputStream {}",e.getMessage()); return false;}
 
             try {dos.write(INSTREAM);} 
-            catch (IOException e) {logger.debug("error writing INSTREAM command {}",e.getMessage());return false;}
+            catch (IOException e) {logger.error("error writing INSTREAM command {}",e.getMessage());return false;}
 
             int read = CHUNK_SIZE;
             byte[] buffer = new byte[CHUNK_SIZE];
             while (read == CHUNK_SIZE) 
                 {
                 try {read = in.read(buffer);}
-                catch (IOException e) {logger.debug("error reading from InputStream {}",e.getMessage());return false;}
+                catch (IOException e) {logger.error("error reading from InputStream {}",e.getMessage());return false;}
         
                 if (read > 0) 
                     {
                     try {
                         dos.writeInt(read);
                         dos.write(buffer, 0, read);
-                        /*String input = new String(buffer, 0, read);
-                        logger.debug(input);*/
                         }
                      catch (IOException e) 
                         {
-                        logger.debug("error writing data to socket {}",e.getMessage());
+                        logger.error("error writing data to socket {}",e.getMessage());
                         break;
                         }
                     }
@@ -184,7 +181,7 @@ public class compute extends HttpServlet
                 }
             catch (IOException e) 
                 {
-                logger.debug("error writing zero-length chunk to socket {}",e.getMessage());
+                logger.error("error writing zero-length chunk to socket {}",e.getMessage());
                 }
 
             try {
@@ -192,7 +189,7 @@ public class compute extends HttpServlet
                 }
             catch (IOException e) 
                 {
-                logger.debug("error reading result from socket {}",e.getMessage());
+                logger.error("error reading result from socket {}",e.getMessage());
                 read = 0;
                 }
 
@@ -206,9 +203,9 @@ public class compute extends HttpServlet
             {
             if (dos != null) 
                 try {dos.close();}
-                catch (IOException e) {logger.debug("exception closing DOS {}",e.getMessage());}
+                catch (IOException e) {logger.error("exception closing DOS {}",e.getMessage());}
             try {socket.close();}
-            catch (IOException e) {logger.debug("exception closing socket {}",e.getMessage());}
+            catch (IOException e) {logger.error("exception closing socket {}",e.getMessage());}
             }
 
         if (logger.isDebugEnabled()) 
@@ -226,42 +223,37 @@ public class compute extends HttpServlet
         byte bytes[];
         FileInputStream fis;
         String input = "";
-        logger.debug("Constructing File {}",name);
         File f = new File(destinationDir,name);
-        logger.debug("Constructed  File {}",name);
         try               
             {
             fis = new FileInputStream(f);
-            logger.debug(name + " opened");
-            logger.debug("length: {}",Integer.toString((int) f.length()));
             bytes = new byte[(int) f.length()];
             byteCount = fis.read(bytes);
-            logger.debug("byteCount: {}",Integer.toString(byteCount));
+            logger.debug("{} length: {} byteCount: {}",name,Integer.toString((int) f.length()),Integer.toString(byteCount));
             input = new String(bytes, 0, byteCount);
-            //logger.debug(input);
-
+            
             boolean result;
             result = scan(bytes);
             return result;        
             }
         catch(FileNotFoundException e)
             {
-            logger.debug(name + ": FileNotFoundException {}",e.getMessage());
+            logger.error(name + ": FileNotFoundException {}",e.getMessage());
             return false;
             }
         catch(SecurityException e)
             {
-            logger.debug(name + ": SecurityException {}",e.getMessage());
+            logger.error(name + ": SecurityException {}",e.getMessage());
             return false;
             }
         catch(Exception e)
             {
-            logger.debug(name + ": exception {}",e.getMessage());
+            logger.error(name + ": exception {}",e.getMessage());
             return false;
             }
         }
 
-    public String assureArgHasUIlanguage(HttpServletRequest request,Collection<Part>/*List<FileItem>*/ items, String arg)
+    public String assureArgHasUIlanguage(HttpServletRequest request,Collection<Part> items, String arg)
         {
         if(!arg.contains("UIlanguage"))
             {
@@ -281,7 +273,7 @@ public class compute extends HttpServlet
         date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
-        destinationDir = new File(ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/);
+        destinationDir = new File(ToolsProperties.documentRoot);
         if(!destinationDir.isDirectory())
             {
             try
@@ -290,12 +282,12 @@ public class compute extends HttpServlet
                 }
             catch(Exception e)
                 {
-                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
+                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
                 }
             }
         if(!destinationDir.isDirectory()) 
             {
-            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot /*+ ToolsProperties.stagingArea*/ + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
+            throw new ServletException("Trying to set \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory.");
             }
         // Ready the Document builder
         try 
@@ -335,16 +327,12 @@ public class compute extends HttpServlet
         int status;
         HttpURLConnection urlConnection;
         InputStream input;
-        logger.debug("webPageBinary({})",urladdr);
         try
             {
             //The following url is downloaded by wget, which is much better at handling 303's and 302's.
             //download("https://www.lesoir.be/185755/article/2018-10-21/footbelgate-le-beerschot-wilrijk-jouera-contre-malines-sous-reserve");
-            logger.debug("webPageBinary: setFollowRedirects");
             HttpURLConnection.setFollowRedirects(true); // defaults to true
-            logger.debug("webPageBinary: CookieHandler.setDefault");
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-            logger.debug("webPageBinary: URL url");
             url = new URL(urladdr); // MalformedURLException
             }
         catch(MalformedURLException e)
@@ -352,24 +340,29 @@ public class compute extends HttpServlet
             logger.error("MalformedURLException in webPageBinary: {}",e.getMessage());
             return -1;
             }
+        catch(IllegalArgumentException e)
+            {
+            logger.error("IllegalArgumentException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
 
         try
             {
-            logger.debug("webPageBinary: url.openConnection");
             urlConnection = (HttpURLConnection)url.openConnection(); // IOException
-            //logger.debug("webPageBinary: start");
-            //new Thread(new InterruptThread(urlConnection)).start();
-            logger.debug("webPageBinary: DOne");
             }
         catch(IOException e)
             {
             logger.error("IOException in webPageBinary: {}",e.getMessage());
             return -1;
             }
+        catch(IllegalArgumentException e)
+            {
+            logger.error("IllegalArgumentException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
 
         try
             {
-            logger.debug("webPageBinary: setConnectTimeout");
             urlConnection.setConnectTimeout(15 * 1000); // IllegalArgumentException
             }
         catch(IllegalArgumentException e)
@@ -380,7 +373,6 @@ public class compute extends HttpServlet
 
         try
             {
-            logger.debug("webPageBinary: setRequestProperty");
             urlConnection.setRequestProperty("User-Agent", "Mozilla"); // IllegalStateException, NullPointerException
             }
         catch(IllegalStateException e)
@@ -396,19 +388,26 @@ public class compute extends HttpServlet
 
         try
             {
-            logger.debug("webPageBinary: getResponseCode1");
             status = urlConnection.getResponseCode(); // IOException
-            logger.debug("webPageBinary: status1 {}",Integer.toString(status));
             }
         catch(IOException e)
             {
             logger.error("IOException in webPageBinary: {}",e.getMessage());
             return -1;
             }
+        catch(IllegalArgumentException e)
+            {
+            logger.error("IllegalArgumentException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
+        catch(RuntimeException e)
+            {
+            logger.error("RuntimeException in webPageBinary: {}",e.getMessage());
+            return -1;
+            }
 
         try
             {
-            logger.debug("webPageBinary: connect");
             urlConnection.connect(); // SocketTimeoutException, IOException
             }
         catch(SocketTimeoutException e)
@@ -424,9 +423,7 @@ public class compute extends HttpServlet
 
         try
             {
-            logger.debug("webPageBinary: getResponseCode2");
             status = urlConnection.getResponseCode();
-            logger.debug("webPageBinary: status2 {}",Integer.toString(status));
             }
         catch(IOException e)
             {
@@ -436,7 +433,6 @@ public class compute extends HttpServlet
 
         try
             {
-            logger.debug("webPageBinary: getInputStream");
             input = urlConnection.getInputStream(); //     IOException, UnknownServiceException
             }
         catch(IOException e)
@@ -444,17 +440,10 @@ public class compute extends HttpServlet
             logger.error("IOException in webPageBinary: {}",e.getMessage());
             return -1;
             }
-/*        catch(UnknownServiceException e)
-            {
-            logger.error("IOException in webPageBinary: {}",e.getMessage());
-            return -1;
-            }*/
 
         try
             {
-            logger.debug("webPageBinary: getResponseCode3");
             status = urlConnection.getResponseCode();
-            logger.debug("webPageBinary: status3 {}",Integer.toString(status));
             }
         catch(IOException e)
             {
@@ -559,7 +548,7 @@ public class compute extends HttpServlet
                 catch(NumberFormatException e)
                     {
                     response.setStatus(404);
-                    logger.warn("NumberFormatException. Could not parse initial integer in {}. Message: {}",result,e.getMessage());
+                    logger.error("NumberFormatException. Could not parse initial integer in {}. Message: {}",result,e.getMessage());
                     }
                 return;
                 }
@@ -580,13 +569,12 @@ public class compute extends HttpServlet
             int textLength = webPageBinary(PercentEncodedURL,file);
             if(textLength > 0)
                 {
-                logger.debug("virusfree "+LocalFileName);
                 if(virusfree(LocalFileName))
                     {
                     String ContentType = theMimeType(PercentEncodedURL);
                     if(textLength > 0 && !ContentType.equals(""))
                         {
-                        boolean hasNoPDFfonts = PDFhasNoFonts(/*file*/ToolsProperties.documentRoot,ContentType);
+                        boolean hasNoPDFfonts = PDFhasNoFonts(ToolsProperties.documentRoot,ContentType);
                         return " (FieldName,"      + util.quote("input")
                              + ".Name,"            + util.quote(PercentEncodedURL)
                              + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
@@ -604,13 +592,13 @@ public class compute extends HttpServlet
                 else 
                     {
                     file.delete();
-                    logger.debug("Error encountered while uploading file. ");
+                    logger.error("Error encountered while uploading file. ");
                     BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                     }
                 }
             else
                 {
-                logger.debug("Error encountered while uploading file. ");
+                logger.error("Error encountered while uploading file. ");
                 }
             }
         return "";
@@ -672,7 +660,7 @@ public class compute extends HttpServlet
                             if(virusfree(LocalFileName))
                                 {
                                 arg = arg + " (FieldName,"      + util.quote("text")
-                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".Name,"            + util.quote(LocalFileName)
                                           + ".ContentType,"     + util.quote("text/plain")
                                           + ".Size,"            + Long.toString(textLength)
                                           + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
@@ -744,7 +732,7 @@ public class compute extends HttpServlet
             }
         }
 
-    public boolean PDFhasNoFonts(/*File*/String pdfFile,String ContentType)
+    public boolean PDFhasNoFonts(String pdfFile,String ContentType)
         {
         if  (  ContentType.equals("application/pdf") 
             || ContentType.equals("application/x-download") 
@@ -760,9 +748,7 @@ public class compute extends HttpServlet
                 InputStream stderr = null;
                 InputStream stdout = null;
 
-                //String command = "/usr/local/bin/pdffonts " + pdfFile.getAbsolutePath();
-                //String command = "/usr/bin/pdffonts " + pdfFile.getAbsolutePath();
-                String command = "pdffonts " + pdfFile/*.getAbsolutePath()*/;
+                String command = "pdffonts " + pdfFile;
 
                 final Process process = Runtime.getRuntime().exec(command);
                 stdin = process.getOutputStream ();
@@ -788,14 +774,14 @@ public class compute extends HttpServlet
                 } 
             catch (Exception e) 
                 {
-                logger.error("cannot analyse: " + pdfFile/*.getName()*/ + ", error is: " + e.getMessage());
+                logger.error("cannot analyse: " + pdfFile + ", error is: " + e.getMessage());
                 }
             return lasterrline.equals("") && (lastline.endsWith("---------"));
             }
         return false;
         }
             
-    public String getParmsAndFiles(Collection<Part>/*List<FileItem>*/ items,HttpServletResponse response,PrintWriter out) throws ServletException
+    public String getParmsAndFiles(Collection<Part> items,HttpServletResponse response,PrintWriter out) throws ServletException
         {        
         if(!BracMat.loaded())
             {
@@ -817,21 +803,92 @@ public class compute extends HttpServlet
                 /*
                 * Handle Form Fields.
                 */
-                if(item./*isFormField()*/getSubmittedFileName() == null) 
+
+                if(item.getName().equals("input"))
                     {
-                    String fiel = IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
-                    if(item.getName/*getFieldName*/().equals("text"))
+                    //Handle Uploaded files.
+                    if(!item.getSubmittedFileName().equals(""))
+                        {
+                        String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getSubmittedFileName()) + "." + util.quote(date) + ")");
+                        /*
+                        * Write file to the ultimate location.
+                        */
+                        try
+                            {
+                            item.write(ToolsProperties.documentRoot + LocalFileName);
+                            }
+                        catch(IOException ex) 
+                            {
+                            logger.error("IOException Error encountered while writing file. {}",ex.getMessage());
+                            out.close();
+                            return "Error encountered while writing file '" + LocalFileName + "'";
+                            }
+
+                        if(virusfree(LocalFileName))
+                            {
+                            String ContentType = item.getContentType();
+                            boolean hasNoPDFfonts = PDFhasNoFonts(ToolsProperties.documentRoot + LocalFileName,ContentType);
+                            arg = arg + " (FieldName,"      + util.quote(item.getName())
+                                      + ".Name,"            + util.quote(item.getSubmittedFileName())
+                                      + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
+                                      + ".Size,"            + Long.toString(item.getSize())
+                                      + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
+                                      + ".LocalFileName,"   + util.quote(LocalFileName)
+                                      + ")";
+                            }
+                        else
+                            {
+                            //  file.delete();
+                            BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
+                            }
+                        }
+                    }
+                else
+                    {
+                    InputStream is;
+                    String fiel;
+                    try
+                        {
+                        is = item.getInputStream();
+                        }
+                    catch(IOException ex) 
+                        {
+                        logger.error("IOException Error encountered while getting inputstream. {}",ex.getMessage());
+                        out.close();
+                        return "Error encountered while getting inputstream";
+                        }
+
+                    try
+                        {
+                        fiel = IOUtils.toString(is,StandardCharsets.UTF_8);
+                        }
+                    catch(IOException ex) 
+                        {
+                        logger.error("IOException Error encountered while reading inputstream. {}",ex.getMessage());
+                        out.close();
+                        return "Error encountered while reading inputstream";
+                        }
+
+                    if(item.getName().equals("text"))
                         {
                         int textLength = fiel.length();
                         if(textLength > 0)
                             {
                             String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
-                            //File file = new File(destinationDir,LocalFileName);
-                            item.write(ToolsProperties.documentRoot + LocalFileName);
+                            try
+                                {
+                                item.write(ToolsProperties.documentRoot + LocalFileName);
+                                }
+                            catch(IOException ex) 
+                                {
+                                logger.error("IOException Error encountered while writing. {} LocalFileName [{}]",ex.getMessage(),LocalFileName);
+                                out.close();
+                                return "Error encountered while writing. LocalFileName " + LocalFileName;
+                                }
                             if(virusfree(LocalFileName))
                                 {
                                 arg = arg + " (FieldName,"      + util.quote("text")
-                                          + ".Name,"            + util.quote(LocalFileName/*"text"*/)
+                                          + ".Name,"            + util.quote(LocalFileName)
                                           + ".ContentType,"     + util.quote("text/plain")
                                           + ".Size,"            + Long.toString(textLength)
                                           + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
@@ -840,7 +897,6 @@ public class compute extends HttpServlet
                                 }
                             else
                                 {
-                              //  file.delete();
                                 BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                                 }
                             }
@@ -862,44 +918,19 @@ public class compute extends HttpServlet
                             } 
                         catch (PatternSyntaxException ex)
                             {
-                            // 
+                             
                             }
                         }
                     else
+                        {
                         arg = arg + " (" + item.getName() + "." + util.quote(fiel) + ")";
-                    }
-                else if(item.getName() != "")
-                    {
-                    //Handle Uploaded files.
-                    String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getName()) + "." + util.quote(date) + ")");
-                    /*
-                    * Write file to the ultimate location.
-                    */
-                    //File file = new File(destinationDir,LocalFileName);
-                    item.write(ToolsProperties.documentRoot + LocalFileName);
-                    if(virusfree(LocalFileName))
-                        {
-                        String ContentType = item.getContentType();
-                        boolean hasNoPDFfonts = PDFhasNoFonts(/*file*/ToolsProperties.documentRoot + LocalFileName,ContentType);
-                        arg = arg + " (FieldName,"      + util.quote(item.getName()/*getFieldName()*/)
-                                  + ".Name,"            + util.quote(item.getName())
-                                  + ".ContentType,"     + util.quote(ContentType) + (hasNoPDFfonts ? " true" : "")
-                                  + ".Size,"            + Long.toString(item.getSize())
-                                  + ".DestinationDir,"  + util.quote(ToolsProperties.documentRoot)
-                                  + ".LocalFileName,"   + util.quote(LocalFileName)
-                                  + ")";
-                        }
-                    else
-                        {
-                      //  file.delete();
-                        BracMat.Eval("unstore$("+util.quote(LocalFileName)+")");
                         }
                     }
                 }
             }
-        catch(Exception ex) 
+        catch(IllegalArgumentException ex)
             {
-            logger.debug("Error encountered while uploading file. {}",ex.getMessage());
+            logger.error("getParmsAndFiles: IllegalArgumentException: Error encountered while uploading file. {} arg [{}]",ex.getMessage(),arg);
             out.close();
             }
         return arg;
@@ -908,11 +939,29 @@ public class compute extends HttpServlet
 
     public void PostWorkflow(HttpServletRequest request,HttpServletResponse response,String BracmatFunc) throws ServletException, IOException 
         {
-        Collection<Part>/*List<FileItem>*/ items = parameters.getParmList(request);
+        Collection<Part> items = null;
+        try 
+            {
+            items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
+            }
+        catch(IllegalArgumentException ex)
+            {
+            logger.error("PostWorkflow:IllegalArgumentException: E Error encountered while uploading file. {} BracmatFunc {}",ex.getMessage(),BracmatFunc);
+            return;
+            }
+        catch(IOException ex) 
+            {
+            logger.error("Error encountered while parsing the request: "+ex.getMessage());
+            return;
+            }
+        catch(ServletException ex) 
+            {
+            logger.error("Error encountered while parsing the request: "+ex.getMessage());
+            return;
+            }
 
         PrintWriter out = response.getWriter();
 
-        //response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
         response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);

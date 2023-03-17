@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +31,10 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class data extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(data.class);

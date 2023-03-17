@@ -25,11 +25,16 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class exportMetadata extends HttpServlet 
     {
     private bracmat BracMat;

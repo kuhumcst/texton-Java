@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.security.AccessControlException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,10 @@ import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class entry extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(entry.class);
@@ -41,7 +46,6 @@ public class entry extends HttpServlet
 
     public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
         {
-        logger.debug("init tools servlet");
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
         BracMat = new bracmat(ToolsProperties.bootBracmat);

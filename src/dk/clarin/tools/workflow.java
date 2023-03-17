@@ -360,7 +360,6 @@ public class workflow implements Runnable
              */
             String jobID = BracMat.Eval("getNextJobID$(" + JobNR + ".)"); // second argument (between '.' and ')' ) is empty!
             String requestString = "";
-            //logger.debug("getNextJobID returns:"+jobID);
             // Now we have a job that must be launched
             if(jobID.equals(""))
                 jobs = 0; // No more jobs on job list, quit from loop

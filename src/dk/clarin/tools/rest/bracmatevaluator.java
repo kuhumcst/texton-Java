@@ -21,6 +21,7 @@ import dk.clarin.tools.util;
 import dk.cst.bracmat;
 import java.io.*;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class bracmatevaluator extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(bracmatevaluator.class);
@@ -81,7 +86,7 @@ public class bracmatevaluator extends HttpServlet
                 response.setContentType("text/html;charset=UTF-8");
                 logger.info("Eval:"+expression);
                 String result = BracMat.Eval(expression);
-                logger.debug("Result:"+result);
+                logger.info("Result:"+result);
                 PrintWriter out = response.getWriter();
                 out.println(result);
                 }

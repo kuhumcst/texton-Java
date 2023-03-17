@@ -22,8 +22,10 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,11 +34,11 @@ import jakarta.servlet.http.Part;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,8 +75,7 @@ public class upload extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
         {
         PrintWriter out = response.getWriter();
-        logger.info("doPost()");
-
+        
         response.setContentType("text/xml");
         response.setStatus(200);
         if(!BracMat.loaded())
@@ -96,36 +97,32 @@ public class upload extends HttpServlet
         String arg = "(method.POST)"; // bj 20120801 "(action.POST)";
 
         ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
+        
         try 
             {
             /*
             * Parse the request
             */
             @SuppressWarnings("unchecked")
-          //List<FileItem> items = (List<FileItem>)uploadHandler.parseRequest(request);
             Collection<Part> items = request.getParts();
-            //Iterator<FileItem> itr = items.iterator();
             Iterator<Part> itr = items.iterator();
-            FileItem theFile = null;
+            Part theFile = null;
             while(itr.hasNext()) 
                 {
-                FileItem item = (FileItem) itr.next();
+                Part item = itr.next();
                 /*
                 * Handle Form Fields.
                 */
-                if(item.isFormField()) 
+                if(item.getSubmittedFileName() == null || item.getSubmittedFileName().equals("")) 
                     {
                     // We need the job parameter that indirectly tells us what local file name to give to the uploaded file.
-                    arg = arg + " (\"" + util.escape(item.getFieldName()) + "\".\"" + util.escape(item.getString()) + "\")";
-                    logger.debug("arg={}", arg);
+                    arg = arg + " (\"" + util.escape(item.getName()) + "\".\"" + util.escape(IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8)) + "\")";
                     }
-                else if(item.getName() != "")
+                else
                     {
-                    logger.debug("item {}", item.getName());
                     //Handle Uploaded file.
                     if(theFile != null)
                         {
-                        logger.debug("too many", item.getName());
                         response.setStatus(400);
                         /**
                          * getStatusCode$
@@ -179,7 +176,6 @@ public class upload extends HttpServlet
                  *      jobs.table
                  */
                 String LocalFileName = BracMat.Eval("upload$(" + arg + ")");
-                logger.debug("LocalFileName={}", LocalFileName);
                 if(LocalFileName == null)
                     {
                     response.setStatus(404);
@@ -188,7 +184,6 @@ public class upload extends HttpServlet
                     }
                 else if(LocalFileName.startsWith("HTTP-status-code"))
                     {
-                    logger.debug("HTTP-status-code");
                     /**
                      * parseStatusCode$
                      *
@@ -196,7 +191,6 @@ public class upload extends HttpServlet
                      * 'HTTP-status-code'
                      */
                     String statusCode = BracMat.Eval("parseStatusCode$(\"" + util.escape(LocalFileName) + "\")");
-                    logger.debug("HTTP-status-code {}",statusCode);
                     response.setStatus(Integer.parseInt(statusCode));
                     /**
                      * parsemessage$
@@ -207,19 +201,17 @@ public class upload extends HttpServlet
                     String messagetext = BracMat.Eval("parsemessage$(\"" + util.escape(LocalFileName) + "\")");
                     messagetext = BracMat.Eval("getStatusCode$(\"" + util.escape(statusCode) + "\".\"" + util.escape(messagetext) + "\")");
                     out.println(messagetext);
-                    logger.debug("messagetext {}",messagetext);
                     }
                 else
                     {
-                    File file = new File(destinationDir,LocalFileName);
                     try
                         {
-                        theFile.write(file);
+                        theFile.write(ToolsProperties.documentRoot + LocalFileName);
                         }
                     catch(Exception ex) 
                         {
                         response.setStatus(500);
-                        String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"Tools cannot save uploaded file to " + util.escape(destinationDir + LocalFileName) + "\")");
+                        String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"Tools cannot save uploaded file to " + util.escape(ToolsProperties.documentRoot + LocalFileName) + "\")");
                         out.println(messagetext);
                         return;
                         }
@@ -232,8 +224,8 @@ public class upload extends HttpServlet
                      */
                     String JobNr = BracMat.Eval("uploadJobNr$(" + arg + ")");
                     String JobID = BracMat.Eval("uploadJobID$(" + arg + ")");
-                    logger.debug("JobNr {} JobID {}",JobNr,JobID);
-                    util.gotToolOutputData(JobNr, JobID, BracMat, file.getAbsolutePath());
+                    logger.info("JobNr {} JobID {}",JobNr,JobID);
+                    util.gotToolOutputData(JobNr, JobID, BracMat, ToolsProperties.documentRoot + LocalFileName);
                     String result;
                     result = BracMat.Eval("goodRunningThreads$");
                     if(result.equals("y"))
@@ -254,16 +246,9 @@ public class upload extends HttpServlet
                 out.println(messagetext);
                 }
             }
-        /*catch(FileUploadException ex) 
-            {
-            logger.debug("FileUploadException {}",util.escape(ex.toString()));
-            response.setStatus(500);
-            String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: FileUploadException " + util.escape(ex.toString()) + "\")");
-            out.println(messagetext);
-            }*/
         catch(Exception ex) 
             {
-            logger.debug("Exception {}",util.escape(ex.toString()));
+            logger.error("An Exception {}",util.escape(ex.toString()));
             response.setStatus(500);
             String messagetext = BracMat.Eval("getStatusCode$(\"500\".\"doPost: Exception " + util.escape(ex.toString()) + "\")");
             out.println(messagetext);

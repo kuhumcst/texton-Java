@@ -22,7 +22,6 @@ import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.clarin.tools.parameters;
 import java.io.*;
-//import java.util.List;
 import java.util.Collection;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -31,7 +30,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +54,25 @@ public class register extends HttpServlet
     public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
-        logger.debug("doPost");
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
-            //List<FileItem> items = parameters.getParmList(request);
-            Collection<Part> items = parameters.getParmList(request);
+            Collection<Part> items = null;
+            try 
+                {
+                items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
+                }
+            catch(IOException ex) 
+                {
+                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                return;
+                }
+            catch(ServletException ex) 
+                {
+                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                return;
+                }
+
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
@@ -84,8 +95,6 @@ public class register extends HttpServlet
                 logger.debug("Password not OK for activating registered tools.");
                 }
                 
-            logger.debug("userEmail = {}",userEmail);
-
             if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
             arg += parameters.getargsBracmatFormat(request,items);
@@ -176,7 +185,6 @@ public class register extends HttpServlet
         public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
             {        
-            logger.debug("doGet");
             doPost(request, response);
             }
     }

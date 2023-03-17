@@ -24,6 +24,7 @@ import dk.clarin.tools.parameters;
 import java.io.*;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,7 +73,6 @@ public class update extends HttpServlet
             String passwordAsHandle = null;
             String arg = "";
             passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
-            //logger.debug("getGETarg(request,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
             if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
@@ -84,8 +84,6 @@ public class update extends HttpServlet
                 logger.debug("Password not OK for activating registered tools.");
                 }
                 
-            logger.debug("userEmail = {}",userEmail);
-
             if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
             arg += parameters.getAllGETArgsBracmatFormat(request);

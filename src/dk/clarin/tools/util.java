@@ -44,7 +44,6 @@ import javax.crypto.spec.PBEKeySpec;
 */
 public class util 
     {
-    // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(util.class);
 
     public static String PBKDF2string(String password)
@@ -54,7 +53,6 @@ public class util
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        logger.debug("PBKDF2stringpassword=["+password+"]");
         try
             {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 512);
@@ -65,9 +63,6 @@ public class util
                 String encodedHash = Base64.getEncoder().encodeToString(hash);
                 String encodedSalt = Base64.getEncoder().encodeToString(salt);
                 str = "<entry key=\"password\">" + encodedHash + "</entry><entry key=\"salt\">" + encodedSalt + "</entry>";
-                logger.debug("XMLprop=["+str+"]");
-                //String decoded = new String(Base64.getDecoder().decode(encodedSalt.getBytes()));
-                //logger.debug("decoded:{" + decoded + "}");
                 }
             catch(InvalidKeySpecException e)
                 {
@@ -85,9 +80,7 @@ public class util
         String StoredSalt = BracMat.Eval("getProperty$salt");
         boolean result;
         result = false;
-        //logger.debug("GivenPassword["+GivenPassword+"] StoredPassword["+StoredPassword+"] StoredSalt["+StoredSalt+"]");
         byte[] salt = Base64.getDecoder().decode(StoredSalt);
-        //logger.debug("salt:" + Integer.toString(salt.length));
         try
             {
             KeySpec spec = new PBEKeySpec(GivenPassword.toCharArray(), salt, 65536, 512);
@@ -96,7 +89,6 @@ public class util
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
                 byte[] hash = factory.generateSecret(spec).getEncoded();
                 String encodedHash = Base64.getEncoder().encodeToString(hash);
-//                logger.debug("encodedHash={"+encodedHash+"}");
                 result = encodedHash.equals(StoredPassword);
                 }
             catch(InvalidKeySpecException e)
@@ -140,7 +132,6 @@ public class util
      */
     public static void gotToolOutputData(String result, String jobID, bracmat BracMat, String path)
         {
-        logger.debug("path="+path);
         try
             {
             Calendar cal = Calendar.getInstance();
@@ -170,14 +161,8 @@ public class util
                 }
             else
                 {
-                logger.debug("result="+result);
-                logger.debug("jobID="+jobID);
-                logger.debug("date="+date);
                 String toEval =            "doneJob$(" + result + "." + jobID + "." + util.quote(path) + "." + util.quote(date) + ")";
-                logger.debug(toEval);
                 newResource = BracMat.Eval(toEval); 
-                logger.debug("doneJob-result");
-                logger.debug(newResource);
                 }
 
             /**

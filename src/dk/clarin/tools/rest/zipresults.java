@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.zip.*;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,6 +46,10 @@ import org.slf4j.LoggerFactory;
   */
 
 @SuppressWarnings("serial")
+@MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
+                 maxFileSize=1024*1024*50,       // 50 MB
+                 maxRequestSize=1024*1024*100)    // 100 MB
+
 public class zipresults extends HttpServlet 
     {
     private static final Logger logger = LoggerFactory.getLogger(zipresults.class);
@@ -196,7 +201,6 @@ public class zipresults extends HttpServlet
                                 int dotpos = endstep.indexOf('.');
                                 String stepno = endstep.substring(0,dotpos);
                                 out.println("/* Step " + stepno + " */");
-                                logger.debug("workflowzip("+localFilePath + filename+")"); 
                                 Path fileName = Path.of(localFilePath + filename);
                                 out.println(Files.readString(fileName));
                                 }
@@ -237,7 +241,6 @@ public class zipresults extends HttpServlet
                                 zipname = filename.substring(zipnameStart+1);
                                 filename = filename.substring(0,zipnameStart);
                                 }
-                            logger.debug("workflowzip("+localFilePath + filename+","+zipname+")");        
                             zip(localFilePath + filename,zipname,zipout);
                             letter = letter.substring(end+1);
                             }

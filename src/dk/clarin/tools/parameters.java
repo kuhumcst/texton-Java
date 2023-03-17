@@ -22,14 +22,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Iterator;
-//import java.util.List;
 import java.util.Collection;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -41,7 +39,7 @@ public class parameters
     // Static logger object.  
     private static final Logger logger = LoggerFactory.getLogger(parameters.class);
 
-    private static String reason;// = null;
+    private static String reason;
 
     public void init(ServletConfig config) throws ServletException 
         {
@@ -71,7 +69,6 @@ public class parameters
         return null;
         }
 
-//    public static String getPOSTarg(HttpServletRequest request, List<FileItem> items, String name)
     public static String getPOSTarg(HttpServletRequest request, Collection<Part> items, String name)
         {
         /*
@@ -79,24 +76,15 @@ public class parameters
         */
         if(name != null)
             {
-//            @SuppressWarnings("unchecked")
-            //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-            //logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-            //if(is_multipart_formData)
             try 
                 {
                 Iterator<Part> itr = items.iterator();
                 while(itr.hasNext()) 
                     {
-                    Part item = /*(FileItem)*/ itr.next();
-                    //if(item.isFormField()) 
+                    Part item = itr.next();
+                    if(name.equals(item.getName()))
                         {
-                        if(name.equals(item.getName()/*getFieldName()*/))
-                            {
-                            String fiel = IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
-                            return fiel;
-//                            return item.getString("UTF-8").trim();
-                            }
+                        return IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
                         }
                     }
                 }
@@ -104,55 +92,8 @@ public class parameters
                 {
                 logger.error("uploadHandler.parseRequest Exception");
                 }
-            //return getGETarg(request,name);
             }
         return null;
-        }
-
-    @SuppressWarnings("unchecked")
-    public static Collection<Part> getParmList(HttpServletRequest request) throws ServletException
-        {
-        Collection<Part> items = null;
-        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-
-        //if(is_multipart_formData)
-            {
-            DiskFileItemFactory  fileItemFactory = new DiskFileItemFactory ();
-            /*
-            *Set the size threshold, above which content will be stored on disk.
-            */
-            fileItemFactory.setSizeThreshold(1*1024*1024); //1 MB
-            /*
-            * Set the temporary directory to store the uploaded files of size above threshold.
-            */
-            File tmpDir = new File(ToolsProperties.tempdir);
-            if(!tmpDir.isDirectory()) 
-                {
-                throw new ServletException("Trying to set \"" + ToolsProperties.tempdir + "\" as temporary directory, but this is not a valid directory. See `conf/properties.xml.");
-                }
-            fileItemFactory.setRepository(tmpDir);
-            ServletFileUpload uploadHandler = new ServletFileUpload(fileItemFactory);
-            try 
-                {
-            //    items = (List<FileItem>)uploadHandler.parseRequest(request);
-                items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
-                }
-     /*       catch(FileUploadException ex) 
-                {
-                logger.error("Error encountered while parsing the request: "+ex.getMessage());
-                }*/
-            catch(IOException ex) 
-                {
-                logger.error("Error encountered while parsing the request: "+ex.getMessage());
-                return null;
-                }
-            catch(ServletException ex) 
-                {
-                logger.error("Error encountered while parsing the request: "+ex.getMessage());
-                return null;
-                }
-            }
-        return items;
         }
 
     public static String getAllGETArgsBracmatFormat(HttpServletRequest request)
@@ -160,8 +101,7 @@ public class parameters
         String arg = "";
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        logger.debug("Got some parmNames");
-
+        
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
@@ -176,7 +116,6 @@ public class parameters
         return arg;
         }
 
-//    public static String getargsBracmatFormat(HttpServletRequest request, List<FileItem> items)
     public static String getargsBracmatFormat(HttpServletRequest request, Collection<Part> items)
         {
         String arg = "";
@@ -186,28 +125,18 @@ public class parameters
 
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
-
-        //logger.debug("is_multipart_formData:"+(is_multipart_formData ? "ja" : "nej"));
-        
-        //if(is_multipart_formData)
+        try 
             {
-            try 
+            Iterator<Part> itr = items.iterator();
+            while(itr.hasNext()) 
                 {
-                Iterator<Part> itr = items.iterator();
-                while(itr.hasNext()) 
-                    {
-                    Part item = /*(FileItem)*/ itr.next();
-                    //if(item.isFormField()) 
-                        {
-                        arg = arg + " (" + util.quote(item.getName()/*getFieldName()*/) + "." + util.quote(IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8)/*item.getString("UTF-8")*/.trim()) + ")";
-                        }
-                    }
+                Part item = itr.next();
+                arg = arg + " (" + util.quote(item.getName()) + "." + util.quote(IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8).trim()) + ")";
                 }
-            catch(Exception ex) 
-                {
-                logger.error("uploadHandler.parseRequest Exception");
-                }
+            }
+        catch(Exception ex) 
+            {
+            logger.error("uploadHandler.parseRequest Exception");
             }
         
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
@@ -221,89 +150,35 @@ public class parameters
                 }
             arg += ")";
             }
-        //logger.debug("arg = [" + arg + "]"); DON'T DO THIS
         return arg;
         }
 
     public static String getParmFromFormData(HttpServletRequest request,Collection<Part> items,String parm) 
         {
         String value = null;
-        //boolean is_multipart_formData = ServletFileUpload.isMultipartContent(request);
+        @SuppressWarnings("unchecked")
+        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-        //if(is_multipart_formData)
+        for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
-            if(items == null)
+            String parmName = e.nextElement();
+            if(parmName.equals(parm))
                 {
-                try
+                String vals[] = request.getParameterValues(parmName);
+                for(String val : vals)
                     {
-                    items = getParmList(request);
-                    }
-                catch(ServletException e)
-                    {
-                    logger.error("Error encountered while getting items from request: "+e.getMessage());
-                    }
-                }
-            if(items != null)
-                {
-                try 
-                    {
-                    Iterator<Part> itr = items.iterator();
-                    while(itr.hasNext()) 
-                        {
-                        Part item = /*(FileItem)*/ itr.next();
-                        /*
-                        * Handle Form Fields.
-                        */
-                       // if(item.isFormField()) 
-                            {
-                            if(item.getName()/*getFieldName()*/.equals(parm))
-                                {
-                                value = /*item.getString()*/IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8);
-                                break; // currently not interested in other fields than parm
-                                }
-                            }
-                        /*
-                        else if(item.getName() != "")
-                            {
-                            // We don't handle file upload here
-                            }
-                        */
-                        }
-                    }
-                catch(Exception ex) 
-                    {
-                    logger.error("uploadHandler.parseRequest Exception");
-                    }
-                }
-            }
-            
-        if(value == null)
-            {
-            @SuppressWarnings("unchecked")
-            Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-
-            for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
-                {
-                String parmName = e.nextElement();
-                if(parmName.equals(parm))
-                    {
-                    String vals[] = request.getParameterValues(parmName);
-                    for(String val : vals)
-                        {
-                        value = val;
-                        //break;
-                        }
+                    value = val;
                     }
                 }
             }
         return value;
         }                        
 
-//    public static String getPreferredLocale(HttpServletRequest request,List<FileItem> items)
     public static String getPreferredLocale(HttpServletRequest request,Collection<Part> items)
         {
         String UIlanguage = null;
         /* First check whether there is a UIlanguage parameter */
+        
         UIlanguage = getParmFromFormData(request,items,"UIlanguage");
         if(UIlanguage != null && !UIlanguage.equals("da") && !UIlanguage.equals("en"))
             UIlanguage = "da";
