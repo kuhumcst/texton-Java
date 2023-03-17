@@ -4,9 +4,9 @@ if  [ -d /opt/tomcat-texton/lib ]; then
 elif  [ -d /opt/latestTomcat/lib ]; then
     CATALINA_BASE=/opt/latestTomcat
     CATALINA_HOME=/opt/latestTomcat
-elif [ -d /opt/tomcat/latest/lib ]; then
-    CATALINA_BASE=/opt/tomcat/latest
-    CATALINA_HOME=/opt/tomcat/latest
+elif [ -d /opt/tomcat10/latest/lib ]; then
+    CATALINA_BASE=/opt/tomcat10/latest
+    CATALINA_HOME=/opt/tomcat10/latest
 elif [ -d /usr/share/tomcat9/lib ]; then
     CATALINA_BASE=/var/lib/tomcat9
     CATALINA_HOME=/usr/share/tomcat9
