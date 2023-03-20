@@ -69,7 +69,8 @@ public class util
                 byte[] hash = factory.generateSecret(spec).getEncoded();
                 String encodedHash = Base64.getEncoder().encodeToString(hash);
                 String encodedSalt = Base64.getEncoder().encodeToString(salt);
-                str = "<entry key=\"password\">" + encodedHash + "</entry><entry key=\"salt\">" + encodedSalt + "</entry>";
+                //str = "<entry key=\"password\">" + encodedHash + "</entry><entry key=\"salt\">" + encodedSalt + "</entry>";
+                str = "(password.\"" + encodedHash + "\".\"NONEmpty string as password.\") (salt.\""  + encodedSalt + "\".);";
                 logger.info("XMLprop=["+str+"]");
                 //String decoded = new String(Base64.getDecoder().decode(encodedSalt.getBytes()));
                 //logger.debug("decoded:{" + decoded + "}");
