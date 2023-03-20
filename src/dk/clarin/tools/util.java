@@ -59,6 +59,7 @@ public class util
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
+        logger.debug("PBKDF2stringpassword=["+password+"]");
         try
             {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 512);
@@ -69,6 +70,9 @@ public class util
                 String encodedHash = Base64.getEncoder().encodeToString(hash);
                 String encodedSalt = Base64.getEncoder().encodeToString(salt);
                 str = "<entry key=\"password\">" + encodedHash + "</entry><entry key=\"salt\">" + encodedSalt + "</entry>";
+                logger.info("XMLprop=["+str+"]");
+                //String decoded = new String(Base64.getDecoder().decode(encodedSalt.getBytes()));
+                //logger.debug("decoded:{" + decoded + "}");
                 }
             catch(InvalidKeySpecException e)
                 {
