@@ -20,20 +20,26 @@ package dk.clarin.tools.rest;
 import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.zip.*;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.*;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.text.SimpleDateFormat;
+
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.zip.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +53,8 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
-                 maxFileSize=1024*1024*50,       // 50 MB
-                 maxRequestSize=1024*1024*100)    // 100 MB
+                 maxFileSize=-1/*1024*1024*50*/,       // 50 MB
+                 maxRequestSize=-1/*1024*1024*100*/)    // 100 MB
 
 public class zipresults extends HttpServlet 
     {

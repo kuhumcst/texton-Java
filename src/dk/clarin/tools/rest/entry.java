@@ -20,23 +20,29 @@ package dk.clarin.tools.rest;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.cst.bracmat;
-import java.io.File;
-import java.io.IOException;
-import java.security.AccessControlException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+
+import java.security.AccessControlException;
+
 import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
-                 maxFileSize=1024*1024*50,       // 50 MB
-                 maxRequestSize=1024*1024*100)    // 100 MB
+                 maxFileSize=-1/*1024*1024*50*/,       // 50 MB
+                 maxRequestSize=-1/*1024*1024*100*/)    // 100 MB
 
 public class entry extends HttpServlet 
     {

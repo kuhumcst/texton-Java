@@ -17,12 +17,12 @@
 */
 package dk.clarin.tools.rest;
 
-import dk.cst.bracmat;
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
 import dk.clarin.tools.workflow;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+
+import dk.cst.bracmat;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -32,8 +32,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.Part;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
 import java.util.Collection;
 import java.util.Iterator;
+
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -49,8 +53,8 @@ Method where asynchronous webservices can upload their output.
 */
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
-                 maxFileSize=1024*1024*50,       // 50 MB
-                 maxRequestSize=1024*1024*100)    // 100 MB
+                 maxFileSize=-1/*1024*1024*50*/,       // 50 MB
+                 maxRequestSize=-1/*1024*1024*100*/)    // 100 MB
 
 public class upload extends HttpServlet
     {

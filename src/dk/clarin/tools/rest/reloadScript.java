@@ -28,13 +28,16 @@ package dk.clarin.tools.rest;
 
 import dk.clarin.tools.ToolsProperties;
 import dk.clarin.tools.util;
+
 import dk.cst.bracmat;
-import java.io.*;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.*;
 
 /**
  * Called when a new version of toolsProg.bra is available in 
@@ -47,8 +50,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
-                 maxFileSize=1024*1024*50,       // 50 MB
-                 maxRequestSize=1024*1024*100)    // 100 MB
+                 maxFileSize=-1/*1024*1024*50*/,       // 50 MB
+                 maxRequestSize=-1/*1024*1024*100*/)    // 100 MB
 
 public class reloadScript extends HttpServlet 
     {

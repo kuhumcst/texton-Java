@@ -23,6 +23,13 @@ import dk.clarin.tools.workflow;
 
 import dk.cst.bracmat;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -51,24 +58,16 @@ import java.net.UnknownServiceException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
-
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.regex.PatternSyntaxException;
+import java.nio.file.Files;
 
 import java.text.SimpleDateFormat;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
-
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.regex.PatternSyntaxException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -104,8 +103,8 @@ import org.slf4j.LoggerFactory;
  */      
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
-                 maxFileSize=1024*1024*50,       // 50 MB
-                 maxRequestSize=1024*1024*100)    // 100 MB
+                 maxFileSize=-1/*1024*1024*50*/,       // 50 MB
+                 maxRequestSize=-1/*1024*1024*100*/)    // 100 MB
 
 public class compute extends HttpServlet 
     {
@@ -309,7 +308,7 @@ public class compute extends HttpServlet
             logger.info("mimeType according to getContentType() {} is {}",urladdr,mimeType);
             return mimeType;
             }
-        catch(java.net.SocketTimeoutException e) 
+        catch(SocketTimeoutException e) 
             {
             logger.error("SocketTimeoutException in theMimeType: {}",e.getMessage());
             return "";        
@@ -473,7 +472,7 @@ public class compute extends HttpServlet
                 return 0;
                 }
             }
-        catch(java.net.SocketTimeoutException e) 
+        catch(SocketTimeoutException e) 
             {
             logger.error("SocketTimeoutException in webPageBinary: {}",e.getMessage());
             return -1;        

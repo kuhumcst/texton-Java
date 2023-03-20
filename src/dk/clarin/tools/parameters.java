@@ -16,24 +16,31 @@
     along with DK-ClarinTools.  If not, see <http://www.gnu.org/licenses/>.
 */
 package dk.clarin.tools;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Collection;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
+
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Collection;
+
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 public class parameters
     {
     // Static logger object.  
