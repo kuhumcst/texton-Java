@@ -1,10 +1,4 @@
-if  [ -d /opt/tomcat-texton/lib ]; then
-    CATALINA_BASE=/opt/tomcat-texton
-    CATALINA_HOME=/opt/tomcat-texton
-elif  [ -d /opt/latestTomcat/lib ]; then
-    CATALINA_BASE=/opt/latestTomcat
-    CATALINA_HOME=/opt/latestTomcat
-elif [ -d /opt/tomcat10/latest/lib ]; then
+if [ -d /opt/tomcat10/latest/lib ]; then
     CATALINA_BASE=/opt/tomcat10/latest
     CATALINA_HOME=/opt/tomcat10/latest
 fi
