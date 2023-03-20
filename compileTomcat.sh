@@ -7,9 +7,6 @@ elif  [ -d /opt/latestTomcat/lib ]; then
 elif [ -d /opt/tomcat10/latest/lib ]; then
     CATALINA_BASE=/opt/tomcat10/latest
     CATALINA_HOME=/opt/tomcat10/latest
-elif [ -d /usr/share/tomcat9/lib ]; then
-    CATALINA_BASE=/var/lib/tomcat9
-    CATALINA_HOME=/usr/share/tomcat9
 fi
 export CATALINA_BASE
 export CATALINA_HOME
