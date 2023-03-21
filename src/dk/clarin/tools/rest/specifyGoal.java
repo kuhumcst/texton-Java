@@ -17,14 +17,14 @@
 */
 package dk.clarin.tools.rest;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.ServletException;
 
 import java.io.IOException;
-
 
 @SuppressWarnings("serial")
 @MultipartConfig(fileSizeThreshold=1024*1024*10,  // 10 MB 
@@ -34,7 +34,7 @@ import java.io.IOException;
 public class specifyGoal extends HttpServlet 
     {
     private dk.clarin.tools.compute Compute;
-    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
+    public void init(ServletConfig config) throws ServletException 
         {
         super.init(config);
         Compute = new dk.clarin.tools.compute();

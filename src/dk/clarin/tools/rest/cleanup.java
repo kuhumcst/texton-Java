@@ -22,6 +22,7 @@ import dk.clarin.tools.util;
 
 import dk.cst.bracmat;
 
+import jakarta.servlet.ServletConfig; 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -55,7 +56,7 @@ public class cleanup extends HttpServlet
 
     private bracmat BracMat;
 
-    public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException 
+    public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
