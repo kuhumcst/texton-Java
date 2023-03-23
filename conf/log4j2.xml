@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Configuration status="DEBUG">
+<Configuration status="WARN">
+    <Properties>
+        <Property name="app">textonJava</Property>
+        <Property name="basePath">/var/log/texton</Property>
+    </Properties>
+
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5p - %C{1} - %msg%n"/>
         </Console>
-        <File name="File" fileName="textonJava10.log" append="False">
+        <RollingFile name="fileLogger" fileName="${basePath}/${app}.log" filePattern="${basePath}/${app}-%d{yyyy-MM-dd}.log">
+            append="False">
             <PatternLayout>
                 <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5p - %C{1} - %msg%n</Pattern>
             </PatternLayout>
-        </File>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <!-- Max 10 files will be created everyday -->
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${basePath}" maxDepth="10">
+                    <!-- Delete all files older than 30 days -->
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <!-- This classes local logger -->
