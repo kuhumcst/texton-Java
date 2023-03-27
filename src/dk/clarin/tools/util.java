@@ -23,6 +23,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.lang.IllegalArgumentException;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
@@ -90,8 +92,17 @@ public class util
         String StoredPassword = BracMat.Eval("getProperty$password");
         String StoredSalt = BracMat.Eval("getProperty$salt");
         boolean result;
+        byte[] salt;
         result = false;
-        byte[] salt = Base64.getDecoder().decode(StoredSalt);
+        try
+            {
+            salt = Base64.getDecoder().decode(StoredSalt);
+            }
+        catch(IllegalArgumentException e)
+            {
+            logger.error("Could not decode stored salt. IllegalArgumentException: {}", e.getMessage());
+            return false;
+            }
         try
             {
             KeySpec spec = new PBEKeySpec(GivenPassword.toCharArray(), salt, 65536, 512);
