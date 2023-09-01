@@ -610,8 +610,12 @@ public class compute extends HttpServlet
         // Check if it is the allowed server that tries to start a workflow
         if(UIlanguage == null)
             UIlanguage = parameters.getPreferredLocale(request,null);
-        
-        response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
+
+        if(BracmatFunc.equals("chosenworkflow"))
+            response.setContentType("text/html; charset=UTF-8"); /*SVG content*/
+        else
+            response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
+
         response.setStatus(200);
         PrintWriter out = response.getWriter();
         if(!BracMat.loaded())
