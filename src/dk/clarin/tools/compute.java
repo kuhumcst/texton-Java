@@ -611,7 +611,7 @@ public class compute extends HttpServlet
         if(UIlanguage == null)
             UIlanguage = parameters.getPreferredLocale(request,null);
 
-        if(BracmatFunc.equals("chosenworkflow"))
+        if(BracmatFunc.equals("chosenworkflow")|BracmatFunc.equals("showworkflows"))
             response.setContentType("text/html; charset=UTF-8"); /*SVG content*/
         else
             response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
