@@ -219,15 +219,6 @@ public class zipresults extends HttpServlet
                     OutputStream zipdest = null;
                     ZipOutputStream zipout = null;
                     boolean hasFiles = false;
-                    String readme = BracMat.Eval("readme$(" 
-                                                + job 
-                                                + "." 
-                                                + util.quote(date) 
-                                                + "." 
-                                                + util.quote(letter) 
-                                                + ")"
-                                                );
-
                     String jobzip = job + (shortletter.startsWith("y") ? "-final" : "-all") +".zip";
 
                     if(letter.startsWith("file:"))
@@ -254,7 +245,6 @@ public class zipresults extends HttpServlet
 
                     if(hasFiles)
                         {
-                        zipstring("readme.txt",zipout,readme);
                         zipstring("index.html",zipout,letter);
                         zipout.close();
                         }

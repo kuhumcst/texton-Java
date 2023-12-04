@@ -1,3 +1,5 @@
+20231204 - Deleted readme.txt from output ZIP file.
+
 20220203 - Renamed from DK-ClarinTools to texton-Java
            Password stored as SHA-256 encoded string. Default password is still
            empty string, but its SHA-256 encoded equivalent is not.
