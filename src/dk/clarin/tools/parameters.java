@@ -145,7 +145,7 @@ public class parameters
             {
             logger.error("uploadHandler.parseRequest Exception");
             }
-        
+        /* This seems to merely redo the argument parsing, causing all args to occur twice!
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
@@ -156,7 +156,9 @@ public class parameters
                 arg += " " + util.quote(val);
                 }
             arg += ")";
+            logger.debug("arg++="+arg);
             }
+            */
         return arg;
         }
 
