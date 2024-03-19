@@ -38,6 +38,7 @@ import java.io.Writer;
 
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -280,47 +281,60 @@ public class workflow implements Runnable
                         }
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection ();
-                    conn.connect();
-       
-                    // Cast to a HttpURLConnection
-                    if(conn instanceof HttpURLConnection)
+                    try
                         {
-                        HttpURLConnection httpConnection = (HttpURLConnection) conn;
-                        code = httpConnection.getResponseCode();
-                        message = httpConnection.getResponseMessage();
-                        BufferedReader rd;
-                        StringBuilder sb = new StringBuilder();;
-                        if(code == 200)
+                        conn.connect();
+                    
+                        // Cast to a HttpURLConnection
+                        if(conn instanceof HttpURLConnection)
                             {
-                            String path = writeStream(JobNR, BracMat, filename, jobID, httpConnection.getInputStream());
-                            if(!path.equals(""))
-                                util.gotToolOutputData(JobNR, jobID, BracMat, path);
-                            }
-                        else
-                            {
-                            // Get the error response
-                            InputStream error = httpConnection.getErrorStream();
-                            if(error != null)
+                            HttpURLConnection httpConnection = (HttpURLConnection) conn;
+                            code = httpConnection.getResponseCode();
+                            message = httpConnection.getResponseMessage();
+                            BufferedReader rd;
+                            StringBuilder sb = new StringBuilder();;
+                            if(code == 200)
                                 {
-                                InputStreamReader inputstreamreader = new InputStreamReader(error);
-                                rd = new BufferedReader(inputstreamreader);
-                                int nextChar;
-                                while(( nextChar = rd.read()) != -1) 
-                                    {
-                                    sb.append((char)nextChar);
-                                    }
-                                rd.close();
+                                String path = writeStream(JobNR, BracMat, filename, jobID, httpConnection.getInputStream());
+                                if(!path.equals(""))
+                                    util.gotToolOutputData(JobNR, jobID, BracMat, path);
                                 }
                             else
                                 {
+                                // Get the error response
+                                InputStream error = httpConnection.getErrorStream();
+                                if(error != null)
+                                    {
+                                    InputStreamReader inputstreamreader = new InputStreamReader(error);
+                                    rd = new BufferedReader(inputstreamreader);
+                                    int nextChar;
+                                    while(( nextChar = rd.read()) != -1) 
+                                        {
+                                        sb.append((char)nextChar);
+                                        }
+                                    rd.close();
+                                    }
+                                else
+                                    {
+                                    }
+                                didnotget200(code,JobNR,BracMat,jobID);
                                 }
+                            }
+                        else
+                            {
+                            code = 0;
                             didnotget200(code,JobNR,BracMat,jobID);
                             }
                         }
-                    else
+                    catch (SocketTimeoutException e)
                         {
-                        code = 0;
-                        didnotget200(code,JobNR,BracMat,jobID);
+                        logger.warn("Job " + jobID + " got SocketTimeoutException. Aborted. Reason:" + e.getMessage());
+                        BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
+                        }
+                    catch (IOException e)
+                        {
+                        logger.warn("Job " + jobID + " got IOException. Aborted. Reason:" + e.getMessage());
+                        BracMat.Eval("abortJob$(" + JobNR + "." + jobID + ")"); 
                         }
                     }
                 } 
