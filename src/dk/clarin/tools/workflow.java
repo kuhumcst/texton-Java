@@ -261,6 +261,7 @@ public class workflow implements Runnable
                                         in.close();
                                     }
                                 message = urlc.getResponseMessage();
+                                logger.warn("POST endpoint:"+endpoint+", JobNR="+JobNR+", jobID="+jobID+" urlc != 0");
                                 didnotget200(code,JobNR,BracMat,jobID);
                                 }                            
                             urlc.disconnect();
@@ -268,6 +269,7 @@ public class workflow implements Runnable
                         else
                             {
                             code = 0;
+                            logger.warn("POST endpoint:"+endpoint+", JobNR="+JobNR+", jobID="+jobID+" urlc == 0");
                             didnotget200(code,JobNR,BracMat,jobID);
                             }
                         }
@@ -317,12 +319,14 @@ public class workflow implements Runnable
                                 else
                                     {
                                     }
+                                logger.warn("GET endpoint:"+endpoint+", JobNR="+JobNR+", jobID="+jobID+" code != 200");
                                 didnotget200(code,JobNR,BracMat,jobID);
                                 }
                             }
                         else
                             {
                             code = 0;
+                            logger.warn("GET endpoint:"+endpoint+", JobNR="+JobNR+", jobID="+jobID+" NOT (conn instanceof HttpURLConnection)");
                             didnotget200(code,JobNR,BracMat,jobID);
                             }
                         }
