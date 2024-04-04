@@ -229,14 +229,6 @@ public class cleanup extends HttpServlet
                         * Argument: file name, may be preceded by a slash
                         *      /19231210291
                         *
-                        * NOTICE: If the file need not be kept, the file's name is deleted from
-                        * several tables, so calling keep has side effects!
-                        * Affected tables in jboss/server/default/data/tools:
-                        *      jobs.table
-                        *      Uploads.table
-                        *      CTBs.table
-                        *      relations.table
-                        *      jobAbout.table
                         */
                     String svar = BracMat.Eval("keep$("+util.quote(fileName) + "." + util.quote(jobNr) + ")");
                     if(svar.equals("no"))
@@ -275,12 +267,12 @@ public class cleanup extends HttpServlet
              *
              * Delete all references to files that no longer exist.
              * Argument: a list of the files that still exist in the Staging area.
-             * Affected tables in jboss/server/default/data/tools:
-             *      Uploads.table
-             *      jobs.table
-             *      CTBs.table
-             *      relations.table
-             *      jobAbout.table 
+             * Affected tables in BASE/job:
+             *      Uploads
+             *      jobs
+             *      CTBs
+             *      jobAbout
+             *      ItemGroupsCache
              */
             BracMat.Eval("cleanup$("+ arg + ")");
             }
