@@ -72,11 +72,8 @@ public class help extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
         // https://clarin.dk/texton/help?UIlanguage=da
-        /*Test:*/
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
-        /*String UIlanguage = null;
-        String usedonly = "Y";*/
         String arg = "";
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
@@ -85,35 +82,13 @@ public class help extends HttpServlet
             for(int j = 0;j < vals.length;++j)
                 {
                 arg = "(" + util.quote(parmName) + "." + util.quote(vals[j]) + ") " + arg;
-            /*  if(parmName.equals("UIlanguage"))
-                    {
-                    UIlanguage = vals[j];
-                    if(UIlanguage == null || UIlanguage.equals("null"))
-                        {
-                        UIlanguage="";
-                        }
-                    }
-                else if(parmName.equals("usedonly"))
-                    {
-                    usedonly = vals[j];
-                    if(usedonly == null || usedonly.equals("null"))
-                        {
-                        usedonly="j";
-                        }
-                    }*/
                 }
             }
-            /*
-        if(UIlanguage == null || UIlanguage.equals("null"))
-            {
-            UIlanguage="";
-            }*/
 
         PrintWriter out = response.getWriter();
         /**
           * help$
           */
-//        String svar = BracMat.Eval("help$((UIlanguage." + util.quote(UIlanguage) + ") (usedonly." + util.quote(usedonly) + "))");
         String svar = BracMat.Eval("help$(" + arg + ")");
         out.println(svar);
         }
