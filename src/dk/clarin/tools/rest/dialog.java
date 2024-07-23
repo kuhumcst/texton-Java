@@ -36,11 +36,14 @@ import java.io.IOException;
 public class dialog extends HttpServlet 
     {
     private dk.clarin.tools.compute Compute;
+    private dk.clarin.tools.rest.poll Poll;
     public void init(ServletConfig config) throws ServletException 
         {
         super.init(config);
         Compute = new dk.clarin.tools.compute();
         Compute.init(config);
+        Poll = new dk.clarin.tools.rest.poll();
+        Poll.init(config);
         }
 
     public String whichDialog(HttpServletRequest request)
@@ -69,7 +72,12 @@ public class dialog extends HttpServlet
         throws ServletException, IOException 
         {
         String dialog = whichDialog(request);
-        Compute.Workflow(request,response,dialog/*"specifyGoal"*/);
+        if(dialog.equals("poll"))
+            {
+            Poll.doGet(request,response);
+            }
+        else
+            Compute.Workflow(request,response,dialog/*"specifyGoal"*/);
         }
         
     public void doPost(HttpServletRequest request, HttpServletResponse response)
