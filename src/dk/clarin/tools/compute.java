@@ -120,7 +120,7 @@ public class compute extends HttpServlet
     /// The user's preferred interface language
     private String UIlanguage;// = null;
 
-    private String date;
+//Date    private String date;
 
     private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder builder;// = null;
@@ -268,9 +268,9 @@ public class compute extends HttpServlet
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        date = sdf.format(cal.getTime());
+//Date        Calendar cal = Calendar.getInstance();
+//Date        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//Date        date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
         destinationDir = new File(ToolsProperties.documentRoot);
@@ -562,7 +562,8 @@ public class compute extends HttpServlet
         if(!val.equals(""))
             {
             String PercentEncodedURL = BracMat.Eval("percentEncodeURL$("+util.quote(val) + ")");
-            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
+//Date            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + "." + util.quote(date) + ")");
+            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(val) + ")");
             
             File file = new File(destinationDir,LocalFileName);
 
@@ -627,7 +628,8 @@ public class compute extends HttpServlet
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
 
-        String arg = "(method.GET) (DATE." + util.quote(date) + ")";
+//Date        String arg = "(method.GET) (DATE." + util.quote(date) + ")";
+        String arg = "(method.GET)";
         boolean OK = true;
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
@@ -655,7 +657,8 @@ public class compute extends HttpServlet
                         int textLength = val.length();
                         if(textLength > 0)
                             {
-                            String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
+//Date                            String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + "." + util.quote(date) + ")");
+                            String LocalFileName = BracMat.Eval(BracmatFunc+"$("+util.quote("text") + ")");
                             File file = new File(destinationDir,LocalFileName);
                         
                             PrintWriter outf = new PrintWriter(file);
@@ -793,8 +796,8 @@ public class compute extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
 
-        String arg = "(method.POST) (DATE." + util.quote(date) + ")";
-
+//Date        String arg = "(method.POST) (DATE." + util.quote(date) + ")";
+        String arg = "(method.POST)";
         try 
             {
             /*
@@ -813,7 +816,8 @@ public class compute extends HttpServlet
                     //Handle Uploaded files.
                     if(!item.getSubmittedFileName().equals(""))
                         {
-                        String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getSubmittedFileName()) + "." + util.quote(date) + ")");
+//Date                        String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getSubmittedFileName()) + "." + util.quote(date) + ")");
+                        String LocalFileName = BracMat.Eval("storeUpload$("+util.quote(item.getSubmittedFileName()) + ")");
                         /*
                         * Write file to the ultimate location.
                         */
@@ -878,7 +882,8 @@ public class compute extends HttpServlet
                         int textLength = fiel.length();
                         if(textLength > 0)
                             {
-                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
+//Date                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + "." + util.quote(date) + ")");
+                            String LocalFileName = BracMat.Eval("storeUpload$("+util.quote("text") + ")");
                             try
                                 {
                                 item.write(ToolsProperties.documentRoot + LocalFileName);

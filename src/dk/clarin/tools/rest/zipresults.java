@@ -62,16 +62,16 @@ public class zipresults extends HttpServlet
 
     private static final int BUFFER = 2048;
 
-    private String date;
+//Date    private String date;
     private bracmat BracMat;
 
     public void init(ServletConfig config) throws ServletException 
         {
         InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
         ToolsProperties.readProperties(fis);        
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        date = sdf.format(cal.getTime());
+//Date        Calendar cal = Calendar.getInstance();
+//Date        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//Date        date = sdf.format(cal.getTime());
         BracMat = new bracmat(ToolsProperties.bootBracmat);
         super.init(config);
         }

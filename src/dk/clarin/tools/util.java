@@ -156,9 +156,9 @@ public class util
         {
         try
             {
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            String date = sdf.format(cal.getTime());
+//Date            Calendar cal = Calendar.getInstance();
+//Date            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//Date            String date = sdf.format(cal.getTime());
 
             String destdir = BracMat.Eval("toolsdata$");
             String newResource;
@@ -179,11 +179,13 @@ public class util
              */
             if(TEIformat.equals(""))
                 {
-                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               ".."               + util.quote(date) + ")"); 
+//Date                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               ".."               + util.quote(date) + ")"); 
+                newResource = BracMat.Eval("doneJob$(" + result + "." + jobID +               "."               + ")"); 
                 }
             else
                 {
-                String toEval =            "doneJob$(" + result + "." + jobID + "." + util.quote(path) + "." + util.quote(date) + ")";
+//Date                String toEval =            "doneJob$(" + result + "." + jobID + "." + util.quote(path) + "." + util.quote(date) + ")";
+                String toEval =            "doneJob$(" + result + "." + jobID + "." + util.quote(path) + ")";
                 newResource = BracMat.Eval(toEval); 
                 }
 
