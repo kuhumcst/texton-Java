@@ -54,12 +54,15 @@ public class register extends HttpServlet
         super.init(config);
         }
 
-    public void doPost(HttpServletRequest request,HttpServletResponse response)
-        throws ServletException, IOException 
+//    public void doPost(HttpServletRequest request,HttpServletResponse response)
+  //      throws ServletException, IOException 
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException
         {
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
+            /*
             Collection<Part> items = null;
             try 
                 {
@@ -75,22 +78,26 @@ public class register extends HttpServlet
                 logger.error("Error encountered while parsing the request: "+ex.getMessage());
                 return;
                 }
-
+*/
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            passwordAsHandle = parameters.getPOSTarg(request,items,"passwordAsHandle");
+            //passwordAsHandle = parameters.getPOSTarg(request,items,"passwordAsHandle");
+            passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
+
             //logger.debug("getPOSTarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
             String StoredPassword = BracMat.Eval("getProperty$password");
             if(StoredPassword.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
                 {
-                userEmail = parameters.getPOSTarg(request,items,"mail2");
+                //userEmail = parameters.getPOSTarg(request,items,"mail2");
+                userEmail = parameters.getGETarg(request,"mail2");
                 arg += " (handle.LOCALMACHINEDUMMY)";
                 }
             else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                userEmail = parameters.getPOSTarg(request,items,"mail2");
+                //userEmail = parameters.getPOSTarg(request,items,"mail2");
+                userEmail = parameters.getGETarg(request,"mail2");
                 arg += " (handle.OK)";
                 }
             else
@@ -98,10 +105,15 @@ public class register extends HttpServlet
                 logger.debug("Password not OK for activating registered tools.");
                 }
                 
-            if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
+            //if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
+            //    arg += " (contactEmail." + util.quote(userEmail) + ")";
+            if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
 
-            arg += parameters.getargsBracmatFormat(request,items);
+
+            //arg += parameters.getargsBracmatFormat(request,items);
+            arg += parameters.getAllGETArgsBracmatFormat(request);
+
             /**
               * register$
               *
@@ -185,11 +197,11 @@ public class register extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
         }
-
-        public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-            {        
-            doPost(request, response);
-            }
+        /*
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException
+        {
+        doPost(request, response);
+        }*/
     }
 
