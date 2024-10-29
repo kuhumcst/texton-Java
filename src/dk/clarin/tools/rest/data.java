@@ -1,7 +1,7 @@
 /**
  * Return result from Tools. E.g. in response to this URL:
  *      https://clarin.dk/texton/data/3892126799-323-step1.xml
- * A call to the 'keep' function in toolsProg.bra checks that by looking for
+ * A call to the 'keep' function in TexTon.bra checks that by looking for
  * outstanding jobs that take the result as input.
  * Directory listings are forbidden, so the URL
  *      https://clarin.dk/texton/data/

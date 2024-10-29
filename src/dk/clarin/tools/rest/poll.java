@@ -118,8 +118,8 @@ public class poll extends HttpServlet
             }
         else*/ if(job != null)
             {
-//            response.setContentType("text/html; charset=UTF-8");
-            response.setContentType("application/xhtml+xml; charset=UTF-8");
+            response.setContentType("text/html; charset=UTF-8");
+//          response.setContentType("application/xhtml+xml; charset=UTF-8");
 
             String svar = BracMat.Eval("poll$("+util.quote(job) + ")");
             out.println(svar);            

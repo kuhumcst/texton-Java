@@ -21,9 +21,9 @@
            so that all fetches of results by users are under control of the service! -->
     <entry key="stagingArea">/tools/work/data/</entry>
     <entry key="toolsHome">C:/gitprojects/DK-ClarinTools/work/</entry>
-    <entry key="toolsProg">toolsProg.bra</entry>
+    <entry key="TexTon">TexTon.bra</entry>
     <entry key="tempdir">C:/gitprojects/DK-ClarinTools/work/tmp</entry>
-    <!-- used for testing and hot reloading of toolsProg.bra -->
+    <!-- used for testing and hot reloading of TexTon.bra -->
     <entry key="password"></entry>
 
     <!--  86400000 == one day  -->

@@ -500,7 +500,7 @@ public class compute extends HttpServlet
 
         String StatusJobNrJobIdResponse[] = result.split("~", 4);
         if(StatusJobNrJobIdResponse.length == 4)
-            { // toolsProg.bra: chosenworkflow.ApplyThePipelineToTheInput
+            { // TexTon.bra: chosenworkflow.ApplyThePipelineToTheInput
             String Status = StatusJobNrJobIdResponse[0];
             String JobNr  = StatusJobNrJobIdResponse[1];
             String JobId  = StatusJobNrJobIdResponse[2];
@@ -615,7 +615,8 @@ public class compute extends HttpServlet
         if(BracmatFunc.equals("chosenworkflow")|BracmatFunc.equals("showworkflows"))
             response.setContentType("text/html; charset=UTF-8"); /*SVG content*/
         else
-            response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
+            response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+//          response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);
         PrintWriter out = response.getWriter();
@@ -971,7 +972,8 @@ public class compute extends HttpServlet
 
         PrintWriter out = response.getWriter();
 
-        response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
+        response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
+//      response.setContentType("application/xhtml+xml; charset=iso-8859-1");//UTF-8");
 
         response.setStatus(200);
 

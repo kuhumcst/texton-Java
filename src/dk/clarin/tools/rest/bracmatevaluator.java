@@ -58,8 +58,9 @@ public class bracmatevaluator extends HttpServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
         {
-        response.setContentType("text/xml");
+        response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
+        PrintWriter out = response.getWriter();
         bracmat BracMat = new bracmat(ToolsProperties.bootBracmat);
         if(BracMat.loaded())
             {
@@ -68,10 +69,8 @@ public class bracmatevaluator extends HttpServlet
             if(password == null || !util.goodToPass(password,BracMat))
                 {
                 response.setStatus(401);
-                PrintWriter out = response.getWriter();
-                out.println( "<?xml version=\"1.0\"?>\n"
-                            +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
-                            +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
+                out.println( "<!DOCTYPE html>\n" 
+                            +"<html xml:lang=\"en\" lang=\"en\">\n" 
                             +"<head>\n" 
                             +"<title>DK-Clarin: Tools</title>\n" 
                             +"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n" 
@@ -91,20 +90,17 @@ public class bracmatevaluator extends HttpServlet
                 logger.info("Eval:"+expression);
                 String result = BracMat.Eval(expression);
                 logger.info("Result:"+result);
-                PrintWriter out = response.getWriter();
                 out.println(result);
                 }
             else
                 {
                 response.setContentType("text/plain");
-                PrintWriter out = response.getWriter();
                 out.println("NO INPUT");
                 }
             }
         else
             {
             response.setStatus(503);
-            PrintWriter out = response.getWriter();
             out.println( "<?xml version=\"1.0\"?>\n"
                         +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
                         +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 

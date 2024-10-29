@@ -31,6 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.InputStream;
 
 import java.util.Enumeration;
 
@@ -45,7 +46,8 @@ public class exportMetadata extends HttpServlet
 
     public void init(ServletConfig config) throws ServletException 
         {
-        BracMat = new bracmat(ToolsProperties.bootBracmat);
+        InputStream fis = config.getServletContext().getResourceAsStream("/WEB-INF/classes/properties.xml");
+        ToolsProperties.readProperties(fis);    
         super.init(config);
         }
 
@@ -54,24 +56,23 @@ public class exportMetadata extends HttpServlet
         {
         response.setContentType("text/html; charset=UTF-8");
         response.setStatus(200);
-        PrintWriter out = response.getWriter();
-        
+        PrintWriter out = response.getWriter();        
         String password = request.getParameter("password");
+        bracmat BracMat = new bracmat(ToolsProperties.bootBracmat);
         if(BracMat.loaded())
             {
             if(password == null || !util.goodToPass(password,BracMat))
                 {
                 response.setStatus(401);
-                out.println( "<?xml version=\"1.0\"?>\n"
-                            +"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" 
-                            +"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"da\" lang=\"da\">\n" 
+                out.println( "<!DOCTYPE html>\n" 
+                            +"<html xml:lang=\"en\" lang=\"en\">\n" 
                             +"<head>\n" 
                             +"<title>DK-Clarin: Tools</title>\n" 
                             +"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n" 
                             +"</head>\n" 
                             +"<body>\n" 
                             +"<h1>401 Unauthorized</h1>\n" 
-                            +"<p>When attempting to evaluate Bracmat code</p>\n" 
+                            +"<p>When attempting to export data.</p>\n" 
                             +"</body></html>\n"
                            );
                 return;

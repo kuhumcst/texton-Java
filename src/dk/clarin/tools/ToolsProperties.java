@@ -91,12 +91,12 @@ public class ToolsProperties
             // System paths used by Tools
             documentRoot           = prop.getProperty("documentRoot");  // Used in Java code
             String toolsHome       = prop.getProperty("toolsHome");     // Used in Java code (here!)
-            String bracmatCode     = prop.getProperty("toolsProg");     // Used in Java code (here!)
+            String bracmatCode     = prop.getProperty("TexTon");     // Used in Java code (here!)
             deleteAfterMillisec    = prop.getProperty("deleteAfterMillisec");  // Used in Java code
             bootBracmat            =  "get$\"" 
                                     + toolsHome                         // Used in Java code (here!)
                                     + bracmatCode                       // Used in Java code (here!)
-                                    + "\"&!toolsProg&(\""
+                                    + "\"&!TexTon&(\""
                                     + toolsHome                         // Used in Java code (here!)
                                     + "\":?toolshome)&(\"" 
 //                                    + baseUrlTools                      // Set in Bracmat table 'meta/properties'
@@ -114,7 +114,7 @@ public class ToolsProperties
             /*
             password               = prop.getProperty("password");  // Used in Java code, but set in Bracmat table 'meta/properties'
             salt                   = prop.getProperty("salt");      // Used in Java code, but set in Bracmat table 'meta/properties'
-            */
+            //*/
             fis.close();
             } 
         catch (IOException io)
