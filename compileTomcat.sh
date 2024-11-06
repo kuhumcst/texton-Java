@@ -1,6 +1,6 @@
-if [ -d /opt/tomcat10/latest/lib ]; then
-    CATALINA_BASE=/opt/tomcat10/latest
-    CATALINA_HOME=/opt/tomcat10/latest
+if [ -d /opt/tomcat-texton/lib ]; then
+    CATALINA_BASE=/opt/tomcat-texton
+    CATALINA_HOME=/opt/tomcat-texton
 fi
 export CATALINA_BASE
 export CATALINA_HOME
