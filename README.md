@@ -15,5 +15,5 @@ To successfully run compileTomcat.sh, it is necessary to also have Bracmat insta
 
 Bracmat.jar is created by running the script compileAndTestJNI.sh in the folder ../Bracmat/java-JNI/, situated in the aforementioned Bracmat repositorium. That script also generates and installs a JNI (Java Native Interface) for the Bracmat language, which is needed since the Bracmat interpreter is written in C, not in Java.  
 
-The Bracmat script that implements almost all of the workflow management logic of the Text Tonsorium, 'toolsProg.bra', is in the https://github.com/kuhumcst/texton repositorium, in the folder called texton/BASE.
+The Bracmat script that implements almost all of the workflow management logic of the Text Tonsorium, 'TexTon.bra', is in the https://github.com/kuhumcst/texton repositorium, in the folder called texton/BASE.
 
