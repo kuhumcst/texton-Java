@@ -282,7 +282,7 @@ public class compute extends HttpServlet
                 }
             catch(Exception e)
                 {
-                throw new ServletException("Trying to create \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage());
+                throw new ServletException(util.quote("Trying to create \"" + ToolsProperties.documentRoot + "\" as directory for temporary storing intermediate and final results, but this is not a valid directory. Error:" + e.getMessage()));
                 }
             }
         if(!destinationDir.isDirectory()) 
@@ -830,7 +830,7 @@ public class compute extends HttpServlet
                             {
                             logger.error("IOException Error encountered while writing file. {}",ex.getMessage());
                             out.close();
-                            return "Error encountered while writing file '" + LocalFileName + "'";
+                            return util.quote("Error encountered while writing file " + LocalFileName);
                             }
 
                         if(virusfree(LocalFileName))
@@ -864,7 +864,7 @@ public class compute extends HttpServlet
                         {
                         logger.error("IOException Error encountered while getting inputstream. {}",ex.getMessage());
                         out.close();
-                        return "Error encountered while getting inputstream";
+                        return util.quote("Error encountered while getting inputstream");
                         }
 
                     try
@@ -875,7 +875,7 @@ public class compute extends HttpServlet
                         {
                         logger.error("IOException Error encountered while reading inputstream. {}",ex.getMessage());
                         out.close();
-                        return "Error encountered while reading inputstream";
+                        return util.quote("Error encountered while reading inputstream");
                         }
 
                     if(item.getName().equals("text"))
@@ -893,7 +893,7 @@ public class compute extends HttpServlet
                                 {
                                 logger.error("IOException Error encountered while writing. {} LocalFileName [{}]",ex.getMessage(),LocalFileName);
                                 out.close();
-                                return "Error encountered while writing. LocalFileName " + LocalFileName;
+                                return util.quote("Error encountered while writing. LocalFileName " + LocalFileName);
                                 }
                             if(virusfree(LocalFileName))
                                 {
@@ -977,7 +977,7 @@ public class compute extends HttpServlet
 
         response.setStatus(200);
 
-        String arg  = getParmsAndFiles(items,response,out);
+        String arg = getParmsAndFiles(items,response,out);
         arg = assureArgHasUIlanguage(request,items,arg);
         createAndProcessPipeLine(response,arg,out,BracmatFunc);
         }
