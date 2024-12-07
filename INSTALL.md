@@ -39,16 +39,9 @@ $> sudo apt install ant
 
 Text Tonsorium requires Tomcat version 10 or later.
 
-The next line is only required if /opt/tomcat was pointing at an earlier version of Tomcat, e.g., version 9
-
-```bash
-$> sudo mv /opt/tomcat /opt/tomcat9 
-```
-
 ### Install Tomcat
 
-Tomcat can be installed using `apt install`, but it can not be started using `sudo service tomcat start` if running under WSL.  
-Therefore, if you install the Text Tonsorium under WSL, you must install Tomcat from a downloaded archive.
+Tomcat can be installed using `apt install`, or from a downloaded archive.
 
 Visit https://tomcat.apache.org/ to obtain a link to a recent archive.
 
@@ -61,13 +54,6 @@ $> wget https://downloads.apache.org/tomcat/tomcat-10/v10.1.7/bin/apache-tomcat-
 $> sudo tar xf apache-tomcat-10*.tar.gz -C /opt/
 $> sudo chown -RH tomcat: /opt/tomcat10/latest
 ```
-
-Skip the next line if installing in WSL, because no systemd.
-
-```bash
-$> sudo vi /etc/systemd/system/tomcat-texton.service
-```
-
 Enter
 
     [Unit]
