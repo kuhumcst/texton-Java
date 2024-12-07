@@ -102,14 +102,13 @@ to
 ### Install Bracmat JNI
 
 Create the Tomcat lib bracmat.jar and the shared library libbracmat.so.1.0
-
+The script compileAndTestJNI.sh assumes that the folder /opt/tomcat/latest/ or /opt/tomcat-texton/ exists and that the tomcat binaries are in the bin subfolder. Edit compileAndTestJNI.sh if necessary.
 
 ```bash
 $> git clone https://github.com/BartJongejan/Bracmat.git
 $> cd Bracmat/java-JNI
 $> sudo chmod ugo+x compileAndTestJNI.sh
 $> sudo ./compileAndTestJNI.sh
-$> sudo chown -RH tomcat: /opt/tomcat10/latest
 ```
 
 ### Install texton-Java (this repo) 
