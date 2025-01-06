@@ -59,45 +59,48 @@ public class register extends HttpServlet
   //  public void doGet(HttpServletRequest request, HttpServletResponse response)
     //    throws ServletException, IOException
         {
+        logger.debug("register doPost.");
+
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
-            /*
+            
             Collection<Part> items = null;
+            logger.debug("request.getParts");
             try 
                 {
                 items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
                 }
             catch(IOException ex) 
                 {
-                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                logger.error("IOException:Error encountered while parsing the request: "+ex.getMessage());
                 return;
                 }
             catch(ServletException ex) 
                 {
-                logger.error("Error encountered while parsing the request: "+ex.getMessage());
+                logger.error("ServletException:Error encountered while parsing the request: "+ex.getMessage());
                 return;
                 }
-*/
+
             String userEmail = null;
             String passwordAsHandle = null;
             String arg = "";
-            //passwordAsHandle = parameters.getPOSTarg(request,items,"passwordAsHandle");
-            passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
+            passwordAsHandle = parameters.getPOSTarg(request,items,"passwordAsHandle");
+            //passwordAsHandle = parameters.getGETarg(request,"passwordAsHandle");
 
             //logger.debug("getPOSTarg(request,items,\"passwordAsHandle\") returns:" + (passwordAsHandle == null ? "not found" : passwordAsHandle)); DON'T DO THIS
             String StoredPassword = BracMat.Eval("getProperty$password");
             if(StoredPassword.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) // empty string, default, for development on local machine.
                 {
-                //userEmail = parameters.getPOSTarg(request,items,"mail2");
-                userEmail = parameters.getGETarg(request,"mail2");
+                userEmail = parameters.getPOSTarg(request,items,"mail2");
+                //userEmail = parameters.getGETarg(request,"mail2");
                 arg += " (handle.LOCALMACHINEDUMMY)";
                 }
             else if(passwordAsHandle != null && util.goodToPass(passwordAsHandle,BracMat))
                 {
                 logger.debug("Password ok for activating registered tools. Add 'handle' to list of arguments");
-                //userEmail = parameters.getPOSTarg(request,items,"mail2");
-                userEmail = parameters.getGETarg(request,"mail2");
+                userEmail = parameters.getPOSTarg(request,items,"mail2");
+                //userEmail = parameters.getGETarg(request,"mail2");
                 arg += " (handle.OK)";
                 }
             else
@@ -105,14 +108,14 @@ public class register extends HttpServlet
                 logger.debug("Password not OK for activating registered tools.");
                 }
                 
-            //if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
-            //    arg += " (contactEmail." + util.quote(userEmail) + ")";
-            if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
+            if(userEmail != null && parameters.getPOSTarg(request,items,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
+            //if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
+            //    arg += " (contactEmail." + util.quote(userEmail) + ")";
 
 
-            //arg += parameters.getargsBracmatFormat(request,items);
-            arg += parameters.getAllGETArgsBracmatFormat(request);
+            arg += parameters.getargsBracmatFormat(request,items);
+            //arg += parameters.getAllGETArgsBracmatFormat(request);
 
             /**
               * register$
@@ -152,9 +155,12 @@ public class register extends HttpServlet
               * register function.
               */
             //logger.debug("Calling register$(" + arg + ")"); DON'T DO THIS
+            logger.debug("Calling register");
             String result = BracMat.Eval("register$(" + arg + ")");
+            logger.debug("Calling registerDONE");
             if(result == null || result.equals(""))
                 {
+                logger.debug("No result");
                 response.setContentType("text/html; charset=UTF-8");
                 response.setStatus(404);
                 /**
@@ -178,6 +184,7 @@ public class register extends HttpServlet
                    || arg.contains("php")
                    )
                 { /* php wrapper */
+                logger.debug("PHP wrapper");
                 //response.setContentType("text/plain; charset=iso8859-1");//UTF-8");
                 response.setContentType("text/plain; charset=iso8859-1");
                 response.setStatus(200);
@@ -185,6 +192,7 @@ public class register extends HttpServlet
                 }
             else
                 {
+                logger.debug("HTML:"+result);
                 response.setContentType("text/html; charset=iso8859-1");//UTF-8");
 //                response.setContentType("application/xhtml+xml; charset=iso8859-1");//UTF-8");
 

@@ -130,8 +130,6 @@ public class parameters
         * Parse the request
         */
 
-        @SuppressWarnings("unchecked")
-        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         try 
             {
             Iterator<Part> itr = items.iterator();
@@ -139,13 +137,17 @@ public class parameters
                 {
                 Part item = itr.next();
                 arg = arg + " (" + util.quote(item.getName()) + "." + util.quote(IOUtils.toString(item.getInputStream(),StandardCharsets.UTF_8).trim()) + ")";
+                logger.debug("arg1++="+arg);
                 }
             }
         catch(Exception ex) 
             {
-            logger.error("uploadHandler.parseRequest Exception");
+            logger.error("uploadHandler.parseRequest Exception:{}",ex.getMessage());
             }
-        /* This seems to merely redo the argument parsing, causing all args to occur twice!
+        /* This seems to merely redo the argument parsing, causing all args to occur twice!*/
+        /*
+        @SuppressWarnings("unchecked")
+        Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
@@ -156,9 +158,10 @@ public class parameters
                 arg += " " + util.quote(val);
                 }
             arg += ")";
-            logger.debug("arg++="+arg);
+            logger.debug("arg2++="+arg);
             }
-            */
+         */   
+        logger.debug("getargsBracmatFormat done:"+arg);
         return arg;
         }
 
