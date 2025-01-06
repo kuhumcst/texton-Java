@@ -91,10 +91,6 @@ public class cleanup extends HttpServlet
             {
             chld = destinationDir.list();
             }
-        catch(AccessControlException e)
-            {
-            logger.error("destinationDir.list() causes java.security.AccessControlException, error is: " + e.getMessage());
-            }
         catch(SecurityException e)
             {
             logger.error("destinationDir.list() causes SecurityException, error is: " + e.getMessage());
