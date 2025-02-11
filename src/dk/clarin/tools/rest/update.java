@@ -53,7 +53,7 @@ public class update extends HttpServlet
         super.init(config);
         }
 
-    public void doGet(HttpServletRequest request,HttpServletResponse response)
+    public void doPost(HttpServletRequest request,HttpServletResponse response)
         throws ServletException, IOException 
         {
         response.setContentType("text/html; charset=iso-8859-1");//UTF-8");
