@@ -47,7 +47,7 @@
     <servlet-name>cleanup</servlet-name>
     <url-pattern>/cleanup/*</url-pattern>
   </servlet-mapping>
-
+<!--
   <servlet>
     <servlet-name>specifyGoal</servlet-name>
     <servlet-class>dk.clarin.tools.rest.specifyGoal</servlet-class>
@@ -56,7 +56,8 @@
     <servlet-name>specifyGoal</servlet-name>
     <url-pattern>/specifyGoal/*</url-pattern>
   </servlet-mapping>
-
+  -->
+  <!--
   <servlet>
     <servlet-name>showworkflows</servlet-name>
     <servlet-class>dk.clarin.tools.rest.showworkflows</servlet-class>
@@ -65,7 +66,8 @@
     <servlet-name>showworkflows</servlet-name>
     <url-pattern>/showworkflows/*</url-pattern>
   </servlet-mapping>
-
+  -->
+<!--
   <servlet>
     <servlet-name>chosenworkflow</servlet-name>
     <servlet-class>dk.clarin.tools.rest.chosenworkflow</servlet-class>
@@ -74,7 +76,7 @@
     <servlet-name>chosenworkflow</servlet-name>
     <url-pattern>/chosenworkflow/*</url-pattern>
   </servlet-mapping>
-
+-->
   <servlet>
     <servlet-name>data</servlet-name>
     <servlet-class>dk.clarin.tools.rest.data</servlet-class>
@@ -92,7 +94,7 @@
     <servlet-name>dialog</servlet-name>
     <url-pattern>/dialog/*</url-pattern>
   </servlet-mapping>
-
+<!--
   <servlet>
     <servlet-name>mypoll</servlet-name>
     <servlet-class>dk.clarin.tools.rest.poll</servlet-class>
@@ -101,7 +103,7 @@
     <servlet-name>mypoll</servlet-name>
     <url-pattern>/mypoll/*</url-pattern>
   </servlet-mapping>
-
+-->
   <servlet>
     <servlet-name>register</servlet-name>
     <servlet-class>dk.clarin.tools.rest.register</servlet-class>
@@ -182,7 +184,7 @@
     <servlet-name>upload</servlet-name>
     <url-pattern>/upload/*</url-pattern>
   </servlet-mapping>
-
+<!--
   <servlet>
     <servlet-name>setLanguage</servlet-name>
     <servlet-class>dk.clarin.tools.rest.setLanguage</servlet-class>
@@ -191,7 +193,7 @@
     <servlet-name>setLanguage</servlet-name>
     <url-pattern>/setLanguage/*</url-pattern>
   </servlet-mapping>
-
+-->
   <servlet>
     <servlet-name>help</servlet-name>
     <servlet-class>dk.clarin.tools.rest.help</servlet-class>
