@@ -205,11 +205,11 @@ public class register extends HttpServlet
             throw new ServletException("Bracmat is not loaded. Reason:" + BracMat.reason());
             }
         }
-        /*
+        
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
         {
         doPost(request, response);
-        }*/
+        }
     }
 
