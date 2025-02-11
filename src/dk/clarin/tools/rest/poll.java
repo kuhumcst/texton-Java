@@ -89,6 +89,7 @@ public class poll extends HttpServlet
         @SuppressWarnings("unchecked")
         Enumeration<String> parmNames = (Enumeration<String>)request.getParameterNames();
         String job = null;
+        String Xtra = "";
         for (Enumeration<String> e = parmNames ;  job == null && e.hasMoreElements() ;) 
             {
             String parmName = e.nextElement();
@@ -105,8 +106,11 @@ public class poll extends HttpServlet
                         return;
                         }
                     }
+                else
+                    Xtra = Xtra + " (" + util.quote(parmName) + "." + util.quote(vals[j]) + ")";
                 }
             }
+
         /*:Test*/
         /*
         logger.info("getPathInfo() returns {}",request.getPathInfo());
@@ -121,7 +125,7 @@ public class poll extends HttpServlet
             response.setContentType("text/html; charset=UTF-8");
 //          response.setContentType("application/xhtml+xml; charset=UTF-8");
 
-            String svar = BracMat.Eval("poll$("+util.quote(job) + ")");
+            String svar = BracMat.Eval("poll$((jobNr."+util.quote(job) + ")" + Xtra + ")");
             out.println(svar);            
             }
         }
