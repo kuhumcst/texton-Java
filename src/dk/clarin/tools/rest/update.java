@@ -29,8 +29,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
 
 import java.io.*;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +73,22 @@ public class update extends HttpServlet
              * displayed above the form and the name of a tool, which will then be 
              * selected when the browser shows the pick list.
              */
+            Collection<Part> items = null;
+            logger.debug("request.getParts");
+            try 
+                {
+                items = request.getParts(); // throws ServletException if this request is not of type multipart/form-data
+                }
+            catch(IOException ex) 
+                {
+                logger.error("IOException:Error encountered while parsing the request: "+ex.getMessage());
+                return;
+                }
+            catch(ServletException ex) 
+                {
+                logger.error("ServletException:Error encountered while parsing the request: "+ex.getMessage());
+                return;
+                }
 
             String userEmail = null;
             String passwordAsHandle = null;
@@ -89,7 +107,8 @@ public class update extends HttpServlet
                 
             if(userEmail != null && parameters.getGETarg(request,"contactEmail") == null)
                 arg += " (contactEmail." + util.quote(userEmail) + ")";
-            arg += parameters.getAllGETArgsBracmatFormat(request);
+            arg += parameters.getargsBracmatFormat(request,items);
+            //arg += parameters.getAllGETArgsBracmatFormat(request);
 
             String result = BracMat.Eval("update$(" + arg + ")");
             if(result == null || result.equals(""))

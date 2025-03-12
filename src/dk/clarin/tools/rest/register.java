@@ -64,7 +64,6 @@ public class register extends HttpServlet
         PrintWriter out = response.getWriter();
         if(BracMat.loaded())
             {
-            
             Collection<Part> items = null;
             logger.debug("request.getParts");
             try 

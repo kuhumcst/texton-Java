@@ -12,11 +12,19 @@
         Password:<input type="password" name="passwordAsHandle" value="" alt="password" />
         Your email address:<input name="contactEmail" type="text" size="30" id="contactEmail1" style="vertical-align: middle;" />
         <input type="submit" value="register new tool" alt="Bracmat" />
+        <input type="radio" checked="checked" id="en" name="UIlanguage" value="en" />
+        <label for="en">English</label>
+        <input type="radio" id="da" name="UIlanguage" value="da" />
+        <label for="da">dansk</label>
     </form>
     <form enctype="multipart/form-data" method="post" action="update">
         Password:<input type="password" name="passwordAsHandle" value="" alt="password" />
         Your email address:<input name="contactEmail" type="text" size="30" id="contactEmail2" style="vertical-align: middle;" />
         <input type="submit" value="update tool" alt="Bracmat" />
+        <input type="radio" checked="checked" id="en" name="UIlanguage" value="en" />
+        <label for="en">English</label>
+        <input type="radio" id="da" name="UIlanguage" value="da" />
+        <label for="da">dansk</label>
     </form>
 
     <h2>Development Area</h2>
@@ -96,11 +104,11 @@
     <form enctype="application/x-www-form-urlencoded" method="get" action="bracmatevaluator">
         <!-- 20220811 Show Bracmat version, nothing else. -->
         <!--
-        <textarea style="font-size: 9pt;" name="expression" rows="10" cols="80">{ Enter Bracmat expression to evaluate
-      (Programmers only) }
+            <textarea style="font-size: 9pt;" name="expression" rows="10" cols="80">{ Enter Bracmat expression to evaluate
+          (Programmers only) }
 
-    </textarea><br />
-            -->
+        </textarea><br />
+                -->
         Password:<input type="password" name="password" value="" alt="password" />
         <input type="submit" value="Bracmat" alt="Bracmat" />
     </form>
