@@ -170,6 +170,7 @@ public class zipresults extends HttpServlet
 
             String shortletter="";
             String job = "";
+            String TypeFace = "";
             for (Enumeration<String> e = parmNames ; e.hasMoreElements() ;) 
                 {
                 String parmName = e.nextElement();
@@ -177,10 +178,12 @@ public class zipresults extends HttpServlet
                     shortletter = request.getParameterValues(parmName)[0];
                 else if(parmName.equals("JobNr"))
                     job = request.getParameterValues(parmName)[0];
+                else if(parmName.equals("TPFC"))
+                    TypeFace = request.getParameterValues(parmName)[0];
                 }
             if(!job.equals(""))
                 {
-                String letter = BracMat.Eval("letter$(" + job + "."+ shortletter +")");
+                String letter = BracMat.Eval("letter$((" + job + "."+ shortletter +"),(TPFC."+util.quote(TypeFace)+"))");
                 String localFilePath = ToolsProperties.documentRoot;
                 if(shortletter.startsWith("c"))
                     {
