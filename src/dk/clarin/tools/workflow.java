@@ -117,7 +117,6 @@ public class workflow implements Runnable
     private void didnotget200(int code,String JobNR, bracmat BracMat, String jobID)
         {
         String filelist;
-        logger.warn("DIDNOTGET200.Code="+Integer.toString(code)+", JobNR="+JobNR+", jobID="+jobID);
         if(code == 202)
             {
             /**
@@ -319,7 +318,6 @@ public class workflow implements Runnable
                                 else
                                     {
                                     }
-                                logger.warn("GET endpoint:"+endpoint+", JobNR="+JobNR+", jobID="+jobID+" code != 200");
                                 didnotget200(code,JobNR,BracMat,jobID);
                                 }
                             }
